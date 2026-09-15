@@ -127,6 +127,7 @@ export type Database = {
           edital_numero: string | null
           id: string
           nome: string
+          quadro: string | null
           vagas: number | null
         }
         Insert: {
@@ -136,6 +137,7 @@ export type Database = {
           edital_numero?: string | null
           id?: string
           nome: string
+          quadro?: string | null
           vagas?: number | null
         }
         Update: {
@@ -145,6 +147,7 @@ export type Database = {
           edital_numero?: string | null
           id?: string
           nome?: string
+          quadro?: string | null
           vagas?: number | null
         }
         Relationships: [
@@ -415,6 +418,7 @@ export type Database = {
           comentario: string | null
           concurso_id: string
           criado_em: string
+          diagrama_svg: string | null
           dificuldade: string | null
           disciplina_id: string
           enunciado: string
@@ -430,6 +434,7 @@ export type Database = {
           comentario?: string | null
           concurso_id: string
           criado_em?: string
+          diagrama_svg?: string | null
           dificuldade?: string | null
           disciplina_id: string
           enunciado: string
@@ -445,6 +450,7 @@ export type Database = {
           comentario?: string | null
           concurso_id?: string
           criado_em?: string
+          diagrama_svg?: string | null
           dificuldade?: string | null
           disciplina_id?: string
           enunciado?: string
