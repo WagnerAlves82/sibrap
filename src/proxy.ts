@@ -1,10 +1,13 @@
 // src/proxy.ts
 //
-// Roda antes de toda requisição: renova a sessão do Supabase e
-// bloqueia acesso a /minha-area pra quem não estiver logado.
+// Roda antes de toda requisição: renova a sessão do Supabase, bloqueia
+// acesso a /minha-area pra quem não estiver logado, e bloqueia /admin
+// pra quem não tiver o cookie de admin válido (senha única, sem tabela
+// de usuário — ver src/lib/admin-auth.ts).
 
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { tokenAdminValido, ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -38,9 +41,19 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
+  if (
+    request.nextUrl.pathname.startsWith("/admin") &&
+    request.nextUrl.pathname !== "/admin/login"
+  ) {
+    const adminToken = request.cookies.get(ADMIN_COOKIE_NAME)?.value;
+    if (!tokenAdminValido(adminToken)) {
+      return NextResponse.redirect(new URL("/admin/login", request.url));
+    }
+  }
+
   return response;
 }
 
 export const config = {
-  matcher: ["/minha-area/:path*"],
+  matcher: ["/minha-area/:path*", "/admin/:path*"],
 };
