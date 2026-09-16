@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
-import { FormularioListaEspera } from "@/components/formulario-lista-espera";
 import { Logo } from "@/components/logo";
 
 export default async function Home() {
@@ -12,7 +11,7 @@ export default async function Home() {
 
   const { data: concurso } = await supabase
     .from("concursos")
-    .select("id, nome, descricao, bancas(nome)")
+    .select("id, nome, edital_numero, bancas(nome)")
     .eq("slug", "transpetro")
     .maybeSingle();
 
@@ -24,44 +23,56 @@ export default async function Home() {
 
   const nomeBanca = concurso?.bancas?.nome ?? "Cesgranrio";
   const nomeConcurso = concurso?.nome ?? "Transpetro";
+  const editalNumero = concurso?.edital_numero ?? "3/2026";
   const totalVagas = cargos?.reduce((soma, c) => soma + (c.vagas ?? 0), 0) ?? 614;
   const totalEnfases = cargos?.length ?? 18;
 
   return (
-    <div className="flex flex-1 flex-col bg-white">
-      {/* Navbar */}
-      <header className="border-b border-blue-950/10 bg-blue-950">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-3">
-          <div className="flex items-center gap-3">
-            <Logo tamanho={40} comTexto={false} />
-            <div className="leading-tight">
-              <p className="text-lg font-extrabold tracking-tight text-white">
-                SIBRAP
-              </p>
-              <p className="hidden text-[10px] uppercase tracking-wide text-blue-300 sm:block">
-                Sistema Brasileiro de Aprendizagem Profissional
-              </p>
-            </div>
+    <div className="flex flex-1 flex-col bg-white font-body">
+      {/* Barra "concurso em destaque" */}
+      <div className="bg-brand-deep text-[#C9D6E6]">
+        <div className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-4 px-6 py-2 text-[12.5px]">
+          <span>
+            <span className="mr-2 rounded bg-accent px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide text-accent-ink">
+              Concurso em destaque
+            </span>
+            {nomeConcurso} 2026 · Banca {nomeBanca}
+            <span className="mx-1.5 opacity-40">·</span>
+            Inscrições até 21/09/2026
+          </span>
+          <span>{totalVagas} vagas + cadastro de reserva</span>
+        </div>
+      </div>
+
+      {/* Header / nav */}
+      <header className="border-b-[3px] border-accent bg-brand">
+        <div className="mx-auto flex max-w-[1180px] items-center justify-between gap-6 px-6 py-3.5">
+          <Logo tamanho={42} comTexto={false} className="[&_img]:shadow-[inset_0_0_0_2px_var(--color-accent)]" />
+          <div className="hidden items-center gap-1 leading-tight sm:block">
+            <p className="text-lg font-extrabold tracking-wide text-white">SIBRAP</p>
+            <p className="text-[10.5px] uppercase tracking-wide text-[#AEC2D8]">
+              Sistema Brasileiro de Aprendizagem Profissional
+            </p>
           </div>
 
-          <nav className="hidden items-center gap-6 text-sm font-medium text-blue-100 md:flex">
-            <a href="#inicio" className="text-white">
+          <nav className="hidden items-center gap-7 text-sm font-semibold text-[#D7E3EF] md:flex">
+            <a href="#inicio" className="border-b-2 border-accent text-white">
               Home
             </a>
-            <a href="#sobre" className="hover:text-white">
+            <a href="#sobre" className="border-b-2 border-transparent hover:text-white">
               Sobre Nós
             </a>
-            <a href="#recursos" className="hover:text-white">
+            <a href="#recursos" className="border-b-2 border-transparent hover:text-white">
               Cursos
             </a>
-            <a href="#concurso" className="hover:text-white">
+            <a href="#concurso" className="border-b-2 border-transparent hover:text-white">
               Concursos
             </a>
           </nav>
 
           <Link
             href={user ? "/minha-area" : "/login"}
-            className="rounded-md border border-blue-400/40 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-900"
+            className="rounded-md border-[1.5px] border-white/40 px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-white/10"
           >
             Minha Área
           </Link>
@@ -69,118 +80,144 @@ export default async function Home() {
       </header>
 
       {/* Hero */}
-      <section id="inicio" className="relative overflow-hidden bg-gradient-to-b from-blue-50 to-white py-16">
-        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-6 md:grid-cols-2">
-          {/* Texto + mockup da apostila */}
-          <div className="flex flex-col items-start gap-5">
-            <span className="rounded-md bg-emerald-600 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
-              Simulado Grátis
+      <section
+        id="inicio"
+        className="relative overflow-hidden bg-gradient-to-b from-[#F2F5F8] to-white py-16"
+        style={{
+          backgroundImage:
+            "radial-gradient(ellipse 900px 500px at 78% 30%, rgba(11,42,74,0.05), transparent 72%), linear-gradient(#D7DEE6 1px, transparent 1px), linear-gradient(90deg, #D7DEE6 1px, transparent 1px)",
+          backgroundSize: "auto, 34px 34px, 34px 34px",
+        }}
+      >
+        <div className="mx-auto grid max-w-[1180px] grid-cols-1 items-start gap-14 px-6 md:grid-cols-2">
+          <div>
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-surface-2 px-3 py-1.5 font-data text-xs font-semibold text-brand">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent-2" />
+              Preparação orientada pelo edital oficial
             </span>
 
-            <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-blue-950 sm:text-5xl">
-              Conhecimentos Básicos
+            <h1 className="mt-5 mb-4 font-display text-[2.4rem] leading-[1.04] font-extrabold tracking-tight text-[#14213A] sm:text-[3.4rem]">
+              Estude o edital
+              <br />
+              como quem já <span className="text-brand">decorou</span> ele.
             </h1>
 
-            <p className="max-w-md text-lg text-zinc-600">
-              O seu ponto de partida para a aprovação no Concurso{" "}
-              {nomeConcurso} 2026. Comece agora e garanta sua base sólida —
-              de graça.
+            <p className="mb-7 max-w-[46ch] text-[17px] leading-relaxed text-[#516278]">
+              Apostila organizada capítulo por capítulo na mesma ordem do edital, e
+              um banco de questões inéditas no estilo da banca — pra você chegar
+              na prova sem se surpreender com nada. Hoje, em destaque:{" "}
+              {nomeConcurso} 2026.
             </p>
 
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="mb-2.5 flex flex-wrap items-center gap-4">
               <Link
                 href="/cadastro"
-                className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-emerald-600/20 transition-colors hover:bg-emerald-500"
+                className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-4 text-base font-bold text-accent-ink shadow-[0_20px_45px_-20px_rgba(11,42,74,0.35)] transition-colors hover:brightness-105"
               >
-                Fazer Simulado Grátis e Começar Preparação
-                <span aria-hidden>›</span>
+                Fazer simulado grátis <span aria-hidden>→</span>
+              </Link>
+              <Link
+                href="/minha-area/premium"
+                className="text-sm font-semibold text-brand underline underline-offset-4"
+              >
+                Ver o que vem no Premium
               </Link>
             </div>
-            <p className="text-xs text-zinc-500">
-              *5 questões de Português + 5 de Matemática — sem cartão de
-              crédito
+            <p className="text-[13px] text-[#516278]">
+              5 questões de Língua Portuguesa + 5 de Matemática, no estilo da
+              banca.
             </p>
-
-            <div className="mt-4">
-              <details className="group text-sm">
-                <summary className="cursor-pointer list-none text-zinc-500 underline hover:text-zinc-800">
-                  Ainda não tem certeza? Deixe seu e-mail
-                </summary>
-                <div className="mt-3 max-w-sm">
-                  <FormularioListaEspera concursoId={concurso?.id ?? ""} />
-                </div>
-              </details>
-            </div>
           </div>
 
-          {/* Foto + selos */}
-          <div className="relative mx-auto flex w-full max-w-md items-center justify-center">
-            <div className="relative hidden h-72 w-72 shrink-0 sm:block sm:h-96 sm:w-96">
+          <div className="relative pb-16">
+            <div className="relative overflow-hidden rounded-2xl border border-[#D7DEE6] bg-white shadow-[0_20px_45px_-20px_rgba(11,42,74,0.35)]">
+              <div className="flex items-baseline justify-between gap-3 border-b-[3px] border-accent bg-brand px-5 py-4">
+                <span className="font-data text-[11.5px] uppercase tracking-wide text-[#B9CBDF]">
+                  Concurso em destaque
+                </span>
+                <span className="text-[15px] font-bold text-white">
+                  {nomeConcurso} 2026
+                </span>
+              </div>
+              <div className="flex flex-col px-5 py-2 pb-4">
+                <FatoRow label="Edital" valor={`Nº ${editalNumero}`} />
+                <FatoRow label="Banca organizadora" valor={nomeBanca} />
+                <FatoRow label="Vagas + cadastro reserva" valor={String(totalVagas)} />
+                <FatoRow label="Ênfases · nível técnico" valor={String(totalEnfases)} />
+                <FatoRow label="Remuneração inicial" valor="R$ 6.539,54" destaque />
+                <FatoRow label="Inscrições até" valor="21/09/2026" />
+                <FatoRow label="Data da prova" valor="06/12/2026" ultimo />
+              </div>
+            </div>
+
+            <div className="absolute -bottom-8 -left-13 hidden w-48 rotate-[-4deg] drop-shadow-[0_22px_30px_rgba(11,42,74,0.4)] sm:block">
               <Image
                 src="/apostila.png"
-                alt="Apostila Conhecimentos Básicos — Concurso Transpetro 2026"
-                fill
-                priority
-                className="object-contain drop-shadow-2xl"
+                alt="Apostila Conhecimentos Básicos"
+                width={400}
+                height={520}
+                className="w-full"
               />
-            </div>
-
-            <div className="relative ml-[-2rem] h-80 w-56 overflow-hidden rounded-2xl shadow-2xl sm:h-96 sm:w-72">
-              <Image
-                src="https://images.unsplash.com/photo-1530890448995-4d82724f702c?fm=jpg&q=80&w=1200&auto=format&fit=crop"
-                alt="Trabalhador em operação industrial"
-                fill
-                priority
-                className="object-cover"
-              />
-            </div>
-
-            <div className="absolute -top-4 left-0 z-20 rotate-[-6deg] whitespace-nowrap rounded-lg bg-emerald-600 px-4 py-2 text-center text-white shadow-lg sm:left-4">
-              <p className="text-[10px] font-semibold uppercase leading-none">
-                Salário inicial
-              </p>
-              <p className="text-lg font-extrabold leading-tight">R$ 6.539,54</p>
-              <p className="text-[9px] leading-none">+ benefícios</p>
-            </div>
-
-            <div className="absolute -bottom-4 right-2 z-20 whitespace-nowrap rounded-lg bg-blue-950 px-4 py-2 text-center text-white shadow-lg sm:right-6">
-              <p className="text-[10px] font-semibold uppercase leading-none text-blue-300">
-                Prova
-              </p>
-              <p className="text-base font-bold leading-tight">06/12/2026</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Faixa de recursos */}
-      <section id="recursos" className="border-y border-zinc-200 bg-zinc-50 py-10">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 divide-zinc-200 px-6 sm:grid-cols-4 sm:divide-x">
-          <Recurso
-            icone={<IconeLivro />}
-            titulo="Apostila"
-            descricao="Conteúdo completo e atualizado"
-          />
-          <Recurso
-            icone={<IconeChecklist />}
-            titulo="Simulados"
-            descricao="Teste seus conhecimentos"
-          />
-          <Recurso
-            icone={<IconeAlvo />}
-            titulo="Questões"
-            descricao="Pratique e evolua"
-          />
-          <Recurso
-            icone={<IconeGrafico />}
-            titulo="Planejamento"
-            descricao="Estude com método"
-          />
+      {/* Faixa de estatísticas */}
+      <div className="border-y border-[#D7DEE6] bg-surface-2">
+        <div className="mx-auto grid max-w-[1180px] grid-cols-2 px-6 sm:grid-cols-4">
+          <Estatistica numero="600+" label="Questões inéditas" />
+          <Estatistica numero="3" label="Disciplinas cobertas" />
+          <Estatistica numero={String(totalEnfases)} label="Ênfases · Quadro Terra" />
+          <Estatistica numero="1x" label="Tentativa grátis por conta" ultimo />
+        </div>
+      </div>
+
+      {/* O que vem no material */}
+      <section id="recursos" className="py-18">
+        <div className="mx-auto max-w-[1180px] px-6">
+          <div className="mb-10 max-w-[60ch]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-surface-2 px-3 py-1.5 font-data text-xs font-semibold text-brand">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent-2" />
+              O que vem no material
+            </span>
+            <h2 className="mt-3.5 font-display text-[1.7rem] font-extrabold text-[#14213A] sm:text-[2.3rem]">
+              Construído a partir do edital, não de achismo.
+            </h2>
+            <p className="mt-3 text-[15.5px] leading-relaxed text-[#516278]">
+              Cada capítulo e cada questão remete a um item específico do
+              conteúdo programático oficial — nada de matéria genérica de
+              concurso.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-px overflow-hidden rounded-[10px] border border-[#D7DEE6] bg-[#D7DEE6] sm:grid-cols-2">
+            <ItemManifesto
+              icone={<IconeLivro />}
+              titulo="Apostila na ordem do edital"
+              descricao="Capítulos seguem exatamente a sequência do Anexo IV — sem pular de assunto, sem enrolação."
+            />
+            <ItemManifesto
+              icone={<IconeChecklist />}
+              titulo="Mais de 600 questões inéditas"
+              descricao={`Escritas do zero no estilo ${nomeBanca} — nunca copiadas de prova antiga, com gabarito comentado.`}
+            />
+            <ItemManifesto
+              icone={<IconeBalanca />}
+              titulo="Simulado na proporção real"
+              descricao="A mesma distribuição de Português, Matemática e Conhecimentos Específicos da prova oficial — não é sorteio aleatório."
+            />
+            <ItemManifesto
+              icone={<IconeGrafico />}
+              titulo="Desempenho por disciplina"
+              descricao="Depois de cada simulado, veja exatamente em qual matéria focar — sem achismo."
+            />
+          </div>
         </div>
       </section>
 
-      {/* O sonho por trás do concurso */}
-      <section id="sobre" className="relative overflow-hidden bg-blue-950 py-20 text-white">
+      {/* Por que vale a pena */}
+      <section id="sobre" className="relative overflow-hidden bg-brand py-20 text-white">
         <div className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-10 px-6 md:grid-cols-2">
           <div className="relative h-72 w-full overflow-hidden rounded-xl md:h-96">
             <Image
@@ -191,21 +228,21 @@ export default async function Home() {
             />
           </div>
           <div className="flex flex-col gap-4 text-left">
-            <span className="text-sm font-semibold uppercase tracking-wide text-emerald-400">
+            <span className="text-sm font-semibold uppercase tracking-wide text-accent-2">
               Por que vale a pena
             </span>
-            <h2 className="text-3xl font-bold tracking-tight">
+            <h2 className="font-display text-3xl font-extrabold tracking-tight">
               Não é só um cargo. É uma carreira.
             </h2>
-            <p className="text-blue-100">
-              A Transpetro garante remuneração mínima de{" "}
+            <p className="text-[#B9CBDF]">
+              A {nomeConcurso} garante remuneração mínima de{" "}
               <strong className="text-white">R$ 6.539,54</strong> pro cargo de
               nível técnico — bem acima da média do mercado pra quem tá
               começando. Fora o salário, tem Programa de Formação, plano de
               carreira estruturado e a estabilidade de uma empresa do Sistema
               Petrobras.
             </p>
-            <p className="text-blue-100">
+            <p className="text-[#B9CBDF]">
               E pra quem sonha em embarcar: o Quadro Mar da {nomeConcurso} é
               uma porta de entrada real pra quem quer viver essa rotina —
               viajar, ganhar adicional de embarque e construir uma carreira
@@ -215,96 +252,89 @@ export default async function Home() {
         </div>
       </section>
 
-      <main id="concurso" className="mx-auto flex w-full max-w-4xl flex-1 flex-col items-center gap-8 px-6 py-20 text-center">
-        <span className="rounded-full bg-blue-100 px-4 py-1 text-sm font-medium text-blue-900">
-          Banca {nomeBanca} · Inscrições até 21/09/2026
-        </span>
-        <h2 className="text-3xl font-bold tracking-tight text-blue-950">
-          {totalVagas} vagas + cadastro de reserva, em {totalEnfases} ênfases
-        </h2>
-        <dl className="grid w-full grid-cols-1 gap-6 text-left sm:grid-cols-3">
-          <RecursoCard
-            titulo="Apostila digital"
-            descricao="Conteúdo direto ao ponto, organizado por disciplina do edital."
-          />
-          <RecursoCard
-            titulo="Simulado no estilo da banca"
-            descricao="Centenas de questões na proporção real de cada disciplina, conforme o edital oficial."
-          />
-          <RecursoCard
-            titulo="Desempenho por disciplina"
-            descricao="Veja exatamente onde focar os estudos."
-          />
-        </dl>
+      {/* Faixa final de CTA */}
+      <div id="concurso" className="relative overflow-hidden bg-brand py-13 text-white">
+        <div className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-6 px-6">
+          <div>
+            <h2 className="max-w-[32ch] font-display text-2xl font-extrabold text-white sm:text-3xl">
+              Pronto pra começar hoje?
+            </h2>
+            <p className="mt-2 max-w-[44ch] text-sm text-[#B9CBDF]">
+              Simulado grátis agora. Acesso completo — apostila, vídeo-aulas e
+              banco de questões — por R$ 29,90, pagamento único.
+            </p>
+          </div>
+          <Link
+            href="/cadastro"
+            className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-4 text-base font-bold text-accent-ink shadow-lg transition-colors hover:brightness-105"
+          >
+            Criar conta grátis <span aria-hidden>→</span>
+          </Link>
+        </div>
+      </div>
 
-        <Link
-          href="/cadastro"
-          className="mt-4 rounded-lg bg-emerald-600 px-8 py-4 text-base font-semibold text-white transition-colors hover:bg-emerald-500"
-        >
-          Criar conta grátis e fazer o simulado
-        </Link>
-      </main>
-
-      <footer className="border-t border-zinc-200 py-6 text-center text-sm text-zinc-500">
-        <p>sibrap.tec.br</p>
-        <p className="mt-1 text-xs text-zinc-400">
-          Fotos: Dylan McLeod e Kamekichi Photos, via Unsplash
-        </p>
+      <footer className="border-t border-[#D7DEE6] bg-white py-8">
+        <div className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-3 px-6 text-[12.5px] text-[#516278]">
+          <span>
+            <strong className="text-[#14213A]">SIBRAP</strong> — Sistema
+            Brasileiro de Aprendizagem Profissional
+          </span>
+          <span>sibrap.tec.br</span>
+        </div>
       </footer>
     </div>
   );
 }
 
-function IconeLivro() {
+function FatoRow({
+  label,
+  valor,
+  destaque,
+  ultimo,
+}: {
+  label: string;
+  valor: string;
+  destaque?: boolean;
+  ultimo?: boolean;
+}) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6 text-emerald-600">
-      <path
-        d="M4 5.5C4 4.67 4.67 4 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5v-13Z"
-        stroke="currentColor"
-        strokeWidth="1.6"
-      />
-      <path
-        d="M20 5.5c0-.83-.67-1.5-1.5-1.5H13v16h5.5c.83 0 1.5-.67 1.5-1.5v-13Z"
-        stroke="currentColor"
-        strokeWidth="1.6"
-      />
-    </svg>
+    <div
+      className={`flex items-baseline justify-between gap-4 py-2.5 ${
+        ultimo ? "" : "border-b border-[#D7DEE6]"
+      }`}
+    >
+      <span className="text-[13px] text-[#516278]">{label}</span>
+      <span
+        className={
+          destaque
+            ? "font-data text-xl font-semibold text-accent-2"
+            : "font-data text-[14.5px] font-semibold text-[#14213A]"
+        }
+      >
+        {valor}
+      </span>
+    </div>
   );
 }
 
-function IconeChecklist() {
+function Estatistica({
+  numero,
+  label,
+  ultimo,
+}: {
+  numero: string;
+  label: string;
+  ultimo?: boolean;
+}) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6 text-emerald-600">
-      <rect x="5" y="3.5" width="14" height="17" rx="1.5" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M8.5 9.5l1.8 1.8L14 7.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M8.5 15h7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-    </svg>
+    <div className={`py-5.5 px-5 ${ultimo ? "" : "border-r border-[#D7DEE6]"}`}>
+      <div className="font-data text-[26px] font-semibold text-brand">{numero}</div>
+      <div className="mt-0.5 text-[12.5px] text-[#516278]">{label}</div>
+    </div>
   );
 }
 
-function IconeAlvo() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6 text-emerald-600">
-      <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.6" />
-      <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="1.6" />
-      <circle cx="12" cy="12" r="1.1" fill="currentColor" />
-    </svg>
-  );
-}
-
-function IconeGrafico() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6 text-emerald-600">
-      <path d="M5 19.5V4.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-      <path d="M5 19.5h14.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-      <rect x="7.5" y="13" width="2.6" height="6.5" fill="currentColor" />
-      <rect x="12" y="9.5" width="2.6" height="10" fill="currentColor" />
-      <rect x="16.5" y="6" width="2.6" height="13.5" fill="currentColor" />
-    </svg>
-  );
-}
-
-function Recurso({
+function ItemManifesto({
   icone,
   titulo,
   descricao,
@@ -314,21 +344,55 @@ function Recurso({
   descricao: string;
 }) {
   return (
-    <div className="flex items-start gap-3 pl-0 text-left sm:pl-6 first:sm:pl-0">
-      <div className="mt-0.5">{icone}</div>
+    <div className="flex gap-4 bg-white px-7 py-6.5">
+      <div className="mt-0.5 shrink-0 text-accent-2">{icone}</div>
       <div>
-        <p className="font-semibold text-blue-950">{titulo}</p>
-        <p className="text-sm text-zinc-500">{descricao}</p>
+        <h3 className="mb-1 font-body text-base font-bold text-[#14213A]">{titulo}</h3>
+        <p className="text-sm leading-relaxed text-[#516278]">{descricao}</p>
       </div>
     </div>
   );
 }
 
-function RecursoCard({ titulo, descricao }: { titulo: string; descricao: string }) {
+function IconeLivro() {
   return (
-    <div className="rounded-lg border border-zinc-200 p-5">
-      <dt className="font-semibold text-blue-950">{titulo}</dt>
-      <dd className="mt-1 text-sm text-zinc-600">{descricao}</dd>
-    </div>
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+      <path d="M4 5.2c0-.7.5-1.2 1.2-1.2H11v16H5.2A1.2 1.2 0 0 1 4 18.8V5.2Z" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M20 5.2c0-.7-.5-1.2-1.2-1.2H13v16h5.8c.7 0 1.2-.5 1.2-1.2V5.2Z" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+function IconeChecklist() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+      <rect x="4.5" y="3.5" width="15" height="17" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M8 8.5h8M8 12h8M8 15.5h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconeBalanca() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M12 3v18M6 7l-3 5 3 5M18 7l3 5-3 5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function IconeGrafico() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+      <path d="M4 20V4M4 20h16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <rect x="7" y="13" width="2.6" height="7" fill="currentColor" />
+      <rect x="12" y="9" width="2.6" height="11" fill="currentColor" />
+      <rect x="17" y="6" width="2.6" height="14" fill="currentColor" />
+    </svg>
   );
 }

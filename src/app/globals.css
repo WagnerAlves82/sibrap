@@ -10,6 +10,18 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Identidade "edital oficial" usada na home */
+  --font-display: var(--font-archivo);
+  --font-body: var(--font-public-sans);
+  --font-data: var(--font-plex-mono);
+
+  --color-brand: #0b2a4a;
+  --color-brand-deep: #071b33;
+  --color-accent: #b9862a;
+  --color-accent-ink: #231703;
+  --color-accent-2: #0e7c6b;
+  --color-surface-2: #e7eef4;
 }
 
 @media (prefers-color-scheme: dark) {
