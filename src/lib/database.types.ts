@@ -291,6 +291,7 @@ export type Database = {
           atualizado_em: string
           criado_em: string
           id: string
+          mercadopago_order_id: string | null
           mercadopago_payment_id: string | null
           mercadopago_preference_id: string | null
           produto_id: string
@@ -302,6 +303,7 @@ export type Database = {
           atualizado_em?: string
           criado_em?: string
           id?: string
+          mercadopago_order_id?: string | null
           mercadopago_payment_id?: string | null
           mercadopago_preference_id?: string | null
           produto_id: string
@@ -313,6 +315,7 @@ export type Database = {
           atualizado_em?: string
           criado_em?: string
           id?: string
+          mercadopago_order_id?: string | null
           mercadopago_payment_id?: string | null
           mercadopago_preference_id?: string | null
           produto_id?: string
@@ -424,6 +427,7 @@ export type Database = {
           enunciado: string
           gabarito: string
           id: string
+          inspirada_em: string | null
         }
         Insert: {
           alternativas: Json
@@ -440,6 +444,7 @@ export type Database = {
           enunciado: string
           gabarito: string
           id?: string
+          inspirada_em?: string | null
         }
         Update: {
           alternativas?: Json
@@ -456,6 +461,7 @@ export type Database = {
           enunciado?: string
           gabarito?: string
           id?: string
+          inspirada_em?: string | null
         }
         Relationships: [
           {
@@ -544,6 +550,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      criar_pedido_premium: {
+        Args: never
+        Returns: {
+          pedido_id: string
+          produto_nome: string
+          valor_centavos: number
+        }[]
+      }
       desempenho_simulado: {
         Args: { p_tentativa_id: string }
         Returns: {
@@ -560,16 +574,43 @@ export type Database = {
           total: number
         }[]
       }
+      finalizar_simulado_gratis: {
+        Args: { p_respostas: Json; p_tentativa_id: string }
+        Returns: {
+          acertos: number
+          nota: number
+          total: number
+        }[]
+      }
       iniciar_simulado: {
         Args: { p_cargo_id: string; p_produto_id: string }
         Returns: {
           alternativas: Json
+          diagrama_svg: string
           disciplina_nome: string
           enunciado: string
+          inspirada_em: string
           ordem: number
           questao_id: string
           tentativa_id: string
         }[]
+      }
+      iniciar_simulado_gratis: {
+        Args: never
+        Returns: {
+          alternativas: Json
+          diagrama_svg: string
+          disciplina_nome: string
+          enunciado: string
+          inspirada_em: string
+          ordem: number
+          questao_id: string
+          tentativa_id: string
+        }[]
+      }
+      registrar_order_pagamento: {
+        Args: { p_order_id: string; p_payment_id?: string; p_pedido_id: string }
+        Returns: undefined
       }
     }
     Enums: {

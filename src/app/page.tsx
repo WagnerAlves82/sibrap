@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { FormularioListaEspera } from "@/components/formulario-lista-espera";
+import { Logo } from "@/components/logo";
 
 export default async function Home() {
   const supabase = await criarClienteSupabaseServer();
@@ -25,9 +26,7 @@ export default async function Home() {
     <div className="flex flex-1 flex-col bg-zinc-50 dark:bg-black">
       <header className="absolute inset-x-0 top-0 z-10">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <span className="text-lg font-bold tracking-tight text-white">
-            sibrap
-          </span>
+          <Logo />
         </div>
       </header>
 
@@ -47,7 +46,7 @@ export default async function Home() {
             Banca {nomeBanca} · Inscrições até 21/09/2026
           </span>
 
-          <p className="text-base font-semibold italic text-amber-400">
+          <p className="text-base font-semibold italic text-blue-400">
             ✦ O sonho de trabalhar EMBARCADO começa aqui ✦
           </p>
 
@@ -95,7 +94,7 @@ export default async function Home() {
             />
           </div>
           <div className="flex flex-col gap-4 text-left">
-            <span className="text-sm font-semibold uppercase tracking-wide text-amber-400">
+            <span className="text-sm font-semibold uppercase tracking-wide text-blue-400">
               Por que vale a pena
             </span>
             <h2 className="text-3xl font-bold tracking-tight">

@@ -31,7 +31,7 @@ export function FormularioListaEspera({ concursoId }: { concursoId: string }) {
         <button
           type="submit"
           disabled={pending}
-          className="rounded-lg bg-zinc-900 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-60 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200"
+          className="rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-500 disabled:opacity-60"
         >
           {pending ? "Enviando..." : "Quero ser avisado"}
         </button>
