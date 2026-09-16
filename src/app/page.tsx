@@ -115,7 +115,15 @@ export default async function Home() {
 
           {/* Foto + selos */}
           <div className="relative mx-auto flex w-full max-w-md items-center justify-center">
-            <LivroMockup3D />
+            <div className="relative hidden h-72 w-72 shrink-0 sm:block sm:h-96 sm:w-96">
+              <Image
+                src="/apostila.png"
+                alt="Apostila Conhecimentos Básicos — Concurso Transpetro 2026"
+                fill
+                priority
+                className="object-contain drop-shadow-2xl"
+              />
+            </div>
 
             <div className="relative ml-[-2rem] h-80 w-56 overflow-hidden rounded-2xl shadow-2xl sm:h-96 sm:w-72">
               <Image
@@ -243,35 +251,6 @@ export default async function Home() {
           Fotos: Dylan McLeod e Kamekichi Photos, via Unsplash
         </p>
       </footer>
-    </div>
-  );
-}
-
-function LivroMockup3D() {
-  return (
-    <div
-      className="relative z-10 hidden h-80 w-52 shrink-0 sm:block"
-      style={{ perspective: "1200px" }}
-    >
-      <div
-        className="relative h-full w-full overflow-hidden rounded-r-lg bg-gradient-to-br from-blue-600 to-blue-950 shadow-2xl"
-        style={{ transform: "rotateY(-22deg) rotateX(2deg)" }}
-      >
-        <div className="absolute inset-y-0 left-0 w-2 bg-blue-950/60" />
-        <div className="flex h-full flex-col items-center justify-center gap-3 p-6 text-center text-white">
-          <Image src="/logo.png" width={48} height={48} alt="" className="rounded-full" />
-          <p className="text-[10px] font-semibold uppercase tracking-wide text-blue-200">
-            Apostila Gratuita
-          </p>
-          <p className="text-xl font-extrabold leading-tight">
-            Conhecimentos
-            <br />
-            Básicos
-          </p>
-          <p className="text-[10px] text-blue-200">Concurso Transpetro 2026</p>
-        </div>
-      </div>
-      <div className="mx-auto mt-2 h-4 w-36 rounded-full bg-black/20 blur-md" />
     </div>
   );
 }
