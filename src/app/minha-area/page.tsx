@@ -2,6 +2,8 @@ import Link from "next/link";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { sairDaConta } from "@/app/login/actions";
 import { Logo } from "@/components/logo";
+import { Alert } from "@/components/alert";
+import { enviarApostilaGratisPorEmail } from "@/lib/resend";
 
 export default async function MinhaAreaPage() {
   const supabase = await criarClienteSupabaseServer();
@@ -16,6 +18,24 @@ export default async function MinhaAreaPage() {
 
   const temPremium = acessos?.some((a) => a.produtos?.slug === "premium") ?? false;
   const nome = (user?.user_metadata as { nome?: string } | undefined)?.nome;
+
+  // Primeira visita depois de confirmar o e-mail: manda a apostila
+  // grátis (ver src/lib/resend.ts) e marca que já foi enviada, pra não
+  // mandar de novo nas próximas visitas.
+  let apostilaAcabouDeSerEnviada = false;
+  const { data: perfil } = await supabase
+    .from("profiles")
+    .select("apostila_enviada_em")
+    .eq("id", user!.id)
+    .maybeSingle();
+
+  if (perfil && !perfil.apostila_enviada_em && user?.email) {
+    const resultado = await enviarApostilaGratisPorEmail({ email: user.email, nome });
+    if (resultado.ok) {
+      await supabase.rpc("marcar_apostila_enviada");
+      apostilaAcabouDeSerEnviada = true;
+    }
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-950 px-6 py-16 text-white">
@@ -36,6 +56,14 @@ export default async function MinhaAreaPage() {
           <p className="text-sm text-zinc-400">Olá{nome ? `, ${nome}` : ""}</p>
           <h1 className="text-2xl font-bold">Minha área</h1>
         </div>
+
+        {apostilaAcabouDeSerEnviada && (
+          <Alert variant="sucesso" className="mb-6">
+            Sua apostila grátis de Conhecimentos Básicos foi enviada pra{" "}
+            {user?.email}. Se não chegar em alguns minutos, confere a caixa de
+            spam.
+          </Alert>
+        )}
 
         {temPremium ? (
           <div className="rounded-lg border border-blue-700/50 bg-blue-950/30 p-6">

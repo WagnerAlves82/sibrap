@@ -395,16 +395,19 @@ export type Database = {
       }
       profiles: {
         Row: {
+          apostila_enviada_em: string | null
           criado_em: string
           id: string
           nome: string | null
         }
         Insert: {
+          apostila_enviada_em?: string | null
           criado_em?: string
           id: string
           nome?: string | null
         }
         Update: {
+          apostila_enviada_em?: string | null
           criado_em?: string
           id?: string
           nome?: string | null
@@ -607,6 +610,10 @@ export type Database = {
           questao_id: string
           tentativa_id: string
         }[]
+      }
+      marcar_apostila_enviada: {
+        Args: never
+        Returns: undefined
       }
       registrar_order_pagamento: {
         Args: { p_order_id: string; p_payment_id?: string; p_pedido_id: string }

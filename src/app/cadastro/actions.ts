@@ -22,11 +22,19 @@ export async function cadastrar(
     };
   }
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
+
   const supabase = await criarClienteSupabaseServer();
   const { data, error } = await supabase.auth.signUp({
     email,
     password: senha,
-    options: { data: { nome } },
+    options: {
+      data: { nome },
+      // Depois de confirmar o e-mail, o Supabase manda o usuário pra cá
+      // já logado — é aqui que a apostila grátis é enviada (ver
+      // src/app/minha-area/page.tsx).
+      emailRedirectTo: `${siteUrl}/minha-area`,
+    },
   });
 
   if (error) {
