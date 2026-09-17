@@ -241,9 +241,9 @@ export default async function Home() {
               nome="Básico"
               preco="29,90"
               itens={[
-                "Apostila completa de Conhecimentos Básicos (Português + Matemática)",
-                "Simulado com o banco de questões de Conhecimentos Básicos",
-                "Desempenho por disciplina",
+                "Banco completo de questões de Português e Matemática (o teste grátis é só uma amostra de 10)",
+                "Simulados ilimitados, no formato oficial da prova",
+                "Relatório de desempenho por disciplina",
               ]}
             />
             <PlanoCard
@@ -252,8 +252,8 @@ export default async function Home() {
               destaque
               itens={[
                 "Tudo do plano Básico",
-                "Apostila e simulado de Conhecimentos Específicos da sua ênfase",
-                "Banco de questões ampliado",
+                "Apostila completa de Conhecimentos Específicos da sua ênfase",
+                "Simulado com questões de Conhecimentos Específicos",
               ]}
             />
             <PlanoCard
@@ -261,10 +261,24 @@ export default async function Home() {
               preco="59,90"
               itens={[
                 "Tudo do plano Intermediário",
-                "Vídeo-aulas",
-                "Acesso prioritário a atualizações do material",
+                "Vídeo-aulas de todo o conteúdo",
+                "Certificados de conclusão (Gramática, Raciocínio Lógico, Direitos Humanos e Primeiros Socorros)",
               ]}
             />
+          </div>
+
+          <p className="mt-4 text-center text-[13px] text-[#93A0AF]">
+            A apostila de Conhecimentos Básicos é gratuita pra quem se
+            cadastra, em qualquer plano.
+          </p>
+
+          <div className="mt-8 flex justify-center">
+            <Link
+              href="/cadastro"
+              className="rounded-lg bg-accent px-8 py-3.5 text-center text-sm font-bold text-accent-ink transition-colors hover:brightness-105"
+            >
+              Comece sua preparação agora!
+            </Link>
           </div>
         </div>
       </section>
@@ -321,7 +335,7 @@ export default async function Home() {
             href="/cadastro"
             className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-4 text-base font-bold text-accent-ink shadow-lg transition-colors hover:brightness-105"
           >
-            Criar conta grátis <span aria-hidden>→</span>
+            Comece sua preparação agora! <span aria-hidden>→</span>
           </Link>
         </div>
       </div>
@@ -399,11 +413,12 @@ function PlanoCard({
   destaque?: boolean;
 }) {
   return (
-    <div
-      className={`relative flex flex-col rounded-xl bg-white p-7 ${
+    <Link
+      href="/cadastro"
+      className={`group relative flex flex-col rounded-xl bg-white p-7 transition-shadow ${
         destaque
           ? "border-2 border-accent shadow-[0_20px_45px_-20px_rgba(11,42,74,0.35)]"
-          : "border border-[#D7DEE6]"
+          : "border border-[#D7DEE6] hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)]"
       }`}
     >
       {destaque && (
@@ -419,7 +434,7 @@ function PlanoCard({
       </p>
       <p className="mb-6 text-[13px] text-[#516278]">Pagamento único</p>
 
-      <ul className="mb-8 flex flex-1 flex-col gap-3">
+      <ul className="flex flex-1 flex-col gap-3">
         {itens.map((item) => (
           <li key={item} className="flex items-start gap-2 text-sm text-[#516278]">
             <span className="mt-0.5 shrink-0 text-accent-2" aria-hidden>
@@ -430,17 +445,15 @@ function PlanoCard({
         ))}
       </ul>
 
-      <Link
-        href="/cadastro"
-        className={`rounded-lg px-5 py-3 text-center text-sm font-bold transition-colors ${
-          destaque
-            ? "bg-accent text-accent-ink hover:brightness-105"
-            : "bg-brand text-white hover:brightness-110"
+      <span
+        aria-hidden
+        className={`mt-6 flex justify-end text-lg transition-transform group-hover:translate-x-1 ${
+          destaque ? "text-accent" : "text-[#93A0AF]"
         }`}
       >
-        Criar conta grátis
-      </Link>
-    </div>
+        →
+      </span>
+    </Link>
   );
 }
 
