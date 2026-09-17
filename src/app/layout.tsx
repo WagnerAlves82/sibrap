@@ -35,7 +35,7 @@ const plexMono = IBM_Plex_Mono({
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
 const titulo = "SIBRAP — Apostilas e simulados para concursos públicos";
 const descricao =
-  "Apostilas digitais e simulados com questões no estilo da banca — comece grátis e destrave o material completo do Concurso Transpetro 2026 (Cesgranrio) por um pagamento único.";
+  "Já confirmou sua inscrição no concurso Transpetro 2026? Então agora é hora de se preparar. Nesse link você encontra uma apostila atual baseada no edital, gratuita.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
