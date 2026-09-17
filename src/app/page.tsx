@@ -65,6 +65,9 @@ export default async function Home() {
             <a href="#recursos" className="border-b-2 border-transparent hover:text-white">
               Cursos
             </a>
+            <a href="#planos" className="border-b-2 border-transparent hover:text-white">
+              Planos
+            </a>
             <a href="#concurso" className="border-b-2 border-transparent hover:text-white">
               Concursos
             </a>
@@ -116,12 +119,12 @@ export default async function Home() {
               >
                 Fazer simulado grátis <span aria-hidden>→</span>
               </Link>
-              <Link
-                href="/minha-area/premium"
+              <a
+                href="#planos"
                 className="text-sm font-semibold text-brand underline underline-offset-4"
               >
                 Ver o que vem no Premium
-              </Link>
+              </a>
             </div>
             <p className="text-[13px] text-[#516278]">
               5 questões de Língua Portuguesa + 5 de Matemática, no estilo da
@@ -216,6 +219,56 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Planos */}
+      <section id="planos" className="bg-surface-2 py-18">
+        <div className="mx-auto max-w-[1180px] px-6">
+          <div className="mb-10 max-w-[60ch]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-brand">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent-2" />
+              Planos
+            </span>
+            <h2 className="mt-3.5 font-display text-[1.7rem] font-extrabold text-[#14213A] sm:text-[2.3rem]">
+              Pagamento único. Sem mensalidade.
+            </h2>
+            <p className="mt-3 text-[15.5px] leading-relaxed text-[#516278]">
+              Escolha o nível de preparação que faz sentido pra você — o
+              acesso é seu pra sempre, não expira.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <PlanoCard
+              nome="Básico"
+              preco="29,90"
+              itens={[
+                "Apostila completa de Conhecimentos Básicos (Português + Matemática)",
+                "Simulado com o banco de questões de Conhecimentos Básicos",
+                "Desempenho por disciplina",
+              ]}
+            />
+            <PlanoCard
+              nome="Intermediário"
+              preco="44,90"
+              destaque
+              itens={[
+                "Tudo do plano Básico",
+                "Apostila e simulado de Conhecimentos Específicos da sua ênfase",
+                "Banco de questões ampliado",
+              ]}
+            />
+            <PlanoCard
+              nome="Completo"
+              preco="59,90"
+              itens={[
+                "Tudo do plano Intermediário",
+                "Vídeo-aulas",
+                "Acesso prioritário a atualizações do material",
+              ]}
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Por que vale a pena */}
       <section id="sobre" className="relative overflow-hidden bg-brand py-20 text-white">
         <div className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-10 px-6 md:grid-cols-2">
@@ -260,8 +313,8 @@ export default async function Home() {
               Pronto pra começar hoje?
             </h2>
             <p className="mt-2 max-w-[44ch] text-sm text-[#B9CBDF]">
-              Simulado grátis agora. Acesso completo — apostila, vídeo-aulas e
-              banco de questões — por R$ 29,90, pagamento único.
+              Simulado grátis agora. Apostila, banco de questões e
+              vídeo-aulas a partir de R$ 29,90, pagamento único.
             </p>
           </div>
           <Link
@@ -330,6 +383,63 @@ function Estatistica({
     <div className={`py-5.5 px-5 ${ultimo ? "" : "border-r border-[#D7DEE6]"}`}>
       <div className="font-data text-[26px] font-semibold text-brand">{numero}</div>
       <div className="mt-0.5 text-[12.5px] text-[#516278]">{label}</div>
+    </div>
+  );
+}
+
+function PlanoCard({
+  nome,
+  preco,
+  itens,
+  destaque,
+}: {
+  nome: string;
+  preco: string;
+  itens: string[];
+  destaque?: boolean;
+}) {
+  return (
+    <div
+      className={`relative flex flex-col rounded-xl bg-white p-7 ${
+        destaque
+          ? "border-2 border-accent shadow-[0_20px_45px_-20px_rgba(11,42,74,0.35)]"
+          : "border border-[#D7DEE6]"
+      }`}
+    >
+      {destaque && (
+        <span className="absolute -top-3 left-7 rounded bg-accent px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-wide text-accent-ink">
+          Mais escolhido
+        </span>
+      )}
+      <p className="font-body text-sm font-bold uppercase tracking-wide text-[#516278]">
+        {nome}
+      </p>
+      <p className="mt-2 mb-1 font-data text-4xl font-semibold text-[#14213A]">
+        R$ {preco}
+      </p>
+      <p className="mb-6 text-[13px] text-[#516278]">Pagamento único</p>
+
+      <ul className="mb-8 flex flex-1 flex-col gap-3">
+        {itens.map((item) => (
+          <li key={item} className="flex items-start gap-2 text-sm text-[#516278]">
+            <span className="mt-0.5 shrink-0 text-accent-2" aria-hidden>
+              ✓
+            </span>
+            {item}
+          </li>
+        ))}
+      </ul>
+
+      <Link
+        href="/cadastro"
+        className={`rounded-lg px-5 py-3 text-center text-sm font-bold transition-colors ${
+          destaque
+            ? "bg-accent text-accent-ink hover:brightness-105"
+            : "bg-brand text-white hover:brightness-110"
+        }`}
+      >
+        Criar conta grátis
+      </Link>
     </div>
   );
 }
