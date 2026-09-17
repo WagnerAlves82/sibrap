@@ -262,14 +262,16 @@ export default async function Home() {
               itens={[
                 "Tudo do plano Intermediário",
                 "Vídeo-aulas de todo o conteúdo",
-                "Certificados de conclusão (Gramática, Raciocínio Lógico, Direitos Humanos e Primeiros Socorros)",
+                "Matrícula nos cursos de Gramática, Raciocínio Lógico, Direitos Humanos e Primeiros Socorros, com certificado ao concluir",
               ]}
             />
           </div>
 
           <p className="mt-4 text-center text-[13px] text-[#93A0AF]">
             A apostila de Conhecimentos Básicos é gratuita pra quem se
-            cadastra, em qualquer plano.
+            cadastra, em qualquer plano. No plano Completo, o valor dá
+            direito à matrícula nos cursos extras — o certificado é emitido
+            após a conclusão.
           </p>
 
           <div className="mt-8 flex justify-center">
