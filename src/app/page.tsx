@@ -3,6 +3,7 @@ import Link from "next/link";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { Logo } from "@/components/logo";
 import { SeloAbed } from "@/components/selo-abed";
+import { Reveal } from "@/components/reveal";
 
 export default async function Home() {
   const supabase = await criarClienteSupabaseServer();
@@ -101,7 +102,7 @@ export default async function Home() {
         }}
       >
         <div className="mx-auto grid max-w-[1180px] grid-cols-1 items-start gap-14 px-6 md:grid-cols-2">
-          <div>
+          <div className="entrar entrar-esquerda">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-surface-2 px-3 py-1.5 font-data text-xs font-semibold text-brand">
               <span className="h-1.5 w-1.5 rounded-full bg-accent-2" />
               Preparação orientada pelo edital oficial
@@ -149,6 +150,7 @@ export default async function Home() {
             </p>
           </div>
 
+          <div className="entrar entrar-direita" style={{ animationDelay: "200ms" }}>
           <div className="relative pb-16">
             <div className="relative overflow-hidden rounded-2xl border border-[#D7DEE6] bg-white shadow-[0_20px_45px_-20px_rgba(11,42,74,0.35)]">
               <div className="flex items-baseline justify-between gap-3 border-b-[3px] border-accent bg-brand px-5 py-4">
@@ -180,23 +182,24 @@ export default async function Home() {
               />
             </div>
           </div>
+          </div>
         </div>
       </section>
 
       {/* Faixa de estatísticas */}
       <div className="border-y border-[#D7DEE6] bg-surface-2">
         <div className="mx-auto grid max-w-[1180px] grid-cols-2 px-6 sm:grid-cols-4">
-          <Estatistica numero="600+" label="Questões inéditas" />
-          <Estatistica numero="3" label="Disciplinas cobertas" />
-          <Estatistica numero={String(totalEnfases)} label="Ênfases · Quadro Terra" />
-          <Estatistica numero="1x" label="Tentativa grátis por conta" ultimo />
+          <Reveal><Estatistica numero="600+" label="Questões inéditas" /></Reveal>
+          <Reveal delay={90}><Estatistica numero="3" label="Disciplinas cobertas" /></Reveal>
+          <Reveal delay={180}><Estatistica numero={String(totalEnfases)} label="Ênfases · Quadro Terra" /></Reveal>
+          <Reveal delay={270}><Estatistica numero="1x" label="Tentativa grátis por conta" ultimo /></Reveal>
         </div>
       </div>
 
       {/* O que vem no material */}
       <section id="recursos" className="py-18">
         <div className="mx-auto max-w-[1180px] px-6">
-          <div className="mb-10 max-w-[60ch]">
+          <Reveal className="mb-10 max-w-[60ch]">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-surface-2 px-3 py-1.5 font-data text-xs font-semibold text-brand">
               <span className="h-1.5 w-1.5 rounded-full bg-accent-2" />
               O que vem no material
@@ -209,8 +212,9 @@ export default async function Home() {
               conteúdo programático oficial — nada de matéria genérica de
               concurso.
             </p>
-          </div>
+          </Reveal>
 
+          <Reveal delay={120}>
           <div className="grid grid-cols-1 gap-px overflow-hidden rounded-[10px] border border-[#D7DEE6] bg-[#D7DEE6] sm:grid-cols-2">
             <ItemManifesto
               icone={<IconeLivro />}
@@ -233,13 +237,14 @@ export default async function Home() {
               descricao="Depois de cada simulado, veja exatamente em qual matéria focar — sem achismo."
             />
           </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Cursos gratuitos */}
-      <section id="cursos" className="border-y border-[#D7DEE6] bg-white py-14">
-        <div className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-6 px-6">
-          <div className="max-w-[58ch]">
+      <section id="cursos" className="overflow-hidden border-y border-[#D7DEE6] bg-white py-14">
+        <div className="mx-auto grid max-w-[1180px] items-center gap-10 px-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+          <Reveal variante="esquerda" className="max-w-[58ch]">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-surface-2 px-3 py-1.5 font-data text-xs font-semibold text-brand">
               <span className="h-1.5 w-1.5 rounded-full bg-accent-2" />
               Cursos gratuitos
@@ -252,23 +257,33 @@ export default async function Home() {
               Aprenda computador, internet, Word, Excel e a usar a IA (Copilot)
               para trabalhar melhor — com certificado e QR Code de validação.
             </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-6">
-            <SeloAbed altura={84} />
-            <Link
-              href="/cursos/informatica-basica-ia"
-              className="inline-flex items-center gap-2 rounded-lg bg-brand px-6 py-4 text-base font-bold text-white transition-colors hover:brightness-125"
-            >
-              Conhecer o curso <span aria-hidden>→</span>
-            </Link>
-          </div>
+            <div className="mt-6 flex flex-wrap items-center gap-6">
+              <Link
+                href="/cursos/informatica-basica-ia"
+                className="inline-flex items-center gap-2 rounded-lg bg-brand px-6 py-4 text-base font-bold text-white transition-colors hover:brightness-125"
+              >
+                Conhecer o curso <span aria-hidden>→</span>
+              </Link>
+              <SeloAbed altura={72} />
+            </div>
+          </Reveal>
+          <Reveal variante="direita" delay={200}>
+          <Image
+            src="/alunos.png"
+            alt="Alunos aprendendo juntos com os aplicativos do Office e o Copilot"
+            width={1122}
+            height={1402}
+            sizes="(min-width: 1024px) 340px, 70vw"
+            className="flutuar mx-auto h-auto w-full max-w-[280px] lg:max-w-none"
+          />
+          </Reveal>
         </div>
       </section>
 
       {/* Planos */}
       <section id="planos" className="bg-surface-2 py-18">
         <div className="mx-auto max-w-[1180px] px-6">
-          <div className="mb-10 max-w-[60ch]">
+          <Reveal className="mb-10 max-w-[60ch]">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-brand">
               <span className="h-1.5 w-1.5 rounded-full bg-accent-2" />
               Planos
@@ -280,9 +295,10 @@ export default async function Home() {
               Escolha o nível de preparação que faz sentido pra você — o
               acesso é seu pra sempre, não expira.
             </p>
-          </div>
+          </Reveal>
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <Reveal className="h-full">
             <PlanoCard
               nome="Básico"
               preco="29,90"
@@ -292,6 +308,8 @@ export default async function Home() {
                 "Relatório de desempenho por disciplina",
               ]}
             />
+            </Reveal>
+            <Reveal className="h-full" delay={120}>
             <PlanoCard
               nome="Intermediário"
               preco="44,90"
@@ -302,6 +320,8 @@ export default async function Home() {
                 "Simulado com questões de Conhecimentos Específicos",
               ]}
             />
+            </Reveal>
+            <Reveal className="h-full" delay={240}>
             <PlanoCard
               nome="Completo"
               preco="59,90"
@@ -311,6 +331,7 @@ export default async function Home() {
                 "Matrícula nos cursos de Gramática, Raciocínio Lógico, Direitos Humanos e Primeiros Socorros, com certificado ao concluir",
               ]}
             />
+            </Reveal>
           </div>
 
           <p className="mt-4 text-center text-[13px] text-[#93A0AF]">
@@ -334,6 +355,7 @@ export default async function Home() {
       {/* Por que vale a pena */}
       <section id="sobre" className="relative overflow-hidden bg-brand py-20 text-white">
         <div className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-10 px-6 md:grid-cols-2">
+          <Reveal variante="esquerda">
           <div className="relative h-72 w-full overflow-hidden rounded-xl md:h-96">
             <Image
               src="https://images.unsplash.com/photo-1726111262949-e22631a8c376?fm=jpg&q=80&w=1600&auto=format&fit=crop"
@@ -342,7 +364,8 @@ export default async function Home() {
               className="object-cover"
             />
           </div>
-          <div className="flex flex-col gap-4 text-left">
+          </Reveal>
+          <Reveal variante="direita" delay={150} className="flex flex-col gap-4 text-left">
             <span className="text-sm font-semibold uppercase tracking-wide text-accent-2">
               Por que vale a pena
             </span>
@@ -363,13 +386,13 @@ export default async function Home() {
               viajar, ganhar adicional de embarque e construir uma carreira
               diferente de tudo que existe em terra.
             </p>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Faixa final de CTA */}
       <div id="concurso" className="relative overflow-hidden bg-brand py-13 text-white">
-        <div className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-6 px-6">
+        <Reveal className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-6 px-6">
           <div>
             <h2 className="max-w-[32ch] font-display text-2xl font-extrabold text-white sm:text-3xl">
               Pronto pra começar hoje?
@@ -385,7 +408,7 @@ export default async function Home() {
           >
             Comece sua preparação agora! <span aria-hidden>→</span>
           </Link>
-        </div>
+        </Reveal>
       </div>
 
       <footer className="border-t border-[#D7DEE6] bg-white py-8">
@@ -466,7 +489,7 @@ function PlanoCard({
   return (
     <Link
       href="/cadastro"
-      className={`group relative flex flex-col rounded-xl bg-white p-7 transition-shadow ${
+      className={`group relative flex h-full flex-col rounded-xl bg-white p-7 transition-shadow ${
         destaque
           ? "border-2 border-accent shadow-[0_20px_45px_-20px_rgba(11,42,74,0.35)]"
           : "border border-[#D7DEE6] hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)]"

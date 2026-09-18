@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
@@ -88,9 +89,10 @@ export default async function CursoPublicoPage({ params }: Props) {
       />
       <CabecalhoSite logado={logado} />
 
-      <section className="border-b border-[#D7DEE6] bg-surface-2">
-        <div className="mx-auto max-w-[1180px] px-6 py-16">
-          <Reveal>
+      <section className="overflow-hidden border-b border-[#D7DEE6] bg-surface-2">
+        <div className="mx-auto grid max-w-[1180px] items-center gap-10 px-6 py-16 lg:grid-cols-[minmax(0,1fr)_400px]">
+          <div>
+          <div className="entrar entrar-cima">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-brand">
               <span className="h-1.5 w-1.5 rounded-full bg-accent-2" />
               Curso livre · 100% online · Gratuito
@@ -112,9 +114,9 @@ export default async function CursoPublicoPage({ params }: Props) {
                 Sem mensalidade. Estude no seu ritmo.
               </span>
             </div>
-          </Reveal>
+          </div>
 
-          <Reveal delay={150} className="mt-12">
+          <div className="entrar entrar-cima mt-12" style={{ animationDelay: "150ms" }}>
             <dl className="grid max-w-3xl grid-cols-2 gap-px overflow-hidden rounded-[10px] border border-[#D7DEE6] bg-[#D7DEE6] sm:grid-cols-4">
               {[
                 [`${curso.carga_horaria_horas}h`, "carga horária"],
@@ -128,7 +130,20 @@ export default async function CursoPublicoPage({ params }: Props) {
                 </div>
               ))}
             </dl>
-          </Reveal>
+          </div>
+          </div>
+
+          <div className="entrar entrar-direita" style={{ animationDelay: "250ms" }}>
+            <Image
+              src="/alunos.png"
+              alt="Alunos aprendendo juntos com os aplicativos do Office e o Copilot"
+              width={1122}
+              height={1402}
+              sizes="(min-width: 1024px) 400px, 80vw"
+              priority
+              className="flutuar mx-auto h-auto w-full max-w-[320px] lg:max-w-none"
+            />
+          </div>
         </div>
       </section>
 

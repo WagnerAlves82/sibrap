@@ -6,13 +6,22 @@ import { useEffect, useRef, useState } from "react";
 // IntersectionObserver — leve pra celular simples. Respeita
 // prefers-reduced-motion e, sem JavaScript, o conteúdo aparece normal
 // (regra `.reveal` no <noscript> do layout).
+const ESCONDIDO = {
+  cima: "translate-y-6",
+  esquerda: "-translate-x-8",
+  direita: "translate-x-8",
+  zoom: "scale-95",
+} as const;
+
 export function Reveal({
   children,
   delay = 0,
+  variante = "cima",
   className = "",
 }: {
   children: React.ReactNode;
   delay?: number;
+  variante?: keyof typeof ESCONDIDO;
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -46,7 +55,7 @@ export function Reveal({
       ref={ref}
       style={{ transitionDelay: `${delay}ms` }}
       className={`reveal transition duration-700 ease-out motion-reduce:transition-none ${
-        visivel ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"
+        visivel ? "translate-x-0 translate-y-0 scale-100 opacity-100" : `${ESCONDIDO[variante]} opacity-0`
       } ${className}`}
     >
       {children}

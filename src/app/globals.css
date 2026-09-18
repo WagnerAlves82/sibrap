@@ -36,3 +36,25 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Flutuar suave (imagens de destaque). Desligado para quem prefere menos movimento. */
+@keyframes flutuar {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.flutuar { animation: flutuar 6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .flutuar { animation: none; }
+}
+
+/* Entrada do topo da página: só CSS, aparece mesmo antes do JavaScript carregar. */
+@keyframes entrar-cima { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+@keyframes entrar-esquerda { from { opacity: 0; transform: translateX(-32px); } to { opacity: 1; transform: none; } }
+@keyframes entrar-direita { from { opacity: 0; transform: translateX(32px); } to { opacity: 1; transform: none; } }
+.entrar { animation-duration: 0.75s; animation-timing-function: ease-out; animation-fill-mode: both; }
+.entrar-cima { animation-name: entrar-cima; }
+.entrar-esquerda { animation-name: entrar-esquerda; }
+.entrar-direita { animation-name: entrar-direita; }
+@media (prefers-reduced-motion: reduce) {
+  .entrar { animation: none; }
+}
