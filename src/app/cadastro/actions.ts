@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
+import { caminhoSeguro, veioDeCurso } from "@/lib/auth-redirect";
 
 export type EstadoCadastro = {
   erro?: string;
@@ -15,6 +16,9 @@ export async function cadastrar(
   const nome = String(formData.get("nome") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();
   const senha = String(formData.get("senha") ?? "");
+  const utmSource = String(formData.get("utm_source") ?? "").slice(0, 60);
+  const next = caminhoSeguro(formData.get("next"), "");
+  const origem = veioDeCurso(next) ? "curso" : "concurso";
 
   if (!nome || !email || senha.length < 6) {
     return {
@@ -23,17 +27,17 @@ export async function cadastrar(
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
+  // Depois de confirmar o e-mail o Supabase manda o usuário pro
+  // /auth/callback, que troca o código por sessão e segue pro `next`.
+  const destinoConfirmacao = next || "/minha-area";
 
   const supabase = await criarClienteSupabaseServer();
   const { data, error } = await supabase.auth.signUp({
     email,
     password: senha,
     options: {
-      data: { nome },
-      // Depois de confirmar o e-mail, o Supabase manda o usuário pra cá
-      // já logado — é aqui que a apostila grátis é enviada (ver
-      // src/app/minha-area/page.tsx).
-      emailRedirectTo: `${siteUrl}/minha-area`,
+      data: { nome, origem, ...(utmSource ? { utm_source: utmSource } : {}) },
+      emailRedirectTo: `${siteUrl}/auth/callback?next=${encodeURIComponent(destinoConfirmacao)}`,
     },
   });
 
@@ -50,5 +54,5 @@ export async function cadastrar(
     return { precisaConfirmarEmail: true };
   }
 
-  redirect("/minha-area/simulado-gratis");
+  redirect(next || "/minha-area/simulado-gratis");
 }

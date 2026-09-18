@@ -59,6 +59,136 @@ export type Database = {
           },
         ]
       }
+      aula_materiais: {
+        Row: {
+          aula_id: string
+          criado_em: string
+          id: string
+          titulo: string
+          url: string
+        }
+        Insert: {
+          aula_id: string
+          criado_em?: string
+          id?: string
+          titulo: string
+          url: string
+        }
+        Update: {
+          aula_id?: string
+          criado_em?: string
+          id?: string
+          titulo?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "aula_materiais_aula_id_fkey"
+            columns: ["aula_id"]
+            isOneToOne: false
+            referencedRelation: "aulas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      aula_quiz: {
+        Row: {
+          alternativas: Json
+          aula_id: string
+          comentario: string | null
+          enunciado: string
+          gabarito: string
+          id: string
+          ordem: number
+        }
+        Insert: {
+          alternativas: Json
+          aula_id: string
+          comentario?: string | null
+          enunciado: string
+          gabarito: string
+          id?: string
+          ordem?: number
+        }
+        Update: {
+          alternativas?: Json
+          aula_id?: string
+          comentario?: string | null
+          enunciado?: string
+          gabarito?: string
+          id?: string
+          ordem?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "aula_quiz_aula_id_fkey"
+            columns: ["aula_id"]
+            isOneToOne: false
+            referencedRelation: "aulas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      aulas: {
+        Row: {
+          atividade: string | null
+          carga_min: number
+          curso_id: string
+          descricao: string | null
+          duracao_video_min: number | null
+          id: string
+          modulo_id: string
+          objetivo: string | null
+          ordem: number
+          resumo: string | null
+          titulo: string
+          youtube_id: string | null
+        }
+        Insert: {
+          atividade?: string | null
+          carga_min?: number
+          curso_id: string
+          descricao?: string | null
+          duracao_video_min?: number | null
+          id?: string
+          modulo_id: string
+          objetivo?: string | null
+          ordem: number
+          resumo?: string | null
+          titulo: string
+          youtube_id?: string | null
+        }
+        Update: {
+          atividade?: string | null
+          carga_min?: number
+          curso_id?: string
+          descricao?: string | null
+          duracao_video_min?: number | null
+          id?: string
+          modulo_id?: string
+          objetivo?: string | null
+          ordem?: number
+          resumo?: string | null
+          titulo?: string
+          youtube_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "aulas_curso_id_fkey"
+            columns: ["curso_id"]
+            isOneToOne: false
+            referencedRelation: "cursos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "aulas_modulo_id_fkey"
+            columns: ["modulo_id"]
+            isOneToOne: false
+            referencedRelation: "modulos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bancas: {
         Row: {
           criado_em: string
@@ -160,6 +290,80 @@ export type Database = {
           },
         ]
       }
+      certificados: {
+        Row: {
+          carga_horaria_horas: number
+          codigo: string
+          curso_id: string
+          emitido_em: string
+          forma: string
+          id: string
+          nome_completo: string
+          user_id: string
+        }
+        Insert: {
+          carga_horaria_horas: number
+          codigo: string
+          curso_id: string
+          emitido_em?: string
+          forma: string
+          id?: string
+          nome_completo: string
+          user_id: string
+        }
+        Update: {
+          carga_horaria_horas?: number
+          codigo?: string
+          curso_id?: string
+          emitido_em?: string
+          forma?: string
+          id?: string
+          nome_completo?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificados_curso_id_fkey"
+            columns: ["curso_id"]
+            isOneToOne: false
+            referencedRelation: "cursos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comprovantes_cadunico: {
+        Row: {
+          analisado_em: string | null
+          enviado_em: string
+          id: string
+          motivo_recusa: string | null
+          nome_arquivo: string | null
+          status: string
+          storage_path: string | null
+          user_id: string
+        }
+        Insert: {
+          analisado_em?: string | null
+          enviado_em?: string
+          id?: string
+          motivo_recusa?: string | null
+          nome_arquivo?: string | null
+          status?: string
+          storage_path?: string | null
+          user_id: string
+        }
+        Update: {
+          analisado_em?: string | null
+          enviado_em?: string
+          id?: string
+          motivo_recusa?: string | null
+          nome_arquivo?: string | null
+          status?: string
+          storage_path?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       concursos: {
         Row: {
           ano: number | null
@@ -209,6 +413,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      cursos: {
+        Row: {
+          ativo: boolean
+          carga_horaria_horas: number
+          criado_em: string
+          descricao: string | null
+          id: string
+          nome: string
+          nota_minima: number
+          ordem_obrigatoria: boolean
+          quiz_num_questoes: number
+          slug: string
+          subtitulo: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          carga_horaria_horas: number
+          criado_em?: string
+          descricao?: string | null
+          id?: string
+          nome: string
+          nota_minima?: number
+          ordem_obrigatoria?: boolean
+          quiz_num_questoes?: number
+          slug: string
+          subtitulo?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          carga_horaria_horas?: number
+          criado_em?: string
+          descricao?: string | null
+          id?: string
+          nome?: string
+          nota_minima?: number
+          ordem_obrigatoria?: boolean
+          quiz_num_questoes?: number
+          slug?: string
+          subtitulo?: string | null
+        }
+        Relationships: []
       }
       disciplinas: {
         Row: {
@@ -286,6 +532,61 @@ export type Database = {
           },
         ]
       }
+      matriculas: {
+        Row: {
+          criado_em: string
+          curso_id: string
+          user_id: string
+        }
+        Insert: {
+          criado_em?: string
+          curso_id: string
+          user_id: string
+        }
+        Update: {
+          criado_em?: string
+          curso_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matriculas_curso_id_fkey"
+            columns: ["curso_id"]
+            isOneToOne: false
+            referencedRelation: "cursos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      modulos: {
+        Row: {
+          curso_id: string
+          id: string
+          ordem: number
+          titulo: string
+        }
+        Insert: {
+          curso_id: string
+          id?: string
+          ordem: number
+          titulo: string
+        }
+        Update: {
+          curso_id?: string
+          id?: string
+          ordem?: number
+          titulo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "modulos_curso_id_fkey"
+            columns: ["curso_id"]
+            isOneToOne: false
+            referencedRelation: "cursos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pedidos: {
         Row: {
           atualizado_em: string
@@ -338,8 +639,9 @@ export type Database = {
           apostila_storage_path: string | null
           ativo: boolean
           cargo_id: string | null
-          concurso_id: string
+          concurso_id: string | null
           criado_em: string
+          curso_id: string | null
           descricao: string | null
           id: string
           inclui_apostila: boolean
@@ -352,8 +654,9 @@ export type Database = {
           apostila_storage_path?: string | null
           ativo?: boolean
           cargo_id?: string | null
-          concurso_id: string
+          concurso_id?: string | null
           criado_em?: string
+          curso_id?: string | null
           descricao?: string | null
           id?: string
           inclui_apostila?: boolean
@@ -366,8 +669,9 @@ export type Database = {
           apostila_storage_path?: string | null
           ativo?: boolean
           cargo_id?: string | null
-          concurso_id?: string
+          concurso_id?: string | null
           criado_em?: string
+          curso_id?: string | null
           descricao?: string | null
           id?: string
           inclui_apostila?: boolean
@@ -389,6 +693,13 @@ export type Database = {
             columns: ["concurso_id"]
             isOneToOne: false
             referencedRelation: "concursos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtos_curso_id_fkey"
+            columns: ["curso_id"]
+            isOneToOne: false
+            referencedRelation: "cursos"
             referencedColumns: ["id"]
           },
         ]
@@ -413,6 +724,35 @@ export type Database = {
           nome?: string | null
         }
         Relationships: []
+      }
+      progresso_aulas: {
+        Row: {
+          aula_id: string
+          concluida_em: string | null
+          iniciada_em: string
+          user_id: string
+        }
+        Insert: {
+          aula_id: string
+          concluida_em?: string | null
+          iniciada_em?: string
+          user_id: string
+        }
+        Update: {
+          aula_id?: string
+          concluida_em?: string | null
+          iniciada_em?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "progresso_aulas_aula_id_fkey"
+            columns: ["aula_id"]
+            isOneToOne: false
+            referencedRelation: "aulas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       questoes: {
         Row: {
@@ -497,6 +837,85 @@ export type Database = {
           },
         ]
       }
+      quiz_questoes: {
+        Row: {
+          alternativas: Json
+          ativa: boolean
+          comentario: string | null
+          curso_id: string
+          enunciado: string
+          gabarito: string
+          id: string
+        }
+        Insert: {
+          alternativas: Json
+          ativa?: boolean
+          comentario?: string | null
+          curso_id: string
+          enunciado: string
+          gabarito: string
+          id?: string
+        }
+        Update: {
+          alternativas?: Json
+          ativa?: boolean
+          comentario?: string | null
+          curso_id?: string
+          enunciado?: string
+          gabarito?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_questoes_curso_id_fkey"
+            columns: ["curso_id"]
+            isOneToOne: false
+            referencedRelation: "cursos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tentativas_quiz: {
+        Row: {
+          curso_id: string
+          finalizado_em: string | null
+          id: string
+          iniciado_em: string
+          nota: number | null
+          questoes_ids: string[]
+          respostas: Json
+          user_id: string
+        }
+        Insert: {
+          curso_id: string
+          finalizado_em?: string | null
+          id?: string
+          iniciado_em?: string
+          nota?: number | null
+          questoes_ids: string[]
+          respostas?: Json
+          user_id: string
+        }
+        Update: {
+          curso_id?: string
+          finalizado_em?: string | null
+          id?: string
+          iniciado_em?: string
+          nota?: number | null
+          questoes_ids?: string[]
+          respostas?: Json
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tentativas_quiz_curso_id_fkey"
+            columns: ["curso_id"]
+            isOneToOne: false
+            referencedRelation: "cursos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tentativas_simulado: {
         Row: {
           cargo_id: string
@@ -553,6 +972,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      abrir_aula: { Args: { p_aula_id: string }; Returns: undefined }
+      concluir_aula: { Args: { p_aula_id: string }; Returns: undefined }
+      conferir_miniquiz: {
+        Args: { p_letra: string; p_questao_id: string }
+        Returns: {
+          comentario: string
+          correta: boolean
+          gabarito: string
+        }[]
+      }
+      criar_pedido_por_slug: {
+        Args: { p_slug: string }
+        Returns: {
+          pedido_id: string
+          produto_nome: string
+          valor_centavos: number
+        }[]
+      }
       criar_pedido_premium: {
         Args: never
         Returns: {
@@ -561,11 +998,29 @@ export type Database = {
           valor_centavos: number
         }[]
       }
+      curso_pronto_para_prova: {
+        Args: { p_curso: string; p_user: string }
+        Returns: boolean
+      }
       desempenho_simulado: {
         Args: { p_tentativa_id: string }
         Returns: {
           acertos: number
           disciplina_nome: string
+          total: number
+        }[]
+      }
+      emitir_certificado: {
+        Args: { p_curso_id: string; p_nome: string }
+        Returns: string
+      }
+      finalizar_quiz: {
+        Args: { p_respostas: Json; p_tentativa_id: string }
+        Returns: {
+          acertos: number
+          aprovado: boolean
+          nota: number
+          nota_minima: number
           total: number
         }[]
       }
@@ -583,6 +1038,16 @@ export type Database = {
           acertos: number
           nota: number
           total: number
+        }[]
+      }
+      iniciar_quiz: {
+        Args: { p_curso_id: string }
+        Returns: {
+          alternativas: Json
+          enunciado: string
+          ordem: number
+          questao_id: string
+          tentativa_id: string
         }[]
       }
       iniciar_simulado: {
@@ -611,13 +1076,41 @@ export type Database = {
           tentativa_id: string
         }[]
       }
-      marcar_apostila_enviada: {
-        Args: never
-        Returns: undefined
+      marcar_apostila_enviada: { Args: never; Returns: undefined }
+      miniquiz_da_aula: {
+        Args: { p_aula_id: string }
+        Returns: {
+          alternativas: Json
+          enunciado: string
+          ordem: number
+          questao_id: string
+        }[]
       }
+      matricular_curso: { Args: { p_curso_slug: string }; Returns: string }
       registrar_order_pagamento: {
         Args: { p_order_id: string; p_payment_id?: string; p_pedido_id: string }
         Returns: undefined
+      }
+      revisao_quiz: {
+        Args: { p_tentativa_id: string }
+        Returns: {
+          alternativas: Json
+          comentario: string
+          enunciado: string
+          gabarito: string
+          marcada: string
+          ordem: number
+        }[]
+      }
+      validar_certificado: {
+        Args: { p_codigo: string }
+        Returns: {
+          carga_horaria_horas: number
+          curso_nome: string
+          curso_slug: string
+          emitido_em: string
+          nome_completo: string
+        }[]
       }
     }
     Enums: {
@@ -711,3 +1204,43 @@ export type TablesUpdate<
       ? U
       : never
     : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never) = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never) = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const

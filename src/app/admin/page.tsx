@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { tokenAdminValido, ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
@@ -48,6 +49,15 @@ export default async function AdminPage() {
             </button>
           </form>
         </div>
+
+        <nav className="mb-6 flex gap-2 text-sm">
+          <Link href="/admin/comprovantes" className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 font-medium text-zinc-700 hover:bg-zinc-100">
+            Comprovantes CadÚnico
+          </Link>
+          <Link href="/admin/cursos" className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 font-medium text-zinc-700 hover:bg-zinc-100">
+            Aulas dos cursos
+          </Link>
+        </nav>
 
         {error && (
           <p className="rounded-md bg-red-50 p-4 text-sm text-red-700">

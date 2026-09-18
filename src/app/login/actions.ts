@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
+import { caminhoSeguro } from "@/lib/auth-redirect";
 
 export type EstadoLogin = { erro: string } | null;
 
@@ -11,6 +12,7 @@ export async function entrar(
 ): Promise<EstadoLogin> {
   const email = String(formData.get("email") ?? "").trim();
   const senha = String(formData.get("senha") ?? "");
+  const next = caminhoSeguro(formData.get("next"), "/minha-area");
 
   if (!email || !senha) {
     return { erro: "Preencha e-mail e senha." };
@@ -26,7 +28,7 @@ export async function entrar(
     return { erro: "E-mail ou senha incorretos." };
   }
 
-  redirect("/minha-area");
+  redirect(next);
 }
 
 export async function sairDaConta() {

@@ -4,10 +4,12 @@ export function Logo({
   tamanho = 32,
   comTexto = true,
   className = "",
+  textoClassName = "text-blue-400",
 }: {
   tamanho?: number;
   comTexto?: boolean;
   className?: string;
+  textoClassName?: string;
 }) {
   return (
     <span className={`inline-flex items-center gap-2 ${className}`}>
@@ -20,7 +22,7 @@ export function Logo({
         priority
       />
       {comTexto && (
-        <span className="text-lg font-bold tracking-tight text-blue-400">
+        <span className={`text-lg font-bold tracking-tight ${textoClassName}`}>
           sibrap
         </span>
       )}

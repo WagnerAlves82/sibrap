@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { Logo } from "@/components/logo";
+import { SeloAbed } from "@/components/selo-abed";
 
 export default async function Home() {
   const supabase = await criarClienteSupabaseServer();
@@ -67,8 +68,11 @@ export default async function Home() {
               Sobre Nós
             </a>
             <a href="#recursos" className="border-b-2 border-transparent hover:text-white">
-              Cursos
+              Material
             </a>
+            <Link href="/cursos" className="border-b-2 border-transparent hover:text-white">
+              Cursos gratuitos
+            </Link>
             <a href="#planos" className="border-b-2 border-transparent hover:text-white">
               Planos
             </a>
@@ -232,6 +236,35 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Cursos gratuitos */}
+      <section id="cursos" className="border-y border-[#D7DEE6] bg-white py-14">
+        <div className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-6 px-6">
+          <div className="max-w-[58ch]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-surface-2 px-3 py-1.5 font-data text-xs font-semibold text-brand">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent-2" />
+              Cursos gratuitos
+            </span>
+            <h2 className="mt-3.5 font-display text-[1.7rem] font-extrabold text-[#14213A] sm:text-[2.1rem]">
+              Informática Básica com Inteligência Artificial.
+            </h2>
+            <p className="mt-3 text-[15.5px] leading-relaxed text-[#516278]">
+              Curso livre de 40 horas, 100% online, gratuito para quem precisa.
+              Aprenda computador, internet, Word, Excel e a usar a IA (Copilot)
+              para trabalhar melhor — com certificado e QR Code de validação.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-6">
+            <SeloAbed altura={84} />
+            <Link
+              href="/cursos/informatica-basica-ia"
+              className="inline-flex items-center gap-2 rounded-lg bg-brand px-6 py-4 text-base font-bold text-white transition-colors hover:brightness-125"
+            >
+              Conhecer o curso <span aria-hidden>→</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Planos */}
       <section id="planos" className="bg-surface-2 py-18">
         <div className="mx-auto max-w-[1180px] px-6">
@@ -356,12 +389,15 @@ export default async function Home() {
       </div>
 
       <footer className="border-t border-[#D7DEE6] bg-white py-8">
-        <div className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-3 px-6 text-[12.5px] text-[#516278]">
+        <div className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-4 px-6 text-[12.5px] text-[#516278]">
           <span>
             <strong className="text-[#14213A]">SIBRAP</strong> — Sistema
             Brasileiro de Aprendizagem Profissional
           </span>
-          <span>sibrap.tec.br</span>
+          <span className="flex items-center gap-5">
+            <SeloAbed altura={64} />
+            sibrap.tec.br
+          </span>
         </div>
       </footer>
     </div>

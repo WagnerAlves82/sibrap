@@ -38,7 +38,9 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   if (!user && request.nextUrl.pathname.startsWith("/minha-area")) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    const login = new URL("/login", request.url);
+    login.searchParams.set("next", request.nextUrl.pathname);
+    return NextResponse.redirect(login);
   }
 
   if (
