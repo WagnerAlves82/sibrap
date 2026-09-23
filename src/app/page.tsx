@@ -417,8 +417,10 @@ export default async function Home() {
             <strong className="text-[#14213A]">SIBRAP</strong> — Sistema
             Brasileiro de Aprendizagem Profissional
           </span>
-          <span className="flex items-center gap-5">
+          <span className="flex flex-wrap items-center gap-5">
             <SeloAbed altura={64} />
+            <Link href="/termos" className="hover:text-brand">Termos</Link>
+            <Link href="/privacidade" className="hover:text-brand">Privacidade</Link>
             sibrap.tec.br
           </span>
         </div>

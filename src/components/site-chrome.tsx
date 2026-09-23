@@ -55,6 +55,12 @@ export function RodapeSite() {
           <Link href="/validar" className="hover:text-brand">
             Validar certificado
           </Link>
+          <Link href="/termos" className="hover:text-brand">
+            Termos
+          </Link>
+          <Link href="/privacidade" className="hover:text-brand">
+            Privacidade
+          </Link>
         </span>
       </div>
     </footer>

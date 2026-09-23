@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
+  <title>Confirme seu cadastro no SIBRAP</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F2F5F8;">
+
+  <!-- texto que aparece na prévia da caixa de entrada -->
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#F2F5F8;font-size:1px;line-height:1px;">
+    Falta só um passo: confirme seu e-mail para liberar o seu acesso ao SIBRAP.
+  </div>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F2F5F8;">
+    <tr>
+      <td align="center" style="padding:32px 12px;">
+
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;background-color:#FFFFFF;border:1px solid #D7DEE6;border-radius:14px;overflow:hidden;">
+
+          <!-- cabeçalho -->
+          <tr>
+            <td style="background-color:#0B2A4A;padding:22px 30px;border-bottom:4px solid #B9862A;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="padding-right:14px;vertical-align:middle;">
+                    <img src="https://www.sibrap.tec.br/logo.png" width="40" height="40" alt="SIBRAP" style="display:block;border:0;border-radius:26px;background-color:#FFFFFF;padding:3px;">
+                  </td>
+                  <td style="vertical-align:middle;font-family:Arial,Helvetica,sans-serif;">
+                    <div style="font-size:20px;line-height:24px;font-weight:800;letter-spacing:1px;color:#FFFFFF;">SIBRAP</div>
+                    <div style="font-size:10.5px;line-height:14px;letter-spacing:0.6px;text-transform:uppercase;color:#AEC2D8;">Sistema Brasileiro de Aprendizagem Profissional</div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- corpo -->
+          <tr>
+            <td style="padding:36px 30px 8px 30px;font-family:Arial,Helvetica,sans-serif;">
+              <div style="font-size:14px;line-height:20px;color:#516278;">
+                {{ if .Data.nome }}Olá, {{ .Data.nome }}!{{ else }}Olá!{{ end }}
+              </div>
+              <h1 style="margin:8px 0 14px 0;font-size:27px;line-height:32px;font-weight:800;color:#14213A;">
+                Confirme seu e-mail e libere seu acesso
+              </h1>
+              <p style="margin:0 0 26px 0;font-size:16px;line-height:25px;color:#3A4A63;">
+                Que bom ter você no SIBRAP. Falta só um passo: confirmar que este endereço de e-mail é seu.
+                É rapidinho &mdash; é só clicar no botão abaixo.
+              </p>
+            </td>
+          </tr>
+
+          <!-- botão -->
+          <tr>
+            <td align="center" style="padding:0 30px 10px 30px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="center" bgcolor="#B9862A" style="border-radius:9px;">
+                    <a href="{{ .SiteURL }}/auth/confirmar?token_hash={{ .TokenHash }}&type=signup" target="_blank"
+                       style="display:inline-block;padding:16px 38px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:20px;font-weight:700;color:#231703;text-decoration:none;border-radius:9px;">
+                      Confirmar meu e-mail &rarr;
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- link alternativo -->
+          <tr>
+            <td style="padding:18px 30px 6px 30px;font-family:Arial,Helvetica,sans-serif;">
+              <p style="margin:0 0 6px 0;font-size:12.5px;line-height:18px;color:#93A0AF;text-align:center;">
+                O botão não abriu? Copie e cole este endereço no navegador:
+              </p>
+              <p style="margin:0;font-size:11.5px;line-height:17px;color:#516278;text-align:center;word-break:break-all;">
+                <a href="{{ .SiteURL }}/auth/confirmar?token_hash={{ .TokenHash }}&type=signup" target="_blank" style="color:#516278;text-decoration:underline;">{{ .SiteURL }}/auth/confirmar?token_hash={{ .TokenHash }}&type=signup</a>
+              </p>
+            </td>
+          </tr>
+
+          <!-- o que vem depois -->
+          <tr>
+            <td style="padding:26px 30px 8px 30px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F2F5F8;border-radius:10px;">
+                <tr>
+                  <td style="padding:18px 20px;font-family:Arial,Helvetica,sans-serif;">
+                    <div style="font-size:12px;line-height:16px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:#0E7C6B;margin-bottom:8px;">Depois de confirmar</div>
+                    <div style="font-size:14px;line-height:22px;color:#3A4A63;">
+                      &#10003;&nbsp; Cursos gratuitos com certificado e QR Code de validação<br>
+                      &#10003;&nbsp; Apostilas e simulados para concursos públicos<br>
+                      &#10003;&nbsp; Seu progresso salvo, para estudar no seu ritmo
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- segurança -->
+          <tr>
+            <td style="padding:18px 30px 30px 30px;font-family:Arial,Helvetica,sans-serif;">
+              <p style="margin:0;font-size:12.5px;line-height:19px;color:#93A0AF;">
+                Não criou uma conta no SIBRAP? Pode ignorar este e-mail, nada será feito.
+                O SIBRAP nunca pede sua senha por e-mail.
+              </p>
+            </td>
+          </tr>
+
+          <!-- rodapé -->
+          <tr>
+            <td style="background-color:#F8FAFC;border-top:1px solid #D7DEE6;padding:18px 30px;font-family:Arial,Helvetica,sans-serif;">
+              <p style="margin:0;font-size:11.5px;line-height:17px;color:#93A0AF;text-align:center;">
+                <strong style="color:#516278;">SIBRAP</strong> &mdash; Sistema Brasileiro de Aprendizagem Profissional<br>
+                CNPJ 34.340.453/0001-89 &middot;
+                <a href="https://www.sibrap.tec.br" target="_blank" style="color:#516278;text-decoration:underline;">www.sibrap.tec.br</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

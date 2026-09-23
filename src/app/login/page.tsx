@@ -8,13 +8,13 @@ export const metadata: Metadata = { title: "Entrar" };
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; erro?: string }>;
 }) {
-  const { next } = await searchParams;
+  const { next, erro } = await searchParams;
 
   return (
     <AuthShell titulo="Entre na sua conta" subtitulo="Continue de onde parou.">
-      <FormLogin next={caminhoSeguro(next, "/minha-area")} />
+      <FormLogin next={caminhoSeguro(next, "/minha-area")} linkInvalido={erro === "link"} />
     </AuthShell>
   );
 }

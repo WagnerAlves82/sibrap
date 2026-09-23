@@ -14,3 +14,11 @@ export function formatarHoras(minutos: number): string {
   if (h === 0) return `${m}min`;
   return `${h}h${String(m).padStart(2, "0")}`;
 }
+
+// Versão dos Termos/Privacidade aceitos no cadastro (mude a data quando os textos mudarem).
+export const VERSAO_TERMOS = "2026-09-19";
+
+// E-mail de contato exibido nos textos legais (a caixa precisa existir).
+export const EMAIL_CONTATO = "secretaria@sibrap.tec.br";
+
+export const RAZAO_SOCIAL = "34.340.453 Wagner Alves de Souza Junior";

@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { tokenAdminValido, ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
+import { enviarResultadoComprovante } from "@/lib/resend";
 
 async function exigirAdmin() {
   const cookieStore = await cookies();
@@ -18,7 +19,7 @@ async function decidir(id: string, status: "aprovado" | "recusado", motivo?: str
 
   const { data: comprovante } = await admin
     .from("comprovantes_cadunico")
-    .select("storage_path, status")
+    .select("storage_path, status, user_id")
     .eq("id", id)
     .maybeSingle();
   if (!comprovante || comprovante.status !== "pendente") return;
@@ -36,6 +37,22 @@ async function decidir(id: string, status: "aprovado" | "recusado", motivo?: str
   // minimização de dados (LGPD): o documento é apagado assim que a análise termina
   if (comprovante.storage_path) {
     await admin.storage.from("cadunico").remove([comprovante.storage_path]);
+  }
+
+  // avisa o aluno; falha de e-mail não desfaz a decisão
+  try {
+    const { data } = await admin.auth.admin.getUserById(comprovante.user_id);
+    if (data.user?.email) {
+      const r = await enviarResultadoComprovante({
+        email: data.user.email,
+        nome: (data.user.user_metadata as { nome?: string } | undefined)?.nome,
+        aprovado: status === "aprovado",
+        motivo,
+      });
+      if (!r.ok) console.error("Aviso de comprovante não enviado:", r.erro);
+    }
+  } catch (e) {
+    console.error("Aviso de comprovante não enviado:", e);
   }
 
   revalidatePath("/admin/comprovantes");

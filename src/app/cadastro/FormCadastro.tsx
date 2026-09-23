@@ -42,6 +42,7 @@ export function FormCadastro({
         autoComplete="name"
         required
         autoFocus
+        defaultValue={estado?.valores?.nome}
         className={CLASSE_INPUT}
       />
       <label className="sr-only" htmlFor="email">
@@ -54,6 +55,7 @@ export function FormCadastro({
         placeholder="E-mail"
         autoComplete="email"
         required
+        defaultValue={estado?.valores?.email}
         className={CLASSE_INPUT}
       />
       <label className="sr-only" htmlFor="senha">
@@ -69,6 +71,20 @@ export function FormCadastro({
         minLength={6}
         className={CLASSE_INPUT}
       />
+      <label className="flex items-start gap-2.5 text-[13px] leading-relaxed text-[#516278]">
+        <input type="checkbox" name="aceite" required defaultChecked={estado?.valores?.aceite} className="mt-1 h-4 w-4 shrink-0 accent-[#B9862A]" />
+        <span>
+          Li e concordo com os{" "}
+          <Link href="/termos" target="_blank" className="font-semibold text-brand underline underline-offset-4">
+            Termos de Uso
+          </Link>{" "}
+          e a{" "}
+          <Link href="/privacidade" target="_blank" className="font-semibold text-brand underline underline-offset-4">
+            Política de Privacidade
+          </Link>
+          . Se tenho menos de 18 anos, tenho autorização de um responsável.
+        </span>
+      </label>
       <button type="submit" disabled={pending} className={`mt-2 ${CLASSE_BOTAO_PRIMARIO}`}>
         {pending ? "Criando conta..." : "Criar conta grátis"}
       </button>
@@ -77,10 +93,6 @@ export function FormCadastro({
           {estado.erro}
         </p>
       )}
-      <p className="text-center text-xs leading-relaxed text-[#93A0AF]">
-        Ao criar a conta você concorda em receber mensagens sobre o seu
-        cadastro e os cursos do SIBRAP. Seus dados são usados só para isso.
-      </p>
       <p className="mt-2 text-center text-sm text-[#516278]">
         Já tem conta?{" "}
         <Link
