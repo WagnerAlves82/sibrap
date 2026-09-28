@@ -24,6 +24,9 @@ export function CabecalhoSite({ logado }: { logado: boolean }) {
           <Link href="/apostilas" className={itemNav}>
             Apostilas
           </Link>
+          <Link href="/blog" className={itemNav}>
+            Blog
+          </Link>
           <Link href="/cursos" className={`hidden md:inline ${itemNav}`}>
             Cursos gratuitos
           </Link>
@@ -62,6 +65,9 @@ export function RodapeSite() {
         <span className="flex gap-4">
           <Link href="/apostilas" className="hover:text-brand">
             Apostilas
+          </Link>
+          <Link href="/blog" className="hover:text-brand">
+            Blog
           </Link>
           <Link href="/cursos" className="hover:text-brand">
             Cursos gratuitos

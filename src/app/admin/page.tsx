@@ -64,6 +64,9 @@ export default async function AdminPage() {
           <Link href="/admin/cursos" className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 font-medium text-zinc-700 hover:bg-zinc-100">
             Aulas dos cursos
           </Link>
+          <Link href="/admin/blog" className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 font-medium text-zinc-700 hover:bg-zinc-100">
+            Blog
+          </Link>
         </nav>
 
         {error && (

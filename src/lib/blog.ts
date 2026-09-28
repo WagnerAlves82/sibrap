@@ -1,0 +1,176 @@
+// src/lib/blog.ts
+//
+// Blog de divulgação de concursos: tipos, constantes e formatadores
+// compartilhados pela listagem, pela página do post e pelo admin. O
+// conteúdo é Markdown simples (sem editor visual, sem dependência nova) e
+// vive na tabela `posts` (metadados públicos só quando `status = 'publicada'`).
+
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/lib/database.types";
+import { BUCKET_CAPAS, urlCapa } from "@/lib/apostilas";
+
+export type PostRow = Database["public"]["Tables"]["posts"]["Row"];
+
+export const REGIOES = ["Norte", "Nordeste", "Centro-Oeste", "Sudeste", "Sul"] as const;
+export type Regiao = (typeof REGIOES)[number];
+
+// Região de cada UF, pra filtrar o blog por região sem precisar preencher
+// os dois campos toda vez (a região pode ser deixada em branco também, pra
+// posts nacionais que não são de um estado específico).
+export const REGIAO_POR_UF: Record<string, Regiao> = {
+  AC: "Norte", AP: "Norte", AM: "Norte", PA: "Norte", RO: "Norte", RR: "Norte", TO: "Norte",
+  AL: "Nordeste", BA: "Nordeste", CE: "Nordeste", MA: "Nordeste", PB: "Nordeste",
+  PE: "Nordeste", PI: "Nordeste", RN: "Nordeste", SE: "Nordeste",
+  DF: "Centro-Oeste", GO: "Centro-Oeste", MS: "Centro-Oeste", MT: "Centro-Oeste",
+  ES: "Sudeste", MG: "Sudeste", RJ: "Sudeste", SP: "Sudeste",
+  PR: "Sul", RS: "Sul", SC: "Sul",
+};
+
+export const CATEGORIAS_POST = ["Concursos", "Editais", "Dicas de estudo", "Notícias"] as const;
+
+export { BUCKET_CAPAS, urlCapa };
+
+export function slugValidoPost(slug: string): boolean {
+  return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) && slug.length <= 100;
+}
+
+/** Gera um slug a partir do título (remove acento, pontuação, espaços). */
+export function gerarSlug(titulo: string): string {
+  return titulo
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .slice(0, 100)
+    .replace(/-$/, "");
+}
+
+export function formatarDataLonga(iso: string | null | undefined): string | null {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric", timeZone: "UTC" });
+}
+
+/** Tira a marcação Markdown básica, pra gerar um resumo quando o post não tem um escrito à mão. */
+export function resumoAutomatico(conteudo: string, tamanho = 160): string {
+  const texto = conteudo
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/[#>*_`~-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (texto.length <= tamanho) return texto;
+  return texto.slice(0, tamanho).replace(/\s+\S*$/, "") + "…";
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function inline(s: string): string {
+  let t = escapeHtml(s);
+  t = t.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer nofollow">$1</a>');
+  t = t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  t = t.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, "<em>$1</em>");
+  return t;
+}
+
+/**
+ * Conversor Markdown -> HTML propositalmente simples (sem dependência
+ * nova): parágrafos, ##/### títulos, listas (- ou 1.), > citação, **negrito**,
+ * *itálico* e [link](https://...). Suficiente para posts de divulgação de
+ * concursos; não aceita HTML embutido no texto (tudo passa por escapeHtml).
+ */
+export function markdownParaHtml(md: string): string {
+  const linhas = md.replace(/\r\n/g, "\n").split("\n");
+  const blocos: string[] = [];
+  let paragrafo: string[] = [];
+  let lista: { tipo: "ul" | "ol"; itens: string[] } | null = null;
+  let citacao: string[] = [];
+
+  const fecharParagrafo = () => {
+    if (paragrafo.length) {
+      blocos.push(`<p>${inline(paragrafo.join(" "))}</p>`);
+      paragrafo = [];
+    }
+  };
+  const fecharLista = () => {
+    if (lista) {
+      const itens = lista.itens.map((i) => `<li>${inline(i)}</li>`).join("");
+      blocos.push(`<${lista.tipo}>${itens}</${lista.tipo}>`);
+      lista = null;
+    }
+  };
+  const fecharCitacao = () => {
+    if (citacao.length) {
+      blocos.push(`<blockquote><p>${inline(citacao.join(" "))}</p></blockquote>`);
+      citacao = [];
+    }
+  };
+  const fecharTudo = () => {
+    fecharParagrafo();
+    fecharLista();
+    fecharCitacao();
+  };
+
+  for (const linhaBruta of linhas) {
+    const linha = linhaBruta.trimEnd();
+    const titulo = /^(#{2,3})\s+(.*)$/.exec(linha);
+    const itemUl = /^[-*]\s+(.*)$/.exec(linha);
+    const itemOl = /^\d+\.\s+(.*)$/.exec(linha);
+    const itemCitacao = /^>\s?(.*)$/.exec(linha);
+
+    if (!linha.trim()) {
+      fecharTudo();
+      continue;
+    }
+    if (titulo) {
+      fecharTudo();
+      const nivel = titulo[1].length;
+      blocos.push(`<h${nivel}>${inline(titulo[2])}</h${nivel}>`);
+      continue;
+    }
+    if (itemCitacao) {
+      fecharParagrafo();
+      fecharLista();
+      citacao.push(itemCitacao[1]);
+      continue;
+    }
+    if (itemUl || itemOl) {
+      fecharParagrafo();
+      fecharCitacao();
+      const tipo = itemUl ? "ul" : "ol";
+      const texto = (itemUl ?? itemOl)![1];
+      if (!lista || lista.tipo !== tipo) {
+        fecharLista();
+        lista = { tipo, itens: [] };
+      }
+      lista.itens.push(texto);
+      continue;
+    }
+    fecharLista();
+    fecharCitacao();
+    paragrafo.push(linha.trim());
+  }
+  fecharTudo();
+  return blocos.join("\n");
+}
+
+export type PostVitrine = PostRow;
+
+export async function listarPostsPublicados(
+  supabase: SupabaseClient<Database>,
+  opcoes?: { regiao?: string; uf?: string; limite?: number }
+): Promise<PostVitrine[]> {
+  let query = supabase.from("posts").select("*").eq("status", "publicada").order("publicado_em", { ascending: false });
+  if (opcoes?.regiao) query = query.eq("regiao", opcoes.regiao);
+  if (opcoes?.uf) query = query.eq("uf", opcoes.uf);
+  if (opcoes?.limite) query = query.limit(opcoes.limite);
+  const { data } = await query;
+  return data ?? [];
+}

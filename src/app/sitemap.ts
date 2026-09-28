@@ -7,6 +7,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const paginas: MetadataRoute.Sitemap = [
     { url: siteUrl, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
     { url: `${siteUrl}/apostilas`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.95 },
+    { url: `${siteUrl}/blog`, lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
     { url: `${siteUrl}/cursos`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: `${siteUrl}/cadastro`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
     { url: `${siteUrl}/termos`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.2 },
@@ -38,6 +39,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(a.atualizado_em),
         changeFrequency: "weekly",
         priority: 0.9,
+      });
+    }
+    const { data: posts } = await criarClienteSupabaseAdmin()
+      .from("posts")
+      .select("slug, atualizado_em")
+      .eq("status", "publicada");
+    for (const p of posts ?? []) {
+      paginas.push({
+        url: `${siteUrl}/blog/${p.slug}`,
+        lastModified: new Date(p.atualizado_em),
+        changeFrequency: "monthly",
+        priority: 0.6,
       });
     }
   } catch {

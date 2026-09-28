@@ -59,83 +59,23 @@ export type Database = {
           },
         ]
       }
-      admin_passkeys: {
-        Row: {
-          counter: number
-          credential_id: string
-          criado_em: string
-          id: string
-          nome: string
-          public_key: string
-          sincronizada: boolean
-          tipo_dispositivo: string | null
-          transports: string[]
-          ultimo_uso_em: string | null
-        }
-        Insert: {
-          counter?: number
-          credential_id: string
-          criado_em?: string
-          id?: string
-          nome: string
-          public_key: string
-          sincronizada?: boolean
-          tipo_dispositivo?: string | null
-          transports?: string[]
-          ultimo_uso_em?: string | null
-        }
-        Update: {
-          counter?: number
-          credential_id?: string
-          criado_em?: string
-          id?: string
-          nome?: string
-          public_key?: string
-          sincronizada?: boolean
-          tipo_dispositivo?: string | null
-          transports?: string[]
-          ultimo_uso_em?: string | null
-        }
-        Relationships: []
-      }
-      admin_desafios: {
-        Row: { desafio: string; expira_em: string; id: string; tipo: string }
-        Insert: { desafio: string; expira_em: string; id?: string; tipo: string }
-        Update: { desafio?: string; expira_em?: string; id?: string; tipo?: string }
-        Relationships: []
-      }
       admin_codigos_recuperacao: {
-        Row: { codigo_hash: string; criado_em: string; id: string; usado_em: string | null }
-        Insert: { codigo_hash: string; criado_em?: string; id?: string; usado_em?: string | null }
-        Update: { codigo_hash?: string; criado_em?: string; id?: string; usado_em?: string | null }
-        Relationships: []
-      }
-      admin_recuperacoes: {
         Row: {
-          cancelado_em: string | null
+          codigo_hash: string
           criado_em: string
-          expira_em: string
           id: string
-          liberar_em: string
-          token_hash: string
           usado_em: string | null
         }
         Insert: {
-          cancelado_em?: string | null
+          codigo_hash: string
           criado_em?: string
-          expira_em: string
           id?: string
-          liberar_em: string
-          token_hash: string
           usado_em?: string | null
         }
         Update: {
-          cancelado_em?: string | null
+          codigo_hash?: string
           criado_em?: string
-          expira_em?: string
           id?: string
-          liberar_em?: string
-          token_hash?: string
           usado_em?: string | null
         }
         Relationships: []
@@ -179,6 +119,96 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_desafios: {
+        Row: {
+          desafio: string
+          expira_em: string
+          id: string
+          tipo: string
+        }
+        Insert: {
+          desafio: string
+          expira_em: string
+          id?: string
+          tipo: string
+        }
+        Update: {
+          desafio?: string
+          expira_em?: string
+          id?: string
+          tipo?: string
+        }
+        Relationships: []
+      }
+      admin_passkeys: {
+        Row: {
+          counter: number
+          credential_id: string
+          criado_em: string
+          id: string
+          nome: string
+          public_key: string
+          sincronizada: boolean
+          tipo_dispositivo: string | null
+          transports: string[]
+          ultimo_uso_em: string | null
+        }
+        Insert: {
+          counter?: number
+          credential_id: string
+          criado_em?: string
+          id?: string
+          nome: string
+          public_key: string
+          sincronizada?: boolean
+          tipo_dispositivo?: string | null
+          transports?: string[]
+          ultimo_uso_em?: string | null
+        }
+        Update: {
+          counter?: number
+          credential_id?: string
+          criado_em?: string
+          id?: string
+          nome?: string
+          public_key?: string
+          sincronizada?: boolean
+          tipo_dispositivo?: string | null
+          transports?: string[]
+          ultimo_uso_em?: string | null
+        }
+        Relationships: []
+      }
+      admin_recuperacoes: {
+        Row: {
+          cancelado_em: string | null
+          criado_em: string
+          expira_em: string
+          id: string
+          liberar_em: string
+          token_hash: string
+          usado_em: string | null
+        }
+        Insert: {
+          cancelado_em?: string | null
+          criado_em?: string
+          expira_em: string
+          id?: string
+          liberar_em: string
+          token_hash: string
+          usado_em?: string | null
+        }
+        Update: {
+          cancelado_em?: string | null
+          criado_em?: string
+          expira_em?: string
+          id?: string
+          liberar_em?: string
+          token_hash?: string
+          usado_em?: string | null
+        }
+        Relationships: []
+      }
       apostilas: {
         Row: {
           atualizado_em: string
@@ -196,8 +226,8 @@ export type Database = {
           inscricoes_ate: string | null
           ordem: number
           orgao: string
-          preco_original_centavos: number | null
           paginas: number | null
+          preco_original_centavos: number | null
           produto_id: string
           questoes: number | null
           salario: string | null
@@ -750,6 +780,24 @@ export type Database = {
           },
         ]
       }
+      limite_tentativas: {
+        Row: {
+          chave: string
+          contagem: number
+          janela: string
+        }
+        Insert: {
+          chave: string
+          contagem?: number
+          janela: string
+        }
+        Update: {
+          chave?: string
+          contagem?: number
+          janela?: string
+        }
+        Relationships: []
+      }
       matriculas: {
         Row: {
           criado_em: string
@@ -860,6 +908,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      posts: {
+        Row: {
+          atualizado_em: string
+          autor: string
+          capa_path: string | null
+          categoria: string
+          conteudo: string
+          criado_em: string
+          destaque: boolean
+          id: string
+          publicado_em: string | null
+          regiao: string | null
+          resumo: string | null
+          slug: string
+          status: string
+          titulo: string
+          uf: string | null
+        }
+        Insert: {
+          atualizado_em?: string
+          autor?: string
+          capa_path?: string | null
+          categoria?: string
+          conteudo?: string
+          criado_em?: string
+          destaque?: boolean
+          id?: string
+          publicado_em?: string | null
+          regiao?: string | null
+          resumo?: string | null
+          slug: string
+          status?: string
+          titulo: string
+          uf?: string | null
+        }
+        Update: {
+          atualizado_em?: string
+          autor?: string
+          capa_path?: string | null
+          categoria?: string
+          conteudo?: string
+          criado_em?: string
+          destaque?: boolean
+          id?: string
+          publicado_em?: string | null
+          regiao?: string | null
+          resumo?: string | null
+          slug?: string
+          status?: string
+          titulo?: string
+          uf?: string | null
+        }
+        Relationships: []
       }
       produtos: {
         Row: {
@@ -1307,6 +1409,7 @@ export type Database = {
         }[]
       }
       marcar_apostila_enviada: { Args: never; Returns: undefined }
+      matricular_curso: { Args: { p_curso_slug: string }; Returns: string }
       miniquiz_da_aula: {
         Args: { p_aula_id: string }
         Returns: {
@@ -1316,14 +1419,13 @@ export type Database = {
           questao_id: string
         }[]
       }
-      matricular_curso: { Args: { p_curso_slug: string }; Returns: string }
-      registrar_tentativa: {
-        Args: { p_chave: string; p_janela_segundos: number; p_limite: number }
-        Returns: boolean
-      }
       registrar_order_pagamento: {
         Args: { p_order_id: string; p_payment_id?: string; p_pedido_id: string }
         Returns: undefined
+      }
+      registrar_tentativa: {
+        Args: { p_chave: string; p_janela_segundos: number; p_limite: number }
+        Returns: boolean
       }
       revisao_quiz: {
         Args: { p_tentativa_id: string }
