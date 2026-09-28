@@ -53,35 +53,82 @@ export function CabecalhoSite({ logado }: { logado: boolean }) {
 }
 
 export function RodapeSite() {
+  const linkRodape = "text-white/70 transition-colors hover:text-white";
+  const rotuloColuna = "font-data text-[11px] font-semibold uppercase tracking-wide text-accent";
+
   return (
-    <footer className="border-t border-[#D7DEE6] bg-white py-8">
-      <div className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-3 px-6 text-[12.5px] text-[#516278]">
-        <span className="flex flex-wrap items-center gap-4">
-          <SeloAbed altura={56} />
-          <span>
-            © {new Date().getFullYear()} {EMISSOR.nome} · CNPJ {EMISSOR.cnpj}
-          </span>
-        </span>
-        <span className="flex gap-4">
-          <Link href="/apostilas" className="hover:text-brand">
-            Apostilas
-          </Link>
-          <Link href="/blog" className="hover:text-brand">
-            Blog
-          </Link>
-          <Link href="/cursos" className="hover:text-brand">
-            Cursos gratuitos
-          </Link>
-          <Link href="/validar" className="hover:text-brand">
-            Validar certificado
-          </Link>
-          <Link href="/termos" className="hover:text-brand">
-            Termos
-          </Link>
-          <Link href="/privacidade" className="hover:text-brand">
-            Privacidade
-          </Link>
-        </span>
+    <footer className="bg-brand-deep text-white">
+      <div className="mx-auto max-w-[1180px] px-6 py-12 sm:py-14">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-[1.4fr_1fr_1fr_1fr] sm:gap-10">
+          <div className="col-span-2 sm:col-span-1">
+            <p className="font-display text-xl font-extrabold tracking-tight text-white">SIBRAP</p>
+            <p className="mt-1 text-[12.5px] text-white/55">Sistema Brasileiro de Aprendizagem Profissional</p>
+            <p className="mt-4 max-w-[36ch] text-[13px] leading-relaxed text-white/70">
+              Apostilas e cursos gratuitos pra quem estuda pra concurso público — direto ao ponto do edital.
+            </p>
+          </div>
+
+          <div>
+            <p className={rotuloColuna}>Estudar</p>
+            <ul className="mt-3 flex flex-col gap-2.5 text-[13.5px]">
+              <li>
+                <Link href="/apostilas" className={linkRodape}>
+                  Apostilas
+                </Link>
+              </li>
+              <li>
+                <Link href="/blog" className={linkRodape}>
+                  Blog
+                </Link>
+              </li>
+              <li>
+                <Link href="/cursos" className={linkRodape}>
+                  Cursos gratuitos
+                </Link>
+              </li>
+              <li>
+                <Link href="/validar" className={linkRodape}>
+                  Validar certificado
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <p className={rotuloColuna}>Institucional</p>
+            <ul className="mt-3 flex flex-col gap-2.5 text-[13.5px]">
+              <li>
+                <Link href="/login" className={linkRodape}>
+                  Entrar
+                </Link>
+              </li>
+              <li>
+                <Link href="/termos" className={linkRodape}>
+                  Termos de uso
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacidade" className={linkRodape}>
+                  Privacidade
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div className="col-span-2 sm:col-span-1">
+            <p className={rotuloColuna}>Selo</p>
+            <div className="mt-3 inline-flex rounded-lg bg-white px-3.5 py-3">
+              <SeloAbed altura={40} fonteLegenda="9.5px" />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-10 flex flex-col gap-2 border-t border-white/10 pt-6 text-[12px] text-white/45 sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            © {new Date().getFullYear()} {EMISSOR.nome}
+          </p>
+          <p>Material de estudo independente, sem vínculo com bancas ou órgãos públicos.</p>
+        </div>
       </div>
     </footer>
   );
