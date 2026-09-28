@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# rascunhos de producao de apostilas (PDFs e fontes; nao vao pro deploy)
+/producao-apostilas/
