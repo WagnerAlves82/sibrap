@@ -37,7 +37,17 @@ export async function POST(request: NextRequest) {
 
   if (payload.event === "transparent.completed") {
     const id = payload.data?.transparent?.id ?? payload.data?.id;
-    if (id && ID_VALIDO.test(id)) await confirmarPagamentoAbacate(id);
+    if (id && ID_VALIDO.test(id)) {
+      // A consulta pode ainda enxergar a cobrança como pendente logo após o
+      // aviso. Tenta algumas vezes; se não confirmar, responde erro para o
+      // AbacatePay reenviar (até 7 tentativas em ~18 h) em vez de perder o pagamento.
+      for (let tentativa = 0; tentativa < 4; tentativa++) {
+        const r = await confirmarPagamentoAbacate(id);
+        if (!("erro" in r) && r.status === "aprovado") return NextResponse.json({ recebido: true });
+        if (tentativa < 3) await new Promise((res) => setTimeout(res, 1200));
+      }
+      return NextResponse.json({ erro: "pagamento ainda não confirmado na consulta" }, { status: 503 });
+    }
   }
 
   return NextResponse.json({ recebido: true });
