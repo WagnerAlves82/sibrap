@@ -690,6 +690,8 @@ export type Database = {
           atualizado_em: string
           criado_em: string
           entrega_enviada_em: string | null
+          gateway: string
+          gateway_charge_id: string | null
           id: string
           mercadopago_order_id: string | null
           mercadopago_payment_id: string | null
@@ -703,6 +705,8 @@ export type Database = {
           atualizado_em?: string
           criado_em?: string
           entrega_enviada_em?: string | null
+          gateway?: string
+          gateway_charge_id?: string | null
           id?: string
           mercadopago_order_id?: string | null
           mercadopago_payment_id?: string | null
@@ -716,6 +720,8 @@ export type Database = {
           atualizado_em?: string
           criado_em?: string
           entrega_enviada_em?: string | null
+          gateway?: string
+          gateway_charge_id?: string | null
           id?: string
           mercadopago_order_id?: string | null
           mercadopago_payment_id?: string | null

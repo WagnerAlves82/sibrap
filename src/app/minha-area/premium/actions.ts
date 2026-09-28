@@ -2,6 +2,7 @@
 
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { confirmarPagamentoPorOrderId } from "@/lib/mercadopago";
+import { confirmarPagamentoAbacate } from "@/lib/abacatepay";
 import { gerarPixParaPedido, type EstadoPix } from "@/lib/pix";
 
 export async function criarPagamentoPixAction(): Promise<EstadoPix> {
@@ -40,7 +41,7 @@ export async function verificarPagamentoPixAction(
   const supabase = await criarClienteSupabaseServer();
   const { data: pedido, error } = await supabase
     .from("pedidos")
-    .select("status, mercadopago_order_id")
+    .select("status, mercadopago_order_id, gateway, gateway_charge_id")
     .eq("id", pedidoId)
     .single();
 
@@ -48,8 +49,18 @@ export async function verificarPagamentoPixAction(
     return { erro: "Pedido não encontrado." };
   }
 
-  if (pedido.status !== "pendente" || !pedido.mercadopago_order_id) {
+  if (pedido.status !== "pendente") {
     return { status: pedido.status as "pendente" | "aprovado" | "recusado" };
+  }
+
+  if (pedido.gateway === "abacatepay") {
+    if (!pedido.gateway_charge_id) return { status: "pendente" };
+    const r = await confirmarPagamentoAbacate(pedido.gateway_charge_id);
+    return "erro" in r ? { status: "pendente" } : { status: r.status };
+  }
+
+  if (!pedido.mercadopago_order_id) {
+    return { status: "pendente" };
   }
 
   const resultado = await confirmarPagamentoPorOrderId(pedido.mercadopago_order_id);

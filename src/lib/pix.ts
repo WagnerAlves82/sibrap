@@ -7,6 +7,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/database.types";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
+import { abacatePayAtivo, criarCobrancaPix } from "@/lib/abacatepay";
 
 export type EstadoPix =
   | { erro: string }
@@ -31,6 +32,28 @@ export async function gerarPixParaPedido({
   email: string;
   nome?: string;
 }): Promise<EstadoPix> {
+  if (abacatePayAtivo()) {
+    try {
+      const cobranca = await criarCobrancaPix({ valorCentavos, descricao: produtoNome, pedidoId });
+      // o id da cobrança é gravado com a chave de serviço, só por aqui
+      await criarClienteSupabaseAdmin()
+        .from("pedidos")
+        .update({ gateway: "abacatepay", gateway_charge_id: cobranca.id })
+        .eq("id", pedidoId)
+        .eq("status", "pendente")
+        .is("gateway_charge_id", null);
+      return {
+        pedidoId,
+        qrCode: cobranca.brCode,
+        // o AbacatePay devolve "data:image/png;base64,..."; a tela monta o prefixo
+        qrCodeBase64: cobranca.brCodeBase64.replace(/^data:image\/png;base64,/, ""),
+      };
+    } catch (e) {
+      console.error("Falha ao criar PIX no AbacatePay", e);
+      return { erro: "Não deu pra gerar o PIX agora. Tenta de novo." };
+    }
+  }
+
   const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN;
   if (!accessToken) {
     return {
