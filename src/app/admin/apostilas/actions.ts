@@ -2,7 +2,8 @@
 
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { tokenAdminValido, ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
+import {  ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
+import { sessaoAdminValida } from "@/lib/admin-sessao";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { BUCKET_CAPAS, BUCKET_PDFS, CATEGORIAS, UFS, slugValido } from "@/lib/apostilas";
 
@@ -10,7 +11,7 @@ const TAMANHO_MAXIMO_CAPA = 3.5 * 1024 * 1024;
 
 async function autorizado() {
   const cookieStore = await cookies();
-  return tokenAdminValido(cookieStore.get(ADMIN_COOKIE_NAME)?.value);
+  return (await sessaoAdminValida(cookieStore.get(ADMIN_COOKIE_NAME)?.value));
 }
 
 // Confere os primeiros bytes (não confia só no tipo declarado)

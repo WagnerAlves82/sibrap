@@ -3,7 +3,8 @@
 import crypto from "node:crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { criarTokenAdmin, ADMIN_COOKIE_NAME, ADMIN_COOKIE_OPCOES } from "@/lib/admin-auth";
+import { ADMIN_COOKIE_NAME, ADMIN_COOKIE_OPCOES } from "@/lib/admin-auth";
+import { contarPasskeys, iniciarSessaoAdmin, senhaPermitida } from "@/lib/admin-seguranca";
 import { dentroDoLimite, identificarCliente, MSG_MUITAS_TENTATIVAS } from "@/lib/limite";
 
 export type EstadoLoginAdmin = { erro: string } | null;
@@ -21,6 +22,13 @@ export async function loginAdmin(
 
   // Limite de tentativas: por origem (5 em 15 min) e geral (40 em 15 min,
   // contra ataque distribuído). Se o contador falhar, bloqueia por segurança.
+  // Com biometria cadastrada, a senha deixa de valer (a menos que o modo de
+  // emergência esteja ligado na Vercel: ADMIN_PERMITE_SENHA=1)
+  const temBiometria = (await contarPasskeys()) > 0;
+  if (!senhaPermitida(temBiometria)) {
+    return { erro: "Este painel usa biometria. Volte à tela de entrada e use o botão de biometria." };
+  }
+
   const cliente = await identificarCliente();
   const okOrigem = await dentroDoLimite(`admin:${cliente}`, 5, 900, false);
   const okGeral = await dentroDoLimite("admin:geral", 40, 900, false);
@@ -33,10 +41,10 @@ export async function loginAdmin(
     return { erro: "Senha incorreta." };
   }
 
-  const cookieStore = await cookies();
-  cookieStore.set(ADMIN_COOKIE_NAME, criarTokenAdmin(), ADMIN_COOKIE_OPCOES);
+  await iniciarSessaoAdmin(temBiometria ? "Senha (modo de emergência)" : "Senha");
 
-  redirect("/admin");
+  // primeiro acesso, ainda sem biometria: leva direto para cadastrá-la
+  redirect(temBiometria ? "/admin" : "/admin/seguranca?aviso=cadastrar");
 }
 
 export async function logoutAdmin() {

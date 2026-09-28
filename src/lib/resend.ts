@@ -232,3 +232,27 @@ export async function enviarEntregaApostila({
     }),
   });
 }
+
+// ---------- alertas de segurança do painel admin ----------
+
+export function emailDoAdmin(): string {
+  return process.env.ADMIN_EMAIL ?? "wagnerjuniorsouza@gmail.com";
+}
+
+export async function enviarAlertaAdmin({
+  assunto,
+  titulo,
+  corpoHtml,
+  botao,
+}: {
+  assunto: string;
+  titulo: string;
+  corpoHtml: string;
+  botao?: { texto: string; url: string };
+}): Promise<Resultado> {
+  return enviarEmail({
+    para: emailDoAdmin(),
+    assunto,
+    html: moldura({ saudacao: "Segurança do painel SIBRAP", titulo, corpo: corpoHtml, botao }),
+  });
+}

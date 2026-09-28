@@ -2,7 +2,8 @@
 
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { tokenAdminValido, ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
+import {  ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
+import { sessaoAdminValida } from "@/lib/admin-sessao";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 
 // Aceita o link do YouTube (watch, youtu.be, embed, shorts) ou o id direto
@@ -31,7 +32,7 @@ export async function salvarAulaAction(
   formData: FormData
 ): Promise<EstadoSalvarAula> {
   const cookieStore = await cookies();
-  if (!tokenAdminValido(cookieStore.get(ADMIN_COOKIE_NAME)?.value)) {
+  if (!(await sessaoAdminValida(cookieStore.get(ADMIN_COOKIE_NAME)?.value))) {
     return { erro: "Não autorizado" };
   }
 

@@ -16,7 +16,7 @@ const PRODUCAO = process.env.NODE_ENV === "production";
 // Prefixo __Host-: o navegador só aceita o cookie com Secure, Path=/ e sem
 // Domain, o que impede um subdomínio de plantar/sobrescrever a sessão.
 export const ADMIN_COOKIE_NAME = PRODUCAO ? "__Host-sibrap_admin" : "sibrap_admin";
-const SESSAO_MS = 12 * 60 * 60 * 1000; // 12 horas
+export const SESSAO_MS = 12 * 60 * 60 * 1000; // 12 horas
 
 export const ADMIN_COOKIE_OPCOES = {
   httpOnly: true,
@@ -34,7 +34,7 @@ function chave(): Buffer {
   return crypto.createHmac("sha256", senha).update("sibrap-admin-sessao-v2").digest();
 }
 
-function assinar(dados: string): string {
+export function assinar(dados: string): string {
   return crypto.createHmac("sha256", chave()).update(dados).digest("hex");
 }
 
@@ -63,4 +63,26 @@ export function tokenAdminValido(token: string | undefined | null): boolean {
   if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return false;
 
   return Date.now() < Number(expira);
+}
+
+/** Token de ação de e-mail (revogar sessões etc.): "<expira>.<assinatura>", vale 24 h. */
+export function criarTokenAcao(acao: string, validadeMs = 24 * 60 * 60 * 1000): string {
+  const expira = (Date.now() + validadeMs).toString();
+  return `${expira}.${assinar(`acao:${acao}:${expira}`)}`;
+}
+
+export function tokenAcaoValido(acao: string, token: string): boolean {
+  const [expira, assinatura] = token.split(".");
+  if (!expira || !assinatura || !/^\d+$/.test(expira)) return false;
+  const esperado = assinar(`acao:${acao}:${expira}`);
+  const a = Buffer.from(assinatura);
+  const b = Buffer.from(esperado);
+  return a.length === b.length && crypto.timingSafeEqual(a, b) && Date.now() < Number(expira);
+}
+
+/** A sessão foi criada há pouco? (exigido para ações sensíveis) */
+export function sessaoRecente(token: string | undefined | null, limiteMs = 10 * 60 * 1000): boolean {
+  if (!tokenAdminValido(token)) return false;
+  const emissao = Number(token!.split(".")[0]) - SESSAO_MS;
+  return Date.now() - emissao < limiteMs;
 }

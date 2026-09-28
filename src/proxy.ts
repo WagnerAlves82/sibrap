@@ -7,7 +7,11 @@
 
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { tokenAdminValido, ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
+import { ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
+import { sessaoAdminValida } from "@/lib/admin-sessao";
+
+// páginas do admin que não exigem sessão (login, recuperação, "não fui eu")
+const ADMIN_PUBLICO = /^\/admin\/(login|recuperar|revogar)(\/|$)/;
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -48,12 +52,9 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(login);
   }
 
-  if (
-    request.nextUrl.pathname.startsWith("/admin") &&
-    request.nextUrl.pathname !== "/admin/login"
-  ) {
+  if (request.nextUrl.pathname.startsWith("/admin") && !ADMIN_PUBLICO.test(request.nextUrl.pathname)) {
     const adminToken = request.cookies.get(ADMIN_COOKIE_NAME)?.value;
-    if (!tokenAdminValido(adminToken)) {
+    if (!(await sessaoAdminValida(adminToken))) {
       return NextResponse.redirect(new URL("/admin/login", request.url));
     }
   }

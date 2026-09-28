@@ -59,6 +59,93 @@ export type Database = {
           },
         ]
       }
+      admin_passkeys: {
+        Row: {
+          counter: number
+          credential_id: string
+          criado_em: string
+          id: string
+          nome: string
+          public_key: string
+          sincronizada: boolean
+          tipo_dispositivo: string | null
+          transports: string[]
+          ultimo_uso_em: string | null
+        }
+        Insert: {
+          counter?: number
+          credential_id: string
+          criado_em?: string
+          id?: string
+          nome: string
+          public_key: string
+          sincronizada?: boolean
+          tipo_dispositivo?: string | null
+          transports?: string[]
+          ultimo_uso_em?: string | null
+        }
+        Update: {
+          counter?: number
+          credential_id?: string
+          criado_em?: string
+          id?: string
+          nome?: string
+          public_key?: string
+          sincronizada?: boolean
+          tipo_dispositivo?: string | null
+          transports?: string[]
+          ultimo_uso_em?: string | null
+        }
+        Relationships: []
+      }
+      admin_desafios: {
+        Row: { desafio: string; expira_em: string; id: string; tipo: string }
+        Insert: { desafio: string; expira_em: string; id?: string; tipo: string }
+        Update: { desafio?: string; expira_em?: string; id?: string; tipo?: string }
+        Relationships: []
+      }
+      admin_codigos_recuperacao: {
+        Row: { codigo_hash: string; criado_em: string; id: string; usado_em: string | null }
+        Insert: { codigo_hash: string; criado_em?: string; id?: string; usado_em?: string | null }
+        Update: { codigo_hash?: string; criado_em?: string; id?: string; usado_em?: string | null }
+        Relationships: []
+      }
+      admin_recuperacoes: {
+        Row: {
+          cancelado_em: string | null
+          criado_em: string
+          expira_em: string
+          id: string
+          liberar_em: string
+          token_hash: string
+          usado_em: string | null
+        }
+        Insert: {
+          cancelado_em?: string | null
+          criado_em?: string
+          expira_em: string
+          id?: string
+          liberar_em: string
+          token_hash: string
+          usado_em?: string | null
+        }
+        Update: {
+          cancelado_em?: string | null
+          criado_em?: string
+          expira_em?: string
+          id?: string
+          liberar_em?: string
+          token_hash?: string
+          usado_em?: string | null
+        }
+        Relationships: []
+      }
+      admin_config: {
+        Row: { id: boolean; sessoes_validas_desde: string }
+        Insert: { id?: boolean; sessoes_validas_desde?: string }
+        Update: { id?: boolean; sessoes_validas_desde?: string }
+        Relationships: []
+      }
       apostilas: {
         Row: {
           atualizado_em: string

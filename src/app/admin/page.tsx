@@ -1,14 +1,15 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { tokenAdminValido, ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
+import {  ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
+import { sessaoAdminValida } from "@/lib/admin-sessao";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { logoutAdmin } from "./actions";
 
 export default async function AdminPage() {
   const cookieStore = await cookies();
   const token = cookieStore.get(ADMIN_COOKIE_NAME)?.value;
-  if (!tokenAdminValido(token)) {
+  if (!(await sessaoAdminValida(token))) {
     redirect("/admin/login");
   }
 
@@ -53,6 +54,9 @@ export default async function AdminPage() {
         <nav className="mb-6 flex gap-2 text-sm">
           <Link href="/admin/comprovantes" className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 font-medium text-zinc-700 hover:bg-zinc-100">
             Comprovantes CadÚnico
+          </Link>
+          <Link href="/admin/seguranca" className="rounded-md border border-amber-300 bg-amber-50 px-3 py-1.5 font-medium text-amber-900 hover:bg-amber-100">
+            Segurança
           </Link>
           <Link href="/admin/apostilas" className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 font-medium text-zinc-700 hover:bg-zinc-100">
             Apostilas

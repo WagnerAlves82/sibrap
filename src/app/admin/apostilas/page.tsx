@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { tokenAdminValido, ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
+import {  ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
+import { sessaoAdminValida } from "@/lib/admin-sessao";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { FormApostila, type ApostilaAdmin } from "./FormApostila";
 
@@ -9,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminApostilasPage() {
   const cookieStore = await cookies();
-  if (!tokenAdminValido(cookieStore.get(ADMIN_COOKIE_NAME)?.value)) {
+  if (!(await sessaoAdminValida(cookieStore.get(ADMIN_COOKIE_NAME)?.value))) {
     redirect("/admin/login");
   }
 
