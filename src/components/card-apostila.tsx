@@ -19,13 +19,14 @@ export function CardApostila({ apostila }: { apostila: ApostilaVitrine }) {
   const provaFutura = dias !== null && dias >= 0;
   const pct = descontoPercentual(apostila.preco_original_centavos, apostila.preco_centavos);
   const selo = apostila.selos?.[0];
+  const simulados = apostila.simulados ?? 0;
 
   return (
     <Link
       href={`/apostilas/${apostila.slug}`}
       className="group flex h-full flex-col overflow-hidden rounded-xl border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.35)]"
     >
-      <div className="relative aspect-[2/3] w-full overflow-hidden bg-gradient-to-b from-[#E6EEF7] to-[#F6F9FC]">
+      <div className="relative aspect-square w-full overflow-hidden bg-gradient-to-b from-[#E6EEF7] to-[#F6F9FC]">
         {imagem ? (
           <Image
             src={imagem.url}
@@ -34,7 +35,7 @@ export function CardApostila({ apostila }: { apostila: ApostilaVitrine }) {
             sizes="(min-width: 1024px) 360px, (min-width: 640px) 45vw, 46vw"
             className={
               imagem.mockup
-                ? "object-contain p-3 drop-shadow-[0_14px_16px_rgba(11,42,74,0.28)] transition-transform duration-300 group-hover:scale-[1.03] sm:p-4"
+                ? "object-contain p-7 drop-shadow-[0_14px_16px_rgba(11,42,74,0.28)] transition-transform duration-300 group-hover:scale-[1.03] sm:p-9"
                 : "object-cover transition-transform duration-300 group-hover:scale-[1.02]"
             }
           />
@@ -76,11 +77,18 @@ export function CardApostila({ apostila }: { apostila: ApostilaVitrine }) {
           {prova ? ` · prova ${prova}` : ""}
         </p>
 
+        {simulados > 0 && (
+          <p className="flex items-center gap-1.5 text-[12px] font-semibold text-accent-2">
+            <span aria-hidden>✓</span>
+            {simulados > 1 ? `${simulados} simulados do cargo inclusos` : "Simulado do cargo incluso"}
+          </p>
+        )}
+
         <div className="mt-auto flex items-end justify-between gap-2 pt-3">
           <PrecoApostila centavos={apostila.preco_centavos} original={apostila.preco_original_centavos} />
           <span
             aria-hidden
-            className="rounded-md bg-accent px-3 py-1.5 text-[12.5px] font-bold text-accent-ink transition-colors group-hover:brightness-105"
+            className="rounded-md bg-brand px-3 py-1.5 text-[12.5px] font-bold text-white transition-colors group-hover:brightness-125"
           >
             Ver →
           </span>
