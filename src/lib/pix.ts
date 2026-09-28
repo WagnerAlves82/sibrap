@@ -8,6 +8,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/database.types";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { abacatePayAtivo, criarCobrancaPix } from "@/lib/abacatepay";
+import { dentroDoLimite, hash } from "@/lib/limite";
 
 export type EstadoPix =
   | { erro: string }
@@ -32,6 +33,11 @@ export async function gerarPixParaPedido({
   email: string;
   nome?: string;
 }): Promise<EstadoPix> {
+  // até 10 cobranças por hora por conta: evita disparar o gateway em série
+  if (!(await dentroDoLimite(`pix:${hash(email)}`, 10, 3600))) {
+    return { erro: "Muitas tentativas de gerar PIX em pouco tempo. Aguarde alguns minutos." };
+  }
+
   if (abacatePayAtivo()) {
     try {
       const cobranca = await criarCobrancaPix({ valorCentavos, descricao: produtoNome, pedidoId });

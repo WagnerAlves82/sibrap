@@ -65,10 +65,10 @@ export function FormCadastro({
         id="senha"
         type="password"
         name="senha"
-        placeholder="Senha (mínimo 6 caracteres)"
+        placeholder="Senha (mínimo 8 caracteres)"
         autoComplete="new-password"
         required
-        minLength={6}
+        minLength={8}
         className={CLASSE_INPUT}
       />
       <label className="flex items-start gap-2.5 text-[13px] leading-relaxed text-[#516278]">

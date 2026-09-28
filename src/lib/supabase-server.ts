@@ -21,7 +21,14 @@ export async function criarClienteSupabaseServer() {
         setAll(cookiesParaSalvar) {
           try {
             cookiesParaSalvar.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options);
+              // sessão só trafega para o servidor: o navegador (JavaScript)
+              // não lê o token, o que limita o estrago de um XSS
+              cookieStore.set(name, value, {
+                ...options,
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+              });
             });
           } catch {
             // Chamado de dentro de um Server Component — pode ser

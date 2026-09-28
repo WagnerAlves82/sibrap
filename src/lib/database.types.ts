@@ -1197,6 +1197,10 @@ export type Database = {
         }[]
       }
       matricular_curso: { Args: { p_curso_slug: string }; Returns: string }
+      registrar_tentativa: {
+        Args: { p_chave: string; p_janela_segundos: number; p_limite: number }
+        Returns: boolean
+      }
       registrar_order_pagamento: {
         Args: { p_order_id: string; p_payment_id?: string; p_pedido_id: string }
         Returns: undefined

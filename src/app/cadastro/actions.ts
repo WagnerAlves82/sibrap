@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { caminhoSeguro, veioDeCurso } from "@/lib/auth-redirect";
 import { VERSAO_TERMOS } from "@/lib/emissor";
+import { dentroDoLimite, identificarCliente, MSG_MUITAS_TENTATIVAS } from "@/lib/limite";
+import { validarSenha } from "@/lib/senha";
 
 export type EstadoCadastro = {
   erro?: string;
@@ -25,18 +27,23 @@ export async function cadastrar(
   const aceitou = formData.get("aceite") === "on";
   const valores = { nome, email, aceite: aceitou };
 
-  if (!nome || !email || senha.length < 6) {
-    return {
-      erro: "Preencha nome, e-mail e uma senha com pelo menos 6 caracteres.",
-      valores,
-    };
+  if (!nome || !email || !senha) {
+    return { erro: "Preencha nome, e-mail e senha.", valores };
   }
+  const erroSenha = validarSenha(senha, email);
+  if (erroSenha) return { erro: erroSenha, valores };
 
   if (!aceitou) {
     return {
       erro: "Para criar a conta, marque que leu e concorda com os Termos e a Política de Privacidade.",
       valores,
     };
+  }
+
+  // 6 cadastros por hora por origem: evita criação em massa e disparo de
+  // e-mails de confirmação para terceiros
+  if (!(await dentroDoLimite(`cadastro:${await identificarCliente()}`, 6, 3600))) {
+    return { erro: MSG_MUITAS_TENTATIVAS, valores };
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";

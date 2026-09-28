@@ -19,10 +19,10 @@ export function FormRedefinir() {
         id="senha"
         type="password"
         name="senha"
-        placeholder="Nova senha (mínimo 6 caracteres)"
+        placeholder="Nova senha (mínimo 8 caracteres)"
         autoComplete="new-password"
         required
-        minLength={6}
+        minLength={8}
         autoFocus
         className={CLASSE_INPUT}
       />
@@ -36,7 +36,7 @@ export function FormRedefinir() {
         placeholder="Repita a nova senha"
         autoComplete="new-password"
         required
-        minLength={6}
+        minLength={8}
         className={CLASSE_INPUT}
       />
       <button type="submit" disabled={pending} className={`mt-2 ${CLASSE_BOTAO_PRIMARIO}`}>
