@@ -123,6 +123,146 @@ export async function confirmarPagamentoAbacate(
   return { status: pedido.status === "aprovado" ? "aprovado" : status };
 }
 
+// ---------- checkout hospedado (cartão de crédito) ----------
+//
+// O checkout transparente (acima) só aceita PIX. Cartão de crédito só
+// existe no checkout HOSPEDADO do AbacatePay: a pessoa é redirecionada
+// para a página de pagamento deles (PIX ou cartão, à escolha dela) e
+// volta pelo `completionUrl`. Esse fluxo exige um "produto" cadastrado
+// na conta do AbacatePay (endpoint /products), referenciado por id.
+
+type Produto = { id: string; externalId: string; status: string };
+
+/** Busca o produto pelo externalId (o slug do nosso produto); cria se não existir. */
+async function garantirProdutoAbacate({
+  externalId,
+  nome,
+  valorCentavos,
+}: {
+  externalId: string;
+  nome: string;
+  valorCentavos: number;
+}): Promise<string> {
+  const chave = process.env.ABACATEPAY_API_KEY;
+  if (!chave) throw new Error("ABACATEPAY_API_KEY não configurada");
+
+  const busca = await fetch(`${BASE}/products/get?externalId=${encodeURIComponent(externalId)}`, {
+    headers: { Authorization: `Bearer ${chave}` },
+    cache: "no-store",
+  });
+  const corpoBusca = (await busca.json().catch(() => null)) as Envelope<Produto> | null;
+  if (busca.ok && corpoBusca?.success && corpoBusca.data) return corpoBusca.data.id;
+
+  const criado = await chamar<Produto>("/products/create", {
+    method: "POST",
+    body: JSON.stringify({ externalId, name: nome.slice(0, 160), price: valorCentavos, currency: "BRL" }),
+  });
+  return criado.id;
+}
+
+export type CheckoutCartao = { id: string; url: string };
+
+/**
+ * Cria um checkout hospedado (methods: ["CARD"]) para a pessoa pagar no
+ * cartão na própria página do AbacatePay. `pedidoId` vira o externalId do
+ * checkout, para a confirmação (webhook ou volta pelo completionUrl)
+ * localizar o pedido sem depender do formato do payload do evento.
+ */
+export async function criarCheckoutCartao({
+  valorCentavos,
+  descricao,
+  pedidoId,
+  produtoExternalId,
+  returnUrl,
+  completionUrl,
+  maxParcelas = 1,
+}: {
+  valorCentavos: number;
+  descricao: string;
+  pedidoId: string;
+  produtoExternalId: string;
+  returnUrl: string;
+  completionUrl: string;
+  maxParcelas?: number;
+}): Promise<CheckoutCartao> {
+  const produtoId = await garantirProdutoAbacate({
+    externalId: produtoExternalId,
+    nome: descricao,
+    valorCentavos,
+  });
+  return chamar<CheckoutCartao>("/checkouts/create", {
+    method: "POST",
+    body: JSON.stringify({
+      items: [{ id: produtoId, quantity: 1 }],
+      methods: ["CARD"],
+      card: { maxInstallments: Math.max(1, Math.min(12, maxParcelas)) },
+      externalId: pedidoId,
+      returnUrl,
+      completionUrl,
+      metadata: { pedidoId },
+    }),
+  });
+}
+
+function mapStatusCheckout(status: string): StatusPedido {
+  if (status === "PAID") return "aprovado";
+  if (["EXPIRED", "CANCELLED", "REFUNDED"].includes(status)) return "recusado";
+  return "pendente";
+}
+
+/**
+ * Confirma um checkout de CARTÃO pelo id que o AbacatePay atribuiu (o mesmo
+ * que gravamos em `pedidos.gateway_charge_id` ao criar o checkout — igual
+ * ao PIX). Mesmo princípio de `confirmarPagamentoAbacate`: nunca confia no
+ * corpo do webhook, sempre confere pela API antes de liberar o acesso.
+ */
+export async function confirmarPagamentoAbacateCheckout(
+  checkoutId: string
+): Promise<{ status: StatusPedido } | { erro: string }> {
+  const admin = criarClienteSupabaseAdmin();
+  const { data: pedido } = await admin
+    .from("pedidos")
+    .select("id, status")
+    .eq("gateway", "abacatepay_checkout")
+    .eq("gateway_charge_id", checkoutId)
+    .maybeSingle();
+  if (!pedido) return { erro: "Pedido não encontrado para este checkout" };
+
+  let statusRemoto: string;
+  try {
+    const chave = process.env.ABACATEPAY_API_KEY;
+    if (!chave) throw new Error("ABACATEPAY_API_KEY não configurada");
+    const r = await fetch(`${BASE}/checkouts/get?id=${encodeURIComponent(checkoutId)}`, {
+      headers: { Authorization: `Bearer ${chave}` },
+      cache: "no-store",
+    });
+    const corpo = (await r.json().catch(() => null)) as Envelope<{ status: string }> | null;
+    if (!r.ok || !corpo?.success || !corpo.data) throw new Error(corpo?.error ?? `AbacatePay ${r.status}`);
+    statusRemoto = corpo.data.status;
+  } catch (e) {
+    return { erro: e instanceof Error ? e.message : "Erro ao consultar o checkout" };
+  }
+
+  const status = mapStatusCheckout(statusRemoto);
+  if (pedido.status !== "aprovado" && status !== "pendente") {
+    const { error } = await admin
+      .from("pedidos")
+      .update({ status })
+      .eq("id", pedido.id)
+      .neq("status", "aprovado");
+    if (error) return { erro: error.message };
+  }
+
+  if (status === "aprovado") {
+    try {
+      await entregarPedido(pedido.id);
+    } catch (e) {
+      console.error("Falha ao enviar a entrega do pedido", pedido.id, e);
+    }
+  }
+  return { status: pedido.status === "aprovado" ? "aprovado" : status };
+}
+
 // ---------- webhook ----------
 
 function iguais(a: string, b: string): boolean {

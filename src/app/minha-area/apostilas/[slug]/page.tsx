@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
+import { confirmarPagamentoAbacateCheckout } from "@/lib/abacatepay";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { formatarDataIso, formatarPreco, slugValido, urlCapa } from "@/lib/apostilas";
 import { ComprarApostila } from "./Comprar";
@@ -41,7 +42,38 @@ export default async function ApostilaAreaPage({
     .eq("produto_id", apostila.produto_id)
     .maybeSingle();
 
-  const tem = !!acesso;
+  let tem = !!acesso;
+  let aguardandoCartao = false;
+
+  // Quem volta do checkout hospedado (cartão) chega aqui antes do webhook
+  // confirmar: tenta uma vez, na hora, pra não mostrar "ainda não comprou"
+  // por alguns segundos à toa. Nunca decide sozinho: só confere na API.
+  if (!tem && user) {
+    const { data: pendente } = await admin
+      .from("pedidos")
+      .select("id, gateway_charge_id")
+      .eq("user_id", user.id)
+      .eq("produto_id", apostila.produto_id)
+      .eq("status", "pendente")
+      .eq("gateway", "abacatepay_checkout")
+      .not("gateway_charge_id", "is", null)
+      .order("criado_em", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (pendente?.gateway_charge_id) {
+      const r = await confirmarPagamentoAbacateCheckout(pendente.gateway_charge_id);
+      if (!("erro" in r) && r.status === "aprovado") {
+        const { data: acessoNovo } = await supabase
+          .from("acessos")
+          .select("id")
+          .eq("produto_id", apostila.produto_id)
+          .maybeSingle();
+        tem = !!acessoNovo;
+      } else {
+        aguardandoCartao = true;
+      }
+    }
+  }
   const disponivel = apostila.status === "publicada" && apostila.produtos.ativo;
   if (!tem && !disponivel) notFound();
 
@@ -101,9 +133,15 @@ export default async function ApostilaAreaPage({
               <div className="mt-5">
                 <p className="font-data text-3xl font-semibold text-[#14213A]">{preco}</p>
                 <p className="mb-4 text-[13px] text-[#516278]">
-                  Pagamento único por PIX. A liberação é automática assim que o
-                  pagamento cair.
+                  Pagamento único, por PIX ou cartão de crédito. A liberação é
+                  automática assim que o pagamento for confirmado.
                 </p>
+                {aguardandoCartao && (
+                  <p className="mb-4 rounded-lg border border-[#D7DEE6] bg-[#F6F9FC] px-4 py-3 text-[13.5px] text-[#516278]">
+                    Estamos confirmando seu pagamento por cartão — isso costuma
+                    levar só alguns instantes. Atualize a página em breve.
+                  </p>
+                )}
                 <ComprarApostila slug={apostila.slug} preco={preco} />
               </div>
             )}

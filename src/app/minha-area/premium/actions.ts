@@ -2,7 +2,7 @@
 
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { confirmarPagamentoPorOrderId } from "@/lib/mercadopago";
-import { confirmarPagamentoAbacate } from "@/lib/abacatepay";
+import { confirmarPagamentoAbacate, confirmarPagamentoAbacateCheckout } from "@/lib/abacatepay";
 import { gerarPixParaPedido, type EstadoPix } from "@/lib/pix";
 
 export async function criarPagamentoPixAction(): Promise<EstadoPix> {
@@ -56,6 +56,12 @@ export async function verificarPagamentoPixAction(
   if (pedido.gateway === "abacatepay") {
     if (!pedido.gateway_charge_id) return { status: "pendente" };
     const r = await confirmarPagamentoAbacate(pedido.gateway_charge_id);
+    return "erro" in r ? { status: "pendente" } : { status: r.status };
+  }
+
+  if (pedido.gateway === "abacatepay_checkout") {
+    if (!pedido.gateway_charge_id) return { status: "pendente" };
+    const r = await confirmarPagamentoAbacateCheckout(pedido.gateway_charge_id);
     return "erro" in r ? { status: "pendente" } : { status: r.status };
   }
 

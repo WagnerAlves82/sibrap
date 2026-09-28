@@ -9,7 +9,12 @@
 // não precisa de tabela de deduplicação.
 
 import { NextResponse, type NextRequest } from "next/server";
-import { assinaturaValida, confirmarPagamentoAbacate, segredoDaUrlValido } from "@/lib/abacatepay";
+import {
+  assinaturaValida,
+  confirmarPagamentoAbacate,
+  confirmarPagamentoAbacateCheckout,
+  segredoDaUrlValido,
+} from "@/lib/abacatepay";
 
 const ID_VALIDO = /^[A-Za-z0-9_-]{1,80}$/;
 
@@ -43,6 +48,18 @@ export async function POST(request: NextRequest) {
       // AbacatePay reenviar (até 7 tentativas em ~18 h) em vez de perder o pagamento.
       for (let tentativa = 0; tentativa < 4; tentativa++) {
         const r = await confirmarPagamentoAbacate(id);
+        if (!("erro" in r) && r.status === "aprovado") return NextResponse.json({ recebido: true });
+        if (tentativa < 3) await new Promise((res) => setTimeout(res, 1200));
+      }
+      return NextResponse.json({ erro: "pagamento ainda não confirmado na consulta" }, { status: 503 });
+    }
+  }
+
+  if (payload.event === "checkout.completed") {
+    const id = payload.data?.checkout?.id ?? payload.data?.id;
+    if (id && ID_VALIDO.test(id)) {
+      for (let tentativa = 0; tentativa < 4; tentativa++) {
+        const r = await confirmarPagamentoAbacateCheckout(id);
         if (!("erro" in r) && r.status === "aprovado") return NextResponse.json({ recebido: true });
         if (tentativa < 3) await new Promise((res) => setTimeout(res, 1200));
       }
