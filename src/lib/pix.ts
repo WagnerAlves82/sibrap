@@ -9,6 +9,7 @@ import type { Database } from "@/lib/database.types";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { abacatePayAtivo, criarCobrancaPix } from "@/lib/abacatepay";
 import { dentroDoLimite, hash } from "@/lib/limite";
+import { vendasPausadas } from "@/lib/vigia";
 
 export type EstadoPix =
   | { erro: string }
@@ -33,6 +34,11 @@ export async function gerarPixParaPedido({
   email: string;
   nome?: string;
 }): Promise<EstadoPix> {
+  // pausa de segurança (vigia ou botão do painel): o site segue no ar, mas não gera PIX
+  if ((await vendasPausadas()).pausada) {
+    return { erro: "As vendas estão temporariamente pausadas por manutenção de segurança. Tente novamente em breve." };
+  }
+
   // até 10 cobranças por hora por conta: evita disparar o gateway em série
   if (!(await dentroDoLimite(`pix:${hash(email)}`, 10, 3600))) {
     return { erro: "Muitas tentativas de gerar PIX em pouco tempo. Aguarde alguns minutos." };

@@ -141,9 +141,42 @@ export type Database = {
         Relationships: []
       }
       admin_config: {
-        Row: { id: boolean; sessoes_validas_desde: string }
-        Insert: { id?: boolean; sessoes_validas_desde?: string }
-        Update: { id?: boolean; sessoes_validas_desde?: string }
+        Row: {
+          id: boolean
+          sessoes_validas_desde: string
+          vendas_pausadas: boolean
+          vendas_pausadas_em: string | null
+          vendas_pausadas_motivo: string | null
+          vigia_falhas_seguidas: number
+          vigia_saldo_disponivel: number | null
+          vigia_ultima_loja: string | null
+          vigia_ultimo_alerta_em: string | null
+          vigia_ultimo_ok: string | null
+        }
+        Insert: {
+          id?: boolean
+          sessoes_validas_desde?: string
+          vendas_pausadas?: boolean
+          vendas_pausadas_em?: string | null
+          vendas_pausadas_motivo?: string | null
+          vigia_falhas_seguidas?: number
+          vigia_saldo_disponivel?: number | null
+          vigia_ultima_loja?: string | null
+          vigia_ultimo_alerta_em?: string | null
+          vigia_ultimo_ok?: string | null
+        }
+        Update: {
+          id?: boolean
+          sessoes_validas_desde?: string
+          vendas_pausadas?: boolean
+          vendas_pausadas_em?: string | null
+          vendas_pausadas_motivo?: string | null
+          vigia_falhas_seguidas?: number
+          vigia_saldo_disponivel?: number | null
+          vigia_ultima_loja?: string | null
+          vigia_ultimo_alerta_em?: string | null
+          vigia_ultimo_ok?: string | null
+        }
         Relationships: []
       }
       apostilas: {

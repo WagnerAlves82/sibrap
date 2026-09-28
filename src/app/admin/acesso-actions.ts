@@ -6,6 +6,7 @@ import type { AuthenticationResponseJSON, RegistrationResponseJSON } from "@simp
 import { ADMIN_COOKIE_NAME, ADMIN_COOKIE_OPCOES, sessaoRecente, tokenAcaoValido } from "@/lib/admin-auth";
 import { sessaoAdminValida } from "@/lib/admin-sessao";
 import { dentroDoLimite, identificarCliente, MSG_MUITAS_TENTATIVAS } from "@/lib/limite";
+import { pausarVendas, reativarVendas } from "@/lib/vigia";
 import {
   cancelarRecuperacao,
   consumirCodigo,
@@ -152,6 +153,19 @@ export async function removerPasskeyAction(formData: FormData) {
   if (await exigirAdmin(true)) redirect("/admin/login");
   await removerPasskey(String(formData.get("id") ?? ""));
   redirect("/admin/seguranca?aviso=removido");
+}
+
+export async function pausarVendasAction() {
+  // botão de pânico: não exige sessão recente (pausar é sempre o lado seguro)
+  if (await exigirAdmin()) redirect("/admin/login");
+  await pausarVendas("Pausa manual pelo painel");
+  redirect("/admin/seguranca?aviso=pausada");
+}
+
+export async function reativarVendasAction() {
+  if (await exigirAdmin(true)) redirect("/admin/seguranca?aviso=reentrar");
+  await reativarVendas();
+  redirect("/admin/seguranca?aviso=reativada");
 }
 
 export async function sairDoAdminAction() {

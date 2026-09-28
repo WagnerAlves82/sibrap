@@ -4,7 +4,14 @@ import { redirect } from "next/navigation";
 import { ADMIN_COOKIE_NAME, sessaoRecente } from "@/lib/admin-auth";
 import { sessaoAdminValida } from "@/lib/admin-sessao";
 import { RECUPERACAO_ESPERA_MIN, contarCodigosRestantes, listarPasskeys } from "@/lib/admin-seguranca";
-import { encerrarSessoesAction, removerPasskeyAction, sairDoAdminAction } from "../acesso-actions";
+import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
+import {
+  encerrarSessoesAction,
+  pausarVendasAction,
+  reativarVendasAction,
+  removerPasskeyAction,
+  sairDoAdminAction,
+} from "../acesso-actions";
 import { AdicionarAparelho, GerarCodigos } from "./Controles";
 
 export const dynamic = "force-dynamic";
@@ -25,15 +32,27 @@ const AVISOS: Record<string, { cor: string; texto: string }> = {
     texto:
       "Você entrou por recuperação por e-mail. Cadastre agora o aparelho novo e gere códigos de recuperação novos.",
   },
+  pausada: { cor: "bg-amber-50 text-amber-900 border-amber-200", texto: "Vendas pausadas. O site continua no ar; só a geração de PIX está parada." },
+  reativada: { cor: "bg-emerald-50 text-emerald-900 border-emerald-200", texto: "Vendas reativadas." },
+  reentrar: { cor: "bg-amber-50 text-amber-900 border-amber-200", texto: "Para reativar as vendas, entre de novo com a biometria (Sair e Entrar)." },
   removido: { cor: "bg-emerald-50 text-emerald-900 border-emerald-200", texto: "Aparelho removido." },
 };
+
+function horasDesde(iso: string | null | undefined): number | null {
+  return iso ? (Date.now() - new Date(iso).getTime()) / 3600_000 : null;
+}
 
 export default async function SegurancaPage({ searchParams }: { searchParams: Promise<{ aviso?: string }> }) {
   const token = (await cookies()).get(ADMIN_COOKIE_NAME)?.value;
   if (!(await sessaoAdminValida(token))) redirect("/admin/login");
   const { aviso } = await searchParams;
 
-  const [passkeys, codigosRestantes] = await Promise.all([listarPasskeys(), contarCodigosRestantes()]);
+  const [passkeys, codigosRestantes, { data: cfg }] = await Promise.all([
+    listarPasskeys(),
+    contarCodigosRestantes(),
+    criarClienteSupabaseAdmin().from("admin_config").select("*").eq("id", true).maybeSingle(),
+  ]);
+  const vigiaHoras = horasDesde(cfg?.vigia_ultimo_ok);
   const recente = sessaoRecente(token);
   const alerta = aviso ? AVISOS[aviso] : null;
 
@@ -114,6 +133,49 @@ export default async function SegurancaPage({ searchParams }: { searchParams: Pr
             Cada código entra uma vez, mesmo sem a biometria. Gerar novos invalida os anteriores.
           </p>
           <GerarCodigos habilitado={recente} />
+        </section>
+
+        <section className="mb-8 rounded-lg border border-zinc-200 bg-white p-5">
+          <h2 className="font-semibold text-zinc-900">Vendas e vigia da conta de pagamentos</h2>
+          <p className="mt-1 text-sm text-zinc-600">
+            Vendas:{" "}
+            {cfg?.vendas_pausadas ? (
+              <strong className="text-red-700">PAUSADAS{cfg.vendas_pausadas_motivo ? ` — ${cfg.vendas_pausadas_motivo}` : ""}</strong>
+            ) : (
+              <strong className="text-emerald-700">ativas</strong>
+            )}
+            <br />
+            Vigia (GitHub Actions, de hora em hora):{" "}
+            {vigiaHoras === null ? (
+              <strong className="text-amber-700">ainda não registrou nenhuma verificação</strong>
+            ) : vigiaHoras > 3 ? (
+              <strong className="text-red-700">sem resposta há {Math.floor(vigiaHoras)} h</strong>
+            ) : (
+              <strong className="text-emerald-700">ok (última há {Math.max(1, Math.round(vigiaHoras * 60))} min)</strong>
+            )}
+            {cfg?.vigia_ultima_loja ? <> · loja vista: <code>{cfg.vigia_ultima_loja}</code></> : null}
+            {typeof cfg?.vigia_saldo_disponivel === "number" ? (
+              <> · saldo disponível: {(cfg.vigia_saldo_disponivel / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</>
+            ) : null}
+          </p>
+          <div className="mt-3 flex gap-3">
+            {cfg?.vendas_pausadas ? (
+              <form action={reativarVendasAction}>
+                <button disabled={!recente} className="rounded-md bg-emerald-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-600 disabled:opacity-50">
+                  Reativar vendas
+                </button>
+              </form>
+            ) : (
+              <form action={pausarVendasAction}>
+                <button className="rounded-md border border-red-300 px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-50">
+                  Pausar vendas agora
+                </button>
+              </form>
+            )}
+          </div>
+          {cfg?.vendas_pausadas && !recente && (
+            <p className="mt-2 text-xs text-zinc-500">Reativar exige ter entrado com a biometria nos últimos 10 minutos.</p>
+          )}
         </section>
 
         <section className="rounded-lg border border-zinc-200 bg-white p-5">

@@ -1,0 +1,49 @@
+# Vigia da conta de pagamentos: roda FORA da Vercel, de hora em hora, e
+# pergunta ao site se a chave do AbacatePay ainda pertence à loja certa.
+# Se algo estiver errado, o site pausa as vendas e este job FALHA (o GitHub
+# também avisa por e-mail). Ver src/lib/vigia.ts.
+#
+# Configuração (Settings > Secrets and variables > Actions):
+#   secret   VIGIA_SECRET                  mesmo valor de VIGIA_SECRET na Vercel
+#   variable ABACATEPAY_LOJA_ESPERADA      id da SUA loja no AbacatePay (não é segredo)
+name: Vigia AbacatePay
+
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vigia-abacatepay
+  cancel-in-progress: false
+
+jobs:
+  vigia:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Consultar o vigia do site
+        env:
+          VIGIA_SECRET: ${{ secrets.VIGIA_SECRET }}
+          LOJA_ESPERADA: ${{ vars.ABACATEPAY_LOJA_ESPERADA }}
+        run: |
+          set -eu
+          if [ -z "${VIGIA_SECRET}" ] || [ -z "${LOJA_ESPERADA}" ]; then
+            echo "::error::Configure o secret VIGIA_SECRET e a variável ABACATEPAY_LOJA_ESPERADA."
+            exit 1
+          fi
+          status=$(curl -sS --max-time 50 -o resposta.json -w "%{http_code}" \
+            -X POST "https://www.sibrap.tec.br/api/vigia" \
+            -H "Authorization: Bearer ${VIGIA_SECRET}" \
+            -H "Content-Type: application/json" \
+            -d "{\"lojaEsperada\":\"${LOJA_ESPERADA}\"}")
+          echo "HTTP ${status}"
+          cat resposta.json
+          echo
+          if [ "${status}" != "200" ]; then
+            echo "::error::O vigia reportou problema (HTTP ${status}). Veja o e-mail de alerta e o painel de segurança."
+            exit 1
+          fi
