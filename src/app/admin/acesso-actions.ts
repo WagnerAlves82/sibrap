@@ -41,7 +41,7 @@ async function exigirAdmin(recente = false): Promise<string | null> {
 // ---------- entrada por biometria ----------
 
 export async function opcoesLoginAction() {
-  if (!(await tentativaPermitida("bio-opcoes", 20, 100))) return { erro: MSG_MUITAS_TENTATIVAS };
+  if (!(await tentativaPermitida("bio-opcoes", 30, 5000))) return { erro: MSG_MUITAS_TENTATIVAS };
   try {
     const { opcoes, desafioId } = await opcoesLogin();
     return { opcoes, desafioId };
@@ -51,7 +51,7 @@ export async function opcoesLoginAction() {
 }
 
 export async function verificarLoginAction(desafioId: string, resposta: AuthenticationResponseJSON) {
-  if (!(await tentativaPermitida("bio", 10, 60))) return { erro: MSG_MUITAS_TENTATIVAS };
+  if (!(await tentativaPermitida("bio", 15, 5000))) return { erro: MSG_MUITAS_TENTATIVAS };
   const r = await verificarLogin(desafioId, resposta).catch(() => ({ erro: "Falha ao verificar." }));
   if (!("ok" in r)) return { erro: r.erro };
   await iniciarSessaoAdmin("Biometria (passkey)");
@@ -63,7 +63,7 @@ export async function verificarLoginAction(desafioId: string, resposta: Authenti
 export type EstadoCodigo = { erro: string } | null;
 
 export async function entrarComCodigoAction(_: EstadoCodigo, formData: FormData): Promise<EstadoCodigo> {
-  if (!(await tentativaPermitida("codigo", 5, 30))) return { erro: MSG_MUITAS_TENTATIVAS };
+  if (!(await tentativaPermitida("codigo", 5, 500))) return { erro: MSG_MUITAS_TENTATIVAS };
   const ok = await consumirCodigo(String(formData.get("codigo") ?? ""));
   if (!ok) return { erro: "Código inválido ou já usado." };
   await iniciarSessaoAdmin("Código de recuperação (uso único)");
@@ -78,7 +78,7 @@ export async function pedirRecuperacaoAction(_: EstadoRecuperacao): Promise<Esta
   // poucos pedidos: cada um dispara um e-mail para o dono
   const cliente = await identificarCliente();
   const okOrigem = await dentroDoLimite(`admin:recuperar:${cliente}`, 2, 3600, false);
-  const okGeral = await dentroDoLimite("admin:recuperar:geral", 4, 3600, false);
+  const okGeral = await dentroDoLimite("admin:recuperar:geral", 20, 3600, false);
   if (!okOrigem || !okGeral) return { erro: MSG_MUITAS_TENTATIVAS };
   if (process.env.ADMIN_RECUPERACAO_EMAIL === "off") return { erro: "A recuperação por e-mail está desativada." };
   try {
@@ -95,7 +95,7 @@ export async function cancelarRecuperacaoAction(formData: FormData) {
 }
 
 export async function concluirRecuperacaoAction(formData: FormData) {
-  if (!(await tentativaPermitida("recuperar-usar", 5, 20))) redirect("/admin/login");
+  if (!(await tentativaPermitida("recuperar-usar", 5, 500))) redirect("/admin/login");
   const token = String(formData.get("token") ?? "");
   if (!(await consumirRecuperacao(token))) redirect(`/admin/recuperar/${token}`);
   await iniciarSessaoAdmin("Recuperação por e-mail");

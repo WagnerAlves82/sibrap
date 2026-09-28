@@ -58,6 +58,14 @@ async function contexto(): Promise<{ rpID: string; origem: string }> {
   throw new Error("Endereço não permitido para biometria");
 }
 
+function decodificar(v: string): string {
+  try {
+    return decodeURIComponent(v);
+  } catch {
+    return v;
+  }
+}
+
 async function descreverAcesso(): Promise<string> {
   const h = await headers();
   const ip = h.get("x-vercel-forwarded-for") ?? h.get("x-real-ip") ?? h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "?";
@@ -65,7 +73,7 @@ async function descreverAcesso(): Promise<string> {
   const cidade = h.get("x-vercel-ip-city");
   const pais = h.get("x-vercel-ip-country");
   const agente = (h.get("user-agent") ?? "").slice(0, 120);
-  return `${esc(new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }))} (Brasília) · IP ${esc(ipParcial)}${cidade ? ` · ${esc(decodeURIComponent(cidade))}` : ""}${pais ? `/${esc(pais)}` : ""}<br><span style="font-size:12px;color:#93A0AF;">${esc(agente)}</span>`;
+  return `${esc(new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }))} (Brasília) · IP ${esc(ipParcial)}${cidade ? ` · ${esc(decodificar(cidade))}` : ""}${pais ? `/${esc(pais)}` : ""}<br><span style="font-size:12px;color:#93A0AF;">${esc(agente)}</span>`;
 }
 
 // ---------- desafios (uso único, 5 min) ----------
@@ -98,8 +106,10 @@ async function consumirDesafio(id: string, tipo: "registro" | "login"): Promise<
 // ---------- passkeys ----------
 
 export async function contarPasskeys(): Promise<number> {
-  const { count } = await db().from("admin_passkeys").select("id", { count: "exact", head: true });
-  return count ?? 0;
+  const { count, error } = await db().from("admin_passkeys").select("id", { count: "exact", head: true });
+  // erro de banco NÃO pode virar "zero passkeys" (isso reabriria o login por senha)
+  if (error || count === null) throw new Error("Não foi possível verificar a biometria cadastrada");
+  return count;
 }
 
 export function senhaPermitida(temPasskeys: boolean): boolean {
@@ -326,14 +336,18 @@ export async function iniciarSessaoAdmin(metodo: string): Promise<void> {
 
   const revogar = `${siteUrl()}/admin/revogar/${criarTokenAcao("revogar")}`;
   try {
-    await enviarAlertaAdmin({
+    // no máximo 4 s: o aviso é um reforço e não pode segurar o login
+    await Promise.race([
+      enviarAlertaAdmin({
       assunto: "Novo acesso ao painel admin do SIBRAP",
       titulo: "Novo acesso ao painel",
       corpoHtml: `<p style="margin:0 0 12px 0;">Método: <strong>${esc(metodo)}</strong></p>
 <p style="margin:0 0 12px 0;">${await descreverAcesso()}</p>
 <p style="margin:0;">Foi você? Então ignore este e-mail. <strong>Se não foi</strong>, encerre todas as sessões agora e troque as senhas.</p>`,
       botao: { texto: "Não fui eu: encerrar todas as sessões &rarr;", url: revogar },
-    });
+      }),
+      new Promise((resolve) => setTimeout(resolve, 4000)),
+    ]);
   } catch {
     // o aviso é um reforço; falha de e-mail não impede o acesso legítimo
   }

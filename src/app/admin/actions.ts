@@ -24,7 +24,12 @@ export async function loginAdmin(
   // contra ataque distribuído). Se o contador falhar, bloqueia por segurança.
   // Com biometria cadastrada, a senha deixa de valer (a menos que o modo de
   // emergência esteja ligado na Vercel: ADMIN_PERMITE_SENHA=1)
-  const temBiometria = (await contarPasskeys()) > 0;
+  let temBiometria: boolean;
+  try {
+    temBiometria = (await contarPasskeys()) > 0;
+  } catch {
+    return { erro: "Não foi possível verificar o acesso agora. Tente de novo em instantes." };
+  }
   if (!senhaPermitida(temBiometria)) {
     return { erro: "Este painel usa biometria. Volte à tela de entrada e use o botão de biometria." };
   }

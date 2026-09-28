@@ -9,7 +9,7 @@ export default async function AdminLoginPage({
   searchParams: Promise<{ revogado?: string }>;
 }) {
   const { revogado } = await searchParams;
-  const temPasskeys = (await contarPasskeys().catch(() => 0)) > 0;
+  const temPasskeys = (await contarPasskeys().catch(() => 1)) > 0;
   return (
     <LoginAdmin
       temPasskeys={temPasskeys}

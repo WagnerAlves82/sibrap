@@ -49,6 +49,12 @@ export default async function SegurancaPage({ searchParams }: { searchParams: Pr
           celular pede o PIN/padrão dele.
         </p>
 
+        {process.env.ADMIN_PERMITE_SENHA === "1" && (
+          <p className="mb-6 rounded-md border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800">
+            Atenção: o modo de emergência da senha (ADMIN_PERMITE_SENHA=1) está LIGADO na Vercel. Remova a variável e
+            faça redeploy assim que recuperar o acesso.
+          </p>
+        )}
         {alerta && <p className={`mb-6 rounded-md border px-4 py-3 text-sm ${alerta.cor}`}>{alerta.texto}</p>}
         {!recente && passkeys.length > 0 && (
           <p className="mb-6 rounded-md border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-600">
