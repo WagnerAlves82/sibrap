@@ -8,10 +8,11 @@ import { EMISSOR } from "@/lib/emissor";
 import {
   diasAte,
   formatarDataIso,
-  formatarPreco,
   slugValido,
   urlCapa,
 } from "@/lib/apostilas";
+import { GaleriaApostila, type ImagemGaleria } from "@/components/galeria-apostila";
+import { PrecoApostila } from "@/components/preco-apostila";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -74,6 +75,14 @@ export default async function ApostilaPage({ params }: Props) {
   const prova = formatarDataIso(apostila.data_prova);
   const dias = diasAte(apostila.data_prova);
   const inscricoes = formatarDataIso(apostila.inscricoes_ate);
+  const alt = `Apostila ${apostila.orgao} — ${apostila.cargo}`;
+  const galeria: ImagemGaleria[] = [
+    ...(apostila.imagens ?? []).flatMap((p) => {
+      const url = urlCapa(p);
+      return url ? [{ url, alt, mockup: true }] : [];
+    }),
+    ...(capa ? [{ url: capa, alt: `Capa da ${alt.toLowerCase()}`, mockup: false }] : []),
+  ];
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
 
   const fatos: [string, string][] = [
@@ -121,18 +130,7 @@ export default async function ApostilaPage({ params }: Props) {
       <main className="flex-1 bg-[#F6F8FB] py-10 sm:py-14">
         <div className="mx-auto grid max-w-[1080px] gap-8 px-4 sm:px-6 md:grid-cols-[minmax(0,340px)_minmax(0,1fr)] md:gap-12">
           <div className="mx-auto w-full max-w-[300px] md:max-w-none">
-            <div className="relative aspect-[2/3] w-full overflow-hidden rounded-xl border border-[#D7DEE6] bg-surface-2 shadow-[0_24px_50px_-24px_rgba(11,42,74,0.45)]">
-              {capa && (
-                <Image
-                  src={capa}
-                  alt={`Capa da apostila ${apostila.orgao} — ${apostila.cargo}`}
-                  fill
-                  priority
-                  sizes="(min-width: 768px) 340px, 300px"
-                  className="object-cover"
-                />
-              )}
-            </div>
+            <GaleriaApostila imagens={galeria} />
           </div>
 
           <div>
@@ -152,6 +150,19 @@ export default async function ApostilaPage({ params }: Props) {
               <p className="mt-3 max-w-[60ch] text-[16px] leading-relaxed text-[#516278]">
                 {apostila.descricao}
               </p>
+            )}
+
+            {apostila.selos?.length > 0 && (
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {apostila.selos.map((selo) => (
+                  <li
+                    key={selo}
+                    className="rounded-full border border-[#D7DEE6] bg-white px-3 py-1 text-[12.5px] font-semibold text-brand"
+                  >
+                    {selo}
+                  </li>
+                ))}
+              </ul>
             )}
 
             {dias !== null && dias >= 0 && (
@@ -191,10 +202,12 @@ export default async function ApostilaPage({ params }: Props) {
             <div className="mt-8 rounded-xl border border-[#D7DEE6] bg-white p-5">
               <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <p className="font-data text-3xl font-semibold text-[#14213A]">
-                    {formatarPreco(apostila.preco_centavos)}
-                  </p>
-                  <p className="text-[13px] text-[#516278]">Pagamento único por PIX · sem mensalidade</p>
+                  <PrecoApostila
+                    centavos={apostila.preco_centavos}
+                    original={apostila.preco_original_centavos}
+                    tamanho="grande"
+                  />
+                  <p className="mt-1 text-[13px] text-[#516278]">Pagamento único · sem mensalidade</p>
                 </div>
                 <Link
                   href={jaTem ? `${areaHref}/baixar` : ctaHref}

@@ -50,6 +50,24 @@ function revalidarVitrine(slug?: string) {
   revalidatePath("/admin/apostilas");
 }
 
+async function enviarMockups(
+  admin: ReturnType<typeof criarClienteSupabaseAdmin>,
+  lista: { path: string; bytes: Uint8Array; mime: string }[]
+): Promise<string[] | null> {
+  const enviados: string[] = [];
+  for (const m of lista) {
+    const { error } = await admin.storage
+      .from(BUCKET_CAPAS)
+      .upload(m.path, m.bytes, { contentType: m.mime, cacheControl: "31536000" });
+    if (error) {
+      if (enviados.length) await admin.storage.from(BUCKET_CAPAS).remove(enviados);
+      return null;
+    }
+    enviados.push(m.path);
+  }
+  return enviados;
+}
+
 export type EstadoApostila = { erro?: string; ok?: boolean } | null;
 
 export async function salvarApostilaAction(
@@ -80,7 +98,32 @@ export async function salvarApostilaAction(
     return { erro: "Páginas, questões, simulados e ordem devem ser números inteiros." };
   }
 
+  const selos = texto(formData, "selos")
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean);
+  if (selos.length > 5 || selos.some((l) => l.length > 30)) {
+    return { erro: "Selos: no máximo 5, com até 30 caracteres cada (um por linha)." };
+  }
+  const originalBruto = texto(formData, "preco_original");
+  const precoOriginal = originalBruto ? precoEmCentavos(originalBruto) : null;
+  if (originalBruto && (precoOriginal === null || precoOriginal <= centavos)) {
+    return { erro: "O preço de referência precisa ser maior que o preço de venda (ou deixe vazio)." };
+  }
+
   const admin = criarClienteSupabaseAdmin();
+
+  // Mockups (opcionais; se enviar algum, substitui os atuais)
+  const mockupsNovos: { path: string; bytes: Uint8Array; mime: string }[] = [];
+  const arquivosMockup = formData.getAll("mockups").filter((f): f is File => f instanceof File && f.size > 0);
+  if (arquivosMockup.length > 4) return { erro: "Envie no máximo 4 imagens de mockup." };
+  for (const [i, arq] of arquivosMockup.entries()) {
+    if (arq.size > TAMANHO_MAXIMO_CAPA) return { erro: `O mockup ${arq.name} é grande demais (máximo 3,5 MB). Use WebP.` };
+    const bytes = new Uint8Array(await arq.arrayBuffer());
+    const tipo = tipoDaImagem(bytes);
+    if (!tipo) return { erro: `Formato não aceito em ${arq.name}. Use JPG, PNG ou WebP.` };
+    mockupsNovos.push({ path: `${id ? "mockup" : slugInformado}-${Date.now()}-${i + 1}.${tipo.ext}`, bytes, mime: tipo.mime });
+  }
 
   // Capa (opcional)
   let capaNova: { path: string; bytes: Uint8Array; mime: string } | null = null;
@@ -111,6 +154,8 @@ export async function salvarApostilaAction(
     questoes: questoes as number | null,
     simulados: simulados as number | null,
     ordem: (ordem as number | null) ?? 0,
+    selos,
+    preco_original_centavos: precoOriginal,
     destaque: formData.get("destaque") === "on",
     status,
     atualizado_em: new Date().toISOString(),
@@ -154,12 +199,19 @@ export async function salvarApostilaAction(
       capaPath = capaNova.path;
     }
 
-    const { error: erroApostila } = await admin
-      .from("apostilas")
-      .insert({ ...campos, slug: slugInformado, produto_id: produto.id, capa_path: capaPath });
-    if (erroApostila) {
+    const imagens = await enviarMockups(admin, mockupsNovos);
+    if (!imagens) {
       await admin.from("produtos").delete().eq("id", produto.id);
       if (capaPath) await admin.storage.from(BUCKET_CAPAS).remove([capaPath]);
+      return { erro: "Não deu pra enviar os mockups. Tente de novo." };
+    }
+
+    const { error: erroApostila } = await admin
+      .from("apostilas")
+      .insert({ ...campos, slug: slugInformado, produto_id: produto.id, capa_path: capaPath, imagens });
+    if (erroApostila) {
+      await admin.from("produtos").delete().eq("id", produto.id);
+      await admin.storage.from(BUCKET_CAPAS).remove([...(capaPath ? [capaPath] : []), ...imagens]);
       return { erro: erroApostila.message };
     }
     revalidarVitrine(slugInformado);
@@ -169,7 +221,7 @@ export async function salvarApostilaAction(
   // ---------- editar ----------
   const { data: atual } = await admin
     .from("apostilas")
-    .select("slug, produto_id, capa_path, produtos(apostila_storage_path)")
+    .select("slug, produto_id, capa_path, imagens, produtos(apostila_storage_path)")
     .eq("id", id)
     .maybeSingle();
   if (!atual) return { erro: "Apostila não encontrada." };
@@ -188,9 +240,16 @@ export async function salvarApostilaAction(
     capaPath = capaNova.path;
   }
 
+  let imagens = atual.imagens ?? [];
+  if (mockupsNovos.length) {
+    const enviados = await enviarMockups(admin, mockupsNovos);
+    if (!enviados) return { erro: "Não deu pra enviar os mockups. Tente de novo." };
+    imagens = enviados;
+  }
+
   const { error: erroApostila } = await admin
     .from("apostilas")
-    .update({ ...campos, capa_path: capaPath })
+    .update({ ...campos, capa_path: capaPath, imagens })
     .eq("id", id);
   if (erroApostila) return { erro: erroApostila.message };
 
@@ -205,9 +264,11 @@ export async function salvarApostilaAction(
     .eq("id", atual.produto_id);
   if (erroProduto) return { erro: erroProduto.message };
 
-  if (capaNova && atual.capa_path && atual.capa_path !== capaPath) {
-    await admin.storage.from(BUCKET_CAPAS).remove([atual.capa_path]);
-  }
+  const descartar = [
+    ...(capaNova && atual.capa_path && atual.capa_path !== capaPath ? [atual.capa_path] : []),
+    ...(mockupsNovos.length ? (atual.imagens ?? []) : []),
+  ];
+  if (descartar.length) await admin.storage.from(BUCKET_CAPAS).remove(descartar);
 
   revalidarVitrine(atual.slug);
   return { ok: true };

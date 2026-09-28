@@ -7,6 +7,7 @@
 // consultando a API do Mercado Pago pelo id que a gente mesmo salvou.
 
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
+import { entregarPedido } from "@/lib/entrega";
 
 export type StatusPedido = "pendente" | "aprovado" | "recusado";
 
@@ -45,17 +46,49 @@ export async function confirmarPagamentoPorOrderId(
     : null;
 
   const supabaseAdmin = criarClienteSupabaseAdmin();
+
+  // Só libera se a order do Mercado Pago é mesmo deste pedido: mesma
+  // referência externa e mesmo valor. Sem isso, uma order paga (de outro
+  // produto, mais barato) poderia ser reaproveitada para liberar outro.
+  const { data: pedido } = await supabaseAdmin
+    .from("pedidos")
+    .select("id, valor_centavos")
+    .eq("mercadopago_order_id", orderId)
+    .maybeSingle();
+  if (!pedido) return { erro: "Pedido não encontrado para esta order" };
+  if (status === "aprovado") {
+    const valorOrder = Math.round(Number(order.total_amount) * 100);
+    if (order.external_reference !== pedido.id || valorOrder !== pedido.valor_centavos) {
+      console.error("Order do Mercado Pago não confere com o pedido", {
+        pedido: pedido.id,
+        externalReference: order.external_reference,
+      });
+      return { erro: "A order não confere com o pedido" };
+    }
+  }
+
   const { error } = await supabaseAdmin
     .from("pedidos")
     .update({
       status,
       ...(paymentId ? { mercadopago_payment_id: paymentId } : {}),
     })
-    .eq("mercadopago_order_id", orderId)
+    .eq("id", pedido.id)
     .neq("status", "aprovado");
 
   if (error) {
     return { erro: error.message };
+  }
+
+  // A entrega é idempotente (o envio é reivindicado no banco), então pode
+  // ser chamada por quem confirmou agora ou por uma notificação repetida
+  // do Mercado Pago — o que também dá uma nova chance se o e-mail falhou.
+  if (status === "aprovado") {
+    try {
+      await entregarPedido(pedido.id);
+    } catch (e) {
+      console.error("Falha ao enviar a entrega do pedido", pedido.id, e);
+    }
   }
 
   return { status };

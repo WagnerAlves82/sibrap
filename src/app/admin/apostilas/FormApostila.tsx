@@ -146,6 +146,29 @@ export function FormApostila({ apostila }: { apostila?: ApostilaAdmin }) {
           )}
         </label>
         <label className={ROTULO}>
+          Mockups do livro (até 4 imagens; enviar substitui as atuais — a 1ª aparece no card)
+          <input type="file" name="mockups" multiple accept="image/jpeg,image/png,image/webp" className={INPUT} />
+          {(a?.imagens?.length ?? 0) > 0 && (
+            <span className="mt-1 flex gap-1">
+              {a!.imagens.map((p) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img key={p} src={urlCapa(p) ?? ""} alt="Mockup atual" className="h-24 w-16 rounded border border-zinc-200 bg-zinc-100 object-contain" />
+              ))}
+            </span>
+          )}
+        </label>
+        <label className={ROTULO}>
+          Selos (um por linha, até 5 — ex.: Edital 01/2026, Lançamento)
+          <textarea name="selos" defaultValue={a?.selos?.join("\n") ?? ""} rows={3} className={INPUT} />
+        </label>
+        <label className={ROTULO}>
+          Preço de referência (R$) — opcional
+          <input name="preco_original" defaultValue={a?.preco_original_centavos ? (a.preco_original_centavos / 100).toFixed(2).replace(".", ",") : ""} placeholder="vazio = sem desconto" className={INPUT} />
+          <span className="font-normal text-zinc-500">
+            Gera o &quot;de R$ X&quot; e o selo de % (ex.: -27%). Use só para preço realmente praticado antes, ou promoção com data para acabar — desconto fictício é prática enganosa (CDC art. 37).
+          </span>
+        </label>
+        <label className={ROTULO}>
           Situação
           <select name="status" defaultValue={a?.status ?? "rascunho"} className={INPUT}>
             <option value="rascunho">Rascunho (fora da vitrine)</option>

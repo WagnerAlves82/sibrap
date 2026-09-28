@@ -36,6 +36,37 @@ export function urlCapa(path: string | null | undefined): string | null {
   return `${base}/storage/v1/object/public/${BUCKET_CAPAS}/${path}`;
 }
 
+// Imagem principal para vitrine/cards: o primeiro mockup (livro 3D, fundo
+// transparente) quando existir; senão a capa plana.
+export function imagemDeVitrine(a: Pick<ApostilaRow, "imagens" | "capa_path">): {
+  url: string;
+  mockup: boolean;
+} | null {
+  const mockup = urlCapa(a.imagens?.[0]);
+  if (mockup) return { url: mockup, mockup: true };
+  const capa = urlCapa(a.capa_path);
+  return capa ? { url: capa, mockup: false } : null;
+}
+
+// Parcelamento no cartão. Só aparece no site quando o pagamento por cartão
+// existir de fato (hoje a venda é só por PIX, à vista): anunciar parcelas
+// que o cliente não consegue usar seria propaganda enganosa.
+export const PARCELAMENTO = { ativo: false, parcelas: 5 } as const;
+
+export function textoParcela(centavos: number, parcelas = PARCELAMENTO.parcelas): string {
+  return `${parcelas}x de ${formatarPreco(Math.round(centavos / parcelas))}`;
+}
+
+// Percentual só existe quando há um preço de referência real cadastrado
+// (preço praticado antes, ou promoção por tempo limitado).
+export function descontoPercentual(
+  original: number | null | undefined,
+  atual: number
+): number | null {
+  if (!original || original <= atual) return null;
+  return Math.round((1 - atual / original) * 100);
+}
+
 export function formatarPreco(centavos: number): string {
   return (centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }

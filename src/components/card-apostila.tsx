@@ -1,46 +1,66 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
+  descontoPercentual,
   diasAte,
   formatarDataIso,
-  formatarPreco,
-  urlCapa,
+  imagemDeVitrine,
   type ApostilaVitrine,
 } from "@/lib/apostilas";
+import { PrecoApostila } from "@/components/preco-apostila";
 
-// Card da vitrine: capa no modelo da apostila, órgão, cargo, data da
-// prova e preço. Serve à home (3 por linha no desktop, 2 no celular) e à
-// listagem completa.
+// Card da vitrine: livro em 3D (mockup) ou capa plana, órgão, cargo, data
+// da prova e preço. Serve à home (3 por linha no desktop, 2 no celular) e
+// à listagem completa.
 export function CardApostila({ apostila }: { apostila: ApostilaVitrine }) {
-  const capa = urlCapa(apostila.capa_path);
+  const imagem = imagemDeVitrine(apostila);
   const prova = formatarDataIso(apostila.data_prova);
   const dias = diasAte(apostila.data_prova);
   const provaFutura = dias !== null && dias >= 0;
+  const pct = descontoPercentual(apostila.preco_original_centavos, apostila.preco_centavos);
+  const selo = apostila.selos?.[0];
 
   return (
     <Link
       href={`/apostilas/${apostila.slug}`}
       className="group flex h-full flex-col overflow-hidden rounded-xl border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.35)]"
     >
-      <div className="relative aspect-[2/3] w-full overflow-hidden bg-surface-2">
-        {capa ? (
+      <div className="relative aspect-[2/3] w-full overflow-hidden bg-gradient-to-b from-[#E6EEF7] to-[#F6F9FC]">
+        {imagem ? (
           <Image
-            src={capa}
-            alt={`Capa da apostila ${apostila.orgao} — ${apostila.cargo}`}
+            src={imagem.url}
+            alt={`Apostila ${apostila.orgao} — ${apostila.cargo}`}
             fill
             sizes="(min-width: 1024px) 360px, (min-width: 640px) 45vw, 46vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            className={
+              imagem.mockup
+                ? "object-contain p-3 drop-shadow-[0_14px_16px_rgba(11,42,74,0.28)] transition-transform duration-300 group-hover:scale-[1.03] sm:p-4"
+                : "object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            }
           />
         ) : (
           <div className="flex h-full items-center justify-center p-4 text-center font-display text-lg font-extrabold text-brand">
             {apostila.orgao}
           </div>
         )}
-        {provaFutura && (
-          <span className="absolute left-2 top-2 rounded bg-brand px-2 py-1 font-data text-[10.5px] font-semibold text-white shadow">
-            {dias === 0 ? "Prova hoje" : dias === 1 ? "Prova amanhã" : `Prova em ${dias} dias`}
-          </span>
-        )}
+        <div className="absolute inset-x-2 top-2 flex items-start justify-between gap-2">
+          {provaFutura ? (
+            <span className="rounded bg-brand px-2 py-1 font-data text-[10.5px] font-semibold text-white shadow">
+              {dias === 0 ? "Prova hoje" : dias === 1 ? "Prova amanhã" : `Prova em ${dias} dias`}
+            </span>
+          ) : (
+            <span />
+          )}
+          {pct !== null ? (
+            <span className="rounded bg-accent px-2 py-1 font-data text-[11px] font-bold text-accent-ink shadow">
+              -{pct}%
+            </span>
+          ) : selo ? (
+            <span className="rounded bg-accent px-2 py-1 font-data text-[10.5px] font-bold text-accent-ink shadow">
+              {selo}
+            </span>
+          ) : null}
+        </div>
       </div>
 
       <div className="flex flex-1 flex-col gap-1.5 p-3.5 sm:p-4">
@@ -57,12 +77,7 @@ export function CardApostila({ apostila }: { apostila: ApostilaVitrine }) {
         </p>
 
         <div className="mt-auto flex items-end justify-between gap-2 pt-3">
-          <div>
-            <p className="font-data text-xl font-semibold text-[#14213A] sm:text-2xl">
-              {formatarPreco(apostila.preco_centavos)}
-            </p>
-            <p className="text-[11.5px] text-[#516278]">PDF · pagamento único</p>
-          </div>
+          <PrecoApostila centavos={apostila.preco_centavos} original={apostila.preco_original_centavos} />
           <span
             aria-hidden
             className="rounded-md bg-accent px-3 py-1.5 text-[12.5px] font-bold text-accent-ink transition-colors group-hover:brightness-105"

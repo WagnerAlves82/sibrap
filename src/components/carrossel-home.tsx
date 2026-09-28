@@ -148,20 +148,31 @@ function Slide({
       aria-label={`${indice + 1} de ${total}`}
       aria-hidden={!ativo}
       inert={!ativo}
-      className={`relative col-start-1 row-start-1 flex min-h-[430px] items-center transition-opacity duration-700 md:min-h-0 md:aspect-[1920/700] md:max-h-[560px] ${
+      className={`relative col-start-1 row-start-1 flex min-h-[430px] flex-col overflow-hidden transition-opacity duration-700 md:min-h-0 md:aspect-[1920/700] md:max-h-[560px] md:flex-row md:items-center ${
         ativo ? "z-10 opacity-100" : "z-0 opacity-0"
       }`}
       style={{ background: "linear-gradient(135deg, #2e3192 0%, #1f5fb0 55%, #0b7cc4 100%)" }}
     >
-      {/* Foto do órgão (só desktop) */}
-      <Image
-        src={slide.imagem}
-        alt=""
-        fill
-        priority={indice === 0}
-        sizes="100vw"
-        className="hidden object-cover object-right md:block"
-      />
+      {/* Desktop: foto do órgão na coluna da direita, colada na borda
+          direita da tela, sem cantos arredondados; só o lado esquerdo
+          esmaece para encontrar o fundo do slide. */}
+      <div
+        aria-hidden
+        className="absolute inset-y-0 right-0 hidden w-[62%] md:block"
+        style={{
+          maskImage: "linear-gradient(to right, transparent 0%, #000 28%)",
+          WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 28%)",
+        }}
+      >
+        <Image
+          src={slide.imagem}
+          alt=""
+          fill
+          priority={indice === 0}
+          sizes="(min-width: 768px) 62vw, 1px"
+          className="rounded-none object-cover object-right"
+        />
+      </div>
       {/* Desenho do celular: círculos suaves no fundo */}
       <span
         aria-hidden
@@ -172,7 +183,7 @@ function Slide({
         className="pointer-events-none absolute -bottom-20 -left-10 h-48 w-48 rounded-full bg-white/[0.06] md:hidden"
       />
 
-      <div className="relative mx-auto w-full max-w-[1180px] px-6 pb-12 pt-8 md:py-10">
+      <div className="relative mx-auto w-full max-w-[1180px] px-6 pb-6 pt-8 md:py-10">
         <div className="max-w-[560px]">
           <p className="mb-3 inline-flex flex-wrap items-center gap-2 font-data text-[11.5px] font-semibold uppercase tracking-wide text-[#D7E6F7]">
             <span className="rounded bg-white/15 px-2 py-1">{slide.uf} · {slide.cidade}</span>
@@ -217,6 +228,19 @@ function Slide({
             )}
           </div>
         </div>
+      </div>
+
+      {/* Celular: a imagem vai para o rodapé do slide (position bottom),
+          de ponta a ponta, sem bordas arredondadas. */}
+      <div aria-hidden className="relative mt-auto h-44 w-full shrink-0 md:hidden">
+        <Image
+          src={slide.imagem}
+          alt=""
+          fill
+          sizes="(max-width: 767px) 100vw, 1px"
+          className="rounded-none object-cover object-right-bottom"
+        />
+        <span className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-[#1f5fb0] to-transparent" />
       </div>
     </div>
   );

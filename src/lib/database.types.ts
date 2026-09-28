@@ -72,13 +72,16 @@ export type Database = {
           descricao: string | null
           destaque: boolean
           id: string
+          imagens: string[]
           inscricoes_ate: string | null
           ordem: number
           orgao: string
+          preco_original_centavos: number | null
           paginas: number | null
           produto_id: string
           questoes: number | null
           salario: string | null
+          selos: string[]
           simulados: number | null
           slug: string
           status: string
@@ -98,13 +101,16 @@ export type Database = {
           descricao?: string | null
           destaque?: boolean
           id?: string
+          imagens?: string[]
           inscricoes_ate?: string | null
           ordem?: number
           orgao: string
           paginas?: number | null
+          preco_original_centavos?: number | null
           produto_id: string
           questoes?: number | null
           salario?: string | null
+          selos?: string[]
           simulados?: number | null
           slug: string
           status?: string
@@ -124,13 +130,16 @@ export type Database = {
           descricao?: string | null
           destaque?: boolean
           id?: string
+          imagens?: string[]
           inscricoes_ate?: string | null
           ordem?: number
           orgao?: string
           paginas?: number | null
+          preco_original_centavos?: number | null
           produto_id?: string
           questoes?: number | null
           salario?: string | null
+          selos?: string[]
           simulados?: number | null
           slug?: string
           status?: string
@@ -680,6 +689,7 @@ export type Database = {
         Row: {
           atualizado_em: string
           criado_em: string
+          entrega_enviada_em: string | null
           id: string
           mercadopago_order_id: string | null
           mercadopago_payment_id: string | null
@@ -692,6 +702,7 @@ export type Database = {
         Insert: {
           atualizado_em?: string
           criado_em?: string
+          entrega_enviada_em?: string | null
           id?: string
           mercadopago_order_id?: string | null
           mercadopago_payment_id?: string | null
@@ -704,6 +715,7 @@ export type Database = {
         Update: {
           atualizado_em?: string
           criado_em?: string
+          entrega_enviada_em?: string | null
           id?: string
           mercadopago_order_id?: string | null
           mercadopago_payment_id?: string | null

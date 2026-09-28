@@ -194,3 +194,41 @@ export async function enviarResultadoComprovante({
     }),
   });
 }
+
+// E-mail enviado assim que o PIX é confirmado. Não leva o arquivo nem
+// senha: leva o caminho de acesso. A senha é a que a pessoa criou no
+// cadastro (e-mail com senha em texto puro é prática desaconselhada); se
+// esqueceu, o link de recuperação está aqui mesmo.
+export async function enviarEntregaApostila({
+  email,
+  nome,
+  titulo,
+  slug,
+  valorCentavos,
+  pedidoId,
+}: {
+  email: string;
+  nome?: string | null;
+  titulo: string;
+  slug: string;
+  valorCentavos: number;
+  pedidoId: string;
+}): Promise<Resultado> {
+  const primeiroNome = nome?.split(" ")[0];
+  const saudacao = primeiroNome ? `Olá, ${esc(primeiroNome)}!` : "Olá!";
+  const valor = (valorCentavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+  return enviarEmail({
+    para: email,
+    assunto: "Pagamento confirmado: sua apostila está liberada",
+    html: moldura({
+      saudacao,
+      titulo: "Sua apostila está liberada",
+      corpo: `<p style="margin:0 0 12px 0;">Recebemos o seu pagamento de <strong>${valor}</strong> e a apostila <strong>${esc(titulo)}</strong> já está disponível para download na sua área.</p>
+<p style="margin:0 0 6px 0;"><strong>Como acessar</strong></p>
+<p style="margin:0 0 12px 0;">Entre em sibrap.tec.br com o e-mail <strong>${esc(email)}</strong> e a senha que você criou no cadastro. Se não lembrar a senha, use <a href="${SITE_URL()}/esqueci-senha" style="color:#0B2A4A;">Esqueci minha senha</a>.</p>
+<p style="margin:0;font-size:12.5px;color:#93A0AF;">Pedido ${esc(pedidoId.slice(0, 8))}. Material de estudo independente, para uso pessoal — não compartilhe nem revenda o arquivo.</p>`,
+      botao: { texto: "Baixar minha apostila &rarr;", url: `${SITE_URL()}/minha-area/apostilas/${slug}` },
+    }),
+  });
+}

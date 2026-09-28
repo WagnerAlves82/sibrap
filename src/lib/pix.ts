@@ -6,6 +6,7 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/database.types";
+import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 
 export type EstadoPix =
   | { erro: string }
@@ -87,11 +88,18 @@ export async function gerarPixParaPedido({
     return { erro: "O Mercado Pago não retornou o QR Code do PIX. Tenta de novo." };
   }
 
-  await supabase.rpc("registrar_order_pagamento", {
-    p_pedido_id: pedidoId,
-    p_order_id: mpData.id,
-    p_payment_id: pagamento?.id ? String(pagamento.id) : undefined,
-  });
+  // Feito com a chave de serviço: a função do banco deixa de ser
+  // chamável por usuários logados (senão dava para reapontar o pedido para
+  // uma order já paga). Só grava o id da order que a gente mesmo criou.
+  await criarClienteSupabaseAdmin()
+    .from("pedidos")
+    .update({
+      mercadopago_order_id: mpData.id,
+      ...(pagamento?.id ? { mercadopago_payment_id: String(pagamento.id) } : {}),
+    })
+    .eq("id", pedidoId)
+    .eq("status", "pendente")
+    .is("mercadopago_order_id", null);
 
   return { pedidoId, qrCode, qrCodeBase64 };
 }
