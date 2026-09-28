@@ -7,6 +7,12 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        // capas das apostilas (bucket público do Supabase Storage)
+        protocol: "https",
+        hostname: "bdansoccbklggqqnxexn.supabase.co",
+        pathname: "/storage/v1/object/public/apostilas-capas/**",
+      },
     ],
   },
   experimental: {

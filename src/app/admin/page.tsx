@@ -54,6 +54,9 @@ export default async function AdminPage() {
           <Link href="/admin/comprovantes" className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 font-medium text-zinc-700 hover:bg-zinc-100">
             Comprovantes CadÚnico
           </Link>
+          <Link href="/admin/apostilas" className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 font-medium text-zinc-700 hover:bg-zinc-100">
+            Apostilas
+          </Link>
           <Link href="/admin/cursos" className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 font-medium text-zinc-700 hover:bg-zinc-100">
             Aulas dos cursos
           </Link>

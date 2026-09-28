@@ -59,6 +59,95 @@ export type Database = {
           },
         ]
       }
+      apostilas: {
+        Row: {
+          atualizado_em: string
+          banca: string | null
+          capa_path: string | null
+          cargo: string
+          categoria: string
+          cidade: string | null
+          criado_em: string
+          data_prova: string | null
+          descricao: string | null
+          destaque: boolean
+          id: string
+          inscricoes_ate: string | null
+          ordem: number
+          orgao: string
+          paginas: number | null
+          produto_id: string
+          questoes: number | null
+          salario: string | null
+          simulados: number | null
+          slug: string
+          status: string
+          titulo: string
+          uf: string
+          vagas: string | null
+        }
+        Insert: {
+          atualizado_em?: string
+          banca?: string | null
+          capa_path?: string | null
+          cargo: string
+          categoria?: string
+          cidade?: string | null
+          criado_em?: string
+          data_prova?: string | null
+          descricao?: string | null
+          destaque?: boolean
+          id?: string
+          inscricoes_ate?: string | null
+          ordem?: number
+          orgao: string
+          paginas?: number | null
+          produto_id: string
+          questoes?: number | null
+          salario?: string | null
+          simulados?: number | null
+          slug: string
+          status?: string
+          titulo: string
+          uf: string
+          vagas?: string | null
+        }
+        Update: {
+          atualizado_em?: string
+          banca?: string | null
+          capa_path?: string | null
+          cargo?: string
+          categoria?: string
+          cidade?: string | null
+          criado_em?: string
+          data_prova?: string | null
+          descricao?: string | null
+          destaque?: boolean
+          id?: string
+          inscricoes_ate?: string | null
+          ordem?: number
+          orgao?: string
+          paginas?: number | null
+          produto_id?: string
+          questoes?: number | null
+          salario?: string | null
+          simulados?: number | null
+          slug?: string
+          status?: string
+          titulo?: string
+          uf?: string
+          vagas?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "apostilas_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: true
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       aula_materiais: {
         Row: {
           aula_id: string
@@ -649,6 +738,7 @@ export type Database = {
           nome: string
           preco_centavos: number
           slug: string
+          tipo: string
         }
         Insert: {
           apostila_storage_path?: string | null
@@ -664,6 +754,7 @@ export type Database = {
           nome: string
           preco_centavos: number
           slug: string
+          tipo?: string
         }
         Update: {
           apostila_storage_path?: string | null
@@ -679,6 +770,7 @@ export type Database = {
           nome?: string
           preco_centavos?: number
           slug?: string
+          tipo?: string
         }
         Relationships: [
           {

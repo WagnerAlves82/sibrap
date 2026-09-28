@@ -4,6 +4,8 @@ import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { Alert } from "@/components/alert";
 import { BarraProgresso, Reveal } from "@/components/reveal";
 import { enviarApostilaGratisPorEmail } from "@/lib/resend";
+import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
+import { formatarDataIso } from "@/lib/apostilas";
 
 export default async function MinhaAreaPage() {
   const supabase = await criarClienteSupabaseServer();
@@ -13,8 +15,19 @@ export default async function MinhaAreaPage() {
 
   const { data: acessos } = await supabase
     .from("acessos")
-    .select("produtos(slug, nome)")
+    .select("produto_id, produtos(slug, nome)")
     .eq("user_id", user!.id);
+
+  // Apostilas compradas (leitura administrativa: quem comprou continua
+  // vendo mesmo que a apostila tenha saído da vitrine)
+  const idsProdutos = (acessos ?? []).map((a) => a.produto_id);
+  const { data: minhasApostilas } = idsProdutos.length
+    ? await criarClienteSupabaseAdmin()
+        .from("apostilas")
+        .select("slug, titulo, uf, cidade, data_prova")
+        .in("produto_id", idsProdutos)
+        .order("data_prova")
+    : { data: [] };
 
   const temPremium = acessos?.some((a) => a.produtos?.slug === "premium") ?? false;
   const meta = user?.user_metadata as { nome?: string; origem?: string } | undefined;
@@ -80,6 +93,29 @@ export default async function MinhaAreaPage() {
             Sua apostila grátis de Conhecimentos Básicos foi enviada pra {user?.email}. Se
             não chegar em alguns minutos, confere a caixa de spam.
           </Alert>
+        )}
+
+        {(minhasApostilas?.length ?? 0) > 0 && (
+          <section className="mt-8">
+            <h2 className="mb-3 font-display text-xl font-extrabold text-[#14213A]">Minhas apostilas</h2>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {minhasApostilas!.map((a) => (
+                <Link
+                  key={a.slug}
+                  href={`/minha-area/apostilas/${a.slug}`}
+                  className={`${cartao} block transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)]`}
+                >
+                  <p className="font-data text-xs font-semibold text-accent-2">
+                    {a.uf}
+                    {a.cidade ? ` · ${a.cidade}` : ""}
+                    {a.data_prova ? ` · prova ${formatarDataIso(a.data_prova)}` : ""}
+                  </p>
+                  <p className="mt-1 font-display text-lg font-extrabold text-[#14213A]">{a.titulo}</p>
+                  <span className="mt-4 block text-[13.5px] font-bold text-brand">Abrir e baixar →</span>
+                </Link>
+              ))}
+            </div>
+          </section>
         )}
 
         {meusCursos.length > 0 && (
