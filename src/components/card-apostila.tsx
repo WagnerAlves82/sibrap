@@ -21,12 +21,36 @@ export function CardApostila({ apostila }: { apostila: ApostilaVitrine }) {
   const selo = apostila.selos?.[0];
   const simulados = apostila.simulados ?? 0;
 
+  const badgeProva = provaFutura ? (
+    <span className="rounded bg-brand px-2 py-1 font-data text-[10.5px] font-semibold text-white shadow">
+      {dias === 0 ? "Prova hoje" : dias === 1 ? "Prova amanhã" : `Prova em ${dias} dias`}
+    </span>
+  ) : null;
+
+  const badgeDestaque =
+    pct !== null ? (
+      <span className="rounded bg-accent px-2 py-1 font-data text-[11px] font-bold text-accent-ink shadow">
+        -{pct}%
+      </span>
+    ) : selo ? (
+      <span className="rounded bg-accent px-2 py-1 font-data text-[10.5px] font-bold text-accent-ink shadow">
+        {selo}
+      </span>
+    ) : null;
+
   return (
     <Link
       href={`/apostilas/${apostila.slug}`}
       className="group flex h-full flex-col overflow-hidden rounded-xl border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.35)]"
     >
-      <div className="relative aspect-square w-full overflow-hidden bg-gradient-to-b from-[#E6EEF7] to-[#F6F9FC]">
+      {(badgeProva || badgeDestaque) && (
+        <div className="flex items-center justify-between gap-2 px-3 pt-3 sm:hidden">
+          {badgeProva ?? <span />}
+          {badgeDestaque}
+        </div>
+      )}
+
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-gradient-to-b from-[#E6EEF7] to-[#F6F9FC] sm:aspect-square">
         {imagem ? (
           <Image
             src={imagem.url}
@@ -35,7 +59,7 @@ export function CardApostila({ apostila }: { apostila: ApostilaVitrine }) {
             sizes="(min-width: 1024px) 360px, (min-width: 640px) 45vw, 46vw"
             className={
               imagem.mockup
-                ? "object-contain p-7 drop-shadow-[0_14px_16px_rgba(11,42,74,0.28)] transition-transform duration-300 group-hover:scale-[1.03] sm:p-9"
+                ? "object-contain p-2 drop-shadow-[0_14px_16px_rgba(11,42,74,0.28)] transition-transform duration-300 group-hover:scale-[1.03] sm:p-9"
                 : "object-cover transition-transform duration-300 group-hover:scale-[1.02]"
             }
           />
@@ -44,24 +68,12 @@ export function CardApostila({ apostila }: { apostila: ApostilaVitrine }) {
             {apostila.orgao}
           </div>
         )}
-        <div className="absolute inset-x-2 top-2 flex items-start justify-between gap-2">
-          {provaFutura ? (
-            <span className="rounded bg-brand px-2 py-1 font-data text-[10.5px] font-semibold text-white shadow">
-              {dias === 0 ? "Prova hoje" : dias === 1 ? "Prova amanhã" : `Prova em ${dias} dias`}
-            </span>
-          ) : (
-            <span />
-          )}
-          {pct !== null ? (
-            <span className="rounded bg-accent px-2 py-1 font-data text-[11px] font-bold text-accent-ink shadow">
-              -{pct}%
-            </span>
-          ) : selo ? (
-            <span className="rounded bg-accent px-2 py-1 font-data text-[10.5px] font-bold text-accent-ink shadow">
-              {selo}
-            </span>
-          ) : null}
-        </div>
+        {(badgeProva || badgeDestaque) && (
+          <div className="absolute inset-x-2 top-2 hidden items-start justify-between gap-2 sm:flex">
+            {badgeProva ?? <span />}
+            {badgeDestaque}
+          </div>
+        )}
       </div>
 
       <div className="flex flex-1 flex-col gap-1.5 p-3.5 sm:p-4">
