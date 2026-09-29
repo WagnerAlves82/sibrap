@@ -103,6 +103,7 @@ export default async function ApostilaPage({ params }: Props) {
     apostila.simulados ? `${apostila.simulados} simulados finais` : null,
     "Teoria na ordem do edital, com dicas e resumos",
     "Download liberado na sua área após a confirmação do PIX",
+    "Acesso ao Ambiente Virtual de Aprendizagem: simulado online, missões e cronograma de estudos",
   ].filter((i): i is string => !!i);
 
   const jsonLd = {
@@ -129,8 +130,23 @@ export default async function ApostilaPage({ params }: Props) {
 
       <main className="flex-1 bg-[#F6F8FB] py-10 sm:py-14">
         <div className="mx-auto grid max-w-[1080px] gap-8 px-4 sm:px-6 md:grid-cols-[minmax(0,340px)_minmax(0,1fr)] md:gap-12">
-          <div className="mx-auto w-full max-w-[300px] md:max-w-none">
+          <div className="relative mx-auto w-full max-w-[300px] md:max-w-none">
             <GaleriaApostila imagens={galeria} />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -right-3 -top-3 z-10 flex h-24 w-24 rotate-[-9deg] flex-col items-center justify-center gap-0.5 rounded-full border-[3px] border-dashed border-white/85 bg-accent text-center shadow-[0_16px_30px_-10px_rgba(185,134,42,0.6)] sm:h-28 sm:w-28"
+            >
+              <span className="font-display text-[11px] font-extrabold leading-tight text-accent-ink sm:text-[12.5px]">
+                Simulado
+                <br />
+                online
+              </span>
+              <span className="mt-1 font-data text-[8px] font-bold uppercase leading-tight text-accent-ink sm:text-[9px]">
+                centenas de
+                <br />
+                questões
+              </span>
+            </div>
           </div>
 
           <div>
@@ -198,32 +214,6 @@ export default async function ApostilaPage({ params }: Props) {
                 </li>
               ))}
             </ul>
-
-            <div className="mt-5 rounded-xl border border-dashed border-[#C4CEDA] bg-[#F6F8FB] p-5">
-              <p className="flex flex-wrap items-center gap-2 font-display text-[15px] font-extrabold text-[#14213A]">
-                Chegando em breve pra quem comprar
-                <span className="rounded-full bg-[#F3E3C4] px-2 py-0.5 font-data text-[10px] font-bold uppercase tracking-wide text-[#7A5A16]">
-                  Em breve
-                </span>
-              </p>
-              <ul className="mt-3 flex flex-col gap-2 text-[13.5px] text-[#516278]">
-                <li className="flex gap-2">
-                  <span className="mt-0.5 text-[#94A3B8]" aria-hidden>○</span>
-                  Ambiente virtual de aprendizagem, com simulados online, missões e cronograma de estudos até a prova
-                </li>
-                <li className="flex gap-2">
-                  <span className="mt-0.5 text-[#94A3B8]" aria-hidden>○</span>
-                  Questões online preparatórias, com nota e desempenho por matéria
-                </li>
-                <li className="flex gap-2">
-                  <span className="mt-0.5 text-[#94A3B8]" aria-hidden>○</span>
-                  Vídeoaulas de Informática básica
-                </li>
-              </ul>
-              <p className="mt-3 text-[11.5px] text-[#94A3B8]">
-                Quem comprar agora ganha acesso automático assim que cada recurso for lançado, sem custo adicional.
-              </p>
-            </div>
 
             <div className="mt-5 rounded-xl border border-[#D7DEE6] bg-white p-5">
               <div className="flex flex-wrap items-end justify-between gap-4">
