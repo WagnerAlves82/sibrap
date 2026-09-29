@@ -199,7 +199,33 @@ export default async function ApostilaPage({ params }: Props) {
               ))}
             </ul>
 
-            <div className="mt-8 rounded-xl border border-[#D7DEE6] bg-white p-5">
+            <div className="mt-5 rounded-xl border border-dashed border-[#C4CEDA] bg-[#F6F8FB] p-5">
+              <p className="flex flex-wrap items-center gap-2 font-display text-[15px] font-extrabold text-[#14213A]">
+                Chegando em breve pra quem comprar
+                <span className="rounded-full bg-[#F3E3C4] px-2 py-0.5 font-data text-[10px] font-bold uppercase tracking-wide text-[#7A5A16]">
+                  Em breve
+                </span>
+              </p>
+              <ul className="mt-3 flex flex-col gap-2 text-[13.5px] text-[#516278]">
+                <li className="flex gap-2">
+                  <span className="mt-0.5 text-[#94A3B8]" aria-hidden>○</span>
+                  Ambiente virtual de aprendizagem, com simulados online, missões e cronograma de estudos até a prova
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-0.5 text-[#94A3B8]" aria-hidden>○</span>
+                  Questões online preparatórias, com nota e desempenho por matéria
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-0.5 text-[#94A3B8]" aria-hidden>○</span>
+                  Vídeoaulas de Informática básica
+                </li>
+              </ul>
+              <p className="mt-3 text-[11.5px] text-[#94A3B8]">
+                Quem comprar agora ganha acesso automático assim que cada recurso for lançado, sem custo adicional.
+              </p>
+            </div>
+
+            <div className="mt-5 rounded-xl border border-[#D7DEE6] bg-white p-5">
               <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
                   <PrecoApostila
