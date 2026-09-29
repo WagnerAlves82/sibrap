@@ -134,6 +134,14 @@ export default async function ApostilaAreaPage({
                       Fazer simulado online <span aria-hidden>→</span>
                     </Link>
                   )}
+                  {temSimulado && (
+                    <Link
+                      href={`/minha-area/apostilas/${apostila.slug}/cronograma`}
+                      className="inline-flex items-center gap-2 rounded-lg border-[1.5px] border-brand px-6 py-3.5 text-[15px] font-bold text-brand transition-colors hover:bg-brand/5"
+                    >
+                      Cronograma de estudos
+                    </Link>
+                  )}
                 </div>
                 <p className="mt-4 text-[12.5px] leading-relaxed text-[#516278]">
                   Material de estudo independente. O edital oficial sempre

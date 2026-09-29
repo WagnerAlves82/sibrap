@@ -662,6 +662,80 @@ export type Database = {
           },
         ]
       }
+      cronograma_progresso: {
+        Row: {
+          concluido_em: string
+          id: string
+          topico_id: string
+          user_id: string
+        }
+        Insert: {
+          concluido_em?: string
+          id?: string
+          topico_id: string
+          user_id: string
+        }
+        Update: {
+          concluido_em?: string
+          id?: string
+          topico_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cronograma_progresso_topico_id_fkey"
+            columns: ["topico_id"]
+            isOneToOne: false
+            referencedRelation: "cronograma_topicos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cronograma_topicos: {
+        Row: {
+          cargo_id: string
+          criado_em: string
+          disciplina_id: string
+          id: string
+          minutos_estimados: number
+          ordem: number
+          titulo: string
+        }
+        Insert: {
+          cargo_id: string
+          criado_em?: string
+          disciplina_id: string
+          id?: string
+          minutos_estimados?: number
+          ordem: number
+          titulo: string
+        }
+        Update: {
+          cargo_id?: string
+          criado_em?: string
+          disciplina_id?: string
+          id?: string
+          minutos_estimados?: number
+          ordem?: number
+          titulo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cronograma_topicos_cargo_id_fkey"
+            columns: ["cargo_id"]
+            isOneToOne: false
+            referencedRelation: "cargos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cronograma_topicos_disciplina_id_fkey"
+            columns: ["disciplina_id"]
+            isOneToOne: false
+            referencedRelation: "disciplinas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cursos: {
         Row: {
           ativo: boolean
@@ -1409,6 +1483,10 @@ export type Database = {
         }[]
       }
       marcar_apostila_enviada: { Args: never; Returns: undefined }
+      marcar_topico_cronograma: {
+        Args: { p_concluido: boolean; p_topico_id: string }
+        Returns: undefined
+      }
       matricular_curso: { Args: { p_curso_slug: string }; Returns: string }
       miniquiz_da_aula: {
         Args: { p_aula_id: string }
