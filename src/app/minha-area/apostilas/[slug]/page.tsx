@@ -150,6 +150,14 @@ export default async function ApostilaAreaPage({
                       Missões
                     </Link>
                   )}
+                  {temSimulado && (
+                    <Link
+                      href={`/minha-area/apostilas/${apostila.slug}/minigame`}
+                      className="inline-flex items-center gap-2 rounded-lg border-[1.5px] border-[#D7DEE6] px-6 py-3.5 text-[15px] font-bold text-[#33465E] transition-colors hover:bg-[#F6F8FB]"
+                    >
+                      Minigame relâmpago
+                    </Link>
+                  )}
                 </div>
                 <p className="mt-4 text-[12.5px] leading-relaxed text-[#516278]">
                   Material de estudo independente. O edital oficial sempre

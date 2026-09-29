@@ -1516,6 +1516,18 @@ export type Database = {
           ordem: number
         }[]
       }
+      sortear_perguntas_vf: {
+        Args: {
+          p_cargo_id: string
+          p_produto_id: string
+          p_quantidade?: number
+        }
+        Returns: {
+          alternativa: string
+          correta: boolean
+          enunciado: string
+        }[]
+      }
       validar_certificado: {
         Args: { p_codigo: string }
         Returns: {
