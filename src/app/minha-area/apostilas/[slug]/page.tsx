@@ -31,7 +31,7 @@ export default async function ApostilaAreaPage({
   const admin = criarClienteSupabaseAdmin();
   const { data: apostila } = await admin
     .from("apostilas")
-    .select("*, produtos(preco_centavos, ativo)")
+    .select("*, produtos(preco_centavos, ativo, inclui_simulado, cargo_id)")
     .eq("slug", slug)
     .maybeSingle();
   if (!apostila?.produtos) notFound();
@@ -80,6 +80,7 @@ export default async function ApostilaAreaPage({
   const capa = urlCapa(apostila.capa_path);
   const preco = formatarPreco(apostila.produtos.preco_centavos);
   const prova = formatarDataIso(apostila.data_prova);
+  const temSimulado = !!apostila.produtos.inclui_simulado && !!apostila.produtos.cargo_id;
 
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
@@ -118,12 +119,22 @@ export default async function ApostilaAreaPage({
                   Pagamento confirmado. Sua apostila está liberada — o arquivo
                   fica disponível aqui sempre que você precisar.
                 </p>
-                <a
-                  href={`/minha-area/apostilas/${apostila.slug}/baixar`}
-                  className="mt-4 inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3.5 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"
-                >
-                  Baixar apostila (PDF) <span aria-hidden>↓</span>
-                </a>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <a
+                    href={`/minha-area/apostilas/${apostila.slug}/baixar`}
+                    className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3.5 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"
+                  >
+                    Baixar apostila (PDF) <span aria-hidden>↓</span>
+                  </a>
+                  {temSimulado && (
+                    <Link
+                      href={`/minha-area/apostilas/${apostila.slug}/simulado`}
+                      className="inline-flex items-center gap-2 rounded-lg bg-brand px-6 py-3.5 text-[15px] font-bold text-white transition-colors hover:brightness-125"
+                    >
+                      Fazer simulado online <span aria-hidden>→</span>
+                    </Link>
+                  )}
+                </div>
                 <p className="mt-4 text-[12.5px] leading-relaxed text-[#516278]">
                   Material de estudo independente. O edital oficial sempre
                   prevalece. Uso pessoal — não compartilhe nem revenda o arquivo.
