@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "sibrap",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "set NODE_OPTIONS=--max-old-space-size=6144&& npm run dev"],
       "port": 3001
     }
   ]

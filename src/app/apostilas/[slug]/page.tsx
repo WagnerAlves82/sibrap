@@ -100,7 +100,9 @@ export default async function ApostilaPage({ params }: Props) {
     apostila.questoes
       ? `${apostila.questoes} questões com gabarito comentado`
       : "Questões com gabarito comentado",
-    apostila.simulados ? `${apostila.simulados} simulados finais` : null,
+    apostila.simulados
+      ? `${apostila.simulados} simulado${apostila.simulados === 1 ? "" : "s"} final${apostila.simulados === 1 ? "" : "is"}`
+      : null,
     "Teoria na ordem do edital, com dicas e resumos",
     "Download liberado na sua área após a confirmação do PIX",
     "Acesso ao Ambiente Virtual de Aprendizagem: simulado online, missões e cronograma de estudos",
