@@ -39,10 +39,18 @@ export async function verificarPagamentoPixAction(
   pedidoId: string
 ): Promise<{ status: "pendente" | "aprovado" | "recusado" } | { erro: string }> {
   const supabase = await criarClienteSupabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return { erro: "Você precisa estar logado." };
+  }
+
   const { data: pedido, error } = await supabase
     .from("pedidos")
     .select("status, mercadopago_order_id, gateway, gateway_charge_id")
     .eq("id", pedidoId)
+    .eq("user_id", user.id)
     .single();
 
   if (error || !pedido) {

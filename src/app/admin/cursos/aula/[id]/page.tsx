@@ -1,5 +1,8 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
+import { notFound, redirect } from "next/navigation";
+import { ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
+import { sessaoAdminValida } from "@/lib/admin-sessao";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { FormConteudo, FormMaterial, FormQuestao } from "./Formularios";
 import { removerMaterialAction, removerQuestaoAction } from "./actions";
@@ -11,6 +14,11 @@ export default async function AdminAulaPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const cookieStore = await cookies();
+  if (!(await sessaoAdminValida(cookieStore.get(ADMIN_COOKIE_NAME)?.value))) {
+    redirect("/admin/login");
+  }
+
   const { id } = await params;
   const admin = criarClienteSupabaseAdmin();
 

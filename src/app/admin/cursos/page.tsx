@@ -1,4 +1,8 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
+import { sessaoAdminValida } from "@/lib/admin-sessao";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { formatarHoras } from "@/lib/emissor";
 import { FormAula } from "./FormAula";
@@ -6,6 +10,11 @@ import { FormAula } from "./FormAula";
 export const dynamic = "force-dynamic";
 
 export default async function AdminCursosPage() {
+  const cookieStore = await cookies();
+  if (!(await sessaoAdminValida(cookieStore.get(ADMIN_COOKIE_NAME)?.value))) {
+    redirect("/admin/login");
+  }
+
   const admin = criarClienteSupabaseAdmin();
 
   const { data: cursos } = await admin
