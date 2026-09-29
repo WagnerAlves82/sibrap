@@ -44,6 +44,19 @@ const TIPOS: Record<string, string> = {
   jpeg: "image/jpeg",
 };
 
+// Confere os primeiros bytes (não confia só na extensão do nome do arquivo).
+// docx/xlsx/pptx são todos um ZIP (Office Open XML) por dentro — o que dá
+// pra confirmar é "é mesmo um ZIP", não qual dos três exatamente.
+function extensaoBateComOArquivo(ext: string, b: Uint8Array): boolean {
+  if (ext === "pdf") return b[0] === 0x25 && b[1] === 0x50 && b[2] === 0x44 && b[3] === 0x46; // %PDF
+  if (ext === "docx" || ext === "xlsx" || ext === "pptx") {
+    return b[0] === 0x50 && b[1] === 0x4b && (b[2] === 0x03 || b[2] === 0x05 || b[2] === 0x07); // PK.. (zip)
+  }
+  if (ext === "png") return b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47;
+  if (ext === "jpg" || ext === "jpeg") return b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff;
+  return false;
+}
+
 export async function adicionarMaterialAction(_a: Estado, formData: FormData): Promise<Estado> {
   if (!(await autorizado())) return { erro: "Não autorizado" };
   const aulaId = texto(formData, "aula_id", 60);
@@ -59,10 +72,14 @@ export async function adicionarMaterialAction(_a: Estado, formData: FormData): P
     if (arquivo.size > 3.5 * 1024 * 1024) return { erro: "Arquivo grande demais (máximo 3,5 MB)." };
     const ext = arquivo.name.split(".").pop()?.toLowerCase() ?? "";
     if (!TIPOS[ext]) return { erro: "Formato não aceito. Use PDF, DOCX, XLSX, PPTX, PNG ou JPG." };
+    const bytes = new Uint8Array(await arquivo.arrayBuffer());
+    if (!extensaoBateComOArquivo(ext, bytes)) {
+      return { erro: "O conteúdo do arquivo não bate com a extensão. Confira se é mesmo um ." + ext };
+    }
     const caminho = `${aulaId}/${crypto.randomUUID()}.${ext}`;
     const { error } = await admin.storage
       .from("material-cursos")
-      .upload(caminho, new Uint8Array(await arquivo.arrayBuffer()), { contentType: TIPOS[ext] });
+      .upload(caminho, bytes, { contentType: TIPOS[ext] });
     if (error) return { erro: "Não deu pra enviar o arquivo." };
     url = admin.storage.from("material-cursos").getPublicUrl(caminho).data.publicUrl;
   } else if (link) {

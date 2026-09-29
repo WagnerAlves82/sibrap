@@ -1,6 +1,7 @@
 "use server";
 
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
+import { dentroDoLimite, MSG_MUITAS_TENTATIVAS } from "@/lib/limite";
 
 export type ResultadoMiniquiz = {
   correta: boolean;
@@ -13,6 +14,15 @@ export async function conferirMiniquizAction(
   letra: string
 ): Promise<ResultadoMiniquiz | { erro: string }> {
   const supabase = await criarClienteSupabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { erro: "Você precisa estar logado." };
+
+  if (!(await dentroDoLimite(`miniquiz:conferir:${user.id}`, 120, 3600))) {
+    return { erro: MSG_MUITAS_TENTATIVAS };
+  }
+
   const { data, error } = await supabase.rpc("conferir_miniquiz", {
     p_questao_id: questaoId,
     p_letra: letra,

@@ -1,8 +1,9 @@
 import type { NextConfig } from "next";
 
-// Cabeçalhos de segurança em todas as rotas. O CSP "de verdade" (que
-// restringe scripts e conexões) entra em modo Report-Only para observar
-// no console do navegador o que quebraria antes de passar a bloquear.
+// Cabeçalhos de segurança em todas as rotas. O CSP estrito rodou um tempo em
+// modo Report-Only pra observar o que quebraria antes de bloquear de verdade
+// (2026-09-29: testado num build de produção real — home, apostilas, blog,
+// cursos, login/cadastro, admin, termos/privacidade — sem nenhuma violação).
 const CSP_BASE = "frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'";
 const CSP_ESTRITO = [
   "default-src 'self'",
@@ -28,8 +29,7 @@ const nextConfig: NextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()" },
           { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
-          { key: "Content-Security-Policy", value: CSP_BASE },
-          { key: "Content-Security-Policy-Report-Only", value: `${CSP_ESTRITO}; ${CSP_BASE}` },
+          { key: "Content-Security-Policy", value: `${CSP_ESTRITO}; ${CSP_BASE}` },
         ],
       },
     ];

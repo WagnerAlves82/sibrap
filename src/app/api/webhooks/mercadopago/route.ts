@@ -22,7 +22,14 @@ const ID_VALIDO = /^[A-Za-z0-9_-]{1,64}$/;
 
 function assinaturaValida(request: NextRequest, idDaNotificacao: string | null): boolean {
   const segredo = process.env.MERCADOPAGO_WEBHOOK_SECRET;
-  if (!segredo) return true; // sem segredo configurado: só a camada 2 protege
+  if (!segredo) {
+    // sem segredo configurado: a assinatura não é conferida, só a camada 2
+    // (reconsulta à API real) protege. Loga alto porque é uma reconfiguração
+    // silenciosa de segurança — não falha fechado pra não derrubar a
+    // confirmação de pagamento se a env var cair por engano.
+    console.error("[webhook mercadopago] MERCADOPAGO_WEBHOOK_SECRET não configurada — assinatura não verificada");
+    return true;
+  }
 
   const cabecalho = request.headers.get("x-signature") ?? "";
   const partes = Object.fromEntries(

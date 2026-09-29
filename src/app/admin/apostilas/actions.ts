@@ -306,8 +306,18 @@ export async function confirmarUploadPdfAction(
   if (!ap) return { erro: "Apostila não encontrada." };
   if (!path.startsWith(`${ap.slug}-`) || !path.endsWith(".pdf")) return { erro: "Arquivo inválido." };
 
-  const { data: existe } = await admin.storage.from(BUCKET_PDFS).exists(path);
-  if (!existe) return { erro: "O arquivo não chegou ao servidor. Envie de novo." };
+  // O upload vai direto do navegador pro Storage (arquivo grande demais pro
+  // formulário) — os bytes nunca passam pelo servidor antes daqui. Confere
+  // a assinatura "%PDF-" real, não só o nome do arquivo.
+  const { data: arquivo, error: erroDownload } = await admin.storage.from(BUCKET_PDFS).download(path);
+  if (erroDownload || !arquivo) return { erro: "O arquivo não chegou ao servidor. Envie de novo." };
+  const cabecalho = new Uint8Array(await arquivo.slice(0, 5).arrayBuffer());
+  const ehPdf =
+    cabecalho[0] === 0x25 && cabecalho[1] === 0x50 && cabecalho[2] === 0x44 && cabecalho[3] === 0x46 && cabecalho[4] === 0x2d;
+  if (!ehPdf) {
+    await admin.storage.from(BUCKET_PDFS).remove([path]);
+    return { erro: "O arquivo enviado não é um PDF válido." };
+  }
 
   const anterior = ap.produtos?.apostila_storage_path;
   const { error } = await admin

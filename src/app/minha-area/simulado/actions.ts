@@ -1,6 +1,7 @@
 "use server";
 
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
+import { dentroDoLimite, MSG_MUITAS_TENTATIVAS } from "@/lib/limite";
 
 export type Alternativa = { letra: string; texto: string };
 
@@ -20,6 +21,15 @@ export async function iniciarSimuladoAction(
   cargoId: string
 ): Promise<{ erro: string } | { questoes: QuestaoSimulado[] }> {
   const supabase = await criarClienteSupabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { erro: "Você precisa estar logado." };
+
+  if (!(await dentroDoLimite(`simulado:iniciar:${user.id}`, 30, 3600))) {
+    return { erro: MSG_MUITAS_TENTATIVAS };
+  }
+
   const { data, error } = await supabase.rpc("iniciar_simulado", {
     p_produto_id: produtoId,
     p_cargo_id: cargoId,
@@ -44,6 +54,15 @@ export async function finalizarSimuladoAction(
   respostas: Record<string, string>
 ): Promise<{ erro: string } | { resultado: ResultadoSimulado }> {
   const supabase = await criarClienteSupabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { erro: "Você precisa estar logado." };
+
+  if (!(await dentroDoLimite(`simulado:finalizar:${user.id}`, 30, 3600))) {
+    return { erro: MSG_MUITAS_TENTATIVAS };
+  }
+
   const { data, error } = await supabase.rpc("finalizar_simulado", {
     p_tentativa_id: tentativaId,
     p_respostas: respostas,

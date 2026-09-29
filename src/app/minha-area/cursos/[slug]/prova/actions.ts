@@ -1,6 +1,7 @@
 "use server";
 
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
+import { dentroDoLimite, MSG_MUITAS_TENTATIVAS } from "@/lib/limite";
 
 export type Alternativa = { letra: string; texto: string };
 
@@ -33,6 +34,15 @@ export async function iniciarProvaAction(
   cursoId: string
 ): Promise<{ erro: string } | { questoes: QuestaoProva[] }> {
   const supabase = await criarClienteSupabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { erro: "Você precisa estar logado." };
+
+  if (!(await dentroDoLimite(`prova:iniciar:${user.id}`, 20, 3600))) {
+    return { erro: MSG_MUITAS_TENTATIVAS };
+  }
+
   const { data, error } = await supabase.rpc("iniciar_quiz", { p_curso_id: cursoId });
   if (error) return { erro: error.message };
   if (!data?.length) return { erro: "Ainda não há questões de prova disponíveis." };
@@ -49,6 +59,15 @@ export async function finalizarProvaAction(
   respostas: Record<string, string>
 ): Promise<{ erro: string } | { resultado: ResultadoProva }> {
   const supabase = await criarClienteSupabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { erro: "Você precisa estar logado." };
+
+  if (!(await dentroDoLimite(`prova:finalizar:${user.id}`, 20, 3600))) {
+    return { erro: MSG_MUITAS_TENTATIVAS };
+  }
+
   const { data, error } = await supabase.rpc("finalizar_quiz", {
     p_tentativa_id: tentativaId,
     p_respostas: respostas,
