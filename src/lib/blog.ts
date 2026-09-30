@@ -182,13 +182,20 @@ function normalizar(t: string): string {
 /**
  * Escolhe as apostilas mais ligadas a um post, sem campo extra no banco:
  * pontua por órgão/banca/cargo citados no título e no texto, e por mesma UF.
- * Sem nenhuma correspondência, cai nas apostilas em destaque.
+ * Slugs escolhidos no admin têm prioridade. Sem correspondência, não mostra
+ * apostila nenhuma (só indica quando existe uma para o concurso do post).
  */
 export function apostilasRelacionadas(
-  post: Pick<PostRow, "titulo" | "conteudo" | "uf">,
+  post: Pick<PostRow, "titulo" | "conteudo" | "uf" | "apostilas_slugs">,
   apostilas: ApostilaVitrine[],
   limite = 2
 ): ApostilaVitrine[] {
+  if (post.apostilas_slugs?.length) {
+    const manuais = post.apostilas_slugs
+      .map((sl) => apostilas.find((a) => a.slug === sl))
+      .filter((a): a is ApostilaVitrine => !!a);
+    if (manuais.length) return manuais.slice(0, limite);
+  }
   const titulo = normalizar(post.titulo);
   const texto = normalizar(`${post.titulo} ${post.conteudo}`);
   const pontos = apostilas.map((a) => {
@@ -203,6 +210,5 @@ export function apostilasRelacionadas(
     return { a, n };
   });
   const achadas = pontos.filter((x) => x.n >= 2).sort((x, y) => y.n - x.n);
-  if (achadas.length) return achadas.slice(0, limite).map((x) => x.a);
-  return apostilas.filter((a) => a.destaque).slice(0, limite);
+  return achadas.slice(0, limite).map((x) => x.a);
 }

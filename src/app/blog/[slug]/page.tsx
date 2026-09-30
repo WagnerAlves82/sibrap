@@ -153,8 +153,25 @@ export default async function PostPage({ params }: Props) {
             conteúdo deste post.
           </p>
 
+          {post.edital_url && (
+            <aside className="mt-12 flex flex-col gap-3 rounded-2xl border border-[#D7DEE6] bg-white p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+              <div>
+                <h2 className="font-display text-lg font-extrabold text-[#14213A]">Edital oficial</h2>
+                <p className="mt-0.5 text-[14px] text-[#516278]">Leia o edital completo na fonte, com regras, vagas e prazos.</p>
+              </div>
+              <a
+                href={post.edital_url}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                className="shrink-0 rounded-md bg-brand px-4 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:brightness-125"
+              >
+                Abrir o edital →
+              </a>
+            </aside>
+          )}
+
           {apostilas.length > 0 && (
-            <aside className="mt-12 rounded-2xl border border-[#D7DEE6] bg-white p-5 sm:p-6" aria-labelledby="apostila-rel">
+            <aside className="mt-6 rounded-2xl border border-[#D7DEE6] bg-white p-5 sm:p-6" aria-labelledby="apostila-rel">
               <h2 id="apostila-rel" className="font-display text-xl font-extrabold text-[#14213A]">
                 Estude com a apostila do edital
               </h2>

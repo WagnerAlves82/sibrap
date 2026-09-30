@@ -78,6 +78,15 @@ export function FormPost({ post }: { post?: PostRow }) {
           <textarea name="resumo" defaultValue={p?.resumo ?? ""} rows={2} className={INPUT} />
         </label>
 
+        <label className={ROTULO}>
+          Link do edital oficial (https://...) — aparece no fim do post
+          <input name="edital_url" type="url" defaultValue={p?.edital_url ?? ""} placeholder="https://..." className={INPUT} />
+        </label>
+        <label className={ROTULO}>
+          Apostilas indicadas (slugs separados por vírgula — vazio = automático)
+          <input name="apostilas_slugs" defaultValue={(p?.apostilas_slugs ?? []).join(", ")} className={INPUT} />
+        </label>
+
         <label className={`${ROTULO} sm:col-span-2`}>
           Conteúdo (Markdown simples: ## título, **negrito**, *itálico*, listas com - , [link](https://...))
           <textarea name="conteudo" defaultValue={p?.conteudo ?? ""} required rows={14} className={`${INPUT} font-mono`} />
