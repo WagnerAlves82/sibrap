@@ -6,7 +6,7 @@ import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { CardPost } from "@/components/card-post";
 import { listarApostilasPublicadas } from "@/lib/apostilas";
-import { CardApostila } from "@/components/card-apostila";
+import { CardApostilaMini } from "@/components/card-apostila-mini";
 import {
   apostilasRelacionadas,
   formatarDataLonga,
@@ -171,21 +171,15 @@ export default async function PostPage({ params }: Props) {
           )}
 
           {apostilas.length > 0 && (
-            <aside className="mt-6 rounded-2xl border border-[#D7DEE6] bg-white p-5 sm:p-6" aria-labelledby="apostila-rel">
-              <h2 id="apostila-rel" className="font-display text-xl font-extrabold text-[#14213A]">
+            <aside className="mt-6" aria-labelledby="apostila-rel">
+              <h2 id="apostila-rel" className="font-data text-[11px] font-semibold uppercase tracking-wide text-[#516278]">
                 Estude com a apostila do edital
               </h2>
-              <p className="mt-1 text-[14px] text-[#516278]">
-                Material atualizado, com simulados, direto ao ponto do que a banca cobra.
-              </p>
-              <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {apostilas.map((a) => (
-                  <CardApostila key={a.id} apostila={a} />
+                  <CardApostilaMini key={a.id} apostila={a} />
                 ))}
               </div>
-              <Link href="/apostilas" className="mt-4 inline-block text-[14px] font-semibold text-brand hover:underline">
-                Ver todas as apostilas →
-              </Link>
             </aside>
           )}
 
