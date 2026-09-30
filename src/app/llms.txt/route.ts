@@ -49,12 +49,12 @@ export async function GET() {
 
     const { data: cursos } = await admin
       .from("cursos")
-      .select("slug, titulo, descricao")
+      .select("slug, nome, descricao")
       .eq("ativo", true);
     if (cursos && cursos.length > 0) {
       linhas.push("## Cursos gratuitos");
       for (const c of cursos) {
-        linhas.push(`- [${c.titulo}](${siteUrl}/cursos/${c.slug})${c.descricao ? `: ${c.descricao}` : ""}`);
+        linhas.push(`- [${c.nome}](${siteUrl}/cursos/${c.slug})${c.descricao ? `: ${c.descricao}` : ""}`);
       }
       linhas.push("");
     }
