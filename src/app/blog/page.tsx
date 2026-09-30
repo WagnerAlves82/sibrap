@@ -5,9 +5,11 @@ import { VitrinePosts } from "@/components/vitrine-posts";
 import { listarPostsPublicados } from "@/lib/blog";
 
 export const metadata: Metadata = {
-  title: "Blog de concursos públicos",
+  title: "Blog de concursos públicos: editais, prazos e dicas de estudo",
   description:
     "Editais, prazos de inscrição e dicas de estudo para concursos públicos, organizados por região e estado.",
+  alternates: { canonical: "/blog" },
+  openGraph: { title: "Blog de concursos públicos | SIBRAP", url: "/blog", type: "website", locale: "pt_BR" },
 };
 
 export default async function BlogPage() {

@@ -58,6 +58,12 @@ export async function salvarPostAction(_anterior: EstadoPost, formData: FormData
   const resumo = opcional(formData, "resumo");
   const autor = texto(formData, "autor") || "SIBRAP";
   const destaque = formData.get("destaque") === "on";
+  const editalUrl = opcional(formData, "edital_url");
+  if (editalUrl && !/^https?:\/\/\S+$/i.test(editalUrl)) return { erro: "O link do edital precisa começar com http:// ou https://." };
+  const apostilasSlugs = texto(formData, "apostilas_slugs")
+    .split(/[\s,;]+/)
+    .filter(Boolean);
+  if (apostilasSlugs.some((sl) => !slugValidoPost(sl))) return { erro: "Slug de apostila inválido (separe por vírgula)." };
 
   const admin = criarClienteSupabaseAdmin();
 
@@ -98,6 +104,8 @@ export async function salvarPostAction(_anterior: EstadoPost, formData: FormData
         uf,
         autor,
         destaque,
+        edital_url: editalUrl,
+        apostilas_slugs: apostilasSlugs,
         status,
         ...(capaPath ? { capa_path: capaPath } : {}),
         ...(publicarAgora && !atual.publicado_em ? { publicado_em: new Date().toISOString() } : {}),
@@ -119,6 +127,8 @@ export async function salvarPostAction(_anterior: EstadoPost, formData: FormData
       uf,
       autor,
       destaque,
+      edital_url: editalUrl,
+      apostilas_slugs: apostilasSlugs,
       status,
       capa_path: capaPath ?? null,
       ...(publicarAgora ? { publicado_em: new Date().toISOString() } : {}),

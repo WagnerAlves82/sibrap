@@ -54,7 +54,6 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "SIBRAP" }],
   robots: { index: true, follow: true },
-  alternates: { canonical: siteUrl },
   openGraph: {
     title: titulo,
     description: descricao,

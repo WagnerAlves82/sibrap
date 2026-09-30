@@ -7,7 +7,7 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/database.types";
-import { BUCKET_CAPAS, urlCapa } from "@/lib/apostilas";
+import { BUCKET_CAPAS, urlCapa, type ApostilaVitrine } from "@/lib/apostilas";
 
 export type PostRow = Database["public"]["Tables"]["posts"]["Row"];
 
@@ -173,4 +173,42 @@ export async function listarPostsPublicados(
   if (opcoes?.limite) query = query.limit(opcoes.limite);
   const { data } = await query;
   return data ?? [];
+}
+
+function normalizar(t: string): string {
+  return t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+}
+
+/**
+ * Escolhe as apostilas mais ligadas a um post, sem campo extra no banco:
+ * pontua por órgão/banca/cargo citados no título e no texto, e por mesma UF.
+ * Slugs escolhidos no admin têm prioridade. Sem correspondência, não mostra
+ * apostila nenhuma (só indica quando existe uma para o concurso do post).
+ */
+export function apostilasRelacionadas(
+  post: Pick<PostRow, "titulo" | "conteudo" | "uf" | "apostilas_slugs">,
+  apostilas: ApostilaVitrine[],
+  limite = 2
+): ApostilaVitrine[] {
+  if (post.apostilas_slugs?.length) {
+    const manuais = post.apostilas_slugs
+      .map((sl) => apostilas.find((a) => a.slug === sl))
+      .filter((a): a is ApostilaVitrine => !!a);
+    if (manuais.length) return manuais.slice(0, limite);
+  }
+  const titulo = normalizar(post.titulo);
+  const texto = normalizar(`${post.titulo} ${post.conteudo}`);
+  const pontos = apostilas.map((a) => {
+    let n = 0;
+    const orgao = normalizar(a.orgao);
+    if (titulo.includes(orgao)) n += 6;
+    else if (texto.includes(orgao)) n += 3;
+    if (a.banca && titulo.includes(normalizar(a.banca))) n += 2;
+    else if (a.banca && texto.includes(normalizar(a.banca))) n += 1;
+    if (texto.includes(normalizar(a.cargo))) n += 2;
+    if (post.uf && a.uf === post.uf) n += 1;
+    return { a, n };
+  });
+  const achadas = pontos.filter((x) => x.n >= 2).sort((x, y) => y.n - x.n);
+  return achadas.slice(0, limite).map((x) => x.a);
 }

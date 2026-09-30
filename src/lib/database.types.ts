@@ -986,11 +986,13 @@ export type Database = {
       posts: {
         Row: {
           atualizado_em: string
+          apostilas_slugs: string[]
           autor: string
           capa_path: string | null
           categoria: string
           conteudo: string
           criado_em: string
+          edital_url: string | null
           destaque: boolean
           id: string
           publicado_em: string | null
@@ -1003,11 +1005,13 @@ export type Database = {
         }
         Insert: {
           atualizado_em?: string
+          apostilas_slugs?: string[]
           autor?: string
           capa_path?: string | null
           categoria?: string
           conteudo?: string
           criado_em?: string
+          edital_url?: string | null
           destaque?: boolean
           id?: string
           publicado_em?: string | null
@@ -1020,11 +1024,13 @@ export type Database = {
         }
         Update: {
           atualizado_em?: string
+          apostilas_slugs?: string[]
           autor?: string
           capa_path?: string | null
           categoria?: string
           conteudo?: string
           criado_em?: string
+          edital_url?: string | null
           destaque?: boolean
           id?: string
           publicado_em?: string | null
