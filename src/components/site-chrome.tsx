@@ -4,7 +4,7 @@ import { SeloAbed } from "@/components/selo-abed";
 import { sairDaConta } from "@/app/login/actions";
 import { EMISSOR } from "@/lib/emissor";
 
-export function CabecalhoSite({ logado }: { logado: boolean }) {
+export function CabecalhoSite({ logado, next }: { logado: boolean; next?: string }) {
   const itemNav = "px-1.5 py-2 sm:px-2 text-[#33465E] transition-colors hover:text-brand";
   return (
     <header className="border-b-[3px] border-accent bg-white">
@@ -34,7 +34,7 @@ export function CabecalhoSite({ logado }: { logado: boolean }) {
             Validar certificado
           </Link>
           <Link
-            href={logado ? "/minha-area" : "/login"}
+            href={logado ? "/minha-area" : next ? `/login?next=${encodeURIComponent(next)}` : "/login"}
             className="ml-1 rounded-md bg-brand px-3 py-2 sm:px-4 text-white transition-colors hover:brightness-125"
           >
             {logado ? "Minha Área" : "Entrar"}

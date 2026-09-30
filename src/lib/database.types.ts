@@ -985,57 +985,66 @@ export type Database = {
       }
       posts: {
         Row: {
-          atualizado_em: string
           apostilas_slugs: string[]
+          atualizado_em: string
           autor: string
           capa_path: string | null
           categoria: string
+          certame_tipo: string | null
           conteudo: string
           criado_em: string
-          edital_url: string | null
           destaque: boolean
+          edital_numero: string | null
+          edital_url: string | null
           id: string
           publicado_em: string | null
           regiao: string | null
           resumo: string | null
+          retificacoes: string | null
           slug: string
           status: string
           titulo: string
           uf: string | null
         }
         Insert: {
-          atualizado_em?: string
           apostilas_slugs?: string[]
+          atualizado_em?: string
           autor?: string
           capa_path?: string | null
           categoria?: string
+          certame_tipo?: string | null
           conteudo?: string
           criado_em?: string
-          edital_url?: string | null
           destaque?: boolean
+          edital_numero?: string | null
+          edital_url?: string | null
           id?: string
           publicado_em?: string | null
           regiao?: string | null
           resumo?: string | null
+          retificacoes?: string | null
           slug: string
           status?: string
           titulo: string
           uf?: string | null
         }
         Update: {
-          atualizado_em?: string
           apostilas_slugs?: string[]
+          atualizado_em?: string
           autor?: string
           capa_path?: string | null
           categoria?: string
+          certame_tipo?: string | null
           conteudo?: string
           criado_em?: string
-          edital_url?: string | null
           destaque?: boolean
+          edital_numero?: string | null
+          edital_url?: string | null
           id?: string
           publicado_em?: string | null
           regiao?: string | null
           resumo?: string | null
+          retificacoes?: string | null
           slug?: string
           status?: string
           titulo?: string

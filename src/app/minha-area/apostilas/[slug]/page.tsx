@@ -8,6 +8,7 @@ import { confirmarPagamentoAbacateCheckout } from "@/lib/abacatepay";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { formatarDataIso, formatarPreco, slugValido, urlCapa } from "@/lib/apostilas";
 import { ComprarApostila } from "./Comprar";
+import { RastrearCompraCartao } from "./RastrearCompraCartao";
 
 export const metadata: Metadata = {
   title: "Minha apostila",
@@ -44,6 +45,7 @@ export default async function ApostilaAreaPage({
 
   let tem = !!acesso;
   let aguardandoCartao = false;
+  let pedidoCartaoConfirmadoAgora: string | null = null;
 
   // Quem volta do checkout hospedado (cartão) chega aqui antes do webhook
   // confirmar: tenta uma vez, na hora, pra não mostrar "ainda não comprou"
@@ -69,6 +71,11 @@ export default async function ApostilaAreaPage({
           .eq("produto_id", apostila.produto_id)
           .maybeSingle();
         tem = !!acessoNovo;
+        // só nesta renderização a confirmação acabou de acontecer: é o
+        // único momento seguro pra disparar o evento de compra (cartão) —
+        // em qualquer atualização de página seguinte, `acesso` já existe e
+        // esse bloco inteiro é pulado.
+        if (tem) pedidoCartaoConfirmadoAgora = pendente.id;
       } else {
         aguardandoCartao = true;
       }
@@ -84,7 +91,7 @@ export default async function ApostilaAreaPage({
 
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
-      <CabecalhoSite logado={!!user} />
+      <CabecalhoSite logado={!!user} next={`/minha-area/apostilas/${apostila.slug}`} />
       <main className="mx-auto w-full max-w-[860px] flex-1 px-4 py-10 sm:px-6">
         <Link href="/minha-area" className="text-[13px] font-semibold text-brand underline underline-offset-4">
           ← Minha área
@@ -115,6 +122,14 @@ export default async function ApostilaAreaPage({
 
             {tem ? (
               <div className="mt-5">
+                {pedidoCartaoConfirmadoAgora && (
+                  <RastrearCompraCartao
+                    pedidoId={pedidoCartaoConfirmadoAgora}
+                    slug={apostila.slug}
+                    titulo={apostila.titulo}
+                    precoCentavos={apostila.produtos.preco_centavos}
+                  />
+                )}
                 <p className="text-[15px] text-[#516278]">
                   Pagamento confirmado. Sua apostila está liberada — o arquivo
                   fica disponível aqui sempre que você precisar.
@@ -177,7 +192,12 @@ export default async function ApostilaAreaPage({
                     levar só alguns instantes. Atualize a página em breve.
                   </p>
                 )}
-                <ComprarApostila slug={apostila.slug} preco={preco} />
+                <ComprarApostila
+                  slug={apostila.slug}
+                  titulo={apostila.titulo}
+                  preco={preco}
+                  precoCentavos={apostila.produtos.preco_centavos}
+                />
               </div>
             )}
           </div>

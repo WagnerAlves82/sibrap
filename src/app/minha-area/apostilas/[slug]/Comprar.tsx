@@ -2,16 +2,35 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { sendGAEvent } from "@next/third-parties/google";
 import { PixCheckoutClaro } from "@/components/pix-checkout-claro";
 import { Alert } from "@/components/alert";
 import { criarPagamentoApostilaAction, criarPagamentoCartaoApostilaAction } from "./actions";
 
-export function ComprarApostila({ slug, preco }: { slug: string; preco: string }) {
+export function ComprarApostila({
+  slug,
+  titulo,
+  preco,
+  precoCentavos,
+}: {
+  slug: string;
+  titulo: string;
+  preco: string;
+  precoCentavos: number;
+}) {
   const router = useRouter();
   const [carregandoCartao, setCarregandoCartao] = useState(false);
   const [erroCartao, setErroCartao] = useState<string | null>(null);
 
+  const item = { item_id: slug, item_name: titulo, price: precoCentavos / 100, quantity: 1 };
+
   async function pagarComCartao() {
+    sendGAEvent("event", "begin_checkout", {
+      currency: "BRL",
+      value: precoCentavos / 100,
+      payment_type: "cartao",
+      items: [item],
+    });
     setCarregandoCartao(true);
     setErroCartao(null);
     const r = await criarPagamentoCartaoApostilaAction(slug);
@@ -27,9 +46,25 @@ export function ComprarApostila({ slug, preco }: { slug: string; preco: string }
   return (
     <div className="flex flex-col gap-3">
       <PixCheckoutClaro
-        criarPix={() => criarPagamentoApostilaAction(slug)}
+        criarPix={() => {
+          sendGAEvent("event", "begin_checkout", {
+            currency: "BRL",
+            value: precoCentavos / 100,
+            payment_type: "pix",
+            items: [item],
+          });
+          return criarPagamentoApostilaAction(slug);
+        }}
         rotuloBotao={`Pagar ${preco} com PIX`}
-        aoAprovar={() => router.refresh()}
+        aoAprovar={(pedidoId) => {
+          sendGAEvent("event", "purchase", {
+            transaction_id: pedidoId,
+            currency: "BRL",
+            value: precoCentavos / 100,
+            items: [item],
+          });
+          router.refresh();
+        }}
       />
       <button
         onClick={pagarComCartao}

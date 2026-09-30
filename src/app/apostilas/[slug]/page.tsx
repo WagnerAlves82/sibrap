@@ -128,7 +128,7 @@ export default async function ApostilaPage({ params }: Props) {
   return (
     <div className="flex min-h-screen flex-col bg-white font-body">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <CabecalhoSite logado={!!user} />
+      <CabecalhoSite logado={!!user} next={areaHref} />
 
       <main className="flex-1 bg-[#F6F8FB] py-10 sm:py-14">
         <div className="mx-auto grid max-w-[1080px] gap-8 px-4 sm:px-6 md:grid-cols-[minmax(0,425px)_minmax(0,1fr)] md:gap-12">

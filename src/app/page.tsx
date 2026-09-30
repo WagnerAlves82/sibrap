@@ -5,9 +5,11 @@ import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { CarrosselHome, type SlideComCta } from "@/components/carrossel-home";
 import { VitrineApostilas } from "@/components/vitrine-apostilas";
+import { VitrinePosts } from "@/components/vitrine-posts";
 import { SeloAbed } from "@/components/selo-abed";
 import { Reveal } from "@/components/reveal";
 import { diasAte, formatarDataIso, formatarPreco, listarApostilasPublicadas } from "@/lib/apostilas";
+import { listarPostsPublicados } from "@/lib/blog";
 import { SLIDES_HOME } from "@/lib/home-slides";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
@@ -18,7 +20,15 @@ export default async function Home() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const apostilas = await listarApostilasPublicadas(supabase);
+  const [apostilas, posts, { data: iscaTranspetro }] = await Promise.all([
+    listarApostilasPublicadas(supabase),
+    listarPostsPublicados(supabase, { limite: 6 }),
+    supabase.from("produtos").select("ativo").eq("slug", "simulado-gratis").maybeSingle(),
+  ]);
+  // Isca gratuita do Transpetro desativada por ora (ver handle_new_user()
+  // no banco e src/app/minha-area/page.tsx) — mesmo campo produtos.ativo
+  // controla os dois lugares, reativar é só voltar ele a true.
+  const iscaTranspetroAtiva = !!iscaTranspetro?.ativo;
   const slugsPublicados = new Set(apostilas.map((a) => a.slug));
 
   const slides: SlideComCta[] = SLIDES_HOME.map((s) => {
@@ -88,6 +98,38 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Matérias sobre concursos */}
+      {posts.length > 0 && (
+        <section id="materias" className="scroll-mt-4 bg-[#FBF6EC] py-14 sm:py-16">
+          <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
+            <Reveal className="mb-8 max-w-[60ch]">
+              <span className="inline-flex items-center gap-2 rounded-full border border-accent bg-white px-3 py-1.5 font-data text-xs font-semibold text-brand shadow-sm">
+                <span className="relative inline-flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-2 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-2" />
+                </span>
+                Novidades toda semana
+              </span>
+              <h2 className="mt-3.5 font-display text-[1.7rem] font-extrabold text-[#14213A] sm:text-[2.3rem]">
+                Fique por dentro dos concursos.
+              </h2>
+              <p className="mt-3 text-[15.5px] leading-relaxed text-[#516278]">
+                Editais novos, prazos de inscrição e dicas de estudo. Filtre
+                por região, estado ou só concursos federais.
+              </p>
+            </Reveal>
+
+            <VitrinePosts posts={posts} />
+
+            <div className="mt-8 text-center">
+              <Link href="/blog" className="text-sm font-semibold text-brand underline underline-offset-4">
+                Ver todas as matérias
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Diferenciais */}
       <section className="border-y border-[#D7DEE6] bg-white py-12 sm:py-14">
         <div className="mx-auto grid max-w-[1180px] grid-cols-1 gap-8 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
@@ -134,13 +176,15 @@ export default async function Home() {
               Quer experimentar antes de comprar?
             </h2>
             <ul className="mt-4 flex flex-col gap-3 text-[15.5px] leading-relaxed text-[#516278]">
-              <li className="flex gap-2">
-                <span className="mt-0.5 text-accent-2" aria-hidden>✓</span>
-                <span>
-                  <strong className="text-[#14213A]">Apostila e simulado grátis do concurso Transpetro</strong>{" "}
-                  — Conhecimentos Básicos e um teste de 10 questões, no estilo da banca.
-                </span>
-              </li>
+              {iscaTranspetroAtiva && (
+                <li className="flex gap-2">
+                  <span className="mt-0.5 text-accent-2" aria-hidden>✓</span>
+                  <span>
+                    <strong className="text-[#14213A]">Apostila e simulado grátis do concurso Transpetro</strong>{" "}
+                    — Conhecimentos Básicos e um teste de 10 questões, no estilo da banca.
+                  </span>
+                </li>
+              )}
               <li className="flex gap-2">
                 <span className="mt-0.5 text-accent-2" aria-hidden>✓</span>
                 <span>
@@ -150,17 +194,19 @@ export default async function Home() {
               </li>
             </ul>
             <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-4">
-              <Link
-                href="/cadastro"
-                className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3.5 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"
-              >
-                Fazer simulado grátis <span aria-hidden>→</span>
-              </Link>
+              {iscaTranspetroAtiva && (
+                <Link
+                  href="/cadastro"
+                  className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3.5 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"
+                >
+                  Fazer simulado grátis <span aria-hidden>→</span>
+                </Link>
+              )}
               <Link
                 href="/cursos/informatica-basica-ia"
-                className="text-sm font-semibold text-brand underline underline-offset-4"
+                className={iscaTranspetroAtiva ? "text-sm font-semibold text-brand underline underline-offset-4" : "inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3.5 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"}
               >
-                Conhecer o curso gratuito
+                {iscaTranspetroAtiva ? "Conhecer o curso gratuito" : "Conhecer o curso gratuito →"}
               </Link>
               <SeloAbed altura={60} />
             </div>

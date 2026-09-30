@@ -16,7 +16,7 @@ export function PixCheckoutClaro({
 }: {
   criarPix: () => Promise<EstadoPix>;
   rotuloBotao: string;
-  aoAprovar: () => void;
+  aoAprovar: (pedidoId: string) => void;
 }) {
   const [fase, setFase] = useState<Fase>("inicio");
   const [qrCode, setQrCode] = useState<string | null>(null);
@@ -50,7 +50,7 @@ export function PixCheckoutClaro({
       if (status.status === "aprovado") {
         if (intervaloRef.current) clearInterval(intervaloRef.current);
         setFase("aprovado");
-        aoAprovar();
+        aoAprovar(r.pedidoId);
       } else if (status.status === "recusado") {
         if (intervaloRef.current) clearInterval(intervaloRef.current);
         setErro("Esse pagamento não foi aprovado. Gere um novo PIX para tentar de novo.");

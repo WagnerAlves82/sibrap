@@ -84,7 +84,10 @@ export default async function PostPage({ params }: Props) {
     .order("publicado_em", { ascending: false })
     .limit(3);
   const relacionados = relacionadosData ?? [];
-  const apostilas = apostilasRelacionadas(post, await listarApostilasPublicadas(supabase));
+  const todasApostilas = await listarApostilasPublicadas(supabase);
+  const apostilasEspecificas = apostilasRelacionadas(post, todasApostilas);
+  const apostilas = apostilasEspecificas.length > 0 ? apostilasEspecificas : todasApostilas.slice(0, 2);
+  const apostilasSaoEspecificas = apostilasEspecificas.length > 0;
 
   const urlPost = `${siteUrl}/blog/${slug}`;
   const jsonLd = {
@@ -139,6 +142,27 @@ export default async function PostPage({ params }: Props) {
             {post.titulo}
           </h1>
 
+          {(post.certame_tipo || post.edital_numero) && (
+            <div className="mt-5 grid grid-cols-1 gap-x-6 gap-y-3 rounded-xl border-2 border-accent bg-brand-deep px-5 py-4 sm:grid-cols-3">
+              {post.certame_tipo && (
+                <div>
+                  <p className="font-data text-[10.5px] font-bold uppercase tracking-wider text-accent">Certame</p>
+                  <p className="font-data text-[13.5px] font-bold uppercase text-white">{post.certame_tipo}</p>
+                </div>
+              )}
+              {post.edital_numero && (
+                <div>
+                  <p className="font-data text-[10.5px] font-bold uppercase tracking-wider text-accent">Edital</p>
+                  <p className="font-data text-[13.5px] font-bold uppercase text-white">{post.edital_numero}</p>
+                </div>
+              )}
+              <div>
+                <p className="font-data text-[10.5px] font-bold uppercase tracking-wider text-accent">Retificações</p>
+                <p className="font-data text-[13.5px] font-bold uppercase text-white">{post.retificacoes || "Nenhuma até o momento"}</p>
+              </div>
+            </div>
+          )}
+
           {capa && (
             <div className="relative mt-6 aspect-[16/9] w-full overflow-hidden rounded-xl bg-[#E6EEF7]">
               <Image src={capa} alt={post.titulo} fill sizes="(min-width: 800px) 760px, 100vw" className="object-cover" priority />
@@ -173,7 +197,7 @@ export default async function PostPage({ params }: Props) {
           {apostilas.length > 0 && (
             <aside className="mt-6" aria-labelledby="apostila-rel">
               <h2 id="apostila-rel" className="font-data text-[11px] font-semibold uppercase tracking-wide text-[#516278]">
-                Estude com a apostila do edital
+                {apostilasSaoEspecificas ? "Estude com a apostila do edital" : "Enquanto isso, confira nossas apostilas"}
               </h2>
               <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {apostilas.map((a) => (

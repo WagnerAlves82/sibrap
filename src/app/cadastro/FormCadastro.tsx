@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { sendGAEvent } from "@next/third-parties/google";
 import { CLASSE_INPUT, CLASSE_BOTAO_PRIMARIO } from "@/components/auth-shell";
 import { Alert } from "@/components/alert";
 import { cadastrar, type EstadoCadastro } from "./actions";
@@ -17,6 +18,14 @@ export function FormCadastro({
     cadastrar,
     null
   );
+  const jaDisparou = useRef(false);
+
+  useEffect(() => {
+    if (estado?.precisaConfirmarEmail && !jaDisparou.current) {
+      jaDisparou.current = true;
+      sendGAEvent("event", "sign_up", { method: "email" });
+    }
+  }, [estado]);
 
   if (estado?.precisaConfirmarEmail) {
     return (

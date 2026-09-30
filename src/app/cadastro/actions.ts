@@ -82,5 +82,5 @@ export async function cadastrar(
     return { precisaConfirmarEmail: true };
   }
 
-  redirect(next || "/minha-area/simulado-gratis");
+  redirect(next || "/minha-area");
 }

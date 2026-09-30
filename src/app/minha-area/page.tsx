@@ -18,6 +18,17 @@ export default async function MinhaAreaPage() {
     .select("produto_id, produtos(slug, nome)")
     .eq("user_id", user!.id);
 
+  // Isca gratuita do Transpetro (apostila por e-mail + simulado grátis):
+  // desativada por ora (produtos.ativo=false pra 'simulado-gratis') — volta
+  // a rodar sozinha quando um formulário próprio for feito e o campo virar
+  // true de novo. Ver handle_new_user() no banco, que segue essa mesma flag.
+  const { data: iscaTranspetro } = await supabase
+    .from("produtos")
+    .select("ativo")
+    .eq("slug", "simulado-gratis")
+    .maybeSingle();
+  const iscaTranspetroAtiva = !!iscaTranspetro?.ativo;
+
   // Apostilas compradas (leitura administrativa: quem comprou continua
   // vendo mesmo que a apostila tenha saído da vitrine)
   const idsProdutos = (acessos ?? []).map((a) => a.produto_id);
@@ -38,7 +49,7 @@ export default async function MinhaAreaPage() {
   // enviada. Quem se cadastrou pelos cursos não recebe (é outro público
   // e cada e-mail conta na cota do Resend).
   let apostilaAcabouDeSerEnviada = false;
-  if (meta?.origem !== "curso") {
+  if (iscaTranspetroAtiva && meta?.origem !== "curso") {
     const { data: perfil } = await supabase
       .from("profiles")
       .select("apostila_enviada_em")
@@ -171,6 +182,7 @@ export default async function MinhaAreaPage() {
           </section>
         )}
 
+        {(temPremium || iscaTranspetroAtiva) && (
         <section className="mt-8">
           <h2 className="mb-3 font-display text-xl font-extrabold text-[#14213A]">
             Concurso Transpetro 2026
@@ -202,6 +214,7 @@ export default async function MinhaAreaPage() {
             </div>
           )}
         </section>
+        )}
       </main>
 
       <RodapeSite />

@@ -79,6 +79,18 @@ export function FormPost({ post }: { post?: PostRow }) {
         </label>
 
         <label className={ROTULO}>
+          Tipo de certame (aparece em destaque no topo do post)
+          <input name="certame_tipo" defaultValue={p?.certame_tipo ?? ""} placeholder="Concurso Público / Processo Seletivo" className={INPUT} />
+        </label>
+        <label className={ROTULO}>
+          Número do edital (aparece em destaque no topo do post)
+          <input name="edital_numero" defaultValue={p?.edital_numero ?? ""} placeholder="Edital nº 001/2026" className={INPUT} />
+        </label>
+        <label className={`${ROTULO} sm:col-span-2`}>
+          Retificações conhecidas (deixe em branco = "nenhuma até o momento")
+          <input name="retificacoes" defaultValue={p?.retificacoes ?? ""} placeholder="ex.: Retificação nº 1, de 05/10/2026, altera o cronograma" className={INPUT} />
+        </label>
+        <label className={ROTULO}>
           Link do edital oficial (https://...) — aparece no fim do post
           <input name="edital_url" type="url" defaultValue={p?.edital_url ?? ""} placeholder="https://..." className={INPUT} />
         </label>

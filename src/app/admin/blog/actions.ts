@@ -60,6 +60,9 @@ export async function salvarPostAction(_anterior: EstadoPost, formData: FormData
   const destaque = formData.get("destaque") === "on";
   const editalUrl = opcional(formData, "edital_url");
   if (editalUrl && !/^https?:\/\/\S+$/i.test(editalUrl)) return { erro: "O link do edital precisa começar com http:// ou https://." };
+  const certameTipo = opcional(formData, "certame_tipo");
+  const editalNumero = opcional(formData, "edital_numero");
+  const retificacoes = opcional(formData, "retificacoes");
   const apostilasSlugs = texto(formData, "apostilas_slugs")
     .split(/[\s,;]+/)
     .filter(Boolean);
@@ -105,6 +108,9 @@ export async function salvarPostAction(_anterior: EstadoPost, formData: FormData
         autor,
         destaque,
         edital_url: editalUrl,
+        certame_tipo: certameTipo,
+        edital_numero: editalNumero,
+        retificacoes,
         apostilas_slugs: apostilasSlugs,
         status,
         ...(capaPath ? { capa_path: capaPath } : {}),
@@ -128,6 +134,9 @@ export async function salvarPostAction(_anterior: EstadoPost, formData: FormData
       autor,
       destaque,
       edital_url: editalUrl,
+      certame_tipo: certameTipo,
+      edital_numero: editalNumero,
+      retificacoes,
       apostilas_slugs: apostilasSlugs,
       status,
       capa_path: capaPath ?? null,

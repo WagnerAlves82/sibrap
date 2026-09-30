@@ -20,6 +20,7 @@ export function VitrinePosts({
 }) {
   const [regiao, setRegiao] = useState(regiaoInicial);
   const [uf, setUf] = useState(ufInicial);
+  const [federal, setFederal] = useState(false);
   const [busca, setBusca] = useState("");
 
   const ufsDaRegiao = useMemo(() => {
@@ -31,11 +32,10 @@ export function VitrinePosts({
     const termo = busca.trim().toLowerCase();
     return posts.filter(
       (p) =>
-        (!regiao || p.regiao === regiao) &&
-        (!uf || p.uf === uf) &&
+        (!federal ? (!regiao || p.regiao === regiao) && (!uf || p.uf === uf) : !p.uf && !p.regiao) &&
         (!termo || `${p.titulo} ${p.resumo ?? ""} ${p.categoria}`.toLowerCase().includes(termo))
     );
-  }, [posts, regiao, uf, busca]);
+  }, [posts, regiao, uf, federal, busca]);
 
   const chip = (ativo: boolean) =>
     `rounded-full border px-3.5 py-1.5 text-[13px] font-semibold transition-colors ${
@@ -48,23 +48,35 @@ export function VitrinePosts({
     <div>
       <div className="mb-6 flex flex-col gap-3">
         <div className="flex flex-wrap gap-2" role="group" aria-label="Filtrar por região">
-          <button type="button" onClick={() => { setRegiao(""); setUf(""); }} className={chip(!regiao)}>
+          <button
+            type="button"
+            onClick={() => { setRegiao(""); setUf(""); setFederal(false); }}
+            className={chip(!regiao && !federal)}
+          >
             Todas as regiões
           </button>
           {REGIOES.map((r) => (
             <button
               key={r}
               type="button"
-              onClick={() => { setRegiao(r); setUf(""); }}
-              className={chip(regiao === r)}
-              aria-pressed={regiao === r}
+              onClick={() => { setRegiao(r); setUf(""); setFederal(false); }}
+              className={chip(!federal && regiao === r)}
+              aria-pressed={!federal && regiao === r}
             >
               {r}
             </button>
           ))}
+          <button
+            type="button"
+            onClick={() => { setFederal(true); setRegiao(""); setUf(""); }}
+            className={chip(federal)}
+            aria-pressed={federal}
+          >
+            Federal
+          </button>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          {ufsDaRegiao.length > 1 && (
+          {!federal && ufsDaRegiao.length > 1 && (
             <select
               aria-label="Filtrar por estado"
               value={uf}
