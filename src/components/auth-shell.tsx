@@ -3,7 +3,7 @@ import { Logo } from "@/components/logo";
 
 // Layout meio a meio das telas de login/cadastro: foto + mensagem à
 // esquerda (só em telas grandes), formulário à direita. A foto é
-// public/login-hero.jpg; se ainda não existir, fica só o degradê navy.
+// public/foto-login.jpg; se ainda não existir, fica só o degradê navy.
 export function AuthShell({
   titulo,
   subtitulo,
@@ -19,7 +19,7 @@ export function AuthShell({
         className="relative hidden flex-col justify-between bg-brand-deep p-12 text-white lg:flex"
         style={{
           backgroundImage:
-            "linear-gradient(180deg, rgba(7,27,51,0.55) 0%, rgba(7,27,51,0.92) 100%), url(/login-hero.jpg)",
+            "linear-gradient(180deg, rgba(7,27,51,0.55) 0%, rgba(7,27,51,0.92) 100%), url(/foto-login.jpg)",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -28,7 +28,7 @@ export function AuthShell({
           <Logo tamanho={44} textoClassName="text-white" />
         </Link>
 
-        <div>
+        <div className="mt-16">
           <p className="font-data text-xs uppercase tracking-[0.2em] text-[#B9CBDF]">
             Sistema Brasileiro de Aprendizagem Profissional
           </p>

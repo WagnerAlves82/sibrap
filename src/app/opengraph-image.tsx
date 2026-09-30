@@ -28,14 +28,14 @@ export default async function Image() {
   const titulo = "Apostilas e simulados para concursos públicos";
   const subtitulo =
     "Estude o edital como quem já decorou ele — questões no estilo da banca.";
-  const eyebrow = "CONCURSO EM DESTAQUE";
-  const destaque = "Transpetro 2026 · Cesgranrio";
+  const eyebrow = "APOSTILAS SIBRAP";
+  const destaque = "A partir de R$ 17,90";
   const dominio = "sibrap.tec.br";
 
   const [logoBuffer, capaBuffer, archivoBlack, publicSansSemiBold] =
     await Promise.all([
       readFile(join(process.cwd(), "public", "logo.png")),
-      readFile(join(process.cwd(), "public", "apostila.png")),
+      readFile(join(process.cwd(), "public", "capa-saobenedito.png")),
       carregarFonteGoogle(
         "Archivo",
         800,

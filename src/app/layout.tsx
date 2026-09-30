@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Archivo, Public_Sans, IBM_Plex_Mono } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -35,7 +36,7 @@ const plexMono = IBM_Plex_Mono({
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
 const titulo = "SIBRAP — Apostilas e simulados para concursos públicos";
 const descricao =
-  "Já confirmou sua inscrição no concurso Transpetro 2026? Então agora é hora de se preparar. Nesse link você encontra uma apostila atual baseada no edital, gratuita.";
+  "Apostilas em PDF para concursos públicos municipais, a partir de R$17,90: questões comentadas, simulado online, cronograma de estudos e cursos gratuitos.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -46,11 +47,12 @@ export const metadata: Metadata = {
   description: descricao,
   keywords: [
     "concurso público",
-    "concurso Transpetro 2026",
+    "concurso municipal",
     "apostila digital concurso",
-    "simulado Cesgranrio",
     "apostila PDF concurso",
-    "banca Cesgranrio",
+    "simulado online concurso",
+    "edital concurso público",
+    "cursos gratuitos concurso",
   ],
   authors: [{ name: "SIBRAP" }],
   robots: { index: true, follow: true },
@@ -82,6 +84,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </noscript>
         {children}
       </body>
+      {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+      )}
     </html>
   );
 }

@@ -23,7 +23,7 @@ export function GaleriaApostila({ imagens }: { imagens: ImagemGaleria[] }) {
           sizes="(min-width: 768px) 340px, 300px"
           className={
             img.mockup
-              ? "object-contain p-4 drop-shadow-[0_22px_24px_rgba(11,42,74,0.35)]"
+              ? "object-contain p-2 drop-shadow-[0_26px_28px_rgba(11,42,74,0.4)] sm:p-3"
               : "object-cover"
           }
         />

@@ -131,8 +131,8 @@ export default async function ApostilaPage({ params }: Props) {
       <CabecalhoSite logado={!!user} />
 
       <main className="flex-1 bg-[#F6F8FB] py-10 sm:py-14">
-        <div className="mx-auto grid max-w-[1080px] gap-8 px-4 sm:px-6 md:grid-cols-[minmax(0,340px)_minmax(0,1fr)] md:gap-12">
-          <div className="relative mx-auto w-full max-w-[300px] md:max-w-none">
+        <div className="mx-auto grid max-w-[1080px] gap-8 px-4 sm:px-6 md:grid-cols-[minmax(0,425px)_minmax(0,1fr)] md:gap-12">
+          <div className="relative mx-auto w-full max-w-[375px] md:max-w-none">
             <GaleriaApostila imagens={galeria} />
             <div
               aria-hidden
