@@ -12,6 +12,19 @@ import type { StatusPedido } from "@/lib/mercadopago";
 
 const BASE = "https://api.abacatepay.com/v2";
 
+// A API do AbacatePay recusa (HTTP 400) description/name com certos
+// caracteres Unicode fora do ASCII estendido — travessão "—" (comum nos
+// nomes de produto, ex.: "Apostila — Cargo — Cidade/UF") é um deles.
+// Normaliza pro equivalente ASCII mais próximo antes de mandar qualquer
+// texto livre pra eles, em vez de descobrir na hora que falha.
+function textoAbacatePay(s: string): string {
+  return s
+    .replace(/[—–]/g, "-")
+    .replace(/[""]/g, '"')
+    .replace(/['']/g, "'")
+    .replace(/…/g, "...");
+}
+
 // Chave pública de verificação de assinatura, divulgada na documentação do
 // AbacatePay (igual para todas as lojas). Pode ser trocada por env.
 const CHAVE_PUBLICA_ASSINATURA =
@@ -64,7 +77,7 @@ export async function criarCobrancaPix({
       method: "PIX",
       data: {
         amount: valorCentavos,
-        description: descricao.slice(0, 200),
+        description: textoAbacatePay(descricao).slice(0, 200),
         expiresIn: 3600,
         metadata: { pedidoId },
       },
@@ -155,7 +168,7 @@ async function garantirProdutoAbacate({
 
   const criado = await chamar<Produto>("/products/create", {
     method: "POST",
-    body: JSON.stringify({ externalId, name: nome.slice(0, 160), price: valorCentavos, currency: "BRL" }),
+    body: JSON.stringify({ externalId, name: textoAbacatePay(nome).slice(0, 160), price: valorCentavos, currency: "BRL" }),
   });
   return criado.id;
 }
