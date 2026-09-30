@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
@@ -8,6 +9,8 @@ import { SeloAbed } from "@/components/selo-abed";
 import { Reveal } from "@/components/reveal";
 import { diasAte, formatarDataIso, formatarPreco, listarApostilasPublicadas } from "@/lib/apostilas";
 import { SLIDES_HOME } from "@/lib/home-slides";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default async function Home() {
   const supabase = await criarClienteSupabaseServer();

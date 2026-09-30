@@ -13,6 +13,8 @@ import {
   urlCapa,
 } from "@/lib/blog";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
+
 type Props = { params: Promise<{ slug: string }> };
 
 async function carregar(slug: string) {
@@ -36,11 +38,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: post.titulo,
     description: descricao,
+    alternates: { canonical: `/blog/${slug}` },
     openGraph: {
       title: post.titulo,
       description: descricao,
       type: "article",
-      images: capa ? [{ url: capa }] : undefined,
+      url: `/blog/${slug}`,
+      locale: "pt_BR",
+      publishedTime: post.publicado_em ?? post.criado_em,
+      modifiedTime: post.atualizado_em,
+      authors: [post.autor || "SIBRAP"],
+      section: post.categoria,
+      images: capa ? [{ url: capa, alt: post.titulo }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.titulo,
+      description: descricao,
+      images: capa ? [capa] : undefined,
     },
   };
 }
@@ -67,9 +82,13 @@ export default async function PostPage({ params }: Props) {
     .limit(3);
   const relacionados = relacionadosData ?? [];
 
+  const urlPost = `${siteUrl}/blog/${slug}`;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
+    mainEntityOfPage: { "@type": "WebPage", "@id": urlPost },
+    inLanguage: "pt-BR",
+    publisher: { "@type": "Organization", name: "SIBRAP", logo: { "@type": "ImageObject", url: `${siteUrl}/logo.png` } },
     headline: post.titulo,
     description: post.resumo || resumoAutomatico(post.conteudo),
     image: capa ?? undefined,
@@ -78,9 +97,20 @@ export default async function PostPage({ params }: Props) {
     author: { "@type": "Organization", name: post.autor || "SIBRAP" },
   };
 
+  const breadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Início", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Blog", item: `${siteUrl}/blog` },
+      { "@type": "ListItem", position: 3, name: post.titulo, item: urlPost },
+    ],
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-white font-body">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
       <CabecalhoSite logado={!!user} />
 
       <main className="flex-1 bg-[#F6F8FB] py-10 sm:py-14">

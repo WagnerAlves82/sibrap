@@ -5,10 +5,10 @@ import { sairDaConta } from "@/app/login/actions";
 import { EMISSOR } from "@/lib/emissor";
 
 export function CabecalhoSite({ logado }: { logado: boolean }) {
-  const itemNav = "px-2 py-2 text-[#33465E] transition-colors hover:text-brand";
+  const itemNav = "px-1.5 py-2 sm:px-2 text-[#33465E] transition-colors hover:text-brand";
   return (
     <header className="border-b-[3px] border-accent bg-white">
-      <div className="mx-auto flex max-w-[1180px] items-center justify-between gap-3 px-4 py-2 sm:px-6">
+      <div className="mx-auto flex max-w-[1180px] items-center justify-between gap-2 px-3 py-2 sm:gap-3 sm:px-6">
         <Link href="/" aria-label="SIBRAP — página inicial" className="shrink-0">
           <Image
             src="/logo-sibrap.png"
@@ -16,15 +16,15 @@ export function CabecalhoSite({ logado }: { logado: boolean }) {
             width={707}
             height={154}
             priority
-            className="h-10 w-auto sm:h-12"
+            className="h-7 w-auto min-[400px]:h-9 sm:h-12"
           />
         </Link>
 
-        <nav className="flex items-center gap-0.5 text-sm font-semibold sm:gap-3">
+        <nav className="flex min-w-0 items-center gap-0 text-[13px] font-semibold whitespace-nowrap sm:gap-3 sm:text-sm">
           <Link href="/apostilas" className={itemNav}>
             Apostilas
           </Link>
-          <Link href="/blog" className={itemNav}>
+          <Link href="/blog" className={`${logado ? "hidden sm:inline" : ""} ${itemNav}`}>
             Blog
           </Link>
           <Link href="/cursos" className={`hidden md:inline ${itemNav}`}>
@@ -35,13 +35,13 @@ export function CabecalhoSite({ logado }: { logado: boolean }) {
           </Link>
           <Link
             href={logado ? "/minha-area" : "/login"}
-            className="ml-1 rounded-md bg-brand px-4 py-2 text-white transition-colors hover:brightness-125"
+            className="ml-1 rounded-md bg-brand px-3 py-2 sm:px-4 text-white transition-colors hover:brightness-125"
           >
             {logado ? "Minha Área" : "Entrar"}
           </Link>
           {logado && (
             <form action={sairDaConta}>
-              <button type="submit" className="px-2 py-2 text-[#516278] underline-offset-4 hover:text-brand hover:underline">
+              <button type="submit" className="px-1.5 py-2 sm:px-2 text-[#516278] underline-offset-4 hover:text-brand hover:underline">
                 Sair
               </button>
             </form>
