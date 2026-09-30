@@ -5,7 +5,10 @@ import { notFound } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { CardPost } from "@/components/card-post";
+import { listarApostilasPublicadas } from "@/lib/apostilas";
+import { CardApostila } from "@/components/card-apostila";
 import {
+  apostilasRelacionadas,
   formatarDataLonga,
   markdownParaHtml,
   resumoAutomatico,
@@ -81,6 +84,7 @@ export default async function PostPage({ params }: Props) {
     .order("publicado_em", { ascending: false })
     .limit(3);
   const relacionados = relacionadosData ?? [];
+  const apostilas = apostilasRelacionadas(post, await listarApostilasPublicadas(supabase));
 
   const urlPost = `${siteUrl}/blog/${slug}`;
   const jsonLd = {
@@ -148,6 +152,25 @@ export default async function PostPage({ params }: Props) {
             concurso. O edital oficial sempre prevalece sobre qualquer
             conteúdo deste post.
           </p>
+
+          {apostilas.length > 0 && (
+            <aside className="mt-12 rounded-2xl border border-[#D7DEE6] bg-white p-5 sm:p-6" aria-labelledby="apostila-rel">
+              <h2 id="apostila-rel" className="font-display text-xl font-extrabold text-[#14213A]">
+                Estude com a apostila do edital
+              </h2>
+              <p className="mt-1 text-[14px] text-[#516278]">
+                Material atualizado, com simulados, direto ao ponto do que a banca cobra.
+              </p>
+              <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {apostilas.map((a) => (
+                  <CardApostila key={a.id} apostila={a} />
+                ))}
+              </div>
+              <Link href="/apostilas" className="mt-4 inline-block text-[14px] font-semibold text-brand hover:underline">
+                Ver todas as apostilas →
+              </Link>
+            </aside>
+          )}
 
           {relacionados.length > 0 && (
             <div className="mt-14">
