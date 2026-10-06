@@ -5,7 +5,7 @@ import { imagemDeVitrine, type ApostilaVitrine } from "@/lib/apostilas";
 // (Display/remarketing e Performance Max). Preço cheio em `price` e o preço
 // final em `sale_price` quando há desconto — é o que o Google usa pra
 // mostrar "de/por" no anúncio. Mapeie as colunas ao importar no Google Ads.
-export const revalidate = 3600;
+export const dynamic = "force-dynamic"; // lê o banco a cada pedido (CDN guarda 1h pelo Cache-Control)
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
 
