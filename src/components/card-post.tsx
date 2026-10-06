@@ -1,9 +1,9 @@
-import Image from "next/image";
+import { CapaImagem } from "@/components/capa-imagem";
 import Link from "next/link";
-import { formatarDataLonga, resumoAutomatico, urlCapa, type PostVitrine } from "@/lib/blog";
+import { capaDoPost, formatarDataLonga, resumoAutomatico, type PostVitrine } from "@/lib/blog";
 
 export function CardPost({ post }: { post: PostVitrine }) {
-  const capa = urlCapa(post.capa_path);
+  const capa = capaDoPost(post);
   const data = formatarDataLonga(post.publicado_em ?? post.criado_em);
   const resumo = post.resumo || resumoAutomatico(post.conteudo);
 
@@ -13,19 +13,24 @@ export function CardPost({ post }: { post: PostVitrine }) {
       className="group flex h-full flex-col overflow-hidden rounded-xl border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.35)]"
     >
       <div className="relative aspect-[16/9] w-full overflow-hidden bg-gradient-to-b from-[#E6EEF7] to-[#F6F9FC]">
-        {capa ? (
-          <Image
-            src={capa}
-            alt={post.titulo}
-            fill
-            sizes="(min-width: 1024px) 360px, (min-width: 640px) 45vw, 92vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center p-4 text-center font-display text-lg font-extrabold text-brand">
-            {post.categoria}
-          </div>
-        )}
+        {(() => {
+          const semCapa = (
+            <div className="flex h-full items-center justify-center p-4 text-center font-display text-lg font-extrabold text-brand">
+              {post.categoria}
+            </div>
+          );
+          return capa ? (
+            <CapaImagem
+              src={capa}
+              alt={post.titulo}
+              sizes="(min-width: 1024px) 360px, (min-width: 640px) 45vw, 92vw"
+              className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+              fallback={semCapa}
+            />
+          ) : (
+            semCapa
+          );
+        })()}
         {(post.uf || post.regiao) && (
           <span className="absolute left-2 top-2 rounded bg-brand px-2 py-1 font-data text-[10.5px] font-semibold text-white shadow">
             {post.uf ?? post.regiao}

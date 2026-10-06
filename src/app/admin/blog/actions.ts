@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
 import { sessaoAdminValida } from "@/lib/admin-sessao";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
-import { BUCKET_CAPAS, ESFERAS, gerarSlug, slugValidoPost } from "@/lib/blog";
+import { BUCKET_CAPAS, ESFERAS, capaExternaValida, gerarSlug, slugValidoPost } from "@/lib/blog";
 
 const TAMANHO_MAXIMO_CAPA = 3.5 * 1024 * 1024;
 
@@ -63,6 +63,9 @@ export async function salvarPostAction(_anterior: EstadoPost, formData: FormData
   const esferaBruta = opcional(formData, "esfera");
   const esfera = ESFERAS.find((e) => e.valor === esferaBruta)?.valor ?? null;
   const importancia = Math.min(10, Math.max(0, Math.trunc(Number(texto(formData, "importancia"))) || 0));
+  const capaUrl = opcional(formData, "capa_url");
+  if (capaUrl && !capaExternaValida(capaUrl)) return { erro: "A capa por link precisa ser https e da Wikimedia Commons (upload.wikimedia.org ou commons.wikimedia.org)." };
+  const capaCredito = opcional(formData, "capa_credito");
   const certameTipo = opcional(formData, "certame_tipo");
   const editalNumero = opcional(formData, "edital_numero");
   const retificacoes = opcional(formData, "retificacoes");
@@ -114,6 +117,8 @@ export async function salvarPostAction(_anterior: EstadoPost, formData: FormData
         certame_tipo: certameTipo,
         esfera,
         importancia,
+        capa_url: capaUrl,
+        capa_credito: capaCredito,
         edital_numero: editalNumero,
         retificacoes,
         apostilas_slugs: apostilasSlugs,
@@ -142,6 +147,8 @@ export async function salvarPostAction(_anterior: EstadoPost, formData: FormData
       certame_tipo: certameTipo,
       esfera,
       importancia,
+      capa_url: capaUrl,
+      capa_credito: capaCredito,
       edital_numero: editalNumero,
       retificacoes,
       apostilas_slugs: apostilasSlugs,

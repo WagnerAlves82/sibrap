@@ -3,7 +3,7 @@
 import { useActionState, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { UFS } from "@/lib/apostilas";
-import { CATEGORIAS_POST, ESFERAS, REGIAO_POR_UF, REGIOES, urlCapa, type PostRow } from "@/lib/blog";
+import { CATEGORIAS_POST, ESFERAS, REGIAO_POR_UF, REGIOES, capaDoPost, type PostRow } from "@/lib/blog";
 import { excluirPostAction, salvarPostAction, type EstadoPost } from "./actions";
 
 const INPUT = "w-full rounded-md border border-zinc-300 px-2.5 py-1.5 text-sm";
@@ -106,6 +106,14 @@ export function FormPost({ post }: { post?: PostRow }) {
           <input name="retificacoes" defaultValue={p?.retificacoes ?? ""} placeholder="ex.: Retificação nº 1, de 05/10/2026, altera o cronograma" className={INPUT} />
         </label>
         <label className={ROTULO}>
+          Capa por link da Wikimedia Commons (https://upload.wikimedia.org/... ou commons.wikimedia.org/wiki/Special:FilePath/...)
+          <input name="capa_url" defaultValue={p?.capa_url ?? ""} placeholder="https://upload.wikimedia.org/wikipedia/commons/..." className={INPUT} />
+        </label>
+        <label className={ROTULO}>
+          Crédito da foto (autor, licença e fonte; obrigatório em CC BY e CC BY-SA)
+          <input name="capa_credito" defaultValue={p?.capa_credito ?? ""} placeholder="Foto: Fulano / Wikimedia Commons / CC BY-SA 4.0" className={INPUT} />
+        </label>
+        <label className={ROTULO}>
           Link do edital oficial (https://...) — aparece no fim do post
           <input name="edital_url" type="url" defaultValue={p?.edital_url ?? ""} placeholder="https://..." className={INPUT} />
         </label>
@@ -122,9 +130,9 @@ export function FormPost({ post }: { post?: PostRow }) {
         <label className={ROTULO}>
           Capa (JPG, PNG ou WebP, até 3,5 MB)
           <input type="file" name="capa" accept="image/jpeg,image/png,image/webp" className={INPUT} />
-          {p?.capa_path && (
+          {p && capaDoPost(p) && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={urlCapa(p.capa_path) ?? ""} alt="Capa atual" className="mt-1 h-20 w-32 rounded border border-zinc-200 object-cover" />
+            <img src={capaDoPost(p) ?? ""} alt="Capa atual" className="mt-1 h-20 w-32 rounded border border-zinc-200 object-cover" />
           )}
         </label>
 
