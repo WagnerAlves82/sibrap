@@ -3,7 +3,7 @@
 import { useActionState, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { UFS } from "@/lib/apostilas";
-import { CATEGORIAS_POST, REGIAO_POR_UF, REGIOES, urlCapa, type PostRow } from "@/lib/blog";
+import { CATEGORIAS_POST, ESFERAS, REGIAO_POR_UF, REGIOES, urlCapa, type PostRow } from "@/lib/blog";
 import { excluirPostAction, salvarPostAction, type EstadoPost } from "./actions";
 
 const INPUT = "w-full rounded-md border border-zinc-300 px-2.5 py-1.5 text-sm";
@@ -69,6 +69,21 @@ export function FormPost({ post }: { post?: PostRow }) {
           </select>
         </label>
         <label className={ROTULO}>
+          Âmbito do concurso (filtro do blog e prioridade no Facebook)
+          <select name="esfera" defaultValue={p?.esfera ?? ""} className={INPUT}>
+            <option value="">— escolher —</option>
+            {ESFERAS.map((e) => (
+              <option key={e.valor} value={e.valor}>
+                {e.rotulo}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className={ROTULO}>
+          Importância extra no Facebook (0 a 10)
+          <input name="importancia" type="number" min={0} max={10} defaultValue={p?.importancia ?? 0} className={INPUT} />
+        </label>
+        <label className={ROTULO}>
           Autor
           <input name="autor" defaultValue={p?.autor ?? "SIBRAP"} className={INPUT} />
         </label>
@@ -87,7 +102,7 @@ export function FormPost({ post }: { post?: PostRow }) {
           <input name="edital_numero" defaultValue={p?.edital_numero ?? ""} placeholder="Edital nº 001/2026" className={INPUT} />
         </label>
         <label className={`${ROTULO} sm:col-span-2`}>
-          Retificações conhecidas (deixe em branco = "nenhuma até o momento")
+          Retificações conhecidas (deixe em branco = &quot;nenhuma até o momento&quot;)
           <input name="retificacoes" defaultValue={p?.retificacoes ?? ""} placeholder="ex.: Retificação nº 1, de 05/10/2026, altera o cronograma" className={INPUT} />
         </label>
         <label className={ROTULO}>

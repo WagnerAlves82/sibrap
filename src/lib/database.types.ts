@@ -996,6 +996,10 @@ export type Database = {
           destaque: boolean
           edital_numero: string | null
           edital_url: string | null
+          esfera: string | null
+          facebook_post_id: string | null
+          facebook_postado_em: string | null
+          importancia: number
           id: string
           publicado_em: string | null
           regiao: string | null
@@ -1018,6 +1022,10 @@ export type Database = {
           destaque?: boolean
           edital_numero?: string | null
           edital_url?: string | null
+          esfera?: string | null
+          facebook_post_id?: string | null
+          facebook_postado_em?: string | null
+          importancia?: number
           id?: string
           publicado_em?: string | null
           regiao?: string | null
@@ -1040,6 +1048,10 @@ export type Database = {
           destaque?: boolean
           edital_numero?: string | null
           edital_url?: string | null
+          esfera?: string | null
+          facebook_post_id?: string | null
+          facebook_postado_em?: string | null
+          importancia?: number
           id?: string
           publicado_em?: string | null
           regiao?: string | null

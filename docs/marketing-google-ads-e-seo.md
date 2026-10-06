@@ -58,3 +58,17 @@ Melhorias recomendadas (ordem de impacto):
 - **Grupos de Facebook e Reddit (r/concursospublicos)**: responder dúvidas, sem spam.
 - **Parcerias**: professores e canais locais de cada concurso, com cupom.
 - **Newsletter** para quem se cadastrou (já existe `leads`).
+
+## 6. Regras da produção diária de matérias (até 10 por dia)
+- **Teto:** no máximo 10 matérias por dia. Dias com menos concursos publicam menos; nunca completar com texto de enchimento.
+- **Âmbito (campo "Âmbito do concurso" no admin):** Nacional, Estadual, Sociedades de economia mista (Petrobras/Transpetro, bancos públicos, Correios etc.) e Prefeituras.
+- **Prioridade na hora de escolher quais entram:** Nacional > Economia mista > Estadual > Prefeituras.
+- **Prefeituras:** se o dia tiver muitas matérias maiores, ignorar prefeitura muito pequena (poucas vagas). Se houver poucas matérias no dia, incluir.
+- **Cada matéria:** estado (UF), âmbito, órgão, banca/organizadora, ano no título, link do edital oficial, ficha (tipo de certame, nº do edital, retificações) e apostila relacionada, se existir.
+- **Revisão:** gravar como rascunho e publicar após conferência (datas e vagas erradas custam credibilidade).
+
+## 7. Facebook automático
+- Até **4 por dia**, escolhendo as mais importantes entre as publicadas nos últimos 7 dias e ainda não divulgadas. Pontuação: esfera (40/30/20/10) + destaque (15) + importância extra do admin (0 a 10).
+- Horários (Brasília): 08:00, 11:30, 15:00 e 19:30, via GitHub Actions (`.github/workflows/facebook-posts.yml`). Cada execução posta no máximo 1.
+- O post leva só o link da matéria (com UTM `utm_medium=organico`).
+- Configuração: na Vercel `SOCIAL_SECRET`, `FACEBOOK_PAGE_ID`, `FACEBOOK_PAGE_TOKEN`; no GitHub o secret `SOCIAL_SECRET`. Teste sem postar: Actions → "Facebook posts" → Run workflow com `dry = 1`.

@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
 import { sessaoAdminValida } from "@/lib/admin-sessao";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
-import { BUCKET_CAPAS, gerarSlug, slugValidoPost } from "@/lib/blog";
+import { BUCKET_CAPAS, ESFERAS, gerarSlug, slugValidoPost } from "@/lib/blog";
 
 const TAMANHO_MAXIMO_CAPA = 3.5 * 1024 * 1024;
 
@@ -60,6 +60,9 @@ export async function salvarPostAction(_anterior: EstadoPost, formData: FormData
   const destaque = formData.get("destaque") === "on";
   const editalUrl = opcional(formData, "edital_url");
   if (editalUrl && !/^https?:\/\/\S+$/i.test(editalUrl)) return { erro: "O link do edital precisa começar com http:// ou https://." };
+  const esferaBruta = opcional(formData, "esfera");
+  const esfera = ESFERAS.find((e) => e.valor === esferaBruta)?.valor ?? null;
+  const importancia = Math.min(10, Math.max(0, Math.trunc(Number(texto(formData, "importancia"))) || 0));
   const certameTipo = opcional(formData, "certame_tipo");
   const editalNumero = opcional(formData, "edital_numero");
   const retificacoes = opcional(formData, "retificacoes");
@@ -109,6 +112,8 @@ export async function salvarPostAction(_anterior: EstadoPost, formData: FormData
         destaque,
         edital_url: editalUrl,
         certame_tipo: certameTipo,
+        esfera,
+        importancia,
         edital_numero: editalNumero,
         retificacoes,
         apostilas_slugs: apostilasSlugs,
@@ -135,6 +140,8 @@ export async function salvarPostAction(_anterior: EstadoPost, formData: FormData
       destaque,
       edital_url: editalUrl,
       certame_tipo: certameTipo,
+      esfera,
+      importancia,
       edital_numero: editalNumero,
       retificacoes,
       apostilas_slugs: apostilasSlugs,
