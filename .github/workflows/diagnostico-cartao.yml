@@ -1,0 +1,29 @@
+# Teste manual: o site tenta abrir um checkout de cartão no AbacatePay (sem
+# cobrar nem gravar nada). O job passa se o cartão está liberado e FALHA se o
+# AbacatePay recusar; a resposta fica no log. Usa o mesmo VIGIA_SECRET do vigia.
+name: Diagnóstico de cartão (AbacatePay)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  testar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Pedir ao site que teste o cartão
+        env:
+          VIGIA_SECRET: ${{ secrets.VIGIA_SECRET }}
+        run: |
+          set -eu
+          [ -n "${VIGIA_SECRET}" ] || { echo "::error::Configure o secret VIGIA_SECRET."; exit 1; }
+          status=$(curl -sS --max-time 55 -o resposta.json -w "%{http_code}" \
+            -X POST "https://www.sibrap.tec.br/api/diagnostico/cartao" \
+            -H "Authorization: Bearer ${VIGIA_SECRET}")
+          echo "HTTP ${status}"
+          cat resposta.json
+          echo
+          [ "${status}" = "200" ] || { echo "::error::Cartão não confirmado (HTTP ${status}). Veja a resposta acima."; exit 1; }
