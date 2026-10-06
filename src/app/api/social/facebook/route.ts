@@ -19,7 +19,7 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
-const API = "https://graph.facebook.com/v21.0";
+const API = `https://graph.facebook.com/${process.env.FACEBOOK_GRAPH_VERSION ?? "v26.0"}`;
 const JANELA_DIAS = 7; // não divulga matéria velha
 
 function autorizado(request: NextRequest): boolean {
