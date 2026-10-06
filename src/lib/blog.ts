@@ -26,6 +26,24 @@ export const REGIAO_POR_UF: Record<string, Regiao> = {
   PR: "Sul", RS: "Sul", SC: "Sul",
 };
 
+export const ESFERAS = [
+  { valor: "nacional", rotulo: "Nacional", peso: 40 },
+  { valor: "economia_mista", rotulo: "Economia mista", peso: 30 },
+  { valor: "estadual", rotulo: "Estadual", peso: 20 },
+  { valor: "municipal", rotulo: "Prefeituras", peso: 10 },
+] as const;
+export type Esfera = (typeof ESFERAS)[number]["valor"];
+
+export function rotuloEsfera(valor: string | null | undefined): string | null {
+  return ESFERAS.find((e) => e.valor === valor)?.rotulo ?? null;
+}
+
+/** Pontuação para escolher o que vai pro Facebook: esfera + destaque + ajuste manual. */
+export function pontuacaoDivulgacao(p: Pick<PostRow, "esfera" | "destaque" | "importancia">): number {
+  const peso = ESFERAS.find((e) => e.valor === p.esfera)?.peso ?? 10;
+  return peso + (p.destaque ? 15 : 0) + (p.importancia ?? 0);
+}
+
 export const CATEGORIAS_POST = ["Concursos", "Editais", "Dicas de estudo", "Notícias"] as const;
 
 export { BUCKET_CAPAS, urlCapa };

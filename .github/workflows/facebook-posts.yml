@@ -1,0 +1,50 @@
+# Divulga no Facebook as matérias mais importantes do blog, até 4 por dia.
+# Cada execução publica no máximo 1 matéria; o site respeita o teto diário.
+# Horários (Brasília): 08:00, 11:30, 15:00 e 19:30 (o GitHub pode atrasar alguns minutos).
+#
+# Configuração (Settings > Secrets and variables > Actions):
+#   secret SOCIAL_SECRET   mesmo valor de SOCIAL_SECRET na Vercel (32+ caracteres)
+# Na Vercel: SOCIAL_SECRET, FACEBOOK_PAGE_ID, FACEBOOK_PAGE_TOKEN.
+name: Facebook posts
+
+on:
+  schedule:
+    - cron: "0 11 * * *"
+    - cron: "30 14 * * *"
+    - cron: "0 18 * * *"
+    - cron: "30 22 * * *"
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: "Só mostrar o que seria publicado (1) ou publicar de verdade (0)"
+        default: "1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: facebook-posts
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Chamar o site
+        env:
+          SOCIAL_SECRET: ${{ secrets.SOCIAL_SECRET }}
+          DRY: ${{ github.event.inputs.dry || '0' }}
+        run: |
+          set -eu
+          if [ -z "${SOCIAL_SECRET}" ]; then
+            echo "::error::Configure o secret SOCIAL_SECRET."
+            exit 1
+          fi
+          status=$(curl -sS --max-time 50 -o resposta.json -w "%{http_code}" \
+            -X POST "https://www.sibrap.tec.br/api/social/facebook?dry=${DRY}" \
+            -H "Authorization: Bearer ${SOCIAL_SECRET}")
+          echo "HTTP ${status}"
+          cat resposta.json
+          echo
+          [ "${status}" = "200" ]

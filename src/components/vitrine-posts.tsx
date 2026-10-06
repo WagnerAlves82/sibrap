@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { REGIOES, type PostVitrine } from "@/lib/blog";
+import { ESFERAS, REGIOES, type PostVitrine } from "@/lib/blog";
 import { CardPost } from "@/components/card-post";
 import { PromoApostila } from "@/components/promo-apostila";
 import type { ApostilaVitrine } from "@/lib/apostilas";
@@ -26,6 +26,7 @@ export function VitrinePosts({
   const [uf, setUf] = useState(ufInicial);
   const [federal, setFederal] = useState(false);
   const [busca, setBusca] = useState("");
+  const [esfera, setEsfera] = useState("");
 
   // Estados em ordem do concurso/post mais atual (a lista já vem do mais
   // novo pro mais antigo), com a contagem de posts de cada um.
@@ -40,9 +41,10 @@ export function VitrinePosts({
     return posts.filter(
       (p) =>
         (!federal ? (!regiao || p.regiao === regiao) && (!uf || p.uf === uf) : !p.uf && !p.regiao) &&
+        (!esfera || p.esfera === esfera) &&
         (!termo || `${p.titulo} ${p.resumo ?? ""} ${p.categoria}`.toLowerCase().includes(termo))
     );
-  }, [posts, regiao, uf, federal, busca]);
+  }, [posts, regiao, uf, federal, esfera, busca]);
 
   const chip = (ativo: boolean) =>
     `rounded-full border px-3.5 py-1.5 text-[13px] font-semibold transition-colors ${
@@ -81,6 +83,22 @@ export function VitrinePosts({
           >
             Federal
           </button>
+        </div>
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Filtrar por tipo de concurso">
+          <button type="button" onClick={() => setEsfera("")} className={chip(!esfera)} aria-pressed={!esfera}>
+            Todos os tipos
+          </button>
+          {ESFERAS.map((e) => (
+            <button
+              key={e.valor}
+              type="button"
+              onClick={() => setEsfera(esfera === e.valor ? "" : e.valor)}
+              className={chip(esfera === e.valor)}
+              aria-pressed={esfera === e.valor}
+            >
+              {e.rotulo}
+            </button>
+          ))}
         </div>
         {ufsRecentes.length > 0 && (
           <div className="flex flex-wrap gap-2" role="group" aria-label="Filtrar por estado">
