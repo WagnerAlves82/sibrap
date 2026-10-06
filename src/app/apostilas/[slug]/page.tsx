@@ -41,12 +41,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: apostila.titulo,
     description: descricao,
+    alternates: { canonical: `/apostilas/${slug}` },
     openGraph: {
+      url: `/apostilas/${slug}`,
+      locale: "pt_BR",
       title: apostila.titulo,
       description: descricao,
       type: "website",
       images: capa ? [{ url: capa }] : undefined,
     },
+    twitter: { card: "summary_large_image", title: apostila.titulo, description: descricao, images: capa ? [capa] : undefined },
   };
 }
 
@@ -121,6 +125,8 @@ export default async function ApostilaPage({ params }: Props) {
       priceCurrency: "BRL",
       price: (apostila.preco_centavos / 100).toFixed(2),
       availability: "https://schema.org/InStock",
+      priceValidUntil: apostila.data_prova ?? undefined,
+      itemCondition: "https://schema.org/NewCondition",
       seller: { "@type": "Organization", name: EMISSOR.nome },
     },
   };

@@ -3,6 +3,7 @@ import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { VitrinePosts } from "@/components/vitrine-posts";
 import { listarPostsPublicados } from "@/lib/blog";
+import { listarApostilasPublicadas } from "@/lib/apostilas";
 
 export const metadata: Metadata = {
   title: "Blog de concursos públicos: editais, prazos e dicas de estudo",
@@ -14,8 +15,9 @@ export const metadata: Metadata = {
 
 export default async function BlogPage() {
   const supabase = await criarClienteSupabaseServer();
-  const [posts, { data: userData }] = await Promise.all([
+  const [posts, apostilas, { data: userData }] = await Promise.all([
     listarPostsPublicados(supabase),
+    listarApostilasPublicadas(supabase),
     supabase.auth.getUser(),
   ]);
 
@@ -28,10 +30,10 @@ export default async function BlogPage() {
             Blog
           </h1>
           <p className="mt-2 mb-8 max-w-[60ch] text-[15.5px] leading-relaxed text-[#516278]">
-            Editais novos, prazos de inscrição e dicas de estudo. Filtre por
-            região ou estado pra ver só o que interessa pra você.
+            Editais novos, prazos de inscrição e dicas de estudo. Escolha o
+            seu estado pra ver os concursos mais atuais primeiro.
           </p>
-          <VitrinePosts posts={posts} comBusca />
+          <VitrinePosts posts={posts} apostilas={apostilas} comBusca />
         </div>
       </main>
       <RodapeSite />

@@ -6,6 +6,7 @@ import { listarApostilasPublicadas } from "@/lib/apostilas";
 
 export const metadata: Metadata = {
   title: "Apostilas para concursos públicos",
+  alternates: { canonical: "/apostilas" },
   description:
     "Apostilas em PDF montadas a partir do edital, com questões e gabarito comentado. Pagamento único por PIX.",
 };

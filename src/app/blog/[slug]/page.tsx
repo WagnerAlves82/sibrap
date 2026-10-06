@@ -6,6 +6,7 @@ import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { CardPost } from "@/components/card-post";
 import { listarApostilasPublicadas } from "@/lib/apostilas";
+import { PromoApostila } from "@/components/promo-apostila";
 import { CardApostilaMini } from "@/components/card-apostila-mini";
 import {
   apostilasRelacionadas,
@@ -169,7 +170,32 @@ export default async function PostPage({ params }: Props) {
             </div>
           )}
 
-          <div className="post-conteudo mt-8 text-[16px] leading-relaxed" dangerouslySetInnerHTML={{ __html: html }} />
+          {(() => {
+            // propaganda orgânica no meio do texto: divide o HTML no bloco central
+            const blocos = html.split("\n");
+            const meio = Math.ceil(blocos.length / 2);
+            const promo = apostilas[0];
+            const comPromo = !!promo && blocos.length >= 6;
+            return (
+              <>
+                <div
+                  className="post-conteudo mt-8 text-[16px] leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: comPromo ? blocos.slice(0, meio).join("\n") : html }}
+                />
+                {comPromo && (
+                  <div className="my-8 grid">
+                    <PromoApostila apostila={promo} variante="faixa" origem="blog-post" />
+                  </div>
+                )}
+                {comPromo && (
+                  <div
+                    className="post-conteudo text-[16px] leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: blocos.slice(meio).join("\n") }}
+                  />
+                )}
+              </>
+            );
+          })()}
 
           <p className="mt-10 max-w-[62ch] text-[12.5px] leading-relaxed text-[#516278]">
             Conteúdo informativo, sem vínculo com a banca ou o órgão do
