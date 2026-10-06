@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { formatarDataLonga, resumoAutomatico, urlCapa, type PostVitrine } from "@/lib/blog";
+import { capaDoPost, formatarDataLonga, resumoAutomatico, type PostVitrine } from "@/lib/blog";
 
 export function CardPost({ post }: { post: PostVitrine }) {
-  const capa = urlCapa(post.capa_path);
+  const capa = capaDoPost(post);
   const data = formatarDataLonga(post.publicado_em ?? post.criado_em);
   const resumo = post.resumo || resumoAutomatico(post.conteudo);
 

@@ -14,7 +14,7 @@ import {
   markdownParaHtml,
   resumoAutomatico,
   slugValidoPost,
-  urlCapa,
+  capaDoPost,
 } from "@/lib/blog";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { post } = await carregar(slug);
   if (!post) return {};
   const descricao = post.resumo || resumoAutomatico(post.conteudo);
-  const capa = urlCapa(post.capa_path);
+  const capa = capaDoPost(post);
   return {
     title: post.titulo,
     description: descricao,
@@ -73,7 +73,7 @@ export default async function PostPage({ params }: Props) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const capa = urlCapa(post.capa_path);
+  const capa = capaDoPost(post);
   const data = formatarDataLonga(post.publicado_em ?? post.criado_em);
   const html = markdownParaHtml(post.conteudo);
 
@@ -165,9 +165,14 @@ export default async function PostPage({ params }: Props) {
           )}
 
           {capa && (
-            <div className="relative mt-6 aspect-[16/9] w-full overflow-hidden rounded-xl bg-[#E6EEF7]">
-              <Image src={capa} alt={post.titulo} fill sizes="(min-width: 800px) 760px, 100vw" className="object-cover" priority />
-            </div>
+            <figure className="mt-6">
+              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-[#E6EEF7]">
+                <Image src={capa} alt={post.titulo} fill sizes="(min-width: 800px) 760px, 100vw" className="object-cover" priority />
+              </div>
+              {post.capa_credito && (
+                <figcaption className="mt-1.5 text-[11.5px] leading-snug text-[#516278]">{post.capa_credito}</figcaption>
+              )}
+            </figure>
           )}
 
           {(() => {

@@ -41,6 +41,17 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
       },
       {
+        // capas dos posts do blog por link (Wikimedia Commons, licenças livres)
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+        pathname: "/wikipedia/commons/**",
+      },
+      {
+        protocol: "https",
+        hostname: "commons.wikimedia.org",
+        pathname: "/wiki/Special:FilePath/**",
+      },
+      {
         // capas das apostilas (bucket público do Supabase Storage)
         protocol: "https",
         hostname: "bdansoccbklggqqnxexn.supabase.co",

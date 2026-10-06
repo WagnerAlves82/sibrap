@@ -988,7 +988,9 @@ export type Database = {
           apostilas_slugs: string[]
           atualizado_em: string
           autor: string
+          capa_credito: string | null
           capa_path: string | null
+          capa_url: string | null
           categoria: string
           certame_tipo: string | null
           conteudo: string
@@ -1014,7 +1016,9 @@ export type Database = {
           apostilas_slugs?: string[]
           atualizado_em?: string
           autor?: string
+          capa_credito?: string | null
           capa_path?: string | null
+          capa_url?: string | null
           categoria?: string
           certame_tipo?: string | null
           conteudo?: string
@@ -1040,7 +1044,9 @@ export type Database = {
           apostilas_slugs?: string[]
           atualizado_em?: string
           autor?: string
+          capa_credito?: string | null
           capa_path?: string | null
+          capa_url?: string | null
           categoria?: string
           certame_tipo?: string | null
           conteudo?: string

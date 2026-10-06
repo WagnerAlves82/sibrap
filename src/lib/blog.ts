@@ -48,6 +48,25 @@ export const CATEGORIAS_POST = ["Concursos", "Editais", "Dicas de estudo", "Not�
 
 export { BUCKET_CAPAS, urlCapa };
 
+// Capas por link: só Wikimedia Commons (licenças livres), os mesmos hosts
+// liberados em `images.remotePatterns` no next.config.ts.
+const HOSTS_CAPA_EXTERNA = ["upload.wikimedia.org", "commons.wikimedia.org"];
+
+export function capaExternaValida(url: string | null | undefined): url is string {
+  if (!url) return false;
+  try {
+    const u = new URL(url);
+    return u.protocol === "https:" && HOSTS_CAPA_EXTERNA.includes(u.hostname);
+  } catch {
+    return false;
+  }
+}
+
+/** Capa do post: link externo (Wikimedia) quando houver; senão o arquivo enviado ao Storage. */
+export function capaDoPost(p: Pick<PostRow, "capa_url" | "capa_path">): string | null {
+  return capaExternaValida(p.capa_url) ? p.capa_url : urlCapa(p.capa_path);
+}
+
 export function slugValidoPost(slug: string): boolean {
   return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) && slug.length <= 100;
 }
