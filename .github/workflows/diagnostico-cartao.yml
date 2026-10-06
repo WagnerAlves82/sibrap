@@ -26,4 +26,8 @@ jobs:
           echo "HTTP ${status}"
           cat resposta.json
           echo
-          [ "${status}" = "200" ] || { echo "::error::Cartão não confirmado (HTTP ${status}). Veja a resposta acima."; exit 1; }
+          if [ "${status}" != "200" ]; then
+            echo "::error::Cartão não confirmado (HTTP ${status}): $(tr -d '\n' < resposta.json | cut -c1-600)"
+            exit 1
+          fi
+          echo "::notice::Cartão liberado: $(tr -d '\n' < resposta.json | cut -c1-300)"
