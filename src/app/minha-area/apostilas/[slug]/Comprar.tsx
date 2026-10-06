@@ -5,24 +5,34 @@ import { useRouter } from "next/navigation";
 import { sendGAEvent } from "@next/third-parties/google";
 import { PixCheckoutClaro } from "@/components/pix-checkout-claro";
 import { Alert } from "@/components/alert";
-import { criarPagamentoApostilaAction, criarPagamentoCartaoApostilaAction } from "./actions";
+import {
+  criarPagamentoApostilaAction,
+  criarPagamentoCartaoApostilaAction,
+} from "./actions";
 
 export function ComprarApostila({
   slug,
   titulo,
   preco,
   precoCentavos,
+  cartaoAtivo = false,
 }: {
   slug: string;
   titulo: string;
   preco: string;
   precoCentavos: number;
+  cartaoAtivo?: boolean;
 }) {
   const router = useRouter();
   const [carregandoCartao, setCarregandoCartao] = useState(false);
   const [erroCartao, setErroCartao] = useState<string | null>(null);
 
-  const item = { item_id: slug, item_name: titulo, price: precoCentavos / 100, quantity: 1 };
+  const item = {
+    item_id: slug,
+    item_name: titulo,
+    price: precoCentavos / 100,
+    quantity: 1,
+  };
 
   async function pagarComCartao() {
     sendGAEvent("event", "begin_checkout", {
@@ -66,13 +76,17 @@ export function ComprarApostila({
           router.refresh();
         }}
       />
-      <button
-        onClick={pagarComCartao}
-        disabled={carregandoCartao}
-        className="w-full rounded-lg border-[1.5px] border-brand px-5 py-3 text-[15px] font-bold text-brand transition-colors hover:bg-brand/5 disabled:opacity-60"
-      >
-        {carregandoCartao ? "Abrindo pagamento..." : `Pagar ${preco} no cartão`}
-      </button>
+      {cartaoAtivo && (
+        <button
+          onClick={pagarComCartao}
+          disabled={carregandoCartao}
+          className="w-full rounded-lg border-[1.5px] border-brand px-5 py-3 text-[15px] font-bold text-brand transition-colors hover:bg-brand/5 disabled:opacity-60"
+        >
+          {carregandoCartao
+            ? "Abrindo pagamento..."
+            : `Pagar ${preco} no cartão`}
+        </button>
+      )}
       {erroCartao && (
         <Alert variant="erro" claro>
           {erroCartao}
