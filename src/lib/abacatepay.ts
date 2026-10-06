@@ -34,6 +34,16 @@ export function abacatePayAtivo(): boolean {
   return !!process.env.ABACATEPAY_API_KEY && process.env.PIX_GATEWAY !== "mercadopago";
 }
 
+/**
+ * Cartão só aparece/funciona quando a conta do AbacatePay foi liberada para
+ * CARD. Ligue com ABACATEPAY_CARTAO=1 na Vercel depois que o diagnóstico
+ * (Actions > "Diagnóstico de cartão") passar; antes disso o AbacatePay
+ * responde "CARD is not available for this store".
+ */
+export function cartaoLiberado(): boolean {
+  return abacatePayAtivo() && process.env.ABACATEPAY_CARTAO === "1";
+}
+
 type Envelope<T> = { data: T | null; error: string | null; success: boolean };
 
 async function chamar<T>(caminho: string, init?: RequestInit): Promise<T> {

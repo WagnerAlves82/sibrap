@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
-import { confirmarPagamentoAbacateCheckout } from "@/lib/abacatepay";
+import { cartaoLiberado, confirmarPagamentoAbacateCheckout } from "@/lib/abacatepay";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { formatarDataIso, formatarPreco, slugValido, urlCapa } from "@/lib/apostilas";
 import { ComprarApostila } from "./Comprar";
@@ -197,6 +197,7 @@ export default async function ApostilaAreaPage({
                   titulo={apostila.titulo}
                   preco={preco}
                   precoCentavos={apostila.produtos.preco_centavos}
+                  cartaoAtivo={cartaoLiberado()}
                 />
               </div>
             )}

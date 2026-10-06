@@ -8,7 +8,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/database.types";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
-import { abacatePayAtivo, criarCheckoutCartao } from "@/lib/abacatepay";
+import { cartaoLiberado, criarCheckoutCartao } from "@/lib/abacatepay";
 import { dentroDoLimite, hash } from "@/lib/limite";
 import { vendasPausadas } from "@/lib/vigia";
 
@@ -34,7 +34,7 @@ export async function gerarCheckoutCartaoParaPedido({
 }): Promise<EstadoCheckoutCartao> {
   void supabase; // reservado: mesma assinatura de gerarPixParaPedido, para simetria e uso futuro
 
-  if (!abacatePayAtivo()) {
+  if (!cartaoLiberado()) {
     return { erro: "Pagamento por cartão ainda não está disponível." };
   }
 
