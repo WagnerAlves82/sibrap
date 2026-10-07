@@ -1,6 +1,6 @@
-# Divulga no Facebook as matérias mais importantes do blog, até 4 por dia.
+# Divulga no Facebook as matérias mais recentes do blog, até 5 por dia.
 # Cada execução publica no máximo 1 matéria; o site respeita o teto diário.
-# Horários (Brasília): 08:00, 11:30, 15:00 e 19:30 (o GitHub pode atrasar alguns minutos).
+# Horários (Brasília): 08:00, 10:30, 13:00, 16:00 e 19:30 (o GitHub pode atrasar alguns minutos).
 #
 # Configuração (Settings > Secrets and variables > Actions):
 #   secret SOCIAL_SECRET   mesmo valor de SOCIAL_SECRET na Vercel (32+ caracteres)
@@ -10,8 +10,9 @@ name: Facebook posts
 on:
   schedule:
     - cron: "0 11 * * *"
-    - cron: "30 14 * * *"
-    - cron: "0 18 * * *"
+    - cron: "30 13 * * *"
+    - cron: "0 16 * * *"
+    - cron: "0 19 * * *"
     - cron: "30 22 * * *"
   workflow_dispatch:
     inputs:

@@ -2,7 +2,7 @@
 //
 // POST (chamado pelo GitHub Actions, ver .github/workflows/facebook-posts.yml):
 // escolhe a matéria publicada MAIS RECENTE ainda não divulgada e publica
-// na Página do Facebook. Respeita o teto diário (padrão: 4 por dia, no
+// na Página do Facebook. Respeita o teto diário (padrão: 5 por dia, no
 // horário de Brasília) — cada chamada publica no máximo 1 matéria.
 //
 // Importância = peso da esfera (nacional > economia mista > estadual >
@@ -51,7 +51,7 @@ function montarTexto(post: PostRow): string {
   const cta = apostila
     ? `📘 Apostila completa para este concurso, com questões e simulado: ${utm(`/apostilas/${apostila}`)}`
     : `📘 Apostilas para concursos municipais, com questões e simulado: ${utm("/apostilas")}`;
-  return `📢 ${post.titulo}
+  return `📢 ${post.seo_titulo || post.titulo}
 
 ${resumo}
 
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ erro: "FACEBOOK_PAGE_ID/FACEBOOK_PAGE_TOKEN não configurados" }, { status: 500 });
   }
 
-  const limiteDia = Math.max(1, Number(process.env.FACEBOOK_MAX_POR_DIA) || 4);
+  const limiteDia = Math.max(1, Number(process.env.FACEBOOK_MAX_POR_DIA) || 5);
   const admin = criarClienteSupabaseAdmin();
 
   const { count } = await admin
