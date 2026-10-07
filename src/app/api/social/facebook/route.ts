@@ -41,9 +41,10 @@ function inicioDoDiaBrasilia(): Date {
 function montarTexto(post: PostRow): string {
   const resumo = (post.resumo || resumoAutomatico(post.conteudo, 260)).trim();
   const esfera = rotuloEsfera(post.esfera);
-  const tags = ["#ConcursoPúblico", post.uf ? `#Concursos${post.uf}` : null, esfera === "Prefeituras" ? "#Prefeitura" : null, "#SIBRAP"]
-    .filter(Boolean)
-    .join(" ");
+  const padrao = ["#ConcursoPúblico", post.uf ? `#Concursos${post.uf}` : null, esfera === "Prefeituras" ? "#Prefeitura" : null, "#SIBRAP"];
+  // hashtags próprias da matéria (órgão, cidade, ano...) vêm primeiro; as padrão completam até 8
+  const proprias = (post.hashtags ?? []).map((t) => t.trim()).filter((t) => /^#\S+$/.test(t));
+  const tags = [...new Set([...proprias, ...padrao.filter((t): t is string => !!t)])].slice(0, 8).join(" ");
   return `📢 ${post.titulo}
 
 ${resumo}

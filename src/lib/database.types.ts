@@ -1001,6 +1001,10 @@ export type Database = {
           esfera: string | null
           facebook_post_id: string | null
           facebook_postado_em: string | null
+          hashtags: string[]
+          palavras_chave: string[]
+          seo_descricao: string | null
+          seo_titulo: string | null
           importancia: number
           id: string
           publicado_em: string | null
@@ -1029,6 +1033,10 @@ export type Database = {
           esfera?: string | null
           facebook_post_id?: string | null
           facebook_postado_em?: string | null
+          hashtags?: string[]
+          palavras_chave?: string[]
+          seo_descricao?: string | null
+          seo_titulo?: string | null
           importancia?: number
           id?: string
           publicado_em?: string | null
@@ -1057,6 +1065,10 @@ export type Database = {
           esfera?: string | null
           facebook_post_id?: string | null
           facebook_postado_em?: string | null
+          hashtags?: string[]
+          palavras_chave?: string[]
+          seo_descricao?: string | null
+          seo_titulo?: string | null
           importancia?: number
           id?: string
           publicado_em?: string | null
