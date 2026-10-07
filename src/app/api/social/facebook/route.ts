@@ -1,7 +1,7 @@
 // src/app/api/social/facebook/route.ts
 //
 // POST (chamado pelo GitHub Actions, ver .github/workflows/facebook-posts.yml):
-// escolhe a matéria publicada MAIS IMPORTANTE ainda não divulgada e publica
+// escolhe a matéria publicada MAIS RECENTE ainda não divulgada e publica
 // na Página do Facebook. Respeita o teto diário (padrão: 4 por dia, no
 // horário de Brasília) — cada chamada publica no máximo 1 matéria.
 //
@@ -93,8 +93,9 @@ export async function POST(request: NextRequest) {
     .order("publicado_em", { ascending: false })
     .limit(100);
 
+  // regra: sempre a matéria MAIS ATUAL; a pontuação (esfera/destaque/importância) só desempata
   const escolhido = (data ?? []).sort(
-    (a, b) => pontuacaoDivulgacao(b) - pontuacaoDivulgacao(a) || (b.publicado_em ?? "").localeCompare(a.publicado_em ?? "")
+    (a, b) => (b.publicado_em ?? "").localeCompare(a.publicado_em ?? "") || pontuacaoDivulgacao(b) - pontuacaoDivulgacao(a)
   )[0];
   if (!escolhido) return NextResponse.json({ ok: true, publicado: false, motivo: "nada pendente" });
 
