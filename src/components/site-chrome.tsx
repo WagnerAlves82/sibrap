@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SeloAbed } from "@/components/selo-abed";
 import { sairDaConta } from "@/app/login/actions";
+import { BotaoPreferenciasCookies } from "@/components/cookies-consentimento";
 import { EMISSOR } from "@/lib/emissor";
 
 export function CabecalhoSite({ logado, next }: { logado: boolean; next?: string }) {
@@ -120,6 +121,16 @@ export function RodapeSite() {
                 </Link>
               </li>
               <li>
+                <Link href="/sobre" className={linkRodape}>
+                  Sobre o SIBRAP
+                </Link>
+              </li>
+              <li>
+                <Link href="/contato" className={linkRodape}>
+                  Contato
+                </Link>
+              </li>
+              <li>
                 <Link href="/termos" className={linkRodape}>
                   Termos de uso
                 </Link>
@@ -128,6 +139,9 @@ export function RodapeSite() {
                 <Link href="/privacidade" className={linkRodape}>
                   Privacidade
                 </Link>
+              </li>
+              <li>
+                <BotaoPreferenciasCookies className={linkRodape} />
               </li>
             </ul>
           </div>

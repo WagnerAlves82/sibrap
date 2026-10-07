@@ -3,7 +3,7 @@ import { AuthShell } from "@/components/auth-shell";
 import { caminhoSeguro, veioDeCurso } from "@/lib/auth-redirect";
 import { FormCadastro } from "./FormCadastro";
 
-export const metadata: Metadata = { title: "Criar conta grátis" };
+export const metadata: Metadata = { title: "Criar conta grátis", alternates: { canonical: "/cadastro" } };
 
 export default async function CadastroPage({
   searchParams,

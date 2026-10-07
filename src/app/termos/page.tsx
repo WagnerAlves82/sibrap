@@ -5,6 +5,7 @@ import { EMAIL_CONTATO, EMISSOR, RAZAO_SOCIAL } from "@/lib/emissor";
 
 export const metadata: Metadata = {
   title: "Termos de Uso",
+  alternates: { canonical: "/termos" },
   description: "Regras de uso do SIBRAP: cursos livres gratuitos, certificados, apostilas e simulados.",
 };
 
