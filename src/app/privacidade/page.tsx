@@ -5,12 +5,13 @@ import { EMAIL_CONTATO, EMISSOR, RAZAO_SOCIAL } from "@/lib/emissor";
 
 export const metadata: Metadata = {
   title: "Política de Privacidade",
+  alternates: { canonical: "/privacidade" },
   description: "Como o SIBRAP coleta, usa e protege os seus dados pessoais, conforme a LGPD.",
 };
 
 export default function PrivacidadePage() {
   return (
-    <PaginaLegal titulo="Política de Privacidade" atualizadoEm="19 de setembro de 2026">
+    <PaginaLegal titulo="Política de Privacidade" atualizadoEm="7 de outubro de 2026">
       <Secao titulo="1. Quem somos">
         <p>
           O SIBRAP (Sistema Brasileiro de Aprendizagem Profissional) é operado por <strong>{RAZAO_SOCIAL}</strong>,
@@ -28,8 +29,8 @@ export default function PrivacidadePage() {
             <><strong>Cadastro:</strong> nome, e-mail e senha (a senha é guardada de forma criptografada; nem nós conseguimos lê-la), a data em que você aceitou estes textos e a origem do cadastro (por exemplo, a campanha em que você nos encontrou).</>,
             <><strong>Uso da plataforma:</strong> aulas concluídas, resultados de provas e simulados, e certificados emitidos.</>,
             <><strong>Comprovante do CadÚnico:</strong> somente se você escolher o certificado gratuito. É o documento que você mesmo envia.</>,
-            <><strong>Pagamentos:</strong> o pagamento é feito pelo Mercado Pago. Não recebemos nem guardamos dados de cartão ou de conta bancária; guardamos apenas o número do pedido, o valor e a situação do pagamento.</>,
-            <><strong>Dados técnicos:</strong> cookies essenciais para manter você logado.</>,
+            <><strong>Pagamentos:</strong> o pagamento é feito por provedores como o Mercado Pago e a AbacatePay. Não recebemos nem guardamos dados de cartão ou de conta bancária; guardamos apenas o número do pedido, o valor e a situação do pagamento.</>,
+            <><strong>Dados técnicos e de navegação:</strong> cookies essenciais para manter você logado e, se você permitir, cookies de medição de acessos e de publicidade (veja o item 10).</>,
           ]}
         />
       </Secao>
@@ -45,7 +46,7 @@ export default function PrivacidadePage() {
             <>Manter a segurança e prevenir fraudes: <em>legítimo interesse</em>.</>,
           ]}
         />
-        <p>Não vendemos os seus dados e não os usamos para publicidade de terceiros.</p>
+        <p>Não vendemos os seus dados. Se você permitir cookies de publicidade, parceiros como o Google poderão usá-los para exibir anúncios (veja o item 10).</p>
       </Secao>
 
       <Secao titulo="4. O comprovante do CadÚnico">
@@ -67,7 +68,9 @@ export default function PrivacidadePage() {
             <><strong>Supabase</strong> — banco de dados, autenticação e arquivos (servidores no Brasil).</>,
             <><strong>Vercel</strong> — hospedagem do site.</>,
             <><strong>Resend</strong> — envio de e-mails.</>,
-            <><strong>Mercado Pago</strong> — pagamentos por PIX.</>,
+            <><strong>Mercado Pago e AbacatePay</strong> — pagamentos por PIX e cartão.</>,
+            <><strong>Google (Analytics e, quando ativo, AdSense)</strong> — medição de acessos e exibição de anúncios, conforme as suas escolhas de cookies.</>,
+            <><strong>Meta (Facebook)</strong> — se você chegar ao site por um anúncio ou publicação nossa, a plataforma pode medir esse acesso.</>,
             <><strong>YouTube (Google)</strong> — reprodução das videoaulas. Ao assistir, o YouTube pode tratar dados segundo a política dele.</>,
           ]}
         />
@@ -123,11 +126,40 @@ export default function PrivacidadePage() {
         </p>
       </Secao>
 
-      <Secao titulo="10. Cookies">
+      <Secao titulo="10. Cookies e publicidade">
         <p>
-          Usamos apenas cookies <strong>essenciais</strong>, que mantêm você conectado e protegem a sua sessão. Não
-          usamos cookies de publicidade. Se um dia passarmos a usar ferramentas de medição de acessos, vamos atualizar
-          esta política e avisar.
+          Usamos <strong>cookies essenciais</strong>, que mantêm você conectado e protegem a sua sessão. Eles não
+          dependem de consentimento.
+        </p>
+        <p>
+          Com a sua <strong>permissão</strong>, também usamos cookies de <strong>medição de acessos</strong> (Google
+          Analytics), para entender quais páginas são mais úteis, e, quando o SIBRAP exibir anúncios, cookies de{" "}
+          <strong>publicidade</strong> do Google (AdSense), que servem para mostrar anúncios e medir o seu desempenho.
+          Fornecedores como o Google podem usar cookies para exibir anúncios com base nas suas visitas a este e a outros
+          sites.
+        </p>
+        <p>
+          Você escolhe no aviso exibido no primeiro acesso e pode mudar de ideia a qualquer momento limpando os cookies
+          do navegador ou pelo link “Preferências de cookies” no rodapé. Para saber como o Google usa dados de sites
+          parceiros e desativar anúncios personalizados, acesse{" "}
+          <a
+            href="https://policies.google.com/technologies/partner-sites"
+            className="font-semibold text-brand underline underline-offset-4"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            policies.google.com/technologies/partner-sites
+          </a>{" "}
+          e{" "}
+          <a
+            href="https://adssettings.google.com"
+            className="font-semibold text-brand underline underline-offset-4"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            adssettings.google.com
+          </a>
+          .
         </p>
       </Secao>
 

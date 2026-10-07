@@ -6,6 +6,7 @@ import { Reveal } from "@/components/reveal";
 
 export const metadata: Metadata = {
   title: "Cursos gratuitos",
+  alternates: { canonical: "/cursos" },
   description:
     "Cursos livres gratuitos do SIBRAP para pessoas de baixa renda, com certificado e QR Code de validação.",
 };

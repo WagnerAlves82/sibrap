@@ -3,7 +3,7 @@ import { AuthShell } from "@/components/auth-shell";
 import { caminhoSeguro } from "@/lib/auth-redirect";
 import { FormLogin } from "./FormLogin";
 
-export const metadata: Metadata = { title: "Entrar" };
+export const metadata: Metadata = { title: "Entrar", alternates: { canonical: "/login" } };
 
 export default async function LoginPage({
   searchParams,

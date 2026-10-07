@@ -6,6 +6,7 @@ import { ResultadoValidacao } from "./resultado";
 
 export const metadata: Metadata = {
   title: "Validar certificado",
+  alternates: { canonical: "/validar" },
   description: "Confira a autenticidade de um certificado emitido pelo SIBRAP.",
 };
 

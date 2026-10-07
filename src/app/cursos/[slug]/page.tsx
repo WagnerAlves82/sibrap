@@ -25,6 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!curso) return {};
   return {
     title: curso.nome,
+    alternates: { canonical: `/cursos/${slug}` },
     description: `${curso.descricao ?? ""} Curso gratuito de ${curso.carga_horaria_horas}h com certificado.`.trim(),
   };
 }
