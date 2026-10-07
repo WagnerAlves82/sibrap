@@ -37,11 +37,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const { post } = await carregar(slug);
   if (!post) return {};
-  const descricao = post.resumo || resumoAutomatico(post.conteudo);
+  const descricao = post.seo_descricao || post.resumo || resumoAutomatico(post.conteudo);
   const capa = capaDoPost(post);
   return {
-    title: post.titulo,
+    title: post.seo_titulo || post.titulo,
     description: descricao,
+    keywords: post.palavras_chave?.length ? post.palavras_chave : undefined,
     alternates: { canonical: `/blog/${slug}` },
     openGraph: {
       title: post.titulo,
@@ -98,7 +99,8 @@ export default async function PostPage({ params }: Props) {
     inLanguage: "pt-BR",
     publisher: { "@type": "Organization", name: "SIBRAP", logo: { "@type": "ImageObject", url: `${siteUrl}/logo.png` } },
     headline: post.titulo,
-    description: post.resumo || resumoAutomatico(post.conteudo),
+    description: post.seo_descricao || post.resumo || resumoAutomatico(post.conteudo),
+    keywords: post.palavras_chave?.length ? post.palavras_chave.join(", ") : undefined,
     image: capa ?? undefined,
     datePublished: post.publicado_em ?? post.criado_em,
     dateModified: post.atualizado_em,

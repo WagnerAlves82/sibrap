@@ -1,8 +1,8 @@
 // src/app/api/social/facebook/route.ts
 //
 // POST (chamado pelo GitHub Actions, ver .github/workflows/facebook-posts.yml):
-// escolhe a matéria publicada MAIS IMPORTANTE ainda não divulgada e publica
-// na Página do Facebook. Respeita o teto diário (padrão: 4 por dia, no
+// escolhe a matéria publicada MAIS RECENTE ainda não divulgada e publica
+// na Página do Facebook. Respeita o teto diário (padrão: 5 por dia, no
 // horário de Brasília) — cada chamada publica no máximo 1 matéria.
 //
 // Importância = peso da esfera (nacional > economia mista > estadual >
@@ -41,14 +41,23 @@ function inicioDoDiaBrasilia(): Date {
 function montarTexto(post: PostRow): string {
   const resumo = (post.resumo || resumoAutomatico(post.conteudo, 260)).trim();
   const esfera = rotuloEsfera(post.esfera);
-  const tags = ["#ConcursoPúblico", post.uf ? `#Concursos${post.uf}` : null, esfera === "Prefeituras" ? "#Prefeitura" : null, "#SIBRAP"]
-    .filter(Boolean)
-    .join(" ");
-  return `📢 ${post.titulo}
+  const padrao = ["#ConcursoPúblico", post.uf ? `#Concursos${post.uf}` : null, esfera === "Prefeituras" ? "#Prefeitura" : null, "#SIBRAP"];
+  // hashtags próprias da matéria (órgão, cidade, ano...) vêm primeiro; as padrão completam até 8
+  const proprias = (post.hashtags ?? []).map((t) => t.trim()).filter((t) => /^#\S+$/.test(t));
+  const tags = [...new Set([...proprias, ...padrao.filter((t): t is string => !!t)])].slice(0, 8).join(" ");
+  const utm = (alvo: string) => `${siteUrl}${alvo}?utm_source=facebook&utm_medium=organico&utm_campaign=${post.slug}`;
+  // chamada para a venda: apostila do próprio concurso, se existir; senão a vitrine de apostilas
+  const apostila = post.apostilas_slugs?.[0];
+  const cta = apostila
+    ? `📘 Apostila completa para este concurso, com questões e simulado: ${utm(`/apostilas/${apostila}`)}`
+    : `📘 Apostilas para concursos municipais, com questões e simulado: ${utm("/apostilas")}`;
+  return `📢 ${post.seo_titulo || post.titulo}
 
 ${resumo}
 
 Edital, prazos e passo a passo na matéria 👇
+
+${cta}
 
 ${tags}`;
 }
@@ -63,7 +72,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ erro: "FACEBOOK_PAGE_ID/FACEBOOK_PAGE_TOKEN não configurados" }, { status: 500 });
   }
 
-  const limiteDia = Math.max(1, Number(process.env.FACEBOOK_MAX_POR_DIA) || 4);
+  const limiteDia = Math.max(1, Number(process.env.FACEBOOK_MAX_POR_DIA) || 5);
   const admin = criarClienteSupabaseAdmin();
 
   const { count } = await admin
@@ -84,8 +93,9 @@ export async function POST(request: NextRequest) {
     .order("publicado_em", { ascending: false })
     .limit(100);
 
+  // regra: sempre a matéria MAIS ATUAL; a pontuação (esfera/destaque/importância) só desempata
   const escolhido = (data ?? []).sort(
-    (a, b) => pontuacaoDivulgacao(b) - pontuacaoDivulgacao(a) || (b.publicado_em ?? "").localeCompare(a.publicado_em ?? "")
+    (a, b) => (b.publicado_em ?? "").localeCompare(a.publicado_em ?? "") || pontuacaoDivulgacao(b) - pontuacaoDivulgacao(a)
   )[0];
   if (!escolhido) return NextResponse.json({ ok: true, publicado: false, motivo: "nada pendente" });
 
