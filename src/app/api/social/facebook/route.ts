@@ -45,11 +45,19 @@ function montarTexto(post: PostRow): string {
   // hashtags próprias da matéria (órgão, cidade, ano...) vêm primeiro; as padrão completam até 8
   const proprias = (post.hashtags ?? []).map((t) => t.trim()).filter((t) => /^#\S+$/.test(t));
   const tags = [...new Set([...proprias, ...padrao.filter((t): t is string => !!t)])].slice(0, 8).join(" ");
+  const utm = (alvo: string) => `${siteUrl}${alvo}?utm_source=facebook&utm_medium=organico&utm_campaign=${post.slug}`;
+  // chamada para a venda: apostila do próprio concurso, se existir; senão a vitrine de apostilas
+  const apostila = post.apostilas_slugs?.[0];
+  const cta = apostila
+    ? `📘 Apostila completa para este concurso, com questões e simulado: ${utm(`/apostilas/${apostila}`)}`
+    : `📘 Apostilas para concursos municipais, com questões e simulado: ${utm("/apostilas")}`;
   return `📢 ${post.titulo}
 
 ${resumo}
 
 Edital, prazos e passo a passo na matéria 👇
+
+${cta}
 
 ${tags}`;
 }
