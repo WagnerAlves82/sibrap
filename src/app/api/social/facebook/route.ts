@@ -14,7 +14,7 @@ import crypto from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { pontuacaoDivulgacao, resumoAutomatico, rotuloEsfera, type PostRow } from "@/lib/blog";
-import { imagemDeVitrine, listarApostilasPublicadas } from "@/lib/apostilas";
+import { imagemDeVitrine, listarApostilasPublicadas, urlCapa } from "@/lib/apostilas";
 import { montarTextoApostila } from "@/lib/facebook-apostila";
 
 export const dynamic = "force-dynamic";
@@ -99,8 +99,12 @@ async function postarApostila(
 
   const linkApostila = `${siteUrl}/apostilas/${apostila.slug}?utm_source=facebook&utm_medium=organico&utm_campaign=apostila-${apostila.slug}`;
   const message = montarTextoApostila(apostila, { apostila: linkApostila, materia: linkMateria });
-  const imagem = imagemDeVitrine(apostila)?.url ?? null;
-  const imagemFoto = imagem && /\.(png|jpe?g)$/i.test(imagem) ? imagem : null; // o Facebook não aceita webp em foto
+  // Foto do post: imagem com o mockup da apostila (jpg 1200x630 em facebook/<slug>.jpg no bucket de capas).
+  // O Facebook não aceita webp em foto; sem essa imagem, o post sai como link com a capa da página.
+  const candidata = urlCapa(`facebook/${apostila.slug}.jpg`);
+  const existe = candidata ? await fetch(candidata, { method: "HEAD", signal: AbortSignal.timeout(8000) }).then((r) => r.ok).catch(() => false) : false;
+  const imagem = existe ? candidata : (imagemDeVitrine(apostila)?.url ?? null);
+  const imagemFoto = imagem && /\.(png|jpe?g)$/i.test(imagem) ? imagem : null;
 
   if (dry) {
     return NextResponse.json({ ok: true, dry: true, tipo: "apostila", apostila: apostila.slug, com_materia: !!linkMateria, foto: imagemFoto, message });
