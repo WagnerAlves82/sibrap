@@ -228,6 +228,8 @@ export type Database = {
           orgao: string
           paginas: number | null
           preco_original_centavos: number | null
+          facebook_post_id: string | null
+          facebook_postado_em: string | null
           produto_id: string
           questoes: number | null
           salario: string | null
@@ -257,6 +259,8 @@ export type Database = {
           orgao: string
           paginas?: number | null
           preco_original_centavos?: number | null
+          facebook_post_id?: string | null
+          facebook_postado_em?: string | null
           produto_id: string
           questoes?: number | null
           salario?: string | null
@@ -286,6 +290,8 @@ export type Database = {
           orgao?: string
           paginas?: number | null
           preco_original_centavos?: number | null
+          facebook_post_id?: string | null
+          facebook_postado_em?: string | null
           produto_id?: string
           questoes?: number | null
           salario?: string | null

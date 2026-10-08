@@ -14,6 +14,8 @@ import crypto from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { pontuacaoDivulgacao, resumoAutomatico, rotuloEsfera, type PostRow } from "@/lib/blog";
+import { imagemDeVitrine, listarApostilasPublicadas } from "@/lib/apostilas";
+import { montarTextoApostila } from "@/lib/facebook-apostila";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -21,6 +23,7 @@ export const maxDuration = 60;
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
 const API = `https://graph.facebook.com/${process.env.FACEBOOK_GRAPH_VERSION ?? "v26.0"}`;
 const JANELA_DIAS = 7; // não divulga matéria velha
+const MATERIAS_POR_APOSTILA = 3; // a cada 3 matérias, 1 post de apostila
 
 function autorizado(request: NextRequest): boolean {
   const recebido = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
@@ -62,6 +65,75 @@ ${cta}
 ${tags}`;
 }
 
+type Admin = ReturnType<typeof criarClienteSupabaseAdmin>;
+
+// Posta a apostila divulgada há mais tempo (ou nunca divulgada). Em ~2 de cada 3 vezes
+// leva também o link da matéria sobre o concurso, quando existir.
+async function postarApostila(
+  admin: Admin,
+  { dry, pageId, token }: { dry: boolean; pageId?: string; token?: string }
+): Promise<NextResponse | null> {
+  const todas = await listarApostilasPublicadas(admin as never);
+  if (todas.length === 0) return null;
+  const ordenadas = [...todas].sort((a, b) => (a.facebook_postado_em ?? "").localeCompare(b.facebook_postado_em ?? ""));
+  const apostila = ordenadas[0];
+
+  const { count: jaPostadas } = await admin
+    .from("apostilas")
+    .select("id", { count: "exact", head: true })
+    .not("facebook_postado_em", "is", null);
+  const comMateria = (jaPostadas ?? 0) % 3 !== 2;
+
+  let linkMateria: string | null = null;
+  if (comMateria) {
+    const { data: materia } = await admin
+      .from("posts")
+      .select("slug")
+      .eq("status", "publicada")
+      .contains("apostilas_slugs", [apostila.slug])
+      .order("publicado_em", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (materia) linkMateria = `${siteUrl}/blog/${materia.slug}?utm_source=facebook&utm_medium=organico&utm_campaign=apostila-${apostila.slug}`;
+  }
+
+  const linkApostila = `${siteUrl}/apostilas/${apostila.slug}?utm_source=facebook&utm_medium=organico&utm_campaign=apostila-${apostila.slug}`;
+  const message = montarTextoApostila(apostila, { apostila: linkApostila, materia: linkMateria });
+  const imagem = imagemDeVitrine(apostila)?.url ?? null;
+  const imagemFoto = imagem && /\.(png|jpe?g)$/i.test(imagem) ? imagem : null; // o Facebook não aceita webp em foto
+
+  if (dry) {
+    return NextResponse.json({ ok: true, dry: true, tipo: "apostila", apostila: apostila.slug, com_materia: !!linkMateria, foto: imagemFoto, message });
+  }
+
+  // reserva antes de postar (evita duplicar se duas execuções se cruzarem)
+  const anterior = apostila.facebook_postado_em ?? null;
+  let reserva = admin.from("apostilas").update({ facebook_postado_em: new Date().toISOString() }).eq("id", apostila.id);
+  reserva = anterior ? reserva.eq("facebook_postado_em", anterior) : reserva.is("facebook_postado_em", null);
+  const reservada = await reserva.select("id");
+  if (!reservada.data?.length) return NextResponse.json({ ok: true, publicado: false, motivo: "apostila já reservada por outra execução" });
+
+  const enviar = async (alvo: "photos" | "feed") => {
+    const corpo =
+      alvo === "photos"
+        ? new URLSearchParams({ url: imagemFoto!, caption: message, access_token: token! })
+        : new URLSearchParams({ message, link: linkApostila, access_token: token! });
+    const resposta = await fetch(`${API}/${pageId}/${alvo}`, { method: "POST", body: corpo, signal: AbortSignal.timeout(30000) });
+    const json = (await resposta.json().catch(() => ({}))) as { id?: string; post_id?: string; error?: { message?: string } };
+    return { ok: resposta.ok && !!(json.post_id ?? json.id), id: json.post_id ?? json.id, erro: json.error?.message ?? `HTTP ${resposta.status}` };
+  };
+
+  let resultado = imagemFoto ? await enviar("photos") : await enviar("feed");
+  if (!resultado.ok && imagemFoto) resultado = await enviar("feed"); // plano B: post com link
+
+  if (!resultado.ok) {
+    await admin.from("apostilas").update({ facebook_postado_em: anterior }).eq("id", apostila.id);
+    return NextResponse.json({ ok: false, erro: resultado.erro }, { status: 502 });
+  }
+  await admin.from("apostilas").update({ facebook_post_id: resultado.id }).eq("id", apostila.id);
+  return NextResponse.json({ ok: true, publicado: true, tipo: "apostila", apostila: apostila.slug, facebook_id: resultado.id });
+}
+
 export async function POST(request: NextRequest) {
   if (!autorizado(request)) return NextResponse.json({ erro: "não autorizado" }, { status: 401 });
 
@@ -75,12 +147,31 @@ export async function POST(request: NextRequest) {
   const limiteDia = Math.max(1, Number(process.env.FACEBOOK_MAX_POR_DIA) || 6);
   const admin = criarClienteSupabaseAdmin();
 
-  const { count } = await admin
-    .from("posts")
-    .select("id", { count: "exact", head: true })
-    .gte("facebook_postado_em", inicioDoDiaBrasilia().toISOString());
-  if ((count ?? 0) >= limiteDia) {
+  const inicioDia = inicioDoDiaBrasilia().toISOString();
+  const [{ count: materiasHoje }, { count: apostilasHoje }] = await Promise.all([
+    admin.from("posts").select("id", { count: "exact", head: true }).gte("facebook_postado_em", inicioDia),
+    admin.from("apostilas").select("id", { count: "exact", head: true }).gte("facebook_postado_em", inicioDia),
+  ]);
+  if ((materiasHoje ?? 0) + (apostilasHoje ?? 0) >= limiteDia) {
     return NextResponse.json({ ok: true, publicado: false, motivo: `teto diário (${limiteDia}) atingido` });
+  }
+
+  // Rodízio: depois de MATERIAS_POR_APOSTILA matérias postadas desde o último post de apostila, é a vez de uma apostila.
+  const { data: ultimaApostila } = await admin
+    .from("apostilas")
+    .select("facebook_postado_em")
+    .not("facebook_postado_em", "is", null)
+    .order("facebook_postado_em", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  let consultaMaterias = admin.from("posts").select("id", { count: "exact", head: true }).not("facebook_postado_em", "is", null);
+  if (ultimaApostila?.facebook_postado_em) consultaMaterias = consultaMaterias.gt("facebook_postado_em", ultimaApostila.facebook_postado_em);
+  const { count: materiasDesdeApostila } = await consultaMaterias;
+
+  if ((materiasDesdeApostila ?? 0) >= MATERIAS_POR_APOSTILA) {
+    const vez = await postarApostila(admin, { dry, pageId, token });
+    if (vez) return vez;
+    // sem apostila disponível: segue com matéria
   }
 
   const desde = new Date(Date.now() - JANELA_DIAS * 86400e3).toISOString();
