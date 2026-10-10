@@ -39,19 +39,19 @@ export function GarantaPreparacao({
           const imagem = imagemDeVitrine(a);
           const href = `/apostilas/${a.slug}?utm_source=site&utm_medium=organico&utm_campaign=${origem}`;
           return (
-            <li key={a.id} className="flex gap-4 rounded-xl bg-white p-4 shadow-sm sm:gap-5">
-              <Link href={href} className="relative h-[150px] w-[108px] shrink-0 sm:h-[168px] sm:w-[120px]" aria-label={`Ver apostila ${a.titulo}`}>
+            <li key={a.id} className="flex flex-col items-center gap-4 rounded-xl bg-white p-4 text-center shadow-sm sm:flex-row sm:items-start sm:gap-5 sm:text-left">
+              <Link href={href} className="relative h-[230px] w-[165px] shrink-0 sm:h-[168px] sm:w-[120px]" aria-label={`Ver apostila ${a.titulo}`}>
                 {imagem && (
                   <Image
                     src={imagem.url}
                     alt={`Apostila ${a.orgao} — ${a.cargo}`}
                     fill
-                    sizes="120px"
+                    sizes="(min-width: 640px) 120px, 165px"
                     className={imagem.mockup ? "object-contain drop-shadow-[0_10px_12px_rgba(11,42,74,0.3)]" : "rounded object-cover"}
                   />
                 )}
               </Link>
-              <div className="min-w-0 flex-1">
+              <div className="w-full min-w-0 flex-1">
                 <h3 className="font-display text-[1.1rem] leading-snug font-extrabold text-brand sm:text-[1.2rem]">
                   <Link href={href} className="hover:underline">
                     {a.cargo} - {tituloOrgao(a)}
@@ -67,7 +67,7 @@ export function GarantaPreparacao({
                 <p className="text-[13px] leading-snug font-semibold text-[#8A96A5]">
                   Baixe pelo site na hora, após a confirmação do <span className="text-[#0F8B8D]">PIX</span>
                 </p>
-                <p className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                <p className="mt-2 flex flex-wrap items-baseline justify-center gap-x-2 gap-y-0.5 sm:justify-start">
                   {a.preco_original_centavos && a.preco_original_centavos > a.preco_centavos && (
                     <span className="text-[13px] text-[#8A96A5] line-through">{formatarPreco(a.preco_original_centavos)}</span>
                   )}
@@ -78,7 +78,7 @@ export function GarantaPreparacao({
                 </p>
                 <Link
                   href={href}
-                  className="mt-3 inline-block rounded-md bg-accent px-5 py-2.5 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-110"
+                  className="mt-3 block w-full rounded-md bg-accent px-5 py-3 text-center text-[15px] font-bold text-accent-ink transition-colors hover:brightness-110 sm:inline-block sm:w-auto"
                 >
                   Comprar - Apostila Digital
                 </Link>
