@@ -20,23 +20,26 @@ export function GarantaPreparacao({
 }) {
   if (apostilas.length === 0) return null;
   return (
-    <section aria-labelledby="garanta-preparacao" className="mt-10">
+    <section
+      aria-labelledby="garanta-preparacao"
+      className="mt-10 rounded-2xl border border-accent/40 bg-gradient-to-br from-brand-deep via-brand to-brand-deep p-5 shadow-[0_24px_50px_-28px_rgba(7,27,51,0.8)] sm:p-7"
+    >
       <div className="flex items-center gap-3">
-        <svg aria-hidden viewBox="0 0 24 24" className="h-7 w-7 shrink-0 text-brand" fill="currentColor">
+        <svg aria-hidden viewBox="0 0 24 24" className="h-7 w-7 shrink-0 text-accent" fill="currentColor">
           <path d="M12 3 1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3Zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9ZM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72Z" />
         </svg>
-        <h2 id="garanta-preparacao" className="font-display text-[1.5rem] leading-tight font-extrabold text-brand">
+        <h2 id="garanta-preparacao" className="font-display text-[1.5rem] leading-tight font-extrabold text-white">
           Garanta sua preparação
         </h2>
       </div>
-      <div className="mt-2 h-px w-full bg-gradient-to-r from-brand/40 via-brand/10 to-transparent" />
+      <div className="mt-3 h-px w-full bg-gradient-to-r from-accent via-accent/40 to-transparent" />
 
-      <ul className="mt-6 flex flex-col gap-8">
+      <ul className="mt-5 flex flex-col gap-4">
         {apostilas.map((a) => {
           const imagem = imagemDeVitrine(a);
           const href = `/apostilas/${a.slug}?utm_source=site&utm_medium=organico&utm_campaign=${origem}`;
           return (
-            <li key={a.id} className="flex gap-4 sm:gap-5">
+            <li key={a.id} className="flex gap-4 rounded-xl bg-white p-4 shadow-sm sm:gap-5">
               <Link href={href} className="relative h-[150px] w-[108px] shrink-0 sm:h-[168px] sm:w-[120px]" aria-label={`Ver apostila ${a.titulo}`}>
                 {imagem && (
                   <Image
@@ -75,7 +78,7 @@ export function GarantaPreparacao({
                 </p>
                 <Link
                   href={href}
-                  className="mt-3 inline-block rounded-md bg-brand px-5 py-2.5 text-[15px] font-bold text-white transition-colors hover:brightness-125"
+                  className="mt-3 inline-block rounded-md bg-accent px-5 py-2.5 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-110"
                 >
                   Comprar - Apostila Digital
                 </Link>
