@@ -51,6 +51,7 @@ export function AvisoCookies() {
   function escolher(aceito: boolean) {
     gravar(aceito ? "aceito" : "recusado");
     atualizarConsentimento(aceito);
+    if (aceito) window.dispatchEvent(new Event("sibrap:cookies-aceitos"));
     setVisivel(false);
   }
 
@@ -62,7 +63,7 @@ export function AvisoCookies() {
     >
       <p className="text-[13.5px] leading-relaxed text-[#3A4A63]">
         Usamos cookies essenciais para o site funcionar e, com a sua permissão, cookies de medição de acessos e de
-        publicidade (Google). Veja a{" "}
+        publicidade (Google e Meta). Veja a{" "}
         <a href="/privacidade" className="font-semibold text-brand underline underline-offset-2">
           Política de Privacidade
         </a>

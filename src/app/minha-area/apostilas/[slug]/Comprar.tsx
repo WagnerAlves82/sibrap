@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { sendGAEvent } from "@next/third-parties/google";
+import { fbqTrack } from "@/components/meta-pixel";
 import { PixCheckoutClaro } from "@/components/pix-checkout-claro";
 import { Alert } from "@/components/alert";
 import {
@@ -63,6 +64,7 @@ export function ComprarApostila({
             payment_type: "pix",
             items: [item],
           });
+          fbqTrack("InitiateCheckout", { currency: "BRL", value: precoCentavos / 100 });
           return criarPagamentoApostilaAction(slug);
         }}
         rotuloBotao={`Pagar ${preco} com PIX`}
@@ -73,6 +75,7 @@ export function ComprarApostila({
             value: precoCentavos / 100,
             items: [item],
           });
+          fbqTrack("Purchase", { currency: "BRL", value: precoCentavos / 100 });
           router.refresh();
         }}
       />

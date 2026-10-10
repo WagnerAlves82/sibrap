@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Archivo, Public_Sans, IBM_Plex_Mono } from "next/fon
 import Script from "next/script";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { AvisoCookies } from "@/components/cookies-consentimento";
+import { MetaPixel } from "@/components/meta-pixel";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -90,6 +91,7 @@ try{if(localStorage.getItem('sibrap_cookies')==='aceito'){gtag('consent','update
         </Script>
         {children}
         <AvisoCookies />
+        <MetaPixel />
       </body>
       {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />

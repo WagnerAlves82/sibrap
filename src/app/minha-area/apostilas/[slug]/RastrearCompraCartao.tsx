@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { sendGAEvent } from "@next/third-parties/google";
+import { fbqTrack } from "@/components/meta-pixel";
 
 // Dispara o evento de conversão "purchase" (GA4) para quem acabou de voltar
 // do checkout hospedado (cartão) do AbacatePay. O PIX dispara na hora, no
@@ -32,6 +33,7 @@ export function RastrearCompraCartao({
       payment_type: "cartao",
       items: [{ item_id: slug, item_name: titulo, price: precoCentavos / 100, quantity: 1 }],
     });
+    fbqTrack("Purchase", { currency: "BRL", value: precoCentavos / 100 });
   }, [pedidoId, slug, titulo, precoCentavos]);
 
   return null;
