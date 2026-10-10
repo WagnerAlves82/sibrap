@@ -8,6 +8,7 @@ import { listarApostilasPublicadas } from "@/lib/apostilas";
 import { CapaImagem } from "@/components/capa-imagem";
 import { PromoApostila } from "@/components/promo-apostila";
 import { CardApostilaMini } from "@/components/card-apostila-mini";
+import { GarantaPreparacao } from "@/components/garanta-preparacao";
 import {
   apostilasRelacionadas,
   formatarDataLonga,
@@ -87,7 +88,7 @@ export default async function PostPage({ params }: Props) {
     .limit(3);
   const relacionados = relacionadosData ?? [];
   const todasApostilas = await listarApostilasPublicadas(supabase);
-  const apostilasEspecificas = apostilasRelacionadas(post, todasApostilas);
+  const apostilasEspecificas = apostilasRelacionadas(post, todasApostilas, 4);
   const apostilas = apostilasEspecificas.length > 0 ? apostilasEspecificas : todasApostilas.slice(0, 2);
   const apostilasSaoEspecificas = apostilasEspecificas.length > 0;
 
@@ -237,7 +238,9 @@ export default async function PostPage({ params }: Props) {
             </aside>
           )}
 
-          {apostilas.length > 0 && (
+          {apostilasSaoEspecificas && <GarantaPreparacao apostilas={apostilasEspecificas} />}
+
+          {apostilas.length > 0 && !apostilasSaoEspecificas && (
             <aside className="mt-6" aria-labelledby="apostila-rel">
               <h2 id="apostila-rel" className="font-data text-[11px] font-semibold uppercase tracking-wide text-[#516278]">
                 {apostilasSaoEspecificas ? "Estude com a apostila do edital" : "Enquanto isso, confira nossas apostilas"}
