@@ -1,7 +1,8 @@
 "use client";
 
 import { useActionState } from "react";
-import { CLASSE_INPUT, CLASSE_BOTAO_PRIMARIO } from "@/components/auth-shell";
+import { CampoSenha } from "@/components/campo-senha";
+import { CLASSE_BOTAO_PRIMARIO } from "@/components/auth-shell";
 import { redefinirSenha, type EstadoRedefinir } from "./actions";
 
 export function FormRedefinir() {
@@ -15,29 +16,25 @@ export function FormRedefinir() {
       <label className="sr-only" htmlFor="senha">
         Nova senha
       </label>
-      <input
+      <CampoSenha
         id="senha"
-        type="password"
         name="senha"
         placeholder="Nova senha (mínimo 8 caracteres)"
         autoComplete="new-password"
         required
         minLength={8}
         autoFocus
-        className={CLASSE_INPUT}
       />
       <label className="sr-only" htmlFor="confirmacao">
         Repita a nova senha
       </label>
-      <input
+      <CampoSenha
         id="confirmacao"
-        type="password"
         name="confirmacao"
         placeholder="Repita a nova senha"
         autoComplete="new-password"
         required
         minLength={8}
-        className={CLASSE_INPUT}
       />
       <button type="submit" disabled={pending} className={`mt-2 ${CLASSE_BOTAO_PRIMARIO}`}>
         {pending ? "Salvando..." : "Salvar nova senha"}
