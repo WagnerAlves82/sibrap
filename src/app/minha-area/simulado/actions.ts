@@ -158,3 +158,16 @@ export async function parcialSimuladoAction(
   if (error) return { erro: error.message };
   return { parcial: data ?? [] };
 }
+
+/** Descarta o simulado em andamento (sem nota), para poder começar outro. */
+export async function abandonarSimuladoAction(tentativaId: string): Promise<{ erro: string } | { ok: true }> {
+  const supabase = await criarClienteSupabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { erro: "Você precisa estar logado." };
+
+  const { error } = await supabase.rpc("abandonar_simulado", { p_tentativa_id: tentativaId });
+  if (error) return { erro: error.message };
+  return { ok: true };
+}

@@ -67,8 +67,8 @@ export default async function SimuladoApostilaPage({
 
   // tentativa em aberto (para "continuar de onde parou")
   const { data: aberta } = await supabase.rpc("retomar_simulado", { p_produto_id: apostila.produto_id });
-  const emAberto = aberta?.length
-    ? { total: aberta.length, respondidas: aberta.filter((q) => q.resposta).length }
+  const retomada = aberta?.length
+    ? aberta.map((q) => ({ ...q, alternativas: q.alternativas as unknown as { letra: string; texto: string }[] }))
     : null;
 
   return (
@@ -82,7 +82,7 @@ export default async function SimuladoApostilaPage({
           slugApostila={slug}
           padrao={padrao}
           totalDisponivel={totalDisponivel}
-          emAberto={emAberto}
+          retomada={retomada}
         />
       </main>
       <RodapeSite />

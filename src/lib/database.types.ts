@@ -1507,6 +1507,10 @@ export type Database = {
           tentativa_id: string
         }[]
       }
+      abandonar_simulado: {
+        Args: { p_tentativa_id: string }
+        Returns: undefined
+      }
       salvar_resposta_simulado: {
         Args: { p_letra: string; p_questao_id: string; p_tentativa_id: string }
         Returns: undefined

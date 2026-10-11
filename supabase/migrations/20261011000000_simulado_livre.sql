@@ -231,3 +231,22 @@ grant execute on function public.iniciar_simulado(uuid, uuid, integer) to authen
 grant execute on function public.salvar_resposta_simulado(uuid, uuid, text) to authenticated;
 grant execute on function public.retomar_simulado(uuid) to authenticated;
 grant execute on function public.parcial_simulado(uuid) to authenticated;
+
+-- 7) descartar um simulado em andamento (para a pessoa poder começar outro)
+create or replace function public.abandonar_simulado(p_tentativa_id uuid)
+returns void
+language plpgsql
+security definer
+set search_path to 'public'
+as $function$
+begin
+  update public.tentativas_simulado
+  set finalizado_em = now()
+  where id = p_tentativa_id
+    and user_id = auth.uid()
+    and finalizado_em is null
+    and nota is null;
+end;
+$function$;
+
+grant execute on function public.abandonar_simulado(uuid) to authenticated;

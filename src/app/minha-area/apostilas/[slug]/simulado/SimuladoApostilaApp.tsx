@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Alert } from "@/components/alert";
 import {
   iniciarSimuladoAction,
-  retomarSimuladoAction,
+  abandonarSimuladoAction,
+  type QuestaoRetomada,
   salvarRespostaSimuladoAction,
   parcialSimuladoAction,
   finalizarSimuladoAction,
@@ -25,7 +26,7 @@ export function SimuladoApostilaApp({
   slugApostila,
   padrao,
   totalDisponivel,
-  emAberto: emAbertoInicial,
+  retomada,
 }: {
   produtoId: string;
   cargoId: string;
@@ -35,20 +36,46 @@ export function SimuladoApostilaApp({
   padrao: number;
   /** quantas questões o banco tem para esse cargo */
   totalDisponivel: number;
-  /** simulado começado e não encerrado */
-  emAberto: { total: number; respondidas: number } | null;
+  /** simulado começado e não encerrado: a página já abre nele, na questão em que a pessoa parou */
+  retomada: QuestaoRetomada[] | null;
 }) {
-  const [emAberto, setEmAberto] = useState(emAbertoInicial);
-  const [fase, setFase] = useState<Fase>("intro");
-  const [questoes, setQuestoes] = useState<QuestaoSimulado[]>([]);
-  const [respostas, setRespostas] = useState<Record<string, string>>({});
-  const [indice, setIndice] = useState(0);
+  const [fase, setFase] = useState<Fase>(retomada ? "quiz" : "intro");
+  const [questoes, setQuestoes] = useState<QuestaoSimulado[]>(retomada ?? []);
+  const [respostas, setRespostas] = useState<Record<string, string>>(() => {
+    const salvas: Record<string, string> = {};
+    for (const q of retomada ?? []) if (q.resposta) salvas[q.questao_id] = q.resposta;
+    return salvas;
+  });
+  const [indice, setIndiceEstado] = useState(() => {
+    if (!retomada) return 0;
+    const primeira = retomada.findIndex((q) => !q.resposta);
+    return primeira === -1 ? 0 : primeira;
+  });
   const [resultado, setResultado] = useState<ResultadoSimulado | null>(null);
   const [desempenho, setDesempenho] = useState<DesempenhoDisciplina[]>([]);
   const [parcial, setParcial] = useState<ParcialDisciplina[] | null>(null);
   const [erro, setErro] = useState<string | null>(null);
   const [avisoSalvar, setAvisoSalvar] = useState(false);
   const [irPara, setIrPara] = useState("");
+
+  // reabre na questão em que a pessoa estava (lida só no navegador, depois de montar)
+  useEffect(() => {
+    if (!retomada) return;
+    const t = setTimeout(() => {
+      const guardada = lerPosicao(retomada[0].tentativa_id);
+      if (guardada !== null && guardada < retomada.length) setIndiceEstado(guardada);
+    }, 0);
+    return () => clearTimeout(t);
+  }, [retomada]);
+
+  // guarda a questão atual para a página reabrir exatamente onde a pessoa estava
+  function setIndice(valor: number | ((i: number) => number)) {
+    setIndiceEstado((atual) => {
+      const novo = typeof valor === "function" ? valor(atual) : valor;
+      if (questoes[0]) gravarPosicao(questoes[0].tentativa_id, novo);
+      return novo;
+    });
+  }
 
   const maximo = Math.max(totalDisponivel, 1);
   const base = Math.min(padrao > 0 ? padrao : 30, maximo);
@@ -96,25 +123,6 @@ export function SimuladoApostilaApp({
     setFase("quiz");
   }
 
-  async function continuar() {
-    setFase("carregando");
-    const r = await retomarSimuladoAction(produtoId);
-    if ("erro" in r || r.questoes.length === 0) {
-      setErro("erro" in r ? r.erro : "Não encontrei o simulado em andamento.");
-      setFase("erro");
-      return;
-    }
-    const salvas: Record<string, string> = {};
-    for (const q of r.questoes) if (q.resposta) salvas[q.questao_id] = q.resposta;
-    setQuestoes(r.questoes);
-    setRespostas(salvas);
-    // volta para a primeira questão ainda sem resposta
-    const primeira = r.questoes.findIndex((q) => !salvas[q.questao_id]);
-    setIndice(primeira === -1 ? 0 : primeira);
-    setParcial(null);
-    setFase("quiz");
-  }
-
   function responder(letra: string) {
     const atual = questoes[indice];
     setRespostas((prev) => ({ ...prev, [atual.questao_id]: letra }));
@@ -122,6 +130,13 @@ export function SimuladoApostilaApp({
     salvarRespostaSimuladoAction(atual.tentativa_id, atual.questao_id, letra).then((r) => {
       setAvisoSalvar("erro" in r);
     });
+  }
+
+  async function descartar() {
+    if (!window.confirm("Descartar este simulado e começar outro? As respostas dele serão perdidas.")) return;
+    await abandonarSimuladoAction(questoes[0].tentativa_id);
+    apagarPosicao(questoes[0].tentativa_id);
+    reiniciar();
   }
 
   async function verParcial() {
@@ -155,7 +170,6 @@ export function SimuladoApostilaApp({
       return;
     }
     setResultado(r.resultado);
-    setEmAberto(null);
 
     const d = await desempenhoSimuladoAction(tentativaId);
     if (!("erro" in d)) {
@@ -176,23 +190,8 @@ export function SimuladoApostilaApp({
           quantas quer fazer, pode parar quando quiser para ver seus acertos e continuar depois de onde parou.
         </p>
 
-        {emAberto && (
-          <div className="mt-5 rounded-lg border border-accent-2/40 bg-[#EAF6F3] p-4">
-            <p className="text-[14px] font-bold text-[#14213A]">Você tem um simulado em andamento</p>
-            <p className="mt-1 text-[13.5px] text-[#33465E]">
-              {emAberto.respondidas} de {emAberto.total} questões respondidas.
-            </p>
-            <button
-              onClick={continuar}
-              className="mt-3 w-full rounded-lg bg-accent-2 px-5 py-3 text-[14.5px] font-bold text-white transition-colors hover:brightness-110"
-            >
-              Continuar de onde parei
-            </button>
-          </div>
-        )}
-
         <p className="mt-6 text-[14px] font-bold text-[#14213A]">
-          {emAberto ? "Ou comece um novo simulado" : "Quantas questões você quer fazer?"}
+          Quantas questões você quer fazer?
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           {opcoes.map((n) => (
@@ -432,6 +431,12 @@ export function SimuladoApostilaApp({
           >
             Parar e continuar depois (suas respostas ficam salvas)
           </Link>
+          <button
+            onClick={descartar}
+            className="text-center text-[12.5px] text-[#7A8AA0] underline underline-offset-4 hover:text-[#516278]"
+          >
+            Descartar este simulado e começar outro
+          </button>
         </div>
       </Cartao>
     );
@@ -484,6 +489,33 @@ export function SimuladoApostilaApp({
       </div>
     </Cartao>
   );
+}
+
+const chavePosicao = (tentativaId: string) => `sibrap_sim_pos_${tentativaId}`;
+
+function lerPosicao(tentativaId: string): number | null {
+  try {
+    const v = localStorage.getItem(chavePosicao(tentativaId));
+    return v === null ? null : Math.max(0, Math.floor(Number(v)) || 0);
+  } catch {
+    return null;
+  }
+}
+
+function gravarPosicao(tentativaId: string, indice: number) {
+  try {
+    localStorage.setItem(chavePosicao(tentativaId), String(indice));
+  } catch {
+    // sem localStorage: ao reabrir, volta para a primeira questão sem resposta
+  }
+}
+
+function apagarPosicao(tentativaId: string) {
+  try {
+    localStorage.removeItem(chavePosicao(tentativaId));
+  } catch {
+    // ignora
+  }
 }
 
 function Cartao({ children }: { children: React.ReactNode }) {
