@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Alert } from "@/components/alert";
+import { MenuAjuda } from "@/components/menu-ajuda";
 import {
   iniciarSimuladoAction,
   abandonarSimuladoAction,
@@ -11,10 +12,12 @@ import {
   parcialSimuladoAction,
   finalizarSimuladoAction,
   desempenhoSimuladoAction,
+  glossarioAction,
   type QuestaoSimulado,
   type ResultadoSimulado,
   type DesempenhoDisciplina,
   type ParcialDisciplina,
+  type TermoGlossario,
 } from "@/app/minha-area/simulado/actions";
 
 type Fase = "intro" | "carregando" | "quiz" | "enviando" | "resultado" | "erro";
@@ -57,6 +60,15 @@ export function SimuladoApostilaApp({
   const [erro, setErro] = useState<string | null>(null);
   const [avisoSalvar, setAvisoSalvar] = useState(false);
   const [irPara, setIrPara] = useState("");
+  const [termosGlossario, setTermosGlossario] = useState<TermoGlossario[]>([]);
+
+  // menu de ajuda (dica/glossário/capítulo): carrega uma vez, independente de
+  // a pessoa começar do zero ou retomar um simulado em andamento
+  useEffect(() => {
+    glossarioAction().then((g) => {
+      if (!("erro" in g)) setTermosGlossario(g.termos);
+    });
+  }, []);
 
   // reabre na questão em que a pessoa estava (lida só no navegador, depois de montar)
   useEffect(() => {
@@ -280,7 +292,9 @@ export function SimuladoApostilaApp({
     const respondidas = Object.keys(respostas).length;
 
     return (
-      <Cartao>
+      <div className="pb-20 md:pb-0">
+        <MenuAjuda key={atual.questao_id} dica={atual.dica} termosGlossario={termosGlossario} />
+        <Cartao>
         <div className="mb-1 flex items-center justify-between font-data text-[11.5px] text-[#516278]">
           <span>{atual.disciplina_nome}</span>
           <span>
@@ -438,7 +452,8 @@ export function SimuladoApostilaApp({
             Descartar este simulado e começar outro
           </button>
         </div>
-      </Cartao>
+        </Cartao>
+      </div>
     );
   }
 

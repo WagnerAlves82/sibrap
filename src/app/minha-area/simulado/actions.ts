@@ -14,6 +14,7 @@ export type QuestaoSimulado = {
   alternativas: Alternativa[];
   diagrama_svg: string | null;
   inspirada_em: string | null;
+  dica: string | null;
 };
 
 export async function iniciarSimuladoAction(
@@ -170,4 +171,22 @@ export async function abandonarSimuladoAction(tentativaId: string): Promise<{ er
   const { error } = await supabase.rpc("abandonar_simulado", { p_tentativa_id: tentativaId });
   if (error) return { erro: error.message };
   return { ok: true };
+}
+
+export type TermoGlossario = { termo: string; definicao: string };
+
+export async function glossarioAction(): Promise<{ erro: string } | { termos: TermoGlossario[] }> {
+  const supabase = await criarClienteSupabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { erro: "Você precisa estar logado." };
+
+  const { data, error } = await supabase.from("glossario_termos").select("termo, definicao").order("termo");
+
+  if (error) {
+    return { erro: error.message };
+  }
+
+  return { termos: data ?? [] };
 }

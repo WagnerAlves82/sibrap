@@ -221,6 +221,8 @@ export type Database = {
           data_prova: string | null
           descricao: string | null
           destaque: boolean
+          facebook_post_id: string | null
+          facebook_postado_em: string | null
           id: string
           imagens: string[]
           inscricoes_ate: string | null
@@ -228,8 +230,6 @@ export type Database = {
           orgao: string
           paginas: number | null
           preco_original_centavos: number | null
-          facebook_post_id: string | null
-          facebook_postado_em: string | null
           produto_id: string
           questoes: number | null
           salario: string | null
@@ -252,6 +252,8 @@ export type Database = {
           data_prova?: string | null
           descricao?: string | null
           destaque?: boolean
+          facebook_post_id?: string | null
+          facebook_postado_em?: string | null
           id?: string
           imagens?: string[]
           inscricoes_ate?: string | null
@@ -259,8 +261,6 @@ export type Database = {
           orgao: string
           paginas?: number | null
           preco_original_centavos?: number | null
-          facebook_post_id?: string | null
-          facebook_postado_em?: string | null
           produto_id: string
           questoes?: number | null
           salario?: string | null
@@ -283,6 +283,8 @@ export type Database = {
           data_prova?: string | null
           descricao?: string | null
           destaque?: boolean
+          facebook_post_id?: string | null
+          facebook_postado_em?: string | null
           id?: string
           imagens?: string[]
           inscricoes_ate?: string | null
@@ -290,8 +292,6 @@ export type Database = {
           orgao?: string
           paginas?: number | null
           preco_original_centavos?: number | null
-          facebook_post_id?: string | null
-          facebook_postado_em?: string | null
           produto_id?: string
           questoes?: number | null
           salario?: string | null
@@ -802,6 +802,38 @@ export type Database = {
         }
         Relationships: []
       }
+      glossario_termos: {
+        Row: {
+          criado_em: string
+          definicao: string
+          disciplina_id: string | null
+          id: string
+          termo: string
+        }
+        Insert: {
+          criado_em?: string
+          definicao: string
+          disciplina_id?: string | null
+          id?: string
+          termo: string
+        }
+        Update: {
+          criado_em?: string
+          definicao?: string
+          disciplina_id?: string | null
+          id?: string
+          termo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "glossario_termos_disciplina_id_fkey"
+            columns: ["disciplina_id"]
+            isOneToOne: false
+            referencedRelation: "disciplinas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       interesses_aluno: {
         Row: {
           cargo_id: string
@@ -1008,15 +1040,15 @@ export type Database = {
           facebook_post_id: string | null
           facebook_postado_em: string | null
           hashtags: string[]
-          palavras_chave: string[]
-          seo_descricao: string | null
-          seo_titulo: string | null
-          importancia: number
           id: string
+          importancia: number
+          palavras_chave: string[]
           publicado_em: string | null
           regiao: string | null
           resumo: string | null
           retificacoes: string | null
+          seo_descricao: string | null
+          seo_titulo: string | null
           slug: string
           status: string
           titulo: string
@@ -1040,15 +1072,15 @@ export type Database = {
           facebook_post_id?: string | null
           facebook_postado_em?: string | null
           hashtags?: string[]
-          palavras_chave?: string[]
-          seo_descricao?: string | null
-          seo_titulo?: string | null
-          importancia?: number
           id?: string
+          importancia?: number
+          palavras_chave?: string[]
           publicado_em?: string | null
           regiao?: string | null
           resumo?: string | null
           retificacoes?: string | null
+          seo_descricao?: string | null
+          seo_titulo?: string | null
           slug: string
           status?: string
           titulo: string
@@ -1072,15 +1104,15 @@ export type Database = {
           facebook_post_id?: string | null
           facebook_postado_em?: string | null
           hashtags?: string[]
-          palavras_chave?: string[]
-          seo_descricao?: string | null
-          seo_titulo?: string | null
-          importancia?: number
           id?: string
+          importancia?: number
+          palavras_chave?: string[]
           publicado_em?: string | null
           regiao?: string | null
           resumo?: string | null
           retificacoes?: string | null
+          seo_descricao?: string | null
+          seo_titulo?: string | null
           slug?: string
           status?: string
           titulo?: string
@@ -1222,6 +1254,7 @@ export type Database = {
           concurso_id: string
           criado_em: string
           diagrama_svg: string | null
+          dica: string | null
           dificuldade: string | null
           disciplina_id: string
           enunciado: string
@@ -1239,6 +1272,7 @@ export type Database = {
           concurso_id: string
           criado_em?: string
           diagrama_svg?: string | null
+          dica?: string | null
           dificuldade?: string | null
           disciplina_id: string
           enunciado: string
@@ -1256,6 +1290,7 @@ export type Database = {
           concurso_id?: string
           criado_em?: string
           diagrama_svg?: string | null
+          dica?: string | null
           dificuldade?: string | null
           disciplina_id?: string
           enunciado?: string
@@ -1429,6 +1464,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      abandonar_simulado: {
+        Args: { p_tentativa_id: string }
+        Returns: undefined
+      }
       abrir_aula: { Args: { p_aula_id: string }; Returns: undefined }
       concluir_aula: { Args: { p_aula_id: string }; Returns: undefined }
       conferir_miniquiz: {
@@ -1507,41 +1546,16 @@ export type Database = {
           tentativa_id: string
         }[]
       }
-      abandonar_simulado: {
-        Args: { p_tentativa_id: string }
-        Returns: undefined
-      }
-      salvar_resposta_simulado: {
-        Args: { p_letra: string; p_questao_id: string; p_tentativa_id: string }
-        Returns: undefined
-      }
-      retomar_simulado: {
-        Args: { p_produto_id: string }
-        Returns: {
-          alternativas: Json
-          diagrama_svg: string
-          disciplina_nome: string
-          enunciado: string
-          inspirada_em: string
-          ordem: number
-          questao_id: string
-          resposta: string
-          tentativa_id: string
-        }[]
-      }
-      parcial_simulado: {
-        Args: { p_tentativa_id: string }
-        Returns: {
-          acertos: number
-          disciplina_nome: string
-          respondidas: number
-        }[]
-      }
       iniciar_simulado: {
-        Args: { p_cargo_id: string; p_produto_id: string; p_quantidade?: number }
+        Args: {
+          p_cargo_id: string
+          p_produto_id: string
+          p_quantidade?: number
+        }
         Returns: {
           alternativas: Json
           diagrama_svg: string
+          dica: string
           disciplina_nome: string
           enunciado: string
           inspirada_em: string
@@ -1578,6 +1592,14 @@ export type Database = {
           questao_id: string
         }[]
       }
+      parcial_simulado: {
+        Args: { p_tentativa_id: string }
+        Returns: {
+          acertos: number
+          disciplina_nome: string
+          respondidas: number
+        }[]
+      }
       registrar_order_pagamento: {
         Args: { p_order_id: string; p_payment_id?: string; p_pedido_id: string }
         Returns: undefined
@@ -1585,6 +1607,21 @@ export type Database = {
       registrar_tentativa: {
         Args: { p_chave: string; p_janela_segundos: number; p_limite: number }
         Returns: boolean
+      }
+      retomar_simulado: {
+        Args: { p_produto_id: string }
+        Returns: {
+          alternativas: Json
+          diagrama_svg: string
+          dica: string
+          disciplina_nome: string
+          enunciado: string
+          inspirada_em: string
+          ordem: number
+          questao_id: string
+          resposta: string
+          tentativa_id: string
+        }[]
       }
       revisao_quiz: {
         Args: { p_tentativa_id: string }
@@ -1596,6 +1633,10 @@ export type Database = {
           marcada: string
           ordem: number
         }[]
+      }
+      salvar_resposta_simulado: {
+        Args: { p_letra: string; p_questao_id: string; p_tentativa_id: string }
+        Returns: undefined
       }
       sortear_perguntas_vf: {
         Args: {
