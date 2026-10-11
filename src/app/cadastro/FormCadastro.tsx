@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { sendGAEvent } from "@next/third-parties/google";
+import { CampoSenha } from "@/components/campo-senha";
 import { CLASSE_INPUT, CLASSE_BOTAO_PRIMARIO } from "@/components/auth-shell";
 import { Alert } from "@/components/alert";
 import { cadastrar, type EstadoCadastro } from "./actions";
@@ -70,15 +71,13 @@ export function FormCadastro({
       <label className="sr-only" htmlFor="senha">
         Senha
       </label>
-      <input
+      <CampoSenha
         id="senha"
-        type="password"
         name="senha"
         placeholder="Senha (mínimo 8 caracteres)"
         autoComplete="new-password"
         required
         minLength={8}
-        className={CLASSE_INPUT}
       />
       <label className="flex items-start gap-2.5 text-[13px] leading-relaxed text-[#516278]">
         <input type="checkbox" name="aceite" required defaultChecked={estado?.valores?.aceite} className="mt-1 h-4 w-4 shrink-0 accent-[#B9862A]" />

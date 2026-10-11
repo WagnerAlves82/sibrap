@@ -2,6 +2,7 @@
 
 import { useActionState, useState, useTransition } from "react";
 import Link from "next/link";
+import { CampoSenha } from "@/components/campo-senha";
 import { CLASSE_INPUT, CLASSE_BOTAO_PRIMARIO } from "@/components/auth-shell";
 import { entrar, reenviarConfirmacaoAction, type EstadoLogin } from "./actions";
 
@@ -38,14 +39,12 @@ export function FormLogin({ next, linkInvalido }: { next: string; linkInvalido?:
       <label className="sr-only" htmlFor="senha">
         Senha
       </label>
-      <input
+      <CampoSenha
         id="senha"
-        type="password"
         name="senha"
         placeholder="Senha"
         autoComplete="current-password"
         required
-        className={CLASSE_INPUT}
       />
       <Link href="/esqueci-senha" className="self-end text-[13px] font-semibold text-brand underline underline-offset-4">
         Esqueci minha senha
