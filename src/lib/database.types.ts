@@ -1507,8 +1507,34 @@ export type Database = {
           tentativa_id: string
         }[]
       }
+      salvar_resposta_simulado: {
+        Args: { p_letra: string; p_questao_id: string; p_tentativa_id: string }
+        Returns: undefined
+      }
+      retomar_simulado: {
+        Args: { p_produto_id: string }
+        Returns: {
+          alternativas: Json
+          diagrama_svg: string
+          disciplina_nome: string
+          enunciado: string
+          inspirada_em: string
+          ordem: number
+          questao_id: string
+          resposta: string
+          tentativa_id: string
+        }[]
+      }
+      parcial_simulado: {
+        Args: { p_tentativa_id: string }
+        Returns: {
+          acertos: number
+          disciplina_nome: string
+          respondidas: number
+        }[]
+      }
       iniciar_simulado: {
-        Args: { p_cargo_id: string; p_produto_id: string }
+        Args: { p_cargo_id: string; p_produto_id: string; p_quantidade?: number }
         Returns: {
           alternativas: Json
           diagrama_svg: string

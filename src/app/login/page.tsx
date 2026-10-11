@@ -14,7 +14,7 @@ export default async function LoginPage({
 
   return (
     <AuthShell titulo="Entre na sua conta" subtitulo="Continue de onde parou.">
-      <FormLogin next={caminhoSeguro(next, "/minha-area")} linkInvalido={erro === "link"} />
+      <FormLogin next={caminhoSeguro(next, "/minha-area")} linkInvalido={erro === "link"} emailConfirmado={erro === "confirmado"} />
     </AuthShell>
   );
 }
