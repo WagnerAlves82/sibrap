@@ -46,6 +46,31 @@ export default async function SimuladoApostilaPage({
     redirect(`/minha-area/apostilas/${slug}`);
   }
 
+  // quantas questões o banco tem para esse cargo (limite do que dá pra escolher)
+  const { data: produto } = await admin.from("produtos").select("concurso_id").eq("id", apostila.produto_id).maybeSingle();
+  const { data: discs } = await admin
+    .from("cargo_disciplinas")
+    .select("disciplina_id, numero_questoes")
+    .eq("cargo_id", cargoId);
+  const padrao = (discs ?? []).reduce((soma, d) => soma + d.numero_questoes, 0);
+  let totalDisponivel = 0;
+  if (produto?.concurso_id && discs?.length) {
+    const { count } = await admin
+      .from("questoes")
+      .select("id", { count: "exact", head: true })
+      .eq("concurso_id", produto.concurso_id)
+      .eq("ativa", true)
+      .in("disciplina_id", discs.map((d) => d.disciplina_id))
+      .or(`cargo_id.is.null,cargo_id.eq.${cargoId}`);
+    totalDisponivel = count ?? 0;
+  }
+
+  // tentativa em aberto (para "continuar de onde parou")
+  const { data: aberta } = await supabase.rpc("retomar_simulado", { p_produto_id: apostila.produto_id });
+  const retomada = aberta?.length
+    ? aberta.map((q) => ({ ...q, alternativas: q.alternativas as unknown as { letra: string; texto: string }[] }))
+    : null;
+
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
       <CabecalhoSite logado />
@@ -55,6 +80,9 @@ export default async function SimuladoApostilaPage({
           cargoId={cargoId}
           tituloApostila={apostila.titulo}
           slugApostila={slug}
+          padrao={padrao}
+          totalDisponivel={totalDisponivel}
+          retomada={retomada}
         />
       </main>
       <RodapeSite />

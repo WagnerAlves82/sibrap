@@ -17,16 +17,21 @@ export async function GET(request: NextRequest) {
   const code = url.searchParams.get("code");
   const next = caminhoSeguro(url.searchParams.get("next"), "/minha-area");
 
+  let confirmadoEmOutroNavegador = false;
   if (code) {
     const supabase = await criarClienteSupabaseServer();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       return NextResponse.redirect(new URL(next, url.origin));
     }
+    // Sem o cookie do navegador que fez o cadastro (e-mail aberto em outro app ou
+    // aparelho) não dá pra abrir a sessão, mas o e-mail JÁ foi confirmado pelo Supabase
+    // antes de chegar aqui: é só entrar com a senha. Não é "link expirado".
+    confirmadoEmOutroNavegador = /verifier/i.test(error.message ?? "") || error.name === "AuthPKCECodeVerifierMissingError";
   }
 
   const loginComAviso = new URL("/login", url.origin);
-  loginComAviso.searchParams.set("erro", "link");
+  loginComAviso.searchParams.set("erro", confirmadoEmOutroNavegador ? "confirmado" : "link");
   if (next !== "/minha-area") loginComAviso.searchParams.set("next", next);
   return NextResponse.redirect(loginComAviso);
 }

@@ -5,7 +5,15 @@ import Link from "next/link";
 import { CLASSE_INPUT, CLASSE_BOTAO_PRIMARIO } from "@/components/auth-shell";
 import { entrar, reenviarConfirmacaoAction, type EstadoLogin } from "./actions";
 
-export function FormLogin({ next, linkInvalido }: { next: string; linkInvalido?: boolean }) {
+export function FormLogin({
+  next,
+  linkInvalido,
+  emailConfirmado,
+}: {
+  next: string;
+  linkInvalido?: boolean;
+  emailConfirmado?: boolean;
+}) {
   const [estado, action, pending] = useActionState<EstadoLogin, FormData>(
     entrar,
     null
@@ -15,6 +23,11 @@ export function FormLogin({ next, linkInvalido }: { next: string; linkInvalido?:
 
   return (
     <form action={action} className="flex flex-col gap-3">
+      {emailConfirmado && (
+        <p role="status" className="rounded-lg border border-[#BFE0D8] bg-[#EAF6F3] px-3 py-2 text-sm text-[#0E5A4D]">
+          E-mail confirmado! Agora é só entrar com o seu e-mail e a senha que você criou.
+        </p>
+      )}
       {linkInvalido && (
         <p role="alert" className="rounded-lg border border-[#E6CF9C] bg-[#FBF5E4] px-3 py-2 text-sm text-[#5B4210]">
           Esse link expirou ou já foi usado. Entre com sua senha ou peça um novo link.
