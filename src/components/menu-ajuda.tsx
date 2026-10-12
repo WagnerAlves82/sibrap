@@ -84,12 +84,12 @@ function BotaoDock({
         type="button"
         onClick={onClick}
         aria-label={item.disponivel ? item.rotulo : `${item.rotulo} (em breve)`}
-        className={`flex h-11 w-11 items-center justify-center rounded-full border shadow-sm transition-colors ${
+        className={`flex h-12 w-12 items-center justify-center rounded-full border-2 shadow-lg transition-all ${
           ativo
-            ? "border-brand bg-brand text-white"
+            ? "scale-105 border-accent-2 bg-accent-2 text-white"
             : item.disponivel
-              ? "border-[#D7DEE6] bg-white text-brand hover:border-brand"
-              : "border-[#E3E8EE] bg-[#F4F6F9] text-[#A7B2C0]"
+              ? "border-brand bg-brand text-white hover:scale-105 hover:bg-brand-deep"
+              : "border-[#E3E8EE] bg-[#F4F6F9] text-[#A7B2C0] shadow-sm"
         }`}
       >
         {item.icone}
@@ -115,11 +115,17 @@ function BotaoBarra({
     <button
       type="button"
       onClick={onClick}
-      className={`flex flex-1 flex-col items-center gap-1 px-2 py-2.5 text-[11px] font-semibold transition-colors ${
-        ativo ? "text-brand" : item.disponivel ? "text-[#516278]" : "text-[#A7B2C0]"
+      className={`flex flex-1 flex-col items-center gap-1 py-2.5 text-[11.5px] font-bold transition-colors ${
+        ativo ? "text-accent-2" : item.disponivel ? "text-brand" : "text-[#A7B2C0]"
       }`}
     >
-      {item.icone}
+      <span
+        className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors ${
+          ativo ? "bg-accent-2/15" : item.disponivel ? "bg-brand/10" : ""
+        }`}
+      >
+        {item.icone}
+      </span>
       {item.rotulo}
     </button>
   );
