@@ -8,18 +8,33 @@ import { usePathname } from "next/navigation";
 const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID ?? "733506279098670";
 const CHAVE = "sibrap_cookies";
 
-type Fbq = ((...args: unknown[]) => void) & { queue?: unknown[]; loaded?: boolean };
+type Fbq = ((...args: unknown[]) => void) & {
+  queue: unknown[];
+  loaded: boolean;
+  version: string;
+  push: unknown;
+  callMethod?: (...args: unknown[]) => void;
+};
 type JanelaFbq = Window & { fbq?: Fbq; _fbq?: Fbq };
 
 function carregar() {
   const w = window as JanelaFbq;
   if (w.fbq) return;
-  const n: Fbq = function (...args: unknown[]) {
-    (n.queue ??= []).push(args);
-  };
+  // Mesmo "stub" do snippet oficial da Meta: o fbevents.js só assume a fila
+  // quando encontra push/version/queue/loaded exatamente assim.
+  const n = function () {
+    // eslint-disable-next-line prefer-rest-params
+    // eslint-disable-next-line prefer-spread
+    if (n.callMethod) n.callMethod.apply(n, arguments as unknown as unknown[]);
+    // eslint-disable-next-line prefer-rest-params
+    else n.queue.push(arguments);
+  } as Fbq;
+  n.push = n;
+  n.loaded = true;
+  n.version = "2.0";
+  n.queue = [];
   w.fbq = n;
   w._fbq = n;
-  n.loaded = true;
   const s = document.createElement("script");
   s.async = true;
   s.src = "https://connect.facebook.net/en_US/fbevents.js";
