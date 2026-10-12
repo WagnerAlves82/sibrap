@@ -43,6 +43,8 @@ export async function enviarEmail({
     },
     body: JSON.stringify({
       from: "SIBRAP <apostila@sibrap.tec.br>",
+      // o remetente não tem caixa de entrada: as respostas dos clientes vão para o e-mail do dono
+      reply_to: process.env.EMAIL_RESPOSTA ?? "wagnerjuniorsouza@gmail.com",
       to: [para],
       subject: assunto,
       html,
