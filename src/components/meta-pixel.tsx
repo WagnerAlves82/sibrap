@@ -3,8 +3,9 @@
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 
-// Pixel da Meta (Facebook/Instagram). Só carrega depois que a pessoa aceita os
-// cookies de publicidade no aviso (chave "sibrap_cookies" no localStorage).
+// Pixel da Meta (Facebook/Instagram). O código oficial carrega sempre, mas com o
+// consentimento da Meta em "revoke": nada é enviado até a pessoa aceitar os cookies
+// no aviso (chave "sibrap_cookies" no localStorage); aí vira "grant".
 const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID ?? "733506279098670";
 const CHAVE = "sibrap_cookies";
 
@@ -38,8 +39,14 @@ function carregar() {
   s.async = true;
   s.src = "https://connect.facebook.net/en_US/fbevents.js";
   document.head.appendChild(s);
+  if (!aceito()) n("consent", "revoke");
   n("init", PIXEL_ID);
   n("track", "PageView");
+}
+
+function liberar() {
+  const f = (window as JanelaFbq).fbq;
+  if (f) f("consent", "grant");
 }
 
 function aceito(): boolean {
@@ -50,7 +57,7 @@ function aceito(): boolean {
   }
 }
 
-/** Dispara um evento do pixel; não faz nada se o pixel não foi carregado (sem consentimento). */
+/** Dispara um evento do pixel (fica retido pela Meta até haver consentimento). */
 export function fbqTrack(evento: string, params?: Record<string, unknown>) {
   const f = (window as JanelaFbq).fbq;
   if (f) f("track", evento, params);
@@ -61,8 +68,8 @@ export function MetaPixel() {
   const primeira = useRef(true);
 
   useEffect(() => {
-    if (aceito()) carregar();
-    const aoAceitar = () => carregar();
+    carregar();
+    const aoAceitar = () => liberar();
     window.addEventListener("sibrap:cookies-aceitos", aoAceitar);
     return () => window.removeEventListener("sibrap:cookies-aceitos", aoAceitar);
   }, []);
