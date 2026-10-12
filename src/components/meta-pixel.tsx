@@ -23,11 +23,10 @@ function carregar() {
   // Mesmo "stub" do snippet oficial da Meta: o fbevents.js só assume a fila
   // quando encontra push/version/queue/loaded exatamente assim.
   const n = function () {
-    // eslint-disable-next-line prefer-rest-params
-    // eslint-disable-next-line prefer-spread
+    /* eslint-disable prefer-rest-params, prefer-spread */
     if (n.callMethod) n.callMethod.apply(n, arguments as unknown as unknown[]);
-    // eslint-disable-next-line prefer-rest-params
     else n.queue.push(arguments);
+    /* eslint-enable prefer-rest-params, prefer-spread */
   } as Fbq;
   n.push = n;
   n.loaded = true;
