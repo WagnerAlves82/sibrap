@@ -1,5 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
-import { formatarPreco } from "@/lib/apostilas";
+import { Reveal } from "@/components/reveal";
+import { descontoPercentual, formatarPreco } from "@/lib/apostilas";
 
 export type DadosVenda = {
   cargo: string;
@@ -12,15 +14,17 @@ export type DadosVenda = {
   questoes: number | null;
   simulados: number | null;
   incluiSimulado: boolean;
+  imagem: string | null;
   precoCentavos: number;
+  precoOriginalCentavos: number | null;
   jaTem: boolean;
   ctaHref: string;
   ctaRotulo: string;
 };
 
-const TITULO = "font-display text-[1.5rem] font-extrabold leading-tight text-[#14213A] sm:text-[2rem]";
+const TITULO = "font-display text-[1.6rem] font-extrabold leading-tight text-[#14213A] sm:text-[2.1rem]";
 const BOTAO =
-  "inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-7 py-4 text-[15.5px] font-bold text-accent-ink shadow-[0_20px_45px_-20px_rgba(11,42,74,0.35)] transition-colors hover:brightness-105";
+  "btn-pulso brilho inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-8 py-4 text-[16px] font-extrabold text-accent-ink";
 
 export function perguntasVenda(d: DadosVenda): [string, string][] {
   return [
@@ -51,147 +55,306 @@ export function perguntasVenda(d: DadosVenda): [string, string][] {
   ];
 }
 
+type IconeNome = "livro" | "questoes" | "prova" | "tela" | "calendario" | "raio";
+
+function Icone({ nome }: { nome: IconeNome }) {
+  const p = { stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", fill: "none" } as const;
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden>
+      {nome === "livro" && <path {...p} d="M4 5.5C4 4.7 4.7 4 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5v-13ZM20 5.5c0-.8-.7-1.5-1.5-1.5H13v16h5.5c.8 0 1.5-.7 1.5-1.5v-13Z" />}
+      {nome === "questoes" && <path {...p} d="M5 4h14v16H5zM9 9h6M9 13h6M9 17h3" />}
+      {nome === "prova" && <path {...p} d="M5 4h14v16H5zM8.5 12l2.2 2.2L15.5 9" />}
+      {nome === "tela" && <path {...p} d="M3 5h18v11H3zM8 20h8M12 16v4" />}
+      {nome === "calendario" && <path {...p} d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4" />}
+      {nome === "raio" && <path {...p} d="M13 3 5 14h6l-1 7 8-11h-6l1-7Z" />}
+    </svg>
+  );
+}
+
+function BotaoCta({ d, className = "" }: { d: DadosVenda; className?: string }) {
+  return (
+    <Link href={d.ctaHref} prefetch={false} className={`${BOTAO} ${className}`}>
+      {d.ctaRotulo} <span aria-hidden>→</span>
+    </Link>
+  );
+}
+
 export function VendaApostila({ d }: { d: DadosVenda }) {
   const preco = formatarPreco(d.precoCentavos);
+  const pct = descontoPercentual(d.precoOriginalCentavos, d.precoCentavos);
   const porDia = d.dias !== null && d.dias > 0 ? formatarPreco(Math.max(1, Math.round(d.precoCentavos / d.dias))) : null;
   const onde = d.cidade ? `de ${d.cidade}` : `do ${d.orgao}`;
 
+  const numeros: [string, string][] = [
+    [d.paginas ? String(d.paginas) : "PDF", d.paginas ? "páginas de conteúdo" : "completo"],
+    [d.questoes ? String(d.questoes) : "+", "questões comentadas"],
+    [d.simulados ? String(d.simulados) : "✓", d.simulados === 1 ? "simulado final" : "simulados finais"],
+    ["7 dias", "de garantia"],
+  ];
+
+  const cartoes: [IconeNome, string, string][] = [
+    ["livro", d.paginas ? `${d.paginas} páginas em PDF` : "Apostila completa em PDF", "Conteúdo na ordem do edital, com dicas, exemplos resolvidos e resumo de cada capítulo."],
+    ["questoes", d.questoes ? `${d.questoes} questões comentadas` : "Questões comentadas", "Exercícios no estilo da banca. Cada resposta vem explicada, inclusive por que as outras alternativas estão erradas."],
+    ["prova", d.simulados ? `${d.simulados} simulado${d.simulados === 1 ? "" : "s"} final${d.simulados === 1 ? "" : "is"}` : "Simulados finais", "Prova completa no formato do concurso, para você treinar tempo e resistência antes do grande dia."],
+    ...(d.incluiSimulado
+      ? ([["tela", "Simulado online", "Pratique no site, pelo celular ou computador, com questões sorteadas do banco do seu cargo."]] as [IconeNome, string, string][])
+      : []),
+    ["calendario", "Cronograma de estudos", "O edital transformado em checklist, com o percentual concluído em cada matéria."],
+    ["raio", "Acesso imediato", "PIX confirmado, download liberado na sua área. Sem espera e sem assinatura."],
+  ];
+
   return (
     <div className="bg-white">
-      {/* Abertura persuasiva */}
-      <section className="mx-auto max-w-[1080px] px-4 py-14 sm:px-6 sm:py-16">
-        <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent-2">
-          Para quem vai fazer a prova {onde}
-        </p>
-        <h2 className={`${TITULO} mt-2 max-w-[24ch]`}>
-          Na hora da prova, quem estudou o conteúdo certo sai na frente.
-        </h2>
-        <div className="mt-5 grid gap-8 text-[16px] leading-relaxed text-[#33465E] md:grid-cols-2">
-          <p>
-            Muita gente se inscreve, abre vários PDFs soltos, assiste a vídeos sobre o que não cai e chega à prova sem saber
-            por onde começar. O resultado é tempo perdido e insegurança. Quando o cargo é o de <strong>{d.cargo}</strong>, cada
-            questão faz diferença na classificação.
-          </p>
-          <p>
-            Esta apostila foi feita para quem quer estudar com direção. Você recebe o conteúdo do edital organizado, com
-            teoria direta, exemplos, questões no estilo da banca{d.banca ? ` ${d.banca}` : ""} e gabarito comentado, e ainda treina
-            no simulado online. É menos tempo procurando material e mais tempo aprendendo o que vale ponto.
-          </p>
-        </div>
-        <div className="mt-8">
-          <Link href={d.ctaHref} prefetch={false} className={BOTAO}>
-            {d.ctaRotulo} <span aria-hidden>→</span>
-          </Link>
+      {/* Faixa de números */}
+      <section className="bg-brand-deep py-8 text-white sm:py-10">
+        <div className="mx-auto grid max-w-[1080px] grid-cols-2 gap-y-6 px-4 sm:px-6 md:grid-cols-4">
+          {numeros.map(([n, rotulo], i) => (
+            <Reveal key={rotulo} delay={i * 90} variante="zoom" className="text-center">
+              <p className="font-display text-[2.2rem] font-extrabold leading-none text-accent sm:text-[2.8rem]">{n}</p>
+              <p className="mt-1.5 text-[13px] font-semibold text-[#B9CBDF]">{rotulo}</p>
+            </Reveal>
+          ))}
         </div>
       </section>
 
-      {/* Números do que você leva */}
-      <section className="border-y border-[#D7DEE6] bg-[#F6F8FB] py-12 sm:py-14">
-        <div className="mx-auto max-w-[1080px] px-4 sm:px-6">
-          <h2 className={TITULO}>Tudo o que você leva ao comprar</h2>
-          <div className="mt-8 grid grid-cols-1 gap-px border border-[#D7DEE6] bg-[#D7DEE6] sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              [d.paginas ? `${d.paginas} páginas em PDF` : "Apostila completa em PDF", "Conteúdo na ordem do edital, com dicas, exemplos resolvidos e resumo de cada capítulo."],
-              [d.questoes ? `${d.questoes} questões comentadas` : "Questões comentadas", "Exercícios no estilo da banca. Cada resposta vem explicada, inclusive por que as outras alternativas estão erradas."],
-              [d.simulados ? `${d.simulados} simulado${d.simulados === 1 ? "" : "s"} final${d.simulados === 1 ? "" : "is"}` : "Simulados finais", "Prova completa no formato do concurso para você treinar tempo e resistência antes do grande dia."],
-              ...(d.incluiSimulado
-                ? ([["Simulado online", "Pratique no site, direto do celular ou do computador, com questões sorteadas do banco do seu cargo."]] as [string, string][])
-                : []),
-              ["Cronograma de estudos", "O edital transformado em checklist, com o percentual concluído em cada matéria."],
-              ["Acesso imediato", "PIX confirmado, download liberado na sua área. Sem espera e sem assinatura."],
-            ].map(([t, x]) => (
-              <div key={t} className="bg-white p-5 sm:p-6">
-                <h3 className="font-display text-[1.05rem] font-bold text-[#14213A]">{t}</h3>
-                <p className="mt-1.5 text-[14.5px] leading-relaxed text-[#516278]">{x}</p>
+      {/* Abertura persuasiva */}
+      <section className="mx-auto max-w-[1080px] overflow-hidden px-4 py-14 sm:px-6 sm:py-20">
+        <div className="grid items-center gap-10 md:grid-cols-[minmax(0,1fr)_300px]">
+          <Reveal variante="esquerda">
+            <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent-2">
+              Para quem vai fazer a prova {onde}
+            </p>
+            <h2 className={`${TITULO} mt-2 max-w-[24ch]`}>
+              Na hora da prova, quem estudou o conteúdo certo sai na frente.
+            </h2>
+            <p className="mt-5 max-w-[62ch] text-[16px] leading-relaxed text-[#33465E]">
+              Muita gente se inscreve, abre vários PDFs soltos, assiste a vídeos sobre o que não cai e chega à prova sem saber
+              por onde começar. Quando o cargo é o de <strong>{d.cargo}</strong>, cada questão faz diferença na classificação.
+            </p>
+            <p className="mt-4 max-w-[62ch] text-[16px] leading-relaxed text-[#33465E]">
+              Esta apostila foi feita para estudar com direção: conteúdo do edital organizado, questões no estilo da banca
+              {d.banca ? ` ${d.banca}` : ""} com gabarito comentado e treino no simulado online. Menos tempo procurando
+              material, mais tempo aprendendo o que vale ponto.
+            </p>
+            <div className="mt-7">
+              <BotaoCta d={d} />
+            </div>
+          </Reveal>
+          {d.imagem && (
+            <Reveal variante="direita" delay={150}>
+              <div className="relative mx-auto aspect-[2/3] w-full max-w-[250px] md:max-w-none">
+                <span aria-hidden className="absolute inset-6 rounded-full bg-accent/25 blur-3xl" />
+                <Image
+                  src={d.imagem}
+                  alt={`Apostila ${d.cargo}`}
+                  fill
+                  sizes="300px"
+                  className="flutuar object-contain drop-shadow-[0_26px_28px_rgba(11,42,74,0.4)]"
+                />
               </div>
+            </Reveal>
+          )}
+        </div>
+      </section>
+
+      {/* O que você leva */}
+      <section className="border-y border-[#D7DEE6] bg-[#F6F8FB] py-14 sm:py-16">
+        <div className="mx-auto max-w-[1080px] px-4 sm:px-6">
+          <Reveal>
+            <h2 className={TITULO}>Tudo o que você leva ao comprar</h2>
+          </Reveal>
+          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {cartoes.map(([icone, t, x], i) => (
+              <Reveal key={t} delay={(i % 3) * 90}>
+                <div className="h-full border border-[#D7DEE6] bg-white p-5 transition-transform duration-200 hover:-translate-y-1 hover:shadow-[0_18px_40px_-24px_rgba(11,42,74,0.4)] sm:p-6">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand text-accent">
+                    <Icone nome={icone} />
+                  </span>
+                  <h3 className="mt-4 font-display text-[1.08rem] font-bold text-[#14213A]">{t}</h3>
+                  <p className="mt-1.5 text-[14.5px] leading-relaxed text-[#516278]">{x}</p>
+                </div>
+              </Reveal>
             ))}
+          </div>
+          <div className="mt-10 text-center">
+            <BotaoCta d={d} />
           </div>
         </div>
       </section>
 
       {/* Simulado online */}
       {d.incluiSimulado && (
-        <section className="mx-auto max-w-[1080px] px-4 py-14 sm:px-6 sm:py-16">
-          <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent-2">Simulado online incluído</p>
-          <h2 className={`${TITULO} mt-2 max-w-[26ch]`}>Estudar é uma coisa. Saber se aprendeu é outra.</h2>
-          <p className="mt-4 max-w-[68ch] text-[16px] leading-relaxed text-[#33465E]">
-            Com o simulado online você coloca o que estudou à prova, descobre as matérias em que ainda erra e volta ao
-            conteúdo certo. É a diferença entre achar que sabe e ter certeza.
-          </p>
-          <ul className="mt-6 grid gap-3 text-[15px] leading-relaxed text-[#33465E] sm:grid-cols-2">
-            {[
-              "Questões do banco do seu cargo, sorteadas a cada tentativa na proporção da prova",
-              "Você escolhe quantas questões quer fazer, de uma rodada rápida até a prova completa",
-              "Suas respostas ficam salvas: pare quando quiser e continue de onde parou",
-              "Resultado com seus acertos por disciplina, para saber onde focar",
-              "Missões com pontos (XP) que ajudam a criar o hábito de estudar todo dia",
-              "Cronograma e minigame de Verdadeiro ou Falso para revisar de forma leve",
-            ].map((i) => (
-              <li key={i} className="flex gap-2">
-                <span className="mt-0.5 text-accent-2" aria-hidden>✓</span>
-                {i}
-              </li>
-            ))}
-          </ul>
+        <section className="overflow-hidden bg-brand py-14 text-white sm:py-20">
+          <div className="mx-auto grid max-w-[1080px] items-center gap-10 px-4 sm:px-6 md:grid-cols-2">
+            <Reveal variante="esquerda">
+              <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent">Simulado online incluído</p>
+              <h2 className="mt-2 font-display text-[1.6rem] font-extrabold leading-tight sm:text-[2.1rem]">
+                Estudar é uma coisa. Saber se aprendeu é outra.
+              </h2>
+              <p className="mt-4 text-[15.5px] leading-relaxed text-[#B9CBDF]">
+                Com o simulado online você coloca o que estudou à prova, descobre as matérias em que ainda erra e volta ao
+                conteúdo certo. É a diferença entre achar que sabe e ter certeza.
+              </p>
+              <ul className="mt-5 flex flex-col gap-2.5 text-[15px] leading-relaxed text-white/90">
+                {[
+                  "Questões sorteadas do banco do seu cargo, na proporção da prova",
+                  "Escolha quantas quer fazer, de uma rodada rápida à prova completa",
+                  "Respostas salvas: pare quando quiser e continue de onde parou",
+                  "Missões com pontos (XP) para criar o hábito de estudar todo dia",
+                ].map((i) => (
+                  <li key={i} className="flex gap-2">
+                    <span className="mt-0.5 text-accent" aria-hidden>✓</span>
+                    {i}
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+            <Reveal variante="direita" delay={150}>
+              {/* Ilustração do resultado por disciplina (exemplo, não é dado real) */}
+              <div className="rounded-xl border border-white/15 bg-white p-5 text-[#14213A] shadow-[0_30px_60px_-30px_rgba(0,0,0,0.6)] sm:p-6">
+                <p className="font-display text-[1.05rem] font-extrabold">Desempenho por disciplina</p>
+                <p className="text-[12px] text-[#516278]">Exemplo ilustrativo do resultado do simulado</p>
+                <div className="mt-4 flex flex-col gap-3.5">
+                  {[
+                    ["Língua Portuguesa", 82],
+                    ["Raciocínio Lógico", 55],
+                    ["Conhecimentos Gerais", 68],
+                    ["Conhecimentos Específicos", 74],
+                  ].map(([nome, v]) => (
+                    <div key={nome}>
+                      <div className="flex justify-between text-[13px] font-semibold text-[#33465E]">
+                        <span>{nome}</span>
+                        <span>{v}%</span>
+                      </div>
+                      <div className="mt-1 h-2.5 overflow-hidden rounded-full bg-[#E3EAF2]">
+                        <div className="h-full rounded-full bg-accent-2" style={{ width: `${v}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-4 rounded-md bg-[#F6F8FB] px-3 py-2 text-[12.5px] font-semibold text-[#33465E]">
+                  Foque em Raciocínio Lógico na próxima rodada.
+                </p>
+              </div>
+            </Reveal>
+          </div>
         </section>
       )}
 
       {/* Bônus */}
-      <section className="border-y border-[#D7DEE6] bg-[#F6F8FB] py-12 sm:py-14">
-        <div className="mx-auto max-w-[1080px] px-4 sm:px-6">
-          <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent-2">De presente</p>
-          <h2 className={`${TITULO} mt-2`}>Curso de Informática Básica com IA, com videoaulas e certificado</h2>
-          <p className="mt-4 max-w-[68ch] text-[16px] leading-relaxed text-[#33465E]">
-            Informática cai em quase toda prova administrativa. Na plataforma você encontra o curso livre de Informática
-            Básica com IA, de 40 horas, em videoaulas e com certificado validável. Ele é gratuito para quem tem conta no
-            site, e você pode fazer junto com a apostila.
-          </p>
+      <section className="overflow-hidden bg-surface-2 py-14 sm:py-16">
+        <div className="mx-auto grid max-w-[1080px] items-center gap-8 px-4 sm:px-6 md:grid-cols-[minmax(0,1fr)_220px]">
+          <Reveal variante="esquerda">
+            <span className="inline-block rounded bg-accent px-2.5 py-1 font-data text-[11px] font-bold uppercase tracking-wide text-accent-ink">
+              Bônus grátis
+            </span>
+            <h2 className={`${TITULO} mt-3`}>Curso de Informática Básica com IA, com videoaulas e certificado</h2>
+            <p className="mt-4 max-w-[60ch] text-[16px] leading-relaxed text-[#33465E]">
+              Informática cai em quase toda prova administrativa. Na plataforma você encontra o curso livre de Informática
+              Básica com IA, de 40 horas, em videoaulas e com certificado validável. É gratuito para quem tem conta no site, e
+              você pode fazer junto com a apostila.
+            </p>
+          </Reveal>
+          <Reveal variante="direita" delay={120}>
+            <Image
+              src="/alunos.png"
+              alt="Alunos aprendendo juntos"
+              width={1122}
+              height={1402}
+              sizes="220px"
+              className="flutuar mx-auto h-auto w-full max-w-[170px] md:max-w-none"
+            />
+          </Reveal>
         </div>
       </section>
 
       {/* Antes e depois */}
       <section className="mx-auto max-w-[1080px] px-4 py-14 sm:px-6 sm:py-16">
-        <h2 className={TITULO}>Estudar por conta própria × estudar com método</h2>
-        <div className="mt-8 grid gap-px border border-[#D7DEE6] bg-[#D7DEE6] md:grid-cols-2">
-          <div className="bg-white p-6">
-            <p className="font-display text-[1.05rem] font-bold text-[#516278]">Sem um material focado</p>
-            <ul className="mt-3 flex flex-col gap-2 text-[14.5px] leading-relaxed text-[#516278]">
-              <li>• Horas procurando o que estudar e em que ordem</li>
-              <li>• Conteúdo que não cai na sua prova</li>
-              <li>• Leis desatualizadas e resumos sem fonte</li>
-              <li>• Nenhuma noção de como a banca cobra</li>
-              <li>• Chega ao dia da prova sem nunca ter feito um simulado</li>
-            </ul>
-          </div>
-          <div className="bg-white p-6">
-            <p className="font-display text-[1.05rem] font-bold text-[#14213A]">Com a apostila e o simulado online</p>
-            <ul className="mt-3 flex flex-col gap-2 text-[14.5px] leading-relaxed text-[#33465E]">
-              <li><span className="text-accent-2" aria-hidden>✓</span> Caminho claro, na ordem do edital</li>
-              <li><span className="text-accent-2" aria-hidden>✓</span> Foco no que a prova do cargo de {d.cargo} cobra</li>
-              <li><span className="text-accent-2" aria-hidden>✓</span> Legislação conferida em texto oficial</li>
-              <li><span className="text-accent-2" aria-hidden>✓</span> Questões no estilo da banca, todas comentadas</li>
-              <li><span className="text-accent-2" aria-hidden>✓</span> Treino de prova completo antes do dia</li>
-            </ul>
-          </div>
+        <Reveal>
+          <h2 className={TITULO}>Estudar por conta própria × estudar com método</h2>
+        </Reveal>
+        <div className="mt-8 grid gap-4 md:grid-cols-2">
+          <Reveal variante="esquerda">
+            <div className="h-full border border-[#E3C9C9] bg-[#FFF8F8] p-6">
+              <p className="font-display text-[1.08rem] font-bold text-[#8A2E2E]">Sem um material focado</p>
+              <ul className="mt-3 flex flex-col gap-2.5 text-[14.5px] leading-relaxed text-[#5B4343]">
+                {[
+                  "Horas procurando o que estudar e em que ordem",
+                  "Conteúdo que não cai na sua prova",
+                  "Leis desatualizadas e resumos sem fonte",
+                  "Nenhuma noção de como a banca cobra",
+                  "Chega ao dia da prova sem nunca ter feito um simulado",
+                ].map((i) => (
+                  <li key={i} className="flex gap-2">
+                    <span className="font-bold text-[#B23A3A]" aria-hidden>✕</span>
+                    {i}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Reveal>
+          <Reveal variante="direita">
+            <div className="h-full border-2 border-accent-2 bg-[#F2FBF8] p-6">
+              <p className="font-display text-[1.08rem] font-bold text-[#0a6151]">Com a apostila e o simulado online</p>
+              <ul className="mt-3 flex flex-col gap-2.5 text-[14.5px] leading-relaxed text-[#27413B]">
+                {[
+                  "Caminho claro, na ordem do edital",
+                  `Foco no que a prova do cargo de ${d.cargo} cobra`,
+                  "Legislação conferida em texto oficial",
+                  "Questões no estilo da banca, todas comentadas",
+                  "Treino de prova completo antes do dia",
+                ].map((i) => (
+                  <li key={i} className="flex gap-2">
+                    <span className="font-bold text-accent-2" aria-hidden>✓</span>
+                    {i}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Oferta */}
-      <section className="bg-brand-deep py-14 text-white sm:py-16">
-        <div className="mx-auto max-w-[1080px] px-4 sm:px-6">
-          <h2 className="max-w-[26ch] font-display text-[1.6rem] font-extrabold leading-tight sm:text-[2.2rem]">
-            Comece a estudar hoje, com acesso imediato.
-          </h2>
-          <p className="mt-3 max-w-[60ch] text-[15.5px] leading-relaxed text-[#B9CBDF]">
-            Pagamento único de <strong className="text-white">{preco}</strong> por PIX, sem mensalidade.
-            {porDia ? ` Até a prova${d.prova ? ` (${d.prova})` : ""}, isso dá cerca de ${porDia} por dia de estudo.` : ""} Se não
-            for o que você esperava, você tem 7 dias para pedir o reembolso.
-          </p>
-          <div className="mt-7">
-            <Link href={d.ctaHref} prefetch={false} className={BOTAO}>
-              {d.ctaRotulo} <span aria-hidden>→</span>
-            </Link>
-          </div>
+      <section className="overflow-hidden bg-brand-deep py-14 text-white sm:py-20">
+        <div className="mx-auto grid max-w-[1080px] items-center gap-10 px-4 sm:px-6 md:grid-cols-[minmax(0,1fr)_240px]">
+          <Reveal variante="esquerda">
+            {d.dias !== null && d.dias >= 0 && (
+              <p className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 font-data text-[12.5px] font-bold text-accent">
+                <span className="relative inline-flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+                </span>
+                {d.dias === 0 ? "A prova é hoje" : d.dias === 1 ? "Falta 1 dia para a prova" : `Faltam ${d.dias} dias para a prova`}
+              </p>
+            )}
+            <h2 className="font-display text-[1.7rem] font-extrabold leading-tight sm:text-[2.3rem]">
+              Comece a estudar hoje, com acesso imediato.
+            </h2>
+            <p className="mt-4 max-w-[56ch] text-[15.5px] leading-relaxed text-[#B9CBDF]">
+              {pct !== null && d.precoOriginalCentavos ? (
+                <>
+                  De <span className="line-through">{formatarPreco(d.precoOriginalCentavos)}</span> por{" "}
+                </>
+              ) : (
+                "Por "
+              )}
+              <strong className="text-[1.6rem] text-white">{preco}</strong> no PIX, pagamento único e sem mensalidade.
+              {porDia ? ` Até a prova${d.prova ? ` (${d.prova})` : ""}, isso dá cerca de ${porDia} por dia de estudo.` : ""} Se
+              não for o que você esperava, você tem 7 dias para pedir o reembolso.
+            </p>
+            <div className="mt-7">
+              <BotaoCta d={d} />
+            </div>
+          </Reveal>
+          {d.imagem && (
+            <Reveal variante="direita" delay={120}>
+              <div className="relative mx-auto aspect-[2/3] w-full max-w-[190px] md:max-w-none">
+                <span aria-hidden className="absolute inset-4 rounded-full bg-accent/30 blur-3xl" />
+                <Image src={d.imagem} alt="" fill sizes="240px" className="flutuar object-contain drop-shadow-[0_26px_28px_rgba(0,0,0,0.5)]" />
+              </div>
+            </Reveal>
+          )}
         </div>
       </section>
 
@@ -208,6 +371,9 @@ export function VendaApostila({ d }: { d: DadosVenda }) {
               <p className="mt-2 text-[15px] leading-relaxed text-[#516278]">{r}</p>
             </details>
           ))}
+        </div>
+        <div className="mt-10 text-center">
+          <BotaoCta d={d} />
         </div>
       </section>
     </div>

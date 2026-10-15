@@ -108,7 +108,7 @@ export default async function Image() {
               style={{
                 fontSize: 13,
                 fontWeight: 600,
-                color: "#D4A24A",
+                color: "#E3A92B",
                 letterSpacing: 1.5,
               }}
             >
@@ -147,7 +147,7 @@ export default async function Image() {
             style={{
               fontSize: 19,
               fontWeight: 600,
-              color: "#D4A24A",
+              color: "#E3A92B",
             }}
           >
             {dominio}
@@ -181,7 +181,7 @@ export default async function Image() {
             bottom: 0,
             height: 10,
             display: "flex",
-            background: "#D4A24A",
+            background: "#E3A92B",
           }}
         />
       </div>

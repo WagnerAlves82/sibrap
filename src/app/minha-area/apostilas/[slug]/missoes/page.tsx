@@ -190,7 +190,7 @@ export default async function MissoesPage({
                 cy="40"
                 r="32"
                 fill="none"
-                stroke="#d4a24a"
+                stroke="#e3a92b"
                 strokeWidth="10"
                 strokeLinecap="round"
                 strokeDasharray={`${tracoCheio} ${circunferencia}`}
