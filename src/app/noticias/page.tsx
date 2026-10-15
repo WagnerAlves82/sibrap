@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
+import { ConcursoOuProcesso } from "@/components/concurso-ou-processo";
 import { VitrinePosts } from "@/components/vitrine-posts";
 import { listarPostsPublicados } from "@/lib/blog";
 import { listarApostilasPublicadas } from "@/lib/apostilas";
 
 export const metadata: Metadata = {
-  title: "Blog de concursos públicos: editais, prazos e dicas de estudo",
+  title: "Notícias de concursos públicos e processos seletivos: editais, prazos e vagas",
   description:
-    "Editais, prazos de inscrição e dicas de estudo para concursos públicos, organizados por região e estado.",
-  alternates: { canonical: "/blog" },
-  openGraph: { title: "Blog de concursos públicos | SIBRAP", url: "/blog", type: "website", locale: "pt_BR" },
+    "Notícias sobre concursos públicos (vagas efetivas) e processos seletivos (contratação temporária): editais, prazos de inscrição e vagas, por região e estado.",
+  alternates: { canonical: "/noticias" },
+  openGraph: { title: "Notícias de concursos públicos | SIBRAP", url: "/noticias", type: "website", locale: "pt_BR" },
 };
 
-export default async function BlogPage() {
+export default async function NoticiasPage() {
   const supabase = await criarClienteSupabaseServer();
   const [posts, apostilas, { data: userData }] = await Promise.all([
     listarPostsPublicados(supabase),
@@ -24,15 +25,16 @@ export default async function BlogPage() {
   return (
     <div className="flex min-h-screen flex-col bg-white font-body">
       <CabecalhoSite logado={!!userData.user} />
-      <main className="flex-1 bg-[#F6F8FB] py-12 sm:py-14">
+      <main className="flex-1 bg-white py-12 sm:py-14">
         <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
           <h1 className="font-display text-[2rem] font-extrabold text-[#14213A] sm:text-[2.6rem]">
-            Blog
+            Notícias de concursos
           </h1>
           <p className="mt-2 mb-8 max-w-[60ch] text-[15.5px] leading-relaxed text-[#516278]">
-            Editais novos, prazos de inscrição e dicas de estudo. Escolha o
-            seu estado pra ver os concursos mais atuais primeiro.
+            Editais novos, prazos de inscrição e vagas abertas. Escolha o seu
+            estado pra ver as oportunidades mais atuais primeiro.
           </p>
+          <ConcursoOuProcesso />
           <VitrinePosts posts={posts} apostilas={apostilas} comBusca />
         </div>
       </main>

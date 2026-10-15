@@ -1,3 +1,4 @@
+import { NotaCertame } from "@/components/concurso-ou-processo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -44,12 +45,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: post.seo_titulo || post.titulo,
     description: descricao,
     keywords: post.palavras_chave?.length ? post.palavras_chave : undefined,
-    alternates: { canonical: `/blog/${slug}` },
+    alternates: { canonical: `/noticias/${slug}` },
     openGraph: {
       title: post.titulo,
       description: descricao,
       type: "article",
-      url: `/blog/${slug}`,
+      url: `/noticias/${slug}`,
       locale: "pt_BR",
       publishedTime: post.publicado_em ?? post.criado_em,
       modifiedTime: post.atualizado_em,
@@ -92,7 +93,7 @@ export default async function PostPage({ params }: Props) {
   const apostilas = apostilasEspecificas.length > 0 ? apostilasEspecificas : todasApostilas.slice(0, 2);
   const apostilasSaoEspecificas = apostilasEspecificas.length > 0;
 
-  const urlPost = `${siteUrl}/blog/${slug}`;
+  const urlPost = `${siteUrl}/noticias/${slug}`;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -113,7 +114,7 @@ export default async function PostPage({ params }: Props) {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Início", item: siteUrl },
-      { "@type": "ListItem", position: 2, name: "Blog", item: `${siteUrl}/blog` },
+      { "@type": "ListItem", position: 2, name: "Notícias", item: `${siteUrl}/noticias` },
       { "@type": "ListItem", position: 3, name: post.titulo, item: urlPost },
     ],
   };
@@ -124,11 +125,11 @@ export default async function PostPage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
       <CabecalhoSite logado={!!user} />
 
-      <main className="flex-1 bg-[#F6F8FB] py-10 sm:py-14">
+      <main className="flex-1 bg-white py-10 sm:py-14">
         <article className="mx-auto max-w-[760px] px-4 sm:px-6">
           <nav aria-label="Você está em" className="mb-4 text-[13px] text-[#516278]">
-            <Link href="/blog" className="hover:text-brand">
-              Blog
+            <Link href="/noticias" className="hover:text-brand">
+              Notícias
             </Link>
             {(post.uf || post.regiao) && (
               <>
@@ -145,6 +146,8 @@ export default async function PostPage({ params }: Props) {
           <h1 className="mt-1.5 font-display text-[1.9rem] leading-[1.1] font-extrabold text-balance text-[#14213A] sm:text-[2.4rem]">
             {post.titulo}
           </h1>
+
+          <NotaCertame tipo={post.certame_tipo} />
 
           {(post.certame_tipo || post.edital_numero) && (
             <div className="mt-5 grid grid-cols-1 gap-x-6 gap-y-3 rounded-xl border-2 border-accent bg-brand-deep px-5 py-4 sm:grid-cols-3">

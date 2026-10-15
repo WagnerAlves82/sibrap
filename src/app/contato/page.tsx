@@ -27,7 +27,7 @@ export default function ContatoPage() {
           itens={[
             "dúvidas sobre apostilas, simulados e acesso à sua conta;",
             "pagamento e entrega da apostila (informe o e-mail usado na compra);",
-            "correção ou atualização de uma matéria do blog (informe o link da página);",
+            "correção ou atualização de uma notícia do site (informe o link da página);",
             "pedidos relacionados aos seus dados pessoais, conforme a nossa Política de Privacidade.",
           ]}
         />

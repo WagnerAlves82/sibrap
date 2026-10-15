@@ -94,7 +94,7 @@ async function postarApostila(
       .order("publicado_em", { ascending: false })
       .limit(1)
       .maybeSingle();
-    if (materia) linkMateria = `${siteUrl}/blog/${materia.slug}?utm_source=facebook&utm_medium=organico&utm_campaign=apostila-${apostila.slug}`;
+    if (materia) linkMateria = `${siteUrl}/noticias/${materia.slug}?utm_source=facebook&utm_medium=organico&utm_campaign=apostila-${apostila.slug}`;
   }
 
   const linkApostila = `${siteUrl}/apostilas/${apostila.slug}?utm_source=facebook&utm_medium=organico&utm_campaign=apostila-${apostila.slug}`;
@@ -194,7 +194,7 @@ export async function POST(request: NextRequest) {
   )[0];
   if (!escolhido) return NextResponse.json({ ok: true, publicado: false, motivo: "nada pendente" });
 
-  const link = `${siteUrl}/blog/${escolhido.slug}?utm_source=facebook&utm_medium=organico&utm_campaign=${escolhido.slug}`;
+  const link = `${siteUrl}/noticias/${escolhido.slug}?utm_source=facebook&utm_medium=organico&utm_campaign=${escolhido.slug}`;
   const message = montarTexto(escolhido);
   if (dry) return NextResponse.json({ ok: true, dry: true, post: escolhido.slug, pontos: pontuacaoDivulgacao(escolhido), message, link });
 

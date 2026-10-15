@@ -69,7 +69,7 @@ export function FormPost({ post }: { post?: PostRow }) {
           </select>
         </label>
         <label className={ROTULO}>
-          Âmbito do concurso (filtro do blog e prioridade no Facebook)
+          Âmbito do concurso (filtro das notícias e prioridade no Facebook)
           <select name="esfera" defaultValue={p?.esfera ?? ""} className={INPUT}>
             <option value="">— escolher —</option>
             {ESFERAS.map((e) => (
@@ -145,7 +145,7 @@ export function FormPost({ post }: { post?: PostRow }) {
         <label className={ROTULO}>
           Situação
           <select name="status" defaultValue={p?.status ?? "rascunho"} className={INPUT}>
-            <option value="rascunho">Rascunho (fora do blog)</option>
+            <option value="rascunho">Rascunho (fora do site)</option>
             <option value="publicada">Publicada</option>
           </select>
         </label>

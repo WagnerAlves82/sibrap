@@ -7,17 +7,24 @@ import type { NextConfig } from "next";
 const CSP_BASE = "frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'";
 const CSP_ESTRITO = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://www.youtube.com https://s.ytimg.com https://www.googletagmanager.com",
+  "script-src 'self' 'unsafe-inline' https://www.youtube.com https://s.ytimg.com https://www.googletagmanager.com https://connect.facebook.net https://www.googleadservices.com https://googleads.g.doubleclick.net",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://bdansoccbklggqqnxexn.supabase.co https://i.ytimg.com https://www.googletagmanager.com",
+  "img-src 'self' data: blob: https://bdansoccbklggqqnxexn.supabase.co https://i.ytimg.com https://www.googletagmanager.com https://www.facebook.com https://www.google.com https://www.google.com.br https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://*.google-analytics.com",
   "font-src 'self'",
-  "connect-src 'self' https://bdansoccbklggqqnxexn.supabase.co https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com",
-  "frame-src https://www.youtube-nocookie.com https://www.youtube.com",
+  "connect-src 'self' https://bdansoccbklggqqnxexn.supabase.co https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://www.facebook.com https://connect.facebook.net https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://www.google.com https://www.google.com.br https://stats.g.doubleclick.net",
+  "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://td.doubleclick.net https://www.googletagmanager.com",
   "media-src 'self'",
 ].join("; ");
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // O blog virou "Notícias": os links antigos (Google, Facebook, e-mails) continuam funcionando.
+  async redirects() {
+    return [
+      { source: "/blog", destination: "/noticias", permanent: true },
+      { source: "/blog/:slug", destination: "/noticias/:slug", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

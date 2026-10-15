@@ -27,7 +27,7 @@ export default function SobrePage() {
             <><strong>Apostilas em PDF</strong> feitas a partir do edital de cada concurso, com conteúdo organizado por disciplina, questões comentadas e cronograma de estudos.</>,
             <><strong>Simulados online</strong> para treinar no formato da prova.</>,
             <><strong>Cursos livres gratuitos</strong> com certificado.</>,
-            <><strong>Matérias no blog</strong> com os principais editais abertos: vagas, cargos, salários, taxas, prazos de inscrição e data de prova.</>,
+            <><strong>Notícias de concursos</strong> com os principais editais abertos: vagas, cargos, salários, taxas, prazos de inscrição e data de prova.</>,
           ]}
         />
       </Secao>
@@ -55,8 +55,8 @@ export default function SobrePage() {
             apostilas
           </Link>{" "}
           e o{" "}
-          <Link href="/blog" className="font-semibold text-brand underline underline-offset-4">
-            blog
+          <Link href="/noticias" className="font-semibold text-brand underline underline-offset-4">
+            notícias
           </Link>
           .
         </p>
