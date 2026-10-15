@@ -97,3 +97,11 @@ html { scroll-behavior: smooth; }
 .brilho { position: relative; overflow: hidden; }
 .brilho::after { content: ""; position: absolute; inset: 0 auto 0 0; width: 40%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent); animation: brilho 3.2s ease-in-out infinite; pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { .btn-pulso, .brilho::after { animation: none; } }
+
+/* Versão discreta do botão pulsante (barra fixa do celular): só um brilho no contorno, sem crescer. */
+@keyframes pulso-suave {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 55%, transparent); }
+  50% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--color-accent) 0%, transparent); }
+}
+.btn-pulso-suave { animation: pulso-suave 1.8s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .btn-pulso-suave { animation: none; } }
