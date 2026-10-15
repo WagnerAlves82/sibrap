@@ -7,7 +7,7 @@
 // simultâneas (webhook + polling) não geram e-mail duplicado.
 
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
-import { enviarEntregaApostila } from "@/lib/resend";
+import { enviarAvisoVenda, enviarEntregaApostila } from "@/lib/resend";
 
 export async function entregarPedido(pedidoId: string): Promise<void> {
   const admin = criarClienteSupabaseAdmin();
@@ -48,6 +48,16 @@ export async function entregarPedido(pedidoId: string): Promise<void> {
         pedidoId: pedido.id,
       })
     : ({ ok: false, erro: "usuário sem e-mail" } as const);
+
+  // aviso ao dono a cada venda; falha aqui não atrapalha a entrega ao cliente
+  await enviarAvisoVenda({
+    comprador: (usuario.user?.user_metadata as { nome?: string } | undefined)?.nome,
+    email,
+    titulo: apostila.titulo,
+    valorCentavos: pedido.valor_centavos,
+    pedidoId: pedido.id,
+    entregaOk: resultado.ok,
+  }).catch((e) => console.error("Aviso de venda não enviado:", e));
 
   if (!resultado.ok) {
     // libera para uma nova tentativa (próxima confirmação); o download
