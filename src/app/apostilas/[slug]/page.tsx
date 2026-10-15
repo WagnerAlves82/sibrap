@@ -113,9 +113,7 @@ export default async function ApostilaPage({ params }: Props) {
     apostila.questoes
       ? `${apostila.questoes} questões com gabarito comentado`
       : "Questões com gabarito comentado",
-    apostila.simulados
-      ? `${apostila.simulados} simulado${apostila.simulados === 1 ? "" : "s"} final${apostila.simulados === 1 ? "" : "is"}`
-      : null,
+    "Banco de provas com mais de 1.800 questões e simulado online",
     "Teoria na ordem do edital, com dicas e resumos",
     "Download liberado na sua área após a confirmação do PIX",
     "Acesso ao Ambiente Virtual de Aprendizagem: simulado online, missões e cronograma de estudos",
@@ -169,7 +167,7 @@ export default async function ApostilaPage({ params }: Props) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-white pb-14 font-body md:pb-0">
+    <div className="flex min-h-screen flex-col overflow-x-clip bg-white pb-16 font-body md:pb-0">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }} />
       <CabecalhoSite logado={!!user} next={areaHref} />
@@ -301,13 +299,13 @@ export default async function ApostilaPage({ params }: Props) {
       </main>
       <VendaApostila d={venda} />
       {!jaTem && (
-        <div className="fixed inset-x-0 bottom-0 z-40 overflow-hidden border-t border-[#D7DEE6] bg-white/95 px-3 py-2 backdrop-blur md:hidden">
-          <div className="mx-auto flex max-w-[440px] items-center justify-between gap-2">
+        <div className="fixed inset-x-0 bottom-0 z-40 overflow-hidden border-t border-[#D7DEE6] bg-white/95 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur md:hidden">
+          <div className="mx-auto flex max-w-[400px] items-center justify-between gap-3">
             <div className="min-w-0">
               <p className="font-display text-[1rem] font-extrabold leading-none text-[#14213A]">{formatarPreco(apostila.preco_centavos)}</p>
               <p className="mt-0.5 truncate text-[10.5px] text-[#516278]">PIX · acesso imediato</p>
             </div>
-            <Link href={ctaHref} prefetch={false} className="btn-pulso-suave shrink-0 whitespace-nowrap rounded-md bg-accent px-3.5 py-2 text-[12.5px] font-extrabold text-accent-ink">
+            <Link href={ctaHref} prefetch={false} className="btn-pulso-suave shrink-0 whitespace-nowrap rounded-md bg-accent px-3 py-1.5 text-[12px] font-extrabold text-accent-ink">
               Quero minha aprovação →
             </Link>
           </div>
