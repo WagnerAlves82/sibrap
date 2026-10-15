@@ -271,6 +271,23 @@ export async function enviarAvisoVenda({
   });
 }
 
+/** Aviso para o dono quando alguém deixa o e-mail no pop-up de saída. */
+export async function enviarAvisoLead({ email, pagina, origem }: { email: string; pagina: string; origem: string }): Promise<Resultado> {
+  const quando = new Date().toLocaleString("pt-BR", { timeZone: "America/Cuiaba" });
+  return enviarEmail({
+    para: emailDoAdmin(),
+    assunto: `Novo contato pelo site: ${email}`,
+    html: moldura({
+      saudacao: "Novo contato",
+      titulo: "Alguém deixou o e-mail ao sair do site",
+      corpo: `<p style="margin:0 0 6px 0;"><strong>E-mail:</strong> ${esc(email)}</p>
+<p style="margin:0 0 6px 0;"><strong>Página:</strong> ${esc(pagina || "—")}</p>
+<p style="margin:0 0 6px 0;"><strong>Origem:</strong> ${esc(origem)}</p>
+<p style="margin:0;"><strong>Quando:</strong> ${esc(quando)} (horário de Cuiabá)</p>`,
+    }),
+  });
+}
+
 // ---------- alertas de segurança do painel admin ----------
 
 export function emailDoAdmin(): string {
