@@ -50,7 +50,7 @@ const plexMono = IBM_Plex_Mono({
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
 const titulo = "SIBRAP — Apostilas e simulados para concursos públicos";
 const descricao =
-  "Apostilas em PDF para concursos públicos municipais, a partir de R$17,90: questões comentadas, simulado online, cronograma de estudos e cursos gratuitos.";
+  "Apostilas em PDF para concursos públicos municipais, a partir de R$29,90: questões comentadas, simulado online, cronograma de estudos e cursos gratuitos.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

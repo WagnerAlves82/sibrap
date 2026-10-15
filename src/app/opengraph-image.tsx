@@ -29,7 +29,7 @@ export default async function Image() {
   const subtitulo =
     "Estude o edital como quem já decorou ele — questões no estilo da banca.";
   const eyebrow = "APOSTILAS SIBRAP";
-  const destaque = "A partir de R$ 17,90";
+  const destaque = "A partir de R$ 29,90";
   const dominio = "sibrap.tec.br";
 
   const [logoBuffer, capaBuffer, archivoBlack, publicSansSemiBold] =
