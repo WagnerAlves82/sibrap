@@ -11,6 +11,7 @@ import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { cartaoLiberado, criarCheckoutCartao } from "@/lib/abacatepay";
 import { dentroDoLimite, hash } from "@/lib/limite";
 import { vendasPausadas } from "@/lib/vigia";
+import { gravarOrigemPedido } from "@/lib/origem";
 
 export type EstadoCheckoutCartao = { erro: string } | { url: string };
 
@@ -45,6 +46,8 @@ export async function gerarCheckoutCartaoParaPedido({
   if (!(await dentroDoLimite(`cartao:${hash(email)}`, 10, 3600))) {
     return { erro: "Muitas tentativas de pagamento em pouco tempo. Aguarde alguns minutos." };
   }
+
+  await gravarOrigemPedido(pedidoId);
 
   try {
     const checkout = await criarCheckoutCartao({

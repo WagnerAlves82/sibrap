@@ -10,6 +10,7 @@ import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { abacatePayAtivo, criarCobrancaPix } from "@/lib/abacatepay";
 import { dentroDoLimite, hash } from "@/lib/limite";
 import { vendasPausadas } from "@/lib/vigia";
+import { gravarOrigemPedido } from "@/lib/origem";
 
 export type EstadoPix =
   | { erro: string }
@@ -43,6 +44,8 @@ export async function gerarPixParaPedido({
   if (!(await dentroDoLimite(`pix:${hash(email)}`, 10, 3600))) {
     return { erro: "Muitas tentativas de gerar PIX em pouco tempo. Aguarde alguns minutos." };
   }
+
+  await gravarOrigemPedido(pedidoId);
 
   if (abacatePayAtivo()) {
     try {

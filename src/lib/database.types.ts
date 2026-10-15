@@ -974,6 +974,7 @@ export type Database = {
           gateway_charge_id: string | null
           id: string
           mercadopago_order_id: string | null
+          origem: Json | null
           mercadopago_payment_id: string | null
           mercadopago_preference_id: string | null
           produto_id: string
@@ -989,6 +990,7 @@ export type Database = {
           gateway_charge_id?: string | null
           id?: string
           mercadopago_order_id?: string | null
+          origem?: Json | null
           mercadopago_payment_id?: string | null
           mercadopago_preference_id?: string | null
           produto_id: string
@@ -1004,6 +1006,7 @@ export type Database = {
           gateway_charge_id?: string | null
           id?: string
           mercadopago_order_id?: string | null
+          origem?: Json | null
           mercadopago_payment_id?: string | null
           mercadopago_preference_id?: string | null
           produto_id?: string
