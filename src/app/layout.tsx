@@ -4,6 +4,7 @@ import Script from "next/script";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { AvisoCookies } from "@/components/cookies-consentimento";
 import { MetaPixel } from "@/components/meta-pixel";
+import { CapturarOrigem } from "@/components/capturar-origem";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -105,6 +106,7 @@ fbq('track', 'PageView');`}
         {children}
         <AvisoCookies />
         <MetaPixel />
+        <CapturarOrigem />
       </body>
       {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />

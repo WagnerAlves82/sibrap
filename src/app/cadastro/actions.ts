@@ -6,6 +6,7 @@ import { caminhoSeguro, veioDeCurso } from "@/lib/auth-redirect";
 import { VERSAO_TERMOS } from "@/lib/emissor";
 import { dentroDoLimite, identificarCliente, MSG_MUITAS_TENTATIVAS } from "@/lib/limite";
 import { validarSenha } from "@/lib/senha";
+import { lerOrigem } from "@/lib/origem";
 
 export type EstadoCadastro = {
   erro?: string;
@@ -51,6 +52,7 @@ export async function cadastrar(
   // /auth/callback, que troca o código por sessão e segue pro `next`.
   const destinoConfirmacao = next || "/minha-area";
 
+  const origemMarketing = await lerOrigem();
   const supabase = await criarClienteSupabaseServer();
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -63,6 +65,7 @@ export async function cadastrar(
         aceite_termos_em: new Date().toISOString(),
         versao_termos: VERSAO_TERMOS,
         ...(utmSource ? { utm_source: utmSource } : {}),
+        origem_marketing: origemMarketing,
       },
       emailRedirectTo: `${siteUrl}/auth/callback?next=${encodeURIComponent(destinoConfirmacao)}`,
     },

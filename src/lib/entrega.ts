@@ -8,13 +8,14 @@
 
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { enviarAvisoVenda, enviarEntregaApostila } from "@/lib/resend";
+import { descreverOrigem, type OrigemVenda } from "@/lib/origem";
 
 export async function entregarPedido(pedidoId: string): Promise<void> {
   const admin = criarClienteSupabaseAdmin();
 
   const { data: pedido } = await admin
     .from("pedidos")
-    .select("id, user_id, produto_id, valor_centavos, status, entrega_enviada_em")
+    .select("id, user_id, produto_id, valor_centavos, status, entrega_enviada_em, origem")
     .eq("id", pedidoId)
     .maybeSingle();
   if (!pedido || pedido.status !== "aprovado" || pedido.entrega_enviada_em) return;
@@ -57,6 +58,7 @@ export async function entregarPedido(pedidoId: string): Promise<void> {
     valorCentavos: pedido.valor_centavos,
     pedidoId: pedido.id,
     entregaOk: resultado.ok,
+    origem: descreverOrigem(pedido.origem as OrigemVenda | null),
   }).catch((e) => console.error("Aviso de venda não enviado:", e));
 
   if (!resultado.ok) {

@@ -129,7 +129,9 @@ export default function PrivacidadePage() {
       <Secao titulo="10. Cookies e publicidade">
         <p>
           Usamos <strong>cookies essenciais</strong>, que mantêm você conectado e protegem a sua sessão. Eles não
-          dependem de consentimento.
+          dependem de consentimento. Entre eles está um cookie de <strong>origem da visita</strong> (por exemplo, a campanha
+          ou o link que trouxe você ao site), usado só para registrarmos de onde veio cada compra, junto com a cidade e o
+          estado aproximados da sua conexão. Ele dura 60 dias e não é compartilhado com terceiros.
         </p>
         <p>
           Com a sua <strong>permissão</strong>, também usamos cookies de <strong>medição de acessos</strong> (Google
