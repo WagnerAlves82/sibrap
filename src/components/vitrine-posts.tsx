@@ -53,18 +53,19 @@ export function VitrinePosts({
     );
   }, [posts, uf, federal, esfera, tipo, busca]);
 
+  const base = "transition-all duration-150 hover:-translate-y-0.5 active:translate-y-0";
   const chipUf = (ativo: boolean, vazio: boolean) =>
-    `min-w-[2.6rem] rounded-md border px-2 py-1.5 text-center text-[12.5px] font-bold transition-colors ${
+    `${base} min-w-[2.6rem] rounded-md border px-2 py-1.5 text-center text-[12.5px] font-bold ${
       ativo
-        ? "border-brand bg-brand text-white"
+        ? "border-brand bg-brand text-white shadow-md"
         : vazio
-          ? "border-[#E6EBF1] bg-white text-[#A5B1C0] hover:border-[#D7DEE6]"
-          : "border-[#D7DEE6] bg-white text-[#33465E] hover:border-brand hover:text-brand"
+          ? "border-[#E6EBF1] bg-white text-[#A5B1C0] hover:border-accent hover:bg-[#FFF7E3] hover:text-[#8A6A1F]"
+          : "border-[#D7DEE6] bg-white text-[#33465E] hover:border-accent hover:bg-[#FFF7E3] hover:text-brand hover:shadow-md"
     }`;
 
   const segmento = (ativo: boolean) =>
-    `px-4 py-2 text-[13.5px] font-semibold transition-colors ${
-      ativo ? "bg-brand text-white" : "bg-white text-[#33465E] hover:bg-[#F1F5F9]"
+    `px-4 py-2 text-[13.5px] font-semibold transition-colors duration-150 ${
+      ativo ? "bg-brand text-white" : "bg-white text-[#33465E] hover:bg-[#FFF2CC] hover:text-brand"
     }`;
 
   const dica =
@@ -94,7 +95,7 @@ export function VitrinePosts({
             value={esfera}
             onChange={(e) => setEsfera(e.target.value)}
             aria-label="Filtrar por âmbito"
-            className="rounded-md border border-[#D7DEE6] bg-white px-3 py-2 text-[13.5px] font-semibold text-[#33465E]"
+            className="rounded-md border border-[#D7DEE6] bg-white px-3 py-2 text-[13.5px] font-semibold text-[#33465E] transition-colors hover:border-accent hover:bg-[#FFF7E3]"
           >
             <option value="">Todos os âmbitos</option>
             {ESFERAS.map((e) => (
@@ -122,16 +123,18 @@ export function VitrinePosts({
             className={chipUf(!uf && !federal, false)}
             aria-pressed={!uf && !federal}
           >
-            Brasil
+            Todos os estados
           </button>
           <button
             type="button"
             onClick={() => { setFederal(!federal); setUf(""); }}
             className={chipUf(federal, false)}
             aria-pressed={federal}
+            title="Concursos de órgãos federais, de todo o país"
           >
             Federal
           </button>
+          <span aria-hidden className="mx-1 w-px self-stretch bg-[#D7DEE6]" />
           {UFS.map((u) => (
             <button
               key={u}
