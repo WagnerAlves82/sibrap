@@ -3,6 +3,36 @@
 import { usePathname } from "next/navigation";
 import { WHATSAPP_NUMERO } from "@/lib/emissor";
 
+// Diz, em linguagem natural, de onde a pessoa está falando, para a conversa já chegar com contexto.
+function assunto(caminho: string): string {
+  const apostila = caminho.match(/^\/apostilas\/([^/]+)/);
+  if (apostila) {
+    const nome = apostila[1].replace(/-/g, " ");
+    return `Vim pela apostila ${nome}, preciso de ajuda.`;
+  }
+  if (caminho.startsWith("/noticias/")) return "Vim por uma notícia do site, preciso de ajuda.";
+  if (caminho.startsWith("/noticias")) return "Vim pela página de notícias, preciso de ajuda.";
+  if (caminho.startsWith("/apostilas")) return "Vim pela página de apostilas, preciso de ajuda.";
+  if (caminho.startsWith("/cursos")) return "Vim pela página de cursos, preciso de ajuda.";
+  return "Vim pela página inicial do site, preciso de ajuda.";
+}
+
+// Canal de chegada gravado pelo CapturarOrigem (cookie sibrap_origem).
+function canalDoCookie(): string {
+  try {
+    const c = document.cookie.split("; ").find((x) => x.startsWith("sibrap_origem="));
+    if (!c) return "";
+    const d = JSON.parse(decodeURIComponent(c.slice("sibrap_origem=".length))) as Record<string, string>;
+    if (d.gclid) return "google-ads";
+    if (d.fbclid) return "facebook";
+    if (d.utm_source) return d.utm_source.slice(0, 20);
+    if (d.referrer) return d.referrer.slice(0, 30);
+    return "";
+  } catch {
+    return "";
+  }
+}
+
 // Botão fixo "Posso ajudar?" que abre uma conversa no WhatsApp. Fica fora das
 // áreas logada e administrativa e sobe um pouco nas páginas de apostila (celular),
 // para não ficar em cima da barra de compra.
@@ -11,12 +41,17 @@ export function BotaoWhatsApp() {
   if (!WHATSAPP_NUMERO) return null;
   if (caminho.startsWith("/admin") || caminho.startsWith("/minha-area") || caminho.startsWith("/certificado")) return null;
 
-  const texto = encodeURIComponent("Olá! Vim pelo site da SIBRAP e preciso de ajuda.");
+  const link = (canal: string) =>
+    `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(`Olá! ${assunto(caminho)}${canal ? ` (origem: ${canal})` : ""}`)}`;
   const comBarraDeCompra = caminho.startsWith("/apostilas/");
 
   return (
     <a
-      href={`https://wa.me/${WHATSAPP_NUMERO}?text=${texto}`}
+      href={link("")}
+      onClick={(e) => {
+        // a origem (anúncio, Facebook...) só existe no navegador: entra no texto na hora do clique
+        e.currentTarget.href = link(canalDoCookie());
+      }}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Posso ajudar? Falar no WhatsApp"
