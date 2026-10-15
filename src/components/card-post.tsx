@@ -9,8 +9,8 @@ export function CardPost({ post }: { post: PostVitrine }) {
 
   return (
     <Link
-      href={`/blog/${post.slug}`}
-      className="group flex h-full flex-col overflow-hidden rounded-xl border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.35)]"
+      href={`/noticias/${post.slug}`}
+      className="group flex h-full flex-col overflow-hidden border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.35)]"
     >
       <div className="relative aspect-[16/9] w-full overflow-hidden bg-gradient-to-b from-[#E6EEF7] to-[#F6F9FC]">
         {(() => {

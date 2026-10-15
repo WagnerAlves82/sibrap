@@ -31,8 +31,8 @@ const texto = (fd: FormData, campo: string) => String(fd.get(campo) ?? "").trim(
 const opcional = (fd: FormData, campo: string) => texto(fd, campo) || null;
 
 function revalidarBlog(slug?: string) {
-  revalidatePath("/blog");
-  if (slug) revalidatePath(`/blog/${slug}`);
+  revalidatePath("/noticias");
+  if (slug) revalidatePath(`/noticias/${slug}`);
   revalidatePath("/admin/blog");
 }
 

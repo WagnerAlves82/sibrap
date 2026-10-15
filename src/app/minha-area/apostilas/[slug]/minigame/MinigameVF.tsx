@@ -192,14 +192,14 @@ export function MinigameVF({
   return (
     <Cartao>
       <div className="relative mx-auto mb-4 h-[88px] w-[88px]">
-        <span className="confete" style={{ "--dx": "-70px", background: "#b9862a", animationDelay: "0s" } as React.CSSProperties} />
+        <span className="confete" style={{ "--dx": "-70px", background: "#d4a24a", animationDelay: "0s" } as React.CSSProperties} />
         <span className="confete" style={{ "--dx": "-40px", background: "#0e7c6b", animationDelay: ".06s" } as React.CSSProperties} />
         <span className="confete" style={{ "--dx": "-14px", background: "#0b2a4a", animationDelay: ".12s" } as React.CSSProperties} />
         <span className="confete" style={{ "--dx": "14px", background: "#0e7c6b", animationDelay: ".04s" } as React.CSSProperties} />
-        <span className="confete" style={{ "--dx": "40px", background: "#b9862a", animationDelay: ".1s" } as React.CSSProperties} />
+        <span className="confete" style={{ "--dx": "40px", background: "#d4a24a", animationDelay: ".1s" } as React.CSSProperties} />
         <span className="confete" style={{ "--dx": "70px", background: "#0b2a4a", animationDelay: ".16s" } as React.CSSProperties} />
         <svg className="medalha-pop" width="88" height="88" viewBox="0 0 88 88">
-          <circle cx="44" cy="34" r="26" fill="#b9862a" />
+          <circle cx="44" cy="34" r="26" fill="#d4a24a" />
           <circle cx="44" cy="34" r="26" fill="none" stroke="#ffffff" strokeWidth="3" />
           <path d="m32 34 8 8 16-16" fill="none" stroke="#ffffff" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M32 52 24 76l20-9 20 9-8-24" fill="#0e7c6b" />

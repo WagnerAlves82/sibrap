@@ -40,7 +40,7 @@ export function VitrinePosts({
     const termo = busca.trim().toLowerCase();
     return posts.filter(
       (p) =>
-        (!federal ? (!regiao || p.regiao === regiao) && (!uf || p.uf === uf) : !p.uf && !p.regiao) &&
+        (!federal ? (!regiao || p.regiao === regiao) && (!uf || p.uf === uf) : p.esfera === "nacional") &&
         (!esfera || p.esfera === esfera) &&
         (!termo || `${p.titulo} ${p.resumo ?? ""} ${p.categoria}`.toLowerCase().includes(termo))
     );
@@ -121,8 +121,8 @@ export function VitrinePosts({
               type="search"
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
-              placeholder="Buscar por título ou assunto"
-              aria-label="Buscar post"
+              placeholder="Buscar notícia por título ou assunto"
+              aria-label="Buscar notícia"
               className="w-full min-w-0 rounded-lg border border-[#D7DEE6] bg-white px-3 py-2 text-[13.5px] text-[#14213A] sm:w-64"
             />
           )}
@@ -130,10 +130,10 @@ export function VitrinePosts({
       </div>
 
       {filtrados.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-[#C4CEDA] bg-white px-6 py-12 text-center text-[15px] text-[#516278]">
+        <p className="border border-dashed border-[#C4CEDA] bg-white px-6 py-12 text-center text-[15px] text-[#516278]">
           {posts.length === 0
-            ? "Ainda não publicamos nenhum post por aqui. Volte em breve!"
-            : "Nenhum post encontrado com esses filtros."}
+            ? "Ainda não publicamos nenhuma notícia por aqui. Volte em breve!"
+            : "Nenhuma notícia encontrada com esses filtros."}
         </p>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">

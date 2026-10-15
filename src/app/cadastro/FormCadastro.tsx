@@ -80,7 +80,7 @@ export function FormCadastro({
         minLength={8}
       />
       <label className="flex items-start gap-2.5 text-[13px] leading-relaxed text-[#516278]">
-        <input type="checkbox" name="aceite" required defaultChecked={estado?.valores?.aceite} className="mt-1 h-4 w-4 shrink-0 accent-[#B9862A]" />
+        <input type="checkbox" name="aceite" required defaultChecked={estado?.valores?.aceite} className="mt-1 h-4 w-4 shrink-0 accent-[#D4A24A]" />
         <span>
           Li e concordo com os{" "}
           <Link href="/termos" target="_blank" className="font-semibold text-brand underline underline-offset-4">

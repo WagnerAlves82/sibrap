@@ -25,8 +25,8 @@ export function CabecalhoSite({ logado, next }: { logado: boolean; next?: string
           <Link href="/apostilas" className={itemNav}>
             Apostilas
           </Link>
-          <Link href="/blog" className={`${logado ? "hidden sm:inline" : ""} ${itemNav}`}>
-            Blog
+          <Link href="/noticias" className={`${logado ? "hidden sm:inline" : ""} ${itemNav}`}>
+            Notícias
           </Link>
           <Link href="/cursos" className={`hidden md:inline ${itemNav}`}>
             Cursos gratuitos
@@ -92,8 +92,8 @@ export function RodapeSite() {
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className={linkRodape}>
-                  Blog
+                <Link href="/noticias" className={linkRodape}>
+                  Notícias
                 </Link>
               </li>
               <li>

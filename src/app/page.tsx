@@ -6,6 +6,7 @@ import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { CarrosselHome, type SlideComCta } from "@/components/carrossel-home";
 import { VitrineApostilas } from "@/components/vitrine-apostilas";
 import { VitrinePosts } from "@/components/vitrine-posts";
+import { ConcursoOuProcesso } from "@/components/concurso-ou-processo";
 import { SeloAbed } from "@/components/selo-abed";
 import { Reveal } from "@/components/reveal";
 import { diasAte, formatarDataIso, formatarPreco, listarApostilasPublicadas } from "@/lib/apostilas";
@@ -68,10 +69,12 @@ export default async function Home() {
 
       <CabecalhoSite logado={!!user} />
 
+      <MenuAncora />
+
       <CarrosselHome slides={slides} />
 
       {/* Vitrine de apostilas */}
-      <section id="apostilas" className="scroll-mt-4 bg-[#F6F8FB] py-14 sm:py-16">
+      <section id="apostilas" className="scroll-mt-14 bg-[#F6F8FB] py-14 sm:py-16">
         <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
           <Reveal className="mb-8 max-w-[60ch]">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-brand">
@@ -98,9 +101,9 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Matérias sobre concursos */}
+      {/* Notícias de concursos */}
       {posts.length > 0 && (
-        <section id="materias" className="scroll-mt-4 bg-[#FBF6EC] py-14 sm:py-16">
+        <section id="noticias" className="scroll-mt-14 bg-white py-14 sm:py-16">
           <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
             <Reveal className="mb-8 max-w-[60ch]">
               <span className="inline-flex items-center gap-2 rounded-full border border-accent bg-white px-3 py-1.5 font-data text-xs font-semibold text-brand shadow-sm">
@@ -108,22 +111,24 @@ export default async function Home() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-2 opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-2" />
                 </span>
-                Novidades toda semana
+                Notícias todos os dias
               </span>
               <h2 className="mt-3.5 font-display text-[1.7rem] font-extrabold text-[#14213A] sm:text-[2.3rem]">
-                Fique por dentro dos concursos.
+                Notícias de concursos e processos seletivos.
               </h2>
               <p className="mt-3 text-[15.5px] leading-relaxed text-[#516278]">
-                Editais novos, prazos de inscrição e dicas de estudo. Filtre
+                Editais novos, prazos de inscrição e vagas abertas. Filtre
                 por região, estado ou só concursos federais.
               </p>
             </Reveal>
 
+            <ConcursoOuProcesso />
+
             <VitrinePosts posts={posts} />
 
             <div className="mt-8 text-center">
-              <Link href="/blog" className="text-sm font-semibold text-brand underline underline-offset-4">
-                Ver todas as matérias
+              <Link href="/noticias" className="text-sm font-semibold text-brand underline underline-offset-4">
+                Ver todas as notícias
               </Link>
             </div>
           </div>
@@ -164,8 +169,51 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Simulado online */}
+      <section id="simulado-online" className="scroll-mt-14 bg-[#F6F8FB] py-14 sm:py-16">
+        <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
+          <Reveal className="mb-10 max-w-[64ch]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-brand">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent-2" />
+              Simulado online
+            </span>
+            <h2 className="mt-3.5 font-display text-[1.7rem] font-extrabold text-[#14213A] sm:text-[2.3rem]">
+              Treine como será a prova e descubra onde melhorar.
+            </h2>
+            <p className="mt-3 text-[15.5px] leading-relaxed text-[#516278]">
+              Ler a teoria é só metade do caminho. O simulado online coloca você diante de
+              questões no estilo da banca do seu concurso, mostra onde você acerta e onde
+              ainda erra e transforma o estudo em prática diária. Quem pratica com constância
+              fixa melhor o conteúdo, ganha ritmo e chega à prova com mais segurança.
+            </p>
+          </Reveal>
+
+          <div className="grid grid-cols-1 gap-px border border-[#D7DEE6] bg-[#D7DEE6] sm:grid-cols-2 lg:grid-cols-3">
+            {RECURSOS_SIMULADO.map(([titulo, texto]) => (
+              <div key={titulo} className="bg-white p-5 sm:p-6">
+                <h3 className="font-display text-[1.05rem] font-bold text-[#14213A]">{titulo}</h3>
+                <p className="mt-1.5 text-[14.5px] leading-relaxed text-[#516278]">{texto}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <a
+              href="#apostilas"
+              className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3.5 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"
+            >
+              Escolher minha apostila <span aria-hidden>→</span>
+            </a>
+            <p className="max-w-[52ch] text-[13.5px] text-[#516278]">
+              O acesso ao simulado online é liberado na sua área, logo após a confirmação do
+              pagamento das apostilas que o incluem.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Comece de graça */}
-      <section id="gratis" className="overflow-hidden bg-surface-2 py-14 sm:py-16">
+      <section id="cursos-gratuitos" className="scroll-mt-14 overflow-hidden bg-surface-2 py-14 sm:py-16">
         <div className="mx-auto grid max-w-[1180px] items-center gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_320px]">
           <Reveal variante="esquerda" className="max-w-[60ch]">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-brand">
@@ -225,7 +273,7 @@ export default async function Home() {
       </section>
 
       {/* Por que escolher */}
-      <section id="sobre" className="bg-brand py-16 text-white sm:py-20">
+      <section id="sobre" className="scroll-mt-14 bg-brand py-16 text-white sm:py-20">
         <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
           <Reveal className="mb-10 max-w-[56ch]">
             <span className="text-sm font-semibold uppercase tracking-wide text-accent">
@@ -286,6 +334,41 @@ export default async function Home() {
 
       <RodapeSite />
     </div>
+  );
+}
+
+const RECURSOS_SIMULADO: [string, string][] = [
+  ["Questões do seu cargo", "O banco é montado para o cargo da apostila. A cada tentativa, as questões são sorteadas na proporção da prova, e você escolhe quantas quer fazer."],
+  ["Seu progresso fica salvo", "Cada resposta é guardada na hora. Pode parar quando precisar e continuar depois, exatamente de onde parou, no computador ou no celular."],
+  ["Desempenho por disciplina", "Ao terminar, você vê seus acertos matéria por matéria e sabe onde focar a próxima rodada de estudo."],
+  ["Missões e pontos (XP)", "Complete missões como fazer o primeiro simulado, tirar nota 6 ou mais e estudar três dias seguidos. A constância vira hábito."],
+  ["Cronograma de estudos", "Os tópicos do edital organizados em checklist, com o percentual concluído por disciplina, para você saber quanto já avançou."],
+  ["Minigame Verdadeiro ou Falso", "Revisão rápida entre uma sessão de estudo e outra, para fixar o que costuma cair na prova."],
+];
+
+const ANCORAS: [string, string][] = [
+  ["Apostilas", "#apostilas"],
+  ["Notícias", "#noticias"],
+  ["Simulado online", "#simulado-online"],
+  ["Cursos gratuitos", "#cursos-gratuitos"],
+  ["Sobre", "#sobre"],
+];
+
+// Menu de âncoras da home. Cada item leva a uma seção da página e serve de
+// destino para os sitelinks do Google Ads (ex.: https://sibrap.tec.br/#simulado-online).
+function MenuAncora() {
+  return (
+    <nav aria-label="Seções da página" className="sticky top-0 z-30 border-b border-[#D7DEE6] bg-white/95 backdrop-blur">
+      <ul className="mx-auto flex max-w-[1180px] items-center gap-1 overflow-x-auto px-3 py-1 text-[13px] font-semibold whitespace-nowrap sm:gap-3 sm:px-6 sm:text-sm">
+        {ANCORAS.map(([rotulo, href]) => (
+          <li key={href}>
+            <a href={href} className="block px-2 py-2 text-[#33465E] transition-colors hover:text-brand">
+              {rotulo}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 }
 

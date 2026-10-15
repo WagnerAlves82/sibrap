@@ -24,10 +24,10 @@ export default async function AdminBlogPage() {
         <Link href="/admin" className="text-sm text-zinc-500 underline hover:text-zinc-700">
           ← Painel
         </Link>
-        <h1 className="mt-2 text-2xl font-bold text-zinc-900">Blog</h1>
+        <h1 className="mt-2 text-2xl font-bold text-zinc-900">Notícias</h1>
         <p className="mb-6 text-sm text-zinc-500">
           Divulgação de concursos, por região e estado. Um post só aparece em
-          <code className="mx-1 rounded bg-zinc-200 px-1">/blog</code>
+          <code className="mx-1 rounded bg-zinc-200 px-1">/noticias</code>
           quando estiver como &quot;Publicada&quot;.
         </p>
 

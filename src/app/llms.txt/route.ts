@@ -25,7 +25,7 @@ export async function GET() {
   linhas.push(`- [Página inicial](${siteUrl}): apresentação do SIBRAP e vitrine das apostilas.`);
   linhas.push(`- [Apostilas](${siteUrl}/apostilas): catálogo completo de apostilas para concursos públicos.`);
   linhas.push(`- [Cursos gratuitos](${siteUrl}/cursos): cursos livres com certificado, sem custo.`);
-  linhas.push(`- [Blog](${siteUrl}/blog): conteúdo sobre concursos públicos e preparação.`);
+  linhas.push(`- [Notícias](${siteUrl}/noticias): notícias sobre concursos públicos (vagas efetivas) e processos seletivos (contratações temporárias).`);
   linhas.push("");
 
   try {
