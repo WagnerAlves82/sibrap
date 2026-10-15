@@ -235,6 +235,39 @@ export async function enviarEntregaApostila({
   });
 }
 
+/** Aviso para o dono do site a cada venda confirmada. */
+export async function enviarAvisoVenda({
+  comprador,
+  email,
+  titulo,
+  valorCentavos,
+  pedidoId,
+  entregaOk,
+}: {
+  comprador?: string | null;
+  email?: string | null;
+  titulo: string;
+  valorCentavos: number;
+  pedidoId: string;
+  entregaOk: boolean;
+}): Promise<Resultado> {
+  const valor = (valorCentavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  const quando = new Date().toLocaleString("pt-BR", { timeZone: "America/Cuiaba" });
+  return enviarEmail({
+    para: emailDoAdmin(),
+    assunto: `Nova venda: ${valor} — ${titulo}`,
+    html: moldura({
+      saudacao: "Venda confirmada",
+      titulo: `Você vendeu ${valor}`,
+      corpo: `<p style="margin:0 0 6px 0;"><strong>Produto:</strong> ${esc(titulo)}</p>
+<p style="margin:0 0 6px 0;"><strong>Comprador:</strong> ${esc(comprador ?? "—")} (${esc(email ?? "sem e-mail")})</p>
+<p style="margin:0 0 6px 0;"><strong>Quando:</strong> ${esc(quando)} (horário de Cuiabá)</p>
+<p style="margin:0 0 12px 0;"><strong>Pedido:</strong> ${esc(pedidoId.slice(0, 8))}</p>
+<p style="margin:0;font-size:12.5px;color:#516278;">${entregaOk ? "O acesso foi liberado e o e-mail de entrega foi enviado ao cliente." : "O acesso foi liberado, mas o e-mail de entrega ao cliente FALHOU (ele baixa pela área do aluno)."}</p>`,
+    }),
+  });
+}
+
 // ---------- alertas de segurança do painel admin ----------
 
 export function emailDoAdmin(): string {
