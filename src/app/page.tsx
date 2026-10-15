@@ -6,6 +6,7 @@ import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { CarrosselHome, type SlideComCta } from "@/components/carrossel-home";
 import { VitrineApostilas } from "@/components/vitrine-apostilas";
 import { VitrinePosts } from "@/components/vitrine-posts";
+import { IconeSolido, type NomeIconeSolido } from "@/components/icones-solidos";
 import { SeloAbed } from "@/components/selo-abed";
 import { Reveal } from "@/components/reveal";
 import { diasAte, formatarDataIso, formatarPreco, listarApostilasPublicadas } from "@/lib/apostilas";
@@ -187,9 +188,10 @@ export default async function Home() {
           </Reveal>
 
           <div className="grid grid-cols-1 gap-px border border-[#D7DEE6] bg-[#D7DEE6] sm:grid-cols-2 lg:grid-cols-3">
-            {RECURSOS_SIMULADO.map(([titulo, texto]) => (
-              <div key={titulo} className="bg-white p-5 sm:p-6">
-                <h3 className="font-display text-[1.05rem] font-bold text-[#14213A]">{titulo}</h3>
+            {RECURSOS_SIMULADO.map(([icone, titulo, texto], i) => (
+              <div key={titulo} className="bg-white p-5 transition-colors hover:bg-[#FFFBEF] sm:p-6">
+                <IconeSolido nome={icone} atraso={i * 350} />
+                <h3 className="mt-4 font-display text-[1.1rem] font-bold text-[#14213A]">{titulo}</h3>
                 <p className="mt-1.5 text-[14.5px] leading-relaxed text-[#516278]">{texto}</p>
               </div>
             ))}
@@ -335,13 +337,13 @@ export default async function Home() {
   );
 }
 
-const RECURSOS_SIMULADO: [string, string][] = [
-  ["Questões do seu cargo", "O banco é montado para o cargo da apostila. A cada tentativa, as questões são sorteadas na proporção da prova, e você escolhe quantas quer fazer."],
-  ["Seu progresso fica salvo", "Cada resposta é guardada na hora. Pode parar quando precisar e continuar depois, exatamente de onde parou, no computador ou no celular."],
-  ["Desempenho por disciplina", "Ao terminar, você vê seus acertos matéria por matéria e sabe onde focar a próxima rodada de estudo."],
-  ["Missões e pontos (XP)", "Complete missões como fazer o primeiro simulado, tirar nota 6 ou mais e estudar três dias seguidos. A constância vira hábito."],
-  ["Cronograma de estudos", "Os tópicos do edital organizados em checklist, com o percentual concluído por disciplina, para você saber quanto já avançou."],
-  ["Minigame Verdadeiro ou Falso", "Revisão rápida entre uma sessão de estudo e outra, para fixar o que costuma cair na prova."],
+const RECURSOS_SIMULADO: [NomeIconeSolido, string, string][] = [
+  ["questoes", "Questões do seu cargo", "O banco é montado para o cargo da apostila. A cada tentativa, as questões são sorteadas na proporção da prova, e você escolhe quantas quer fazer."],
+  ["salvo", "Seu progresso fica salvo", "Cada resposta é guardada na hora. Pode parar quando precisar e continuar depois, exatamente de onde parou, no computador ou no celular."],
+  ["desempenho", "Desempenho por disciplina", "Ao terminar, você vê seus acertos matéria por matéria e sabe onde focar a próxima rodada de estudo."],
+  ["trofeu", "Missões e pontos (XP)", "Complete missões como fazer o primeiro simulado, tirar nota 6 ou mais e estudar três dias seguidos. A constância vira hábito."],
+  ["calendario", "Cronograma de estudos", "Os tópicos do edital organizados em checklist, com o percentual concluído por disciplina, para você saber quanto já avançou."],
+  ["jogo", "Minigame Verdadeiro ou Falso", "Revisão rápida entre uma sessão de estudo e outra, para fixar o que costuma cair na prova."],
 ];
 
 const ANCORAS: [string, string][] = [
