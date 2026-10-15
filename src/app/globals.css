@@ -105,3 +105,12 @@ html { scroll-behavior: smooth; }
 }
 .btn-pulso-suave { animation: pulso-suave 1.8s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .btn-pulso-suave { animation: none; } }
+
+/* Balanço leve dos ícones (chama a atenção sem incomodar). */
+@keyframes icone-balanca {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-4px) rotate(-5deg); }
+  75% { transform: translateY(-2px) rotate(5deg); }
+}
+.icone-balanca { animation: icone-balanca 3.2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .icone-balanca { animation: none; } }

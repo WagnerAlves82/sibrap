@@ -4,6 +4,7 @@ import Script from "next/script";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { AvisoCookies } from "@/components/cookies-consentimento";
 import { MetaPixel } from "@/components/meta-pixel";
+import { BotaoWhatsApp } from "@/components/botao-whatsapp";
 import { CapturarOrigem } from "@/components/capturar-origem";
 import "./globals.css";
 
@@ -113,6 +114,7 @@ fbq('track', 'PageView');`}
         </Script>
         {children}
         <AvisoCookies />
+        <BotaoWhatsApp />
         <MetaPixel />
         <CapturarOrigem />
       </body>

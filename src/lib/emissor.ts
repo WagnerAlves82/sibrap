@@ -22,3 +22,7 @@ export const VERSAO_TERMOS = "2026-09-19";
 export const EMAIL_CONTATO = "secretaria@sibrap.tec.br";
 
 export const RAZAO_SOCIAL = "34.340.453 Wagner Alves de Souza Junior";
+
+// WhatsApp de atendimento (só dígitos, com DDI+DDD, ex.: "5547999999999").
+// Enquanto estiver vazio, o botão "Posso ajudar?" não aparece no site.
+export const WHATSAPP_NUMERO = "";

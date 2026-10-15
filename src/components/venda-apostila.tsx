@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { IconeSolido, type NomeIconeSolido } from "@/components/icones-solidos";
 import { Reveal } from "@/components/reveal";
 import { descontoPercentual, formatarPreco } from "@/lib/apostilas";
 
@@ -55,22 +56,6 @@ export function perguntasVenda(d: DadosVenda): [string, string][] {
   ];
 }
 
-type IconeNome = "livro" | "questoes" | "prova" | "tela" | "calendario" | "raio";
-
-function Icone({ nome }: { nome: IconeNome }) {
-  const p = { stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", fill: "none" } as const;
-  return (
-    <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden>
-      {nome === "livro" && <path {...p} d="M4 5.5C4 4.7 4.7 4 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5v-13ZM20 5.5c0-.8-.7-1.5-1.5-1.5H13v16h5.5c.8 0 1.5-.7 1.5-1.5v-13Z" />}
-      {nome === "questoes" && <path {...p} d="M5 4h14v16H5zM9 9h6M9 13h6M9 17h3" />}
-      {nome === "prova" && <path {...p} d="M5 4h14v16H5zM8.5 12l2.2 2.2L15.5 9" />}
-      {nome === "tela" && <path {...p} d="M3 5h18v11H3zM8 20h8M12 16v4" />}
-      {nome === "calendario" && <path {...p} d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4" />}
-      {nome === "raio" && <path {...p} d="M13 3 5 14h6l-1 7 8-11h-6l1-7Z" />}
-    </svg>
-  );
-}
-
 function BotaoCta({ d, className = "" }: { d: DadosVenda; className?: string }) {
   return (
     <Link href={d.ctaHref} prefetch={false} className={`${BOTAO} ${className}`}>
@@ -92,14 +77,14 @@ export function VendaApostila({ d }: { d: DadosVenda }) {
     ["7 dias", "de garantia"],
   ];
 
-  const cartoes: [IconeNome, string, string][] = [
+  const cartoes: [NomeIconeSolido, string, string][] = [
     ["livro", d.paginas ? `${d.paginas} páginas em PDF` : "Apostila completa em PDF", "Conteúdo na ordem do edital, com dicas, exemplos resolvidos e resumo de cada capítulo."],
     ["questoes", d.questoes ? `${d.questoes} questões comentadas` : "Questões comentadas", "Exercícios no estilo da banca. Cada resposta vem explicada, inclusive por que as outras alternativas estão erradas."],
     ["questoes", "Banco de provas com mais de 1.800 questões", "Questões de provas reais e no estilo das bancas, reunidas na plataforma para você treinar sem fim."],
     ...(d.incluiSimulado
-      ? ([["tela", "Simulado online", "Pratique no site, pelo celular ou computador, com questões sorteadas do banco do seu cargo."]] as [IconeNome, string, string][])
+      ? ([["tela", "Simulado online", "Pratique no site, pelo celular ou computador, com questões sorteadas do banco do seu cargo."]] as [NomeIconeSolido, string, string][])
       : []),
-    ["tela", "Videoaulas", "Videoaulas em cursos selecionados da plataforma, direto na sua área, para ver o conteúdo explicado."],
+    ["video", "Videoaulas", "Videoaulas em cursos selecionados da plataforma, direto na sua área, para ver o conteúdo explicado."],
     ["calendario", "Cronograma de estudos", "O edital transformado em checklist, com o percentual concluído em cada matéria."],
     ["raio", "Acesso imediato", "PIX confirmado, download liberado na sua área. Sem espera e sem assinatura."],
   ];
@@ -168,9 +153,7 @@ export function VendaApostila({ d }: { d: DadosVenda }) {
             {cartoes.map(([icone, t, x], i) => (
               <Reveal key={t} delay={(i % 3) * 90}>
                 <div className="h-full border border-[#D7DEE6] bg-white p-5 transition-transform duration-200 hover:-translate-y-1 hover:shadow-[0_18px_40px_-24px_rgba(11,42,74,0.4)] sm:p-6">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand text-accent">
-                    <Icone nome={icone} />
-                  </span>
+                  <IconeSolido nome={icone} atraso={i * 300} />
                   <h3 className="mt-4 font-display text-[1.08rem] font-bold text-[#14213A]">{t}</h3>
                   <p className="mt-1.5 text-[14.5px] leading-relaxed text-[#516278]">{x}</p>
                 </div>
