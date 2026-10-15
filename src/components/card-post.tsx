@@ -10,7 +10,7 @@ export function CardPost({ post }: { post: PostVitrine }) {
   return (
     <Link
       href={`/noticias/${post.slug}`}
-      className="group flex h-full flex-col overflow-hidden border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.35)]"
+      className="group flex h-full flex-col overflow-hidden border border-[#D7DEE6] bg-white transition-all duration-200 hover:-translate-y-1 hover:border-accent hover:shadow-[0_24px_50px_-24px_rgba(11,42,74,0.45)]"
     >
       <div className="relative aspect-[16/9] w-full overflow-hidden bg-gradient-to-b from-[#E6EEF7] to-[#F6F9FC]">
         {(() => {
