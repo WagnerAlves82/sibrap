@@ -1,131 +1,148 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ESFERAS, REGIOES, type PostVitrine } from "@/lib/blog";
+import { ESFERAS, type PostVitrine } from "@/lib/blog";
 import { CardPost } from "@/components/card-post";
 import { PromoApostila } from "@/components/promo-apostila";
 import type { ApostilaVitrine } from "@/lib/apostilas";
 
-// Vitrine do blog com filtro por região e estado, no mesmo espírito da
+const UFS = [
+  "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB",
+  "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO",
+];
+
+// Concurso público (vagas efetivas) ou processo seletivo (contratação temporária),
+// a partir do tipo informado no post ou, na falta dele, do título.
+function tipoDoCertame(p: PostVitrine): "concurso" | "processo" | null {
+  const t = `${p.certame_tipo ?? ""} ${p.titulo}`.toLowerCase();
+  if (/seletivo/.test(t)) return "processo";
+  if (/concurso/.test(t)) return "concurso";
+  return null;
+}
+
+// Vitrine das notícias com filtro por tipo, âmbito e estado, no mesmo espírito da
 // vitrine de apostilas: a lista já vem completa do servidor, filtrar no
 // navegador evita ida e volta.
 export function VitrinePosts({
   posts,
   apostilas = [],
   comBusca = false,
-  regiaoInicial = "",
   ufInicial = "",
 }: {
   posts: PostVitrine[];
   apostilas?: ApostilaVitrine[];
   comBusca?: boolean;
-  regiaoInicial?: string;
   ufInicial?: string;
 }) {
-  const [regiao, setRegiao] = useState(regiaoInicial);
   const [uf, setUf] = useState(ufInicial);
   const [federal, setFederal] = useState(false);
   const [busca, setBusca] = useState("");
   const [esfera, setEsfera] = useState("");
+  const [tipo, setTipo] = useState<"" | "concurso" | "processo">("");
 
-  // Estados em ordem do concurso/post mais atual (a lista já vem do mais
-  // novo pro mais antigo), com a contagem de posts de cada um.
-  const ufsRecentes = useMemo(() => {
-    const vistos = new Map<string, number>();
-    for (const p of posts) if (p.uf) vistos.set(p.uf, (vistos.get(p.uf) ?? 0) + 1);
-    return Array.from(vistos.entries());
-  }, [posts]);
+  const ufsComPosts = useMemo(() => new Set(posts.map((p) => p.uf).filter(Boolean)), [posts]);
 
   const filtrados = useMemo(() => {
     const termo = busca.trim().toLowerCase();
     return posts.filter(
       (p) =>
-        (!federal ? (!regiao || p.regiao === regiao) && (!uf || p.uf === uf) : p.esfera === "nacional") &&
+        (!federal ? !uf || p.uf === uf : p.esfera === "nacional") &&
         (!esfera || p.esfera === esfera) &&
+        (!tipo || tipoDoCertame(p) === tipo) &&
         (!termo || `${p.titulo} ${p.resumo ?? ""} ${p.categoria}`.toLowerCase().includes(termo))
     );
-  }, [posts, regiao, uf, federal, esfera, busca]);
+  }, [posts, uf, federal, esfera, tipo, busca]);
 
-  const chip = (ativo: boolean) =>
-    `rounded-full border px-3.5 py-1.5 text-[13px] font-semibold transition-colors ${
+  const chipUf = (ativo: boolean, vazio: boolean) =>
+    `min-w-[2.6rem] rounded-md border px-2 py-1.5 text-center text-[12.5px] font-bold transition-colors ${
       ativo
         ? "border-brand bg-brand text-white"
-        : "border-[#D7DEE6] bg-white text-[#516278] hover:border-brand hover:text-brand"
+        : vazio
+          ? "border-[#E6EBF1] bg-white text-[#A5B1C0] hover:border-[#D7DEE6]"
+          : "border-[#D7DEE6] bg-white text-[#33465E] hover:border-brand hover:text-brand"
     }`;
+
+  const segmento = (ativo: boolean) =>
+    `px-4 py-2 text-[13.5px] font-semibold transition-colors ${
+      ativo ? "bg-brand text-white" : "bg-white text-[#33465E] hover:bg-[#F1F5F9]"
+    }`;
+
+  const dica =
+    tipo === "concurso"
+      ? "Vagas para cargos efetivos: a pessoa aprovada é nomeada no quadro permanente."
+      : tipo === "processo"
+        ? "Contratação temporária, por prazo determinado."
+        : "Concurso público: cargo efetivo. Processo seletivo: contratação temporária.";
 
   return (
     <div>
-      <div className="mb-6 flex flex-col gap-3">
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Filtrar por região">
-          <button
-            type="button"
-            onClick={() => { setRegiao(""); setUf(""); setFederal(false); }}
-            className={chip(!regiao && !federal)}
-          >
-            Todas as regiões
-          </button>
-          {REGIOES.map((r) => (
-            <button
-              key={r}
-              type="button"
-              onClick={() => { setRegiao(r); setUf(""); setFederal(false); }}
-              className={chip(!federal && regiao === r)}
-              aria-pressed={!federal && regiao === r}
-            >
-              {r}
+      <div className="mb-6 flex flex-col gap-4">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <div className="inline-flex overflow-hidden rounded-md border border-[#D7DEE6]" role="group" aria-label="Tipo de certame">
+            <button type="button" onClick={() => setTipo("")} className={segmento(tipo === "")} aria-pressed={tipo === ""}>
+              Todos
             </button>
-          ))}
-          <button
-            type="button"
-            onClick={() => { setFederal(true); setRegiao(""); setUf(""); }}
-            className={chip(federal)}
-            aria-pressed={federal}
-          >
-            Federal
-          </button>
-        </div>
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Filtrar por tipo de concurso">
-          <button type="button" onClick={() => setEsfera("")} className={chip(!esfera)} aria-pressed={!esfera}>
-            Todos os tipos
-          </button>
-          {ESFERAS.map((e) => (
-            <button
-              key={e.valor}
-              type="button"
-              onClick={() => setEsfera(esfera === e.valor ? "" : e.valor)}
-              className={chip(esfera === e.valor)}
-              aria-pressed={esfera === e.valor}
-            >
-              {e.rotulo}
+            <button type="button" onClick={() => setTipo(tipo === "concurso" ? "" : "concurso")} className={`${segmento(tipo === "concurso")} border-l border-[#D7DEE6]`} aria-pressed={tipo === "concurso"}>
+              Concurso público
             </button>
-          ))}
-        </div>
-        {ufsRecentes.length > 0 && (
-          <div className="flex flex-wrap gap-2" role="group" aria-label="Filtrar por estado">
-            {ufsRecentes.map(([u, n]) => (
-              <button
-                key={u}
-                type="button"
-                onClick={() => { setUf(uf === u ? "" : u); setRegiao(""); setFederal(false); }}
-                className={chip(!federal && uf === u)}
-                aria-pressed={!federal && uf === u}
-              >
-                {u} <span className="opacity-60">({n})</span>
-              </button>
-            ))}
+            <button type="button" onClick={() => setTipo(tipo === "processo" ? "" : "processo")} className={`${segmento(tipo === "processo")} border-l border-[#D7DEE6]`} aria-pressed={tipo === "processo"}>
+              Processo seletivo
+            </button>
           </div>
-        )}
-        <div className="flex flex-wrap items-center gap-2">
+          <p className="min-w-0 flex-1 text-[12.5px] leading-snug text-[#516278]">{dica}</p>
+          <select
+            value={esfera}
+            onChange={(e) => setEsfera(e.target.value)}
+            aria-label="Filtrar por âmbito"
+            className="rounded-md border border-[#D7DEE6] bg-white px-3 py-2 text-[13.5px] font-semibold text-[#33465E]"
+          >
+            <option value="">Todos os âmbitos</option>
+            {ESFERAS.map((e) => (
+              <option key={e.valor} value={e.valor}>
+                {e.rotulo}
+              </option>
+            ))}
+          </select>
           {comBusca && (
             <input
               type="search"
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
-              placeholder="Buscar notícia por título ou assunto"
+              placeholder="Buscar notícia"
               aria-label="Buscar notícia"
-              className="w-full min-w-0 rounded-lg border border-[#D7DEE6] bg-white px-3 py-2 text-[13.5px] text-[#14213A] sm:w-64"
+              className="w-full min-w-0 rounded-md border border-[#D7DEE6] bg-white px-3 py-2 text-[13.5px] text-[#14213A] sm:w-48"
             />
           )}
+        </div>
+
+        <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filtrar por estado">
+          <button
+            type="button"
+            onClick={() => { setUf(""); setFederal(false); }}
+            className={chipUf(!uf && !federal, false)}
+            aria-pressed={!uf && !federal}
+          >
+            Brasil
+          </button>
+          <button
+            type="button"
+            onClick={() => { setFederal(!federal); setUf(""); }}
+            className={chipUf(federal, false)}
+            aria-pressed={federal}
+          >
+            Federal
+          </button>
+          {UFS.map((u) => (
+            <button
+              key={u}
+              type="button"
+              onClick={() => { setUf(uf === u ? "" : u); setFederal(false); }}
+              className={chipUf(!federal && uf === u, !ufsComPosts.has(u))}
+              aria-pressed={!federal && uf === u}
+            >
+              {u}
+            </button>
+          ))}
         </div>
       </div>
 
