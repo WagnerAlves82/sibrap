@@ -84,3 +84,16 @@ body {
 
 html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* Botão de compra que "pulsa" para chamar a atenção. */
+@keyframes pulso {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 60%, transparent); }
+  50% { transform: scale(1.045); box-shadow: 0 0 0 14px color-mix(in srgb, var(--color-accent) 0%, transparent); }
+}
+.btn-pulso { animation: pulso 1.7s ease-in-out infinite; }
+.btn-pulso:hover { animation-play-state: paused; filter: brightness(1.06); }
+/* Brilho que atravessa o botão de tempos em tempos. */
+@keyframes brilho { 0% { transform: translateX(-120%) skewX(-20deg); } 55%, 100% { transform: translateX(260%) skewX(-20deg); } }
+.brilho { position: relative; overflow: hidden; }
+.brilho::after { content: ""; position: absolute; inset: 0 auto 0 0; width: 40%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent); animation: brilho 3.2s ease-in-out infinite; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .btn-pulso, .brilho::after { animation: none; } }

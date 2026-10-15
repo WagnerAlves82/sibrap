@@ -16,6 +16,13 @@ import { PrecoApostila } from "@/components/preco-apostila";
 import { VendaApostila, perguntasVenda, type DadosVenda } from "@/components/venda-apostila";
 import { formatarPreco } from "@/lib/apostilas";
 
+function resumir(texto: string, limite: number): string {
+  if (texto.length <= limite) return texto;
+  const corte = texto.slice(0, limite);
+  const fim = Math.max(corte.lastIndexOf(", "), corte.lastIndexOf(": "), corte.lastIndexOf(" "));
+  return `${corte.slice(0, fim > limite * 0.6 ? fim : limite).replace(/[,:;]$/, "")}…`;
+}
+
 type Props = { params: Promise<{ slug: string }> };
 
 async function carregar(slug: string) {
@@ -144,10 +151,12 @@ export default async function ApostilaPage({ params }: Props) {
     questoes: apostila.questoes ?? null,
     simulados: apostila.simulados ?? null,
     incluiSimulado: apostila.inclui_simulado,
+    imagem: galeria[0]?.url ?? null,
+    precoOriginalCentavos: apostila.preco_original_centavos ?? null,
     precoCentavos: apostila.preco_centavos,
     jaTem,
     ctaHref: jaTem ? `${areaHref}/baixar` : ctaHref,
-    ctaRotulo: jaTem ? "Baixar minha apostila" : "Quero minha apostila agora",
+    ctaRotulo: jaTem ? "Baixar minha apostila" : "Quero minha aprovação",
   };
   const faq = {
     "@context": "https://schema.org",
@@ -201,7 +210,7 @@ export default async function ApostilaPage({ params }: Props) {
             </h1>
             {apostila.descricao && (
               <p className="mt-3 max-w-[60ch] text-[16px] leading-relaxed text-[#516278]">
-                {apostila.descricao}
+                {resumir(apostila.descricao, 190)}
               </p>
             )}
 
@@ -229,7 +238,37 @@ export default async function ApostilaPage({ params }: Props) {
               </p>
             )}
 
-            <dl className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-[10px] border border-[#D7DEE6] bg-[#D7DEE6]">
+            <div className="mt-5 rounded-xl border-2 border-accent bg-white p-5 shadow-[0_24px_50px_-28px_rgba(11,42,74,0.45)]">
+              <div className="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <PrecoApostila
+                    centavos={apostila.preco_centavos}
+                    original={apostila.preco_original_centavos}
+                    tamanho="grande"
+                  />
+                  <p className="mt-1 text-[13px] text-[#516278]">Pagamento único · sem mensalidade</p>
+                </div>
+                <Link
+                  href={jaTem ? `${areaHref}/baixar` : ctaHref}
+                  prefetch={false}
+                  className="btn-pulso brilho inline-flex items-center gap-2 rounded-lg bg-accent px-7 py-4 text-[16px] font-extrabold text-accent-ink"
+                >
+                  {jaTem ? "Baixar minha apostila" : "Quero minha aprovação"} <span aria-hidden>→</span>
+                </Link>
+              </div>
+              <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[12.5px] font-semibold text-[#33465E]">
+                <span>⚡ Acesso imediato no PIX</span>
+                <span>✓ 7 dias de garantia</span>
+                <span>✓ Simulado online incluído</span>
+              </p>
+              {!user && (
+                <p className="mt-2 text-[12.5px] text-[#516278]">
+                  Você cria a conta em menos de um minuto e paga na sequência.
+                </p>
+              )}
+            </div>
+
+            <dl className="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-[10px] border border-[#D7DEE6] bg-[#D7DEE6]">
               {fatos.map(([rotulo, valor]) => (
                 <div key={rotulo} className="bg-white px-4 py-3">
                   <dt className="text-[11.5px] uppercase tracking-wide text-[#516278]">{rotulo}</dt>
@@ -252,31 +291,6 @@ export default async function ApostilaPage({ params }: Props) {
               ))}
             </ul>
 
-            <div className="mt-5 rounded-xl border border-[#D7DEE6] bg-white p-5">
-              <div className="flex flex-wrap items-end justify-between gap-4">
-                <div>
-                  <PrecoApostila
-                    centavos={apostila.preco_centavos}
-                    original={apostila.preco_original_centavos}
-                    tamanho="grande"
-                  />
-                  <p className="mt-1 text-[13px] text-[#516278]">Pagamento único · sem mensalidade</p>
-                </div>
-                <Link
-                  href={jaTem ? `${areaHref}/baixar` : ctaHref}
-                  prefetch={false}
-                  className="inline-flex items-center gap-2 rounded-lg bg-accent px-7 py-3.5 text-[15px] font-bold text-accent-ink shadow-[0_20px_45px_-20px_rgba(11,42,74,0.35)] transition-colors hover:brightness-105"
-                >
-                  {jaTem ? "Baixar minha apostila" : "Comprar agora"} <span aria-hidden>→</span>
-                </Link>
-              </div>
-              {!user && (
-                <p className="mt-3 text-[12.5px] text-[#516278]">
-                  Você cria a conta em menos de um minuto e paga na sequência.
-                </p>
-              )}
-            </div>
-
             <p className="mt-5 max-w-[62ch] text-[12.5px] leading-relaxed text-[#516278]">
               Material de estudo independente, sem vínculo com a banca ou com a
               prefeitura. O edital oficial sempre prevalece sobre qualquer
@@ -292,8 +306,8 @@ export default async function ApostilaPage({ params }: Props) {
             <p className="font-display text-[1.15rem] font-extrabold leading-none text-[#14213A]">{formatarPreco(apostila.preco_centavos)}</p>
             <p className="mt-0.5 text-[11.5px] text-[#516278]">PIX · acesso imediato</p>
           </div>
-          <Link href={ctaHref} prefetch={false} className="rounded-lg bg-accent px-5 py-3 text-[14.5px] font-bold text-accent-ink">
-            Comprar agora →
+          <Link href={ctaHref} prefetch={false} className="btn-pulso rounded-lg bg-accent px-5 py-3 text-[14.5px] font-extrabold text-accent-ink">
+            Quero minha aprovação →
           </Link>
         </div>
       )}
