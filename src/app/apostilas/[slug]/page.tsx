@@ -173,7 +173,7 @@ export default async function ApostilaPage({ params }: Props) {
       <CabecalhoSite logado={!!user} next={areaHref} />
 
       <main className="flex-1 bg-[#F6F8FB] py-10 sm:py-14">
-        <div className="mx-auto grid max-w-[1080px] gap-8 px-4 sm:px-6 md:grid-cols-[minmax(0,425px)_minmax(0,1fr)] md:gap-12">
+        <div className="mx-auto grid max-w-[1080px] gap-8 px-4 sm:px-6 md:grid-cols-2 md:gap-10 lg:gap-14">
           <div className="relative mx-auto w-full max-w-[375px] md:max-w-none">
             <GaleriaApostila imagens={galeria} />
             <div
@@ -265,31 +265,36 @@ export default async function ApostilaPage({ params }: Props) {
                 </p>
               )}
             </div>
+          </div>
 
-            <dl className="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-[10px] border border-[#D7DEE6] bg-[#D7DEE6]">
-              {fatos.map(([rotulo, valor]) => (
-                <div key={rotulo} className="bg-white px-4 py-3">
-                  <dt className="text-[11.5px] uppercase tracking-wide text-[#516278]">{rotulo}</dt>
-                  <dd className="font-data text-[14px] font-semibold text-[#14213A]">{valor}</dd>
-                </div>
-              ))}
-            </dl>
+          <div className="grid gap-8 md:col-span-2 md:grid-cols-2 md:gap-10 lg:gap-14">
+            <div>
+              <h2 className="font-display text-xl font-extrabold text-[#14213A]">Dados do concurso</h2>
+              <dl className="mt-3 grid grid-cols-2 gap-px overflow-hidden rounded-[10px] border border-[#D7DEE6] bg-[#D7DEE6]">
+                {fatos.map(([rotulo, valor]) => (
+                  <div key={rotulo} className="bg-white px-4 py-3">
+                    <dt className="text-[11.5px] uppercase tracking-wide text-[#516278]">{rotulo}</dt>
+                    <dd className="font-data text-[14px] font-semibold text-[#14213A]">{valor}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
 
-            <h2 className="mt-8 font-display text-xl font-extrabold text-[#14213A]">
-              O que vem na apostila
-            </h2>
-            <ul className="mt-3 flex flex-col gap-2 text-[15px] text-[#33465E]">
-              {inclui.map((i) => (
-                <li key={i} className="flex gap-2">
-                  <span className="mt-0.5 text-accent-2" aria-hidden>
-                    ✓
-                  </span>
-                  {i}
-                </li>
-              ))}
-            </ul>
+            <div>
+              <h2 className="font-display text-xl font-extrabold text-[#14213A]">O que vem na apostila</h2>
+              <ul className="mt-3 flex flex-col gap-2 text-[15px] text-[#33465E]">
+                {inclui.map((i) => (
+                  <li key={i} className="flex gap-2">
+                    <span className="mt-0.5 text-accent-2" aria-hidden>
+                      ✓
+                    </span>
+                    {i}
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-            <p className="mt-5 max-w-[62ch] text-[12.5px] leading-relaxed text-[#516278]">
+            <p className="max-w-[80ch] text-[12.5px] leading-relaxed text-[#516278] md:col-span-2">
               Material de estudo independente, sem vínculo com a banca ou com a
               prefeitura. O edital oficial sempre prevalece sobre qualquer
               conteúdo da apostila. Vendido por {EMISSOR.nome}, CNPJ {EMISSOR.cnpj}.
