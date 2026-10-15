@@ -869,18 +869,24 @@ export type Database = {
           criado_em: string
           email: string
           id: string
+          origem: Json | null
+          pagina: string | null
         }
         Insert: {
           concurso_id?: string | null
           criado_em?: string
           email: string
           id?: string
+          origem?: Json | null
+          pagina?: string | null
         }
         Update: {
           concurso_id?: string | null
           criado_em?: string
           email?: string
           id?: string
+          origem?: Json | null
+          pagina?: string | null
         }
         Relationships: [
           {
