@@ -13,6 +13,8 @@ import {
 } from "@/lib/apostilas";
 import { GaleriaApostila, type ImagemGaleria } from "@/components/galeria-apostila";
 import { PrecoApostila } from "@/components/preco-apostila";
+import { VendaApostila, perguntasVenda, type DadosVenda } from "@/components/venda-apostila";
+import { formatarPreco } from "@/lib/apostilas";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -21,13 +23,13 @@ async function carregar(slug: string) {
   if (!slugValido(slug)) return { supabase, apostila: null };
   const { data } = await supabase
     .from("apostilas")
-    .select("*, produtos(preco_centavos)")
+    .select("*, produtos(preco_centavos, inclui_simulado)")
     .eq("slug", slug)
     .eq("status", "publicada")
     .maybeSingle();
   if (!data?.produtos) return { supabase, apostila: null };
   const { produtos, ...resto } = data;
-  return { supabase, apostila: { ...resto, preco_centavos: produtos.preco_centavos } };
+  return { supabase, apostila: { ...resto, preco_centavos: produtos.preco_centavos, inclui_simulado: !!produtos.inclui_simulado } };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -131,9 +133,36 @@ export default async function ApostilaPage({ params }: Props) {
     },
   };
 
+  const venda: DadosVenda = {
+    cargo: apostila.cargo,
+    orgao: apostila.orgao,
+    cidade: apostila.cidade ?? null,
+    banca: apostila.banca ?? null,
+    prova,
+    dias,
+    paginas: apostila.paginas ?? null,
+    questoes: apostila.questoes ?? null,
+    simulados: apostila.simulados ?? null,
+    incluiSimulado: apostila.inclui_simulado,
+    precoCentavos: apostila.preco_centavos,
+    jaTem,
+    ctaHref: jaTem ? `${areaHref}/baixar` : ctaHref,
+    ctaRotulo: jaTem ? "Baixar minha apostila" : "Quero minha apostila agora",
+  };
+  const faq = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: perguntasVenda(venda).map(([q, a]) => ({
+      "@type": "Question",
+      name: q,
+      acceptedAnswer: { "@type": "Answer", text: a },
+    })),
+  };
+
   return (
-    <div className="flex min-h-screen flex-col bg-white font-body">
+    <div className="flex min-h-screen flex-col bg-white pb-20 font-body md:pb-0">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }} />
       <CabecalhoSite logado={!!user} next={areaHref} />
 
       <main className="flex-1 bg-[#F6F8FB] py-10 sm:py-14">
@@ -256,6 +285,18 @@ export default async function ApostilaPage({ params }: Props) {
           </div>
         </div>
       </main>
+      <VendaApostila d={venda} />
+      {!jaTem && (
+        <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-[#D7DEE6] bg-white px-4 py-3 shadow-[0_-8px_24px_-12px_rgba(11,42,74,0.25)] md:hidden">
+          <div>
+            <p className="font-display text-[1.15rem] font-extrabold leading-none text-[#14213A]">{formatarPreco(apostila.preco_centavos)}</p>
+            <p className="mt-0.5 text-[11.5px] text-[#516278]">PIX · acesso imediato</p>
+          </div>
+          <Link href={ctaHref} prefetch={false} className="rounded-lg bg-accent px-5 py-3 text-[14.5px] font-bold text-accent-ink">
+            Comprar agora →
+          </Link>
+        </div>
+      )}
       <RodapeSite />
     </div>
   );
