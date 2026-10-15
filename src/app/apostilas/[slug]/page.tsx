@@ -169,7 +169,7 @@ export default async function ApostilaPage({ params }: Props) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-white pb-20 font-body md:pb-0">
+    <div className="flex min-h-screen flex-col bg-white pb-14 font-body md:pb-0">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }} />
       <CabecalhoSite logado={!!user} next={areaHref} />
@@ -301,14 +301,16 @@ export default async function ApostilaPage({ params }: Props) {
       </main>
       <VendaApostila d={venda} />
       {!jaTem && (
-        <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-[#D7DEE6] bg-white px-4 py-3 shadow-[0_-8px_24px_-12px_rgba(11,42,74,0.25)] md:hidden">
-          <div>
-            <p className="font-display text-[1.15rem] font-extrabold leading-none text-[#14213A]">{formatarPreco(apostila.preco_centavos)}</p>
-            <p className="mt-0.5 text-[11.5px] text-[#516278]">PIX · acesso imediato</p>
+        <div className="fixed inset-x-0 bottom-0 z-40 overflow-hidden border-t border-[#D7DEE6] bg-white/95 px-3 py-2 backdrop-blur md:hidden">
+          <div className="mx-auto flex max-w-[440px] items-center justify-between gap-2">
+            <div className="min-w-0">
+              <p className="font-display text-[1rem] font-extrabold leading-none text-[#14213A]">{formatarPreco(apostila.preco_centavos)}</p>
+              <p className="mt-0.5 truncate text-[10.5px] text-[#516278]">PIX · acesso imediato</p>
+            </div>
+            <Link href={ctaHref} prefetch={false} className="btn-pulso-suave shrink-0 whitespace-nowrap rounded-md bg-accent px-3.5 py-2 text-[12.5px] font-extrabold text-accent-ink">
+              Quero minha aprovação →
+            </Link>
           </div>
-          <Link href={ctaHref} prefetch={false} className="btn-pulso rounded-lg bg-accent px-5 py-3 text-[14.5px] font-extrabold text-accent-ink">
-            Quero minha aprovação →
-          </Link>
         </div>
       )}
       <RodapeSite />
