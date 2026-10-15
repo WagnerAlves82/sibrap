@@ -88,23 +88,24 @@ export function VendaApostila({ d }: { d: DadosVenda }) {
   const numeros: [string, string][] = [
     [d.paginas ? String(d.paginas) : "PDF", d.paginas ? "páginas de conteúdo" : "completo"],
     [d.questoes ? String(d.questoes) : "+", "questões comentadas"],
-    [d.simulados ? String(d.simulados) : "✓", d.simulados === 1 ? "simulado final" : "simulados finais"],
+    ["1.800+", "questões no banco de provas"],
     ["7 dias", "de garantia"],
   ];
 
   const cartoes: [IconeNome, string, string][] = [
     ["livro", d.paginas ? `${d.paginas} páginas em PDF` : "Apostila completa em PDF", "Conteúdo na ordem do edital, com dicas, exemplos resolvidos e resumo de cada capítulo."],
     ["questoes", d.questoes ? `${d.questoes} questões comentadas` : "Questões comentadas", "Exercícios no estilo da banca. Cada resposta vem explicada, inclusive por que as outras alternativas estão erradas."],
-    ["prova", d.simulados ? `${d.simulados} simulado${d.simulados === 1 ? "" : "s"} final${d.simulados === 1 ? "" : "is"}` : "Simulados finais", "Prova completa no formato do concurso, para você treinar tempo e resistência antes do grande dia."],
+    ["questoes", "Banco de provas com mais de 1.800 questões", "Questões de provas reais e no estilo das bancas, reunidas na plataforma para você treinar sem fim."],
     ...(d.incluiSimulado
       ? ([["tela", "Simulado online", "Pratique no site, pelo celular ou computador, com questões sorteadas do banco do seu cargo."]] as [IconeNome, string, string][])
       : []),
+    ["tela", "Videoaulas", "Videoaulas em cursos selecionados da plataforma, direto na sua área, para ver o conteúdo explicado."],
     ["calendario", "Cronograma de estudos", "O edital transformado em checklist, com o percentual concluído em cada matéria."],
     ["raio", "Acesso imediato", "PIX confirmado, download liberado na sua área. Sem espera e sem assinatura."],
   ];
 
   return (
-    <div className="bg-white">
+    <div className="overflow-x-clip bg-white">
       {/* Faixa de números */}
       <section className="bg-brand-deep py-8 text-white sm:py-10">
         <div className="mx-auto grid max-w-[1080px] grid-cols-2 gap-y-6 px-4 sm:px-6 md:grid-cols-4">
