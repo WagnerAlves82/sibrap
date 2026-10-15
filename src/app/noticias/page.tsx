@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
-import { ConcursoOuProcesso } from "@/components/concurso-ou-processo";
 import { VitrinePosts } from "@/components/vitrine-posts";
 import { listarPostsPublicados } from "@/lib/blog";
 import { listarApostilasPublicadas } from "@/lib/apostilas";
@@ -34,7 +33,6 @@ export default async function NoticiasPage() {
             Editais novos, prazos de inscrição e vagas abertas. Escolha o seu
             estado pra ver as oportunidades mais atuais primeiro.
           </p>
-          <ConcursoOuProcesso />
           <VitrinePosts posts={posts} apostilas={apostilas} comBusca />
         </div>
       </main>

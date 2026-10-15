@@ -6,7 +6,6 @@ import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { CarrosselHome, type SlideComCta } from "@/components/carrossel-home";
 import { VitrineApostilas } from "@/components/vitrine-apostilas";
 import { VitrinePosts } from "@/components/vitrine-posts";
-import { ConcursoOuProcesso } from "@/components/concurso-ou-processo";
 import { SeloAbed } from "@/components/selo-abed";
 import { Reveal } from "@/components/reveal";
 import { diasAte, formatarDataIso, formatarPreco, listarApostilasPublicadas } from "@/lib/apostilas";
@@ -122,8 +121,7 @@ export default async function Home() {
               </p>
             </Reveal>
 
-            <ConcursoOuProcesso />
-
+  
             <VitrinePosts posts={posts} />
 
             <div className="mt-8 text-center">
