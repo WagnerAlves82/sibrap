@@ -114,3 +114,14 @@ html { scroll-behavior: smooth; }
 }
 .icone-balanca { animation: icone-balanca 3.2s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .icone-balanca { animation: none; } }
+
+/* Pulinhos dos ícones: dois saltos curtos e uma pausa. */
+@keyframes icone-pula {
+  0%, 40%, 100% { transform: translateY(0) scale(1); }
+  10% { transform: translateY(-10px) scale(1.06); }
+  20% { transform: translateY(0) scale(0.97); }
+  28% { transform: translateY(-5px) scale(1.03); }
+  34% { transform: translateY(0) scale(1); }
+}
+.icone-pula { animation: icone-pula 2.8s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .icone-pula { animation: none; } }

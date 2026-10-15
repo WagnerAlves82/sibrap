@@ -1,5 +1,5 @@
 // Ícones sólidos (preenchidos) para os blocos de venda e do simulado online.
-// Círculo azul da marca com o ícone em dourado, com um leve balanço para chamar a atenção.
+// Só o ícone, em dourado, dando pequenos pulinhos para chamar a atenção.
 const CAMINHOS = {
   questoes: "M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z",
   salvo: "M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z",
@@ -28,12 +28,10 @@ export function IconeSolido({
   return (
     <span
       aria-hidden
-      className={`icone-balanca inline-flex items-center justify-center rounded-full bg-brand text-accent shadow-[0_10px_24px_-10px_rgba(11,42,74,0.7)] ${
-        grande ? "h-[72px] w-[72px]" : "h-12 w-12"
-      }`}
+      className={`icone-pula inline-flex text-accent drop-shadow-[0_3px_3px_rgba(120,80,0,0.35)] ${grande ? "h-14 w-14" : "h-10 w-10"}`}
       style={{ animationDelay: `${atraso}ms` }}
     >
-      <svg viewBox="0 0 24 24" fill="currentColor" className={grande ? "h-9 w-9" : "h-6 w-6"}>
+      <svg viewBox="0 0 24 24" fill="currentColor" className="h-full w-full">
         <path d={CAMINHOS[nome]} />
       </svg>
     </span>
