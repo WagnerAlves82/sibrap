@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Alert } from "@/components/alert";
-import { MenuAjuda } from "@/components/menu-ajuda";
+import { MenuAjuda, type PedidoDica } from "@/components/menu-ajuda";
 import {
   iniciarSimuladoAction,
   abandonarSimuladoAction,
@@ -13,6 +13,8 @@ import {
   finalizarSimuladoAction,
   desempenhoSimuladoAction,
   glossarioAction,
+  saldoCreditosAction,
+  usarDicaAction,
   type QuestaoSimulado,
   type ResultadoSimulado,
   type DesempenhoDisciplina,
@@ -61,6 +63,8 @@ export function SimuladoApostilaApp({
   const [avisoSalvar, setAvisoSalvar] = useState(false);
   const [irPara, setIrPara] = useState("");
   const [termosGlossario, setTermosGlossario] = useState<TermoGlossario[]>([]);
+  const [saldo, setSaldo] = useState<number | null>(null);
+  const [dicas, setDicas] = useState<Record<string, string>>({});
 
   // menu de ajuda (dica/glossário/capítulo): carrega uma vez, independente de
   // a pessoa começar do zero ou retomar um simulado em andamento
@@ -69,6 +73,25 @@ export function SimuladoApostilaApp({
       if (!("erro" in g)) setTermosGlossario(g.termos);
     });
   }, []);
+
+  // créditos de ajuda (na 1ª vez entram os 100 de boas-vindas)
+  useEffect(() => {
+    saldoCreditosAction(produtoId).then((r) => {
+      if ("saldo" in r) setSaldo(r.saldo);
+    });
+  }, [produtoId]);
+
+  async function usarDica(questaoId: string): Promise<PedidoDica> {
+    const r = await usarDicaAction(produtoId, questaoId);
+    if ("erro" in r) return { ok: false, motivo: "erro" };
+    const { resultado } = r;
+    setSaldo(resultado.saldo);
+    if (resultado.ok && resultado.dica) {
+      setDicas((d) => ({ ...d, [questaoId]: resultado.dica as string }));
+      return { ok: true };
+    }
+    return { ok: false, motivo: resultado.motivo };
+  }
 
   // reabre na questão em que a pessoa estava (lida só no navegador, depois de montar)
   useEffect(() => {
@@ -182,6 +205,9 @@ export function SimuladoApostilaApp({
       return;
     }
     setResultado(r.resultado);
+    saldoCreditosAction(produtoId).then((c) => {
+      if ("saldo" in c) setSaldo(c.saldo);
+    });
 
     const d = await desempenhoSimuladoAction(tentativaId);
     if (!("erro" in d)) {
@@ -293,11 +319,19 @@ export function SimuladoApostilaApp({
 
     return (
       <div className="pb-20 md:pb-0">
-        <MenuAjuda key={atual.questao_id} dica={atual.dica} termosGlossario={termosGlossario} />
+        <MenuAjuda
+          key={atual.questao_id}
+          temDica={atual.dica !== null}
+          dicaTexto={dicas[atual.questao_id] ?? null}
+          saldo={saldo}
+          onUsarDica={() => usarDica(atual.questao_id)}
+          termosGlossario={termosGlossario}
+        />
         <Cartao>
         <div className="mb-1 flex items-center justify-between font-data text-[11.5px] text-[#516278]">
           <span>{atual.disciplina_nome}</span>
           <span>
+            {saldo !== null && <span className="mr-3 text-accent-2">{saldo} créditos de ajuda</span>}
             Questão {indice + 1} de {questoes.length}
           </span>
         </div>

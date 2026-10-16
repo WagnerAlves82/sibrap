@@ -14,11 +14,24 @@ type ItemAjuda = "dica" | "glossario" | "capitulo";
 // O pai deve renderizar com `key={questao_id}` — assim o React remonta o
 // componente a cada troca de questão, e o painel fecha sozinho em vez de
 // ficar aberto com a dica da questão anterior.
+export const CUSTO_DICA = 5;
+
+export type PedidoDica = { ok: true } | { ok: false; motivo: string };
+
 export function MenuAjuda({
-  dica,
+  temDica,
+  dicaTexto,
+  saldo,
+  onUsarDica,
   termosGlossario,
 }: {
-  dica?: string | null;
+  /** a questão tem dica (o texto só sai depois de a pessoa pedir) */
+  temDica: boolean;
+  /** texto da dica, quando já foi aberta */
+  dicaTexto?: string | null;
+  /** créditos de ajuda (null enquanto carrega) */
+  saldo: number | null;
+  onUsarDica: () => Promise<PedidoDica>;
   termosGlossario?: TermoGlossario[];
 }) {
   const [aberto, setAberto] = useState<ItemAjuda | null>(null);
@@ -26,7 +39,7 @@ export function MenuAjuda({
   const temGlossario = !!termosGlossario && termosGlossario.length > 0;
 
   const itens: { id: ItemAjuda; rotulo: string; disponivel: boolean; icone: React.ReactNode }[] = [
-    { id: "dica", rotulo: "Dica", disponivel: !!dica, icone: <IconeDica /> },
+    { id: "dica", rotulo: "Dica", disponivel: temDica, icone: <IconeDica /> },
     { id: "glossario", rotulo: "Glossário", disponivel: temGlossario, icone: <IconeGlossario /> },
     { id: "capitulo", rotulo: "Capítulo", disponivel: false, icone: <IconeCapitulo /> },
   ];
@@ -60,7 +73,10 @@ export function MenuAjuda({
       {aberto && (
         <PainelAjuda
           tipo={aberto}
-          dica={dica}
+          temDica={temDica}
+          dicaTexto={dicaTexto ?? null}
+          saldo={saldo}
+          onUsarDica={onUsarDica}
           termos={termosGlossario}
           onFechar={() => setAberto(null)}
         />
@@ -115,12 +131,12 @@ function BotaoBarra({
     <button
       type="button"
       onClick={onClick}
-      className={`flex flex-1 flex-col items-center gap-1 py-2.5 text-[11.5px] font-bold transition-colors ${
+      className={`flex flex-1 flex-col items-center gap-0.5 py-1.5 text-[10.5px] font-bold transition-colors ${
         ativo ? "text-accent-2" : item.disponivel ? "text-brand" : "text-[#A7B2C0]"
       }`}
     >
       <span
-        className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors ${
+        className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${
           ativo ? "bg-accent-2/15" : item.disponivel ? "bg-brand/10" : ""
         }`}
       >
@@ -133,12 +149,18 @@ function BotaoBarra({
 
 function PainelAjuda({
   tipo,
-  dica,
+  temDica,
+  dicaTexto,
+  saldo,
+  onUsarDica,
   termos,
   onFechar,
 }: {
   tipo: ItemAjuda;
-  dica?: string | null;
+  temDica: boolean;
+  dicaTexto: string | null;
+  saldo: number | null;
+  onUsarDica: () => Promise<PedidoDica>;
   termos?: TermoGlossario[];
   onFechar: () => void;
 }) {
@@ -161,10 +183,10 @@ function PainelAjuda({
       <div
         role="dialog"
         aria-label={titulos[tipo]}
-        className="absolute inset-x-0 bottom-[calc(64px+env(safe-area-inset-bottom))] max-h-[60vh] overflow-y-auto rounded-t-2xl border-t border-[#D7DEE6] bg-white p-5 shadow-2xl sm:bottom-auto sm:left-auto sm:right-24 sm:top-1/2 sm:max-h-[70vh] sm:w-full sm:max-w-sm sm:-translate-y-1/2 sm:rounded-2xl sm:border"
+        className="absolute inset-x-0 bottom-[calc(64px+env(safe-area-inset-bottom))] max-h-[50vh] overflow-y-auto overscroll-contain rounded-t-2xl border-t border-[#D7DEE6] bg-white p-4 shadow-2xl sm:p-5 sm:bottom-auto sm:left-auto sm:right-24 sm:top-1/2 sm:max-h-[70vh] sm:w-full sm:max-w-sm sm:-translate-y-1/2 sm:rounded-2xl sm:border"
       >
-        <div className="mb-3 flex items-center justify-between">
-          <p className="font-display text-[15px] font-extrabold text-[#14213A]">{titulos[tipo]}</p>
+        <div className="mb-2 flex items-center justify-between">
+          <p className="font-display text-[14px] font-extrabold text-[#14213A]">{titulos[tipo]}</p>
           <button
             type="button"
             onClick={onFechar}
@@ -176,20 +198,77 @@ function PainelAjuda({
         </div>
 
         {tipo === "dica" && (
-          <p className="whitespace-pre-line text-[14px] leading-relaxed text-[#33465E]">
-            {dica ?? "Essa questão ainda não tem dica cadastrada."}
-          </p>
+          <ConteudoDica temDica={temDica} dicaTexto={dicaTexto} saldo={saldo} onUsarDica={onUsarDica} />
         )}
 
         {tipo === "glossario" && <ConteudoGlossario termos={termos ?? []} />}
 
         {tipo === "capitulo" && (
-          <p className="text-[14px] leading-relaxed text-[#516278]">
+          <p className="text-[12.5px] leading-relaxed text-[#516278] sm:text-[14px]">
             Em breve você vai poder abrir direto o trecho da apostila que explica essa questão. Por
             enquanto, use o PDF da apostila como referência.
           </p>
         )}
       </div>
+    </div>
+  );
+}
+
+function ConteudoDica({
+  temDica,
+  dicaTexto,
+  saldo,
+  onUsarDica,
+}: {
+  temDica: boolean;
+  dicaTexto: string | null;
+  saldo: number | null;
+  onUsarDica: () => Promise<PedidoDica>;
+}) {
+  const [carregando, setCarregando] = useState(false);
+  const [aviso, setAviso] = useState<string | null>(null);
+  const textoCls = "whitespace-pre-line text-[12.5px] leading-relaxed text-[#33465E] sm:text-[14px]";
+
+  if (dicaTexto) return <p className={textoCls}>{dicaTexto}</p>;
+
+  if (!temDica) {
+    return <p className="text-[12.5px] leading-relaxed text-[#516278] sm:text-[14px]">Essa questão ainda não tem dica cadastrada.</p>;
+  }
+
+  async function pedir() {
+    setCarregando(true);
+    setAviso(null);
+    const r = await onUsarDica();
+    setCarregando(false);
+    if (r.ok) return;
+    setAviso(
+      r.motivo === "sem_saldo"
+        ? "Seus créditos de ajuda acabaram por enquanto. Você ganha mais estudando: leia um capítulo, conclua um simulado ou marque tópicos no cronograma."
+        : "Não foi possível abrir a dica agora. Tente de novo em instantes."
+    );
+  }
+
+  const semSaldo = saldo !== null && saldo < CUSTO_DICA;
+
+  return (
+    <div>
+      <p className="text-[12.5px] leading-relaxed text-[#516278] sm:text-[14px]">
+        Quer usar <strong className="text-[#14213A]">{CUSTO_DICA} créditos</strong> para ver a Dica SIBRAP desta questão?
+        {saldo !== null && <> Você tem {saldo} créditos de ajuda.</>}
+      </p>
+      <button
+        type="button"
+        onClick={pedir}
+        disabled={carregando || semSaldo}
+        className="mt-3 w-full rounded-lg bg-brand px-4 py-2.5 text-[13px] font-bold text-white transition-colors hover:bg-brand-deep disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {carregando ? "Abrindo..." : "Ver a dica"}
+      </button>
+      {(semSaldo || aviso) && (
+        <p className="mt-2 text-[12px] leading-snug text-[#516278]">
+          {aviso ?? "Seus créditos de ajuda acabaram por enquanto. Você ganha mais estudando: leia um capítulo, conclua um simulado ou marque tópicos no cronograma."}
+        </p>
+      )}
     </div>
   );
 }
@@ -214,13 +293,13 @@ function ConteudoGlossario({ termos }: { termos: TermoGlossario[] }) {
         value={busca}
         onChange={(e) => setBusca(e.target.value)}
         placeholder="Buscar termo..."
-        className="mb-3 w-full rounded-lg border border-[#D7DEE6] px-3 py-2 text-[13.5px] text-[#14213A] outline-none focus:border-brand"
+        className="mb-2.5 w-full rounded-lg border border-[#D7DEE6] px-3 py-1.5 text-[16px] sm:py-2 sm:text-[13.5px] text-[#14213A] outline-none focus:border-brand"
       />
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2.5">
         {filtrados.map((t) => (
           <div key={t.termo}>
-            <p className="text-[13.5px] font-bold text-[#14213A]">{t.termo}</p>
-            <p className="text-[13.5px] leading-relaxed text-[#516278]">{t.definicao}</p>
+            <p className="text-[12.5px] font-bold text-[#14213A] sm:text-[13.5px]">{t.termo}</p>
+            <p className="text-[12px] leading-snug text-[#516278] sm:text-[13.5px] sm:leading-relaxed">{t.definicao}</p>
           </div>
         ))}
         {filtrados.length === 0 && (
