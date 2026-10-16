@@ -115,12 +115,12 @@ function BotaoBarra({
     <button
       type="button"
       onClick={onClick}
-      className={`flex flex-1 flex-col items-center gap-1 py-2.5 text-[11.5px] font-bold transition-colors ${
+      className={`flex flex-1 flex-col items-center gap-0.5 py-1.5 text-[10.5px] font-bold transition-colors ${
         ativo ? "text-accent-2" : item.disponivel ? "text-brand" : "text-[#A7B2C0]"
       }`}
     >
       <span
-        className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors ${
+        className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${
           ativo ? "bg-accent-2/15" : item.disponivel ? "bg-brand/10" : ""
         }`}
       >
@@ -161,10 +161,10 @@ function PainelAjuda({
       <div
         role="dialog"
         aria-label={titulos[tipo]}
-        className="absolute inset-x-0 bottom-[calc(64px+env(safe-area-inset-bottom))] max-h-[60vh] overflow-y-auto rounded-t-2xl border-t border-[#D7DEE6] bg-white p-5 shadow-2xl sm:bottom-auto sm:left-auto sm:right-24 sm:top-1/2 sm:max-h-[70vh] sm:w-full sm:max-w-sm sm:-translate-y-1/2 sm:rounded-2xl sm:border"
+        className="absolute inset-x-0 bottom-[calc(64px+env(safe-area-inset-bottom))] max-h-[50vh] overflow-y-auto overscroll-contain rounded-t-2xl border-t border-[#D7DEE6] bg-white p-4 shadow-2xl sm:p-5 sm:bottom-auto sm:left-auto sm:right-24 sm:top-1/2 sm:max-h-[70vh] sm:w-full sm:max-w-sm sm:-translate-y-1/2 sm:rounded-2xl sm:border"
       >
-        <div className="mb-3 flex items-center justify-between">
-          <p className="font-display text-[15px] font-extrabold text-[#14213A]">{titulos[tipo]}</p>
+        <div className="mb-2 flex items-center justify-between">
+          <p className="font-display text-[14px] font-extrabold text-[#14213A]">{titulos[tipo]}</p>
           <button
             type="button"
             onClick={onFechar}
@@ -176,7 +176,7 @@ function PainelAjuda({
         </div>
 
         {tipo === "dica" && (
-          <p className="whitespace-pre-line text-[14px] leading-relaxed text-[#33465E]">
+          <p className="whitespace-pre-line text-[12.5px] leading-relaxed text-[#33465E] sm:text-[14px]">
             {dica ?? "Essa questão ainda não tem dica cadastrada."}
           </p>
         )}
@@ -184,7 +184,7 @@ function PainelAjuda({
         {tipo === "glossario" && <ConteudoGlossario termos={termos ?? []} />}
 
         {tipo === "capitulo" && (
-          <p className="text-[14px] leading-relaxed text-[#516278]">
+          <p className="text-[12.5px] leading-relaxed text-[#516278] sm:text-[14px]">
             Em breve você vai poder abrir direto o trecho da apostila que explica essa questão. Por
             enquanto, use o PDF da apostila como referência.
           </p>
@@ -214,13 +214,13 @@ function ConteudoGlossario({ termos }: { termos: TermoGlossario[] }) {
         value={busca}
         onChange={(e) => setBusca(e.target.value)}
         placeholder="Buscar termo..."
-        className="mb-3 w-full rounded-lg border border-[#D7DEE6] px-3 py-2 text-[13.5px] text-[#14213A] outline-none focus:border-brand"
+        className="mb-2.5 w-full rounded-lg border border-[#D7DEE6] px-3 py-1.5 text-[16px] sm:py-2 sm:text-[13.5px] text-[#14213A] outline-none focus:border-brand"
       />
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2.5">
         {filtrados.map((t) => (
           <div key={t.termo}>
-            <p className="text-[13.5px] font-bold text-[#14213A]">{t.termo}</p>
-            <p className="text-[13.5px] leading-relaxed text-[#516278]">{t.definicao}</p>
+            <p className="text-[12.5px] font-bold text-[#14213A] sm:text-[13.5px]">{t.termo}</p>
+            <p className="text-[12px] leading-snug text-[#516278] sm:text-[13.5px] sm:leading-relaxed">{t.definicao}</p>
           </div>
         ))}
         {filtrados.length === 0 && (
