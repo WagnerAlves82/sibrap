@@ -190,3 +190,43 @@ export async function glossarioAction(): Promise<{ erro: string } | { termos: Te
 
   return { termos: data ?? [] };
 }
+
+// ---- Créditos de ajuda (Dica SIBRAP) ----
+
+export type ResultadoDica = {
+  ok: boolean;
+  dica: string | null;
+  saldo: number;
+  cobrado: boolean;
+  motivo: string;
+};
+
+/** Saldo de créditos de ajuda da apostila (na 1ª consulta entram os 100 de boas-vindas). */
+export async function saldoCreditosAction(produtoId: string): Promise<{ erro: string } | { saldo: number }> {
+  const supabase = await criarClienteSupabaseServer();
+  const { data, error } = await supabase.rpc("creditos_saldo", { p_produto_id: produtoId });
+  if (error) return { erro: error.message };
+  return { saldo: data ?? 0 };
+}
+
+/** Mostra a Dica SIBRAP de uma questão: cobra 5 créditos na 1ª vez, depois é grátis. */
+export async function usarDicaAction(
+  produtoId: string,
+  questaoId: string
+): Promise<{ erro: string } | { resultado: ResultadoDica }> {
+  const supabase = await criarClienteSupabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { erro: "Você precisa estar logado." };
+
+  if (!(await dentroDoLimite(`simulado:dica:${user.id}`, 120, 3600))) {
+    return { erro: MSG_MUITAS_TENTATIVAS };
+  }
+
+  const { data, error } = await supabase.rpc("usar_dica", { p_produto_id: produtoId, p_questao_id: questaoId });
+  if (error) return { erro: error.message };
+  const r = data?.[0];
+  if (!r) return { erro: "Não foi possível abrir a dica agora." };
+  return { resultado: { ok: r.ok, dica: r.dica, saldo: r.saldo, cobrado: r.cobrado, motivo: r.motivo } };
+}

@@ -1487,6 +1487,21 @@ export type Database = {
           gabarito: string
         }[]
       }
+      creditar_estudo: {
+        Args: { p_motivo: string; p_ref: string; p_slug: string }
+        Returns: number
+      }
+      creditos_saldo: { Args: { p_produto_id: string }; Returns: number }
+      usar_dica: {
+        Args: { p_produto_id: string; p_questao_id: string }
+        Returns: {
+          cobrado: boolean
+          dica: string
+          motivo: string
+          ok: boolean
+          saldo: number
+        }[]
+      }
       criar_pedido_por_slug: {
         Args: { p_slug: string }
         Returns: {

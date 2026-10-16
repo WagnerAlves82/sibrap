@@ -14,11 +14,24 @@ type ItemAjuda = "dica" | "glossario" | "capitulo";
 // O pai deve renderizar com `key={questao_id}` — assim o React remonta o
 // componente a cada troca de questão, e o painel fecha sozinho em vez de
 // ficar aberto com a dica da questão anterior.
+export const CUSTO_DICA = 5;
+
+export type PedidoDica = { ok: true } | { ok: false; motivo: string };
+
 export function MenuAjuda({
-  dica,
+  temDica,
+  dicaTexto,
+  saldo,
+  onUsarDica,
   termosGlossario,
 }: {
-  dica?: string | null;
+  /** a questão tem dica (o texto só sai depois de a pessoa pedir) */
+  temDica: boolean;
+  /** texto da dica, quando já foi aberta */
+  dicaTexto?: string | null;
+  /** créditos de ajuda (null enquanto carrega) */
+  saldo: number | null;
+  onUsarDica: () => Promise<PedidoDica>;
   termosGlossario?: TermoGlossario[];
 }) {
   const [aberto, setAberto] = useState<ItemAjuda | null>(null);
@@ -26,7 +39,7 @@ export function MenuAjuda({
   const temGlossario = !!termosGlossario && termosGlossario.length > 0;
 
   const itens: { id: ItemAjuda; rotulo: string; disponivel: boolean; icone: React.ReactNode }[] = [
-    { id: "dica", rotulo: "Dica", disponivel: !!dica, icone: <IconeDica /> },
+    { id: "dica", rotulo: "Dica", disponivel: temDica, icone: <IconeDica /> },
     { id: "glossario", rotulo: "Glossário", disponivel: temGlossario, icone: <IconeGlossario /> },
     { id: "capitulo", rotulo: "Capítulo", disponivel: false, icone: <IconeCapitulo /> },
   ];
@@ -60,7 +73,10 @@ export function MenuAjuda({
       {aberto && (
         <PainelAjuda
           tipo={aberto}
-          dica={dica}
+          temDica={temDica}
+          dicaTexto={dicaTexto ?? null}
+          saldo={saldo}
+          onUsarDica={onUsarDica}
           termos={termosGlossario}
           onFechar={() => setAberto(null)}
         />
@@ -133,12 +149,18 @@ function BotaoBarra({
 
 function PainelAjuda({
   tipo,
-  dica,
+  temDica,
+  dicaTexto,
+  saldo,
+  onUsarDica,
   termos,
   onFechar,
 }: {
   tipo: ItemAjuda;
-  dica?: string | null;
+  temDica: boolean;
+  dicaTexto: string | null;
+  saldo: number | null;
+  onUsarDica: () => Promise<PedidoDica>;
   termos?: TermoGlossario[];
   onFechar: () => void;
 }) {
@@ -176,9 +198,7 @@ function PainelAjuda({
         </div>
 
         {tipo === "dica" && (
-          <p className="whitespace-pre-line text-[12.5px] leading-relaxed text-[#33465E] sm:text-[14px]">
-            {dica ?? "Essa questão ainda não tem dica cadastrada."}
-          </p>
+          <ConteudoDica temDica={temDica} dicaTexto={dicaTexto} saldo={saldo} onUsarDica={onUsarDica} />
         )}
 
         {tipo === "glossario" && <ConteudoGlossario termos={termos ?? []} />}
@@ -190,6 +210,65 @@ function PainelAjuda({
           </p>
         )}
       </div>
+    </div>
+  );
+}
+
+function ConteudoDica({
+  temDica,
+  dicaTexto,
+  saldo,
+  onUsarDica,
+}: {
+  temDica: boolean;
+  dicaTexto: string | null;
+  saldo: number | null;
+  onUsarDica: () => Promise<PedidoDica>;
+}) {
+  const [carregando, setCarregando] = useState(false);
+  const [aviso, setAviso] = useState<string | null>(null);
+  const textoCls = "whitespace-pre-line text-[12.5px] leading-relaxed text-[#33465E] sm:text-[14px]";
+
+  if (dicaTexto) return <p className={textoCls}>{dicaTexto}</p>;
+
+  if (!temDica) {
+    return <p className="text-[12.5px] leading-relaxed text-[#516278] sm:text-[14px]">Essa questão ainda não tem dica cadastrada.</p>;
+  }
+
+  async function pedir() {
+    setCarregando(true);
+    setAviso(null);
+    const r = await onUsarDica();
+    setCarregando(false);
+    if (r.ok) return;
+    setAviso(
+      r.motivo === "sem_saldo"
+        ? "Seus créditos de ajuda acabaram por enquanto. Você ganha mais estudando: leia um capítulo, conclua um simulado ou marque tópicos no cronograma."
+        : "Não foi possível abrir a dica agora. Tente de novo em instantes."
+    );
+  }
+
+  const semSaldo = saldo !== null && saldo < CUSTO_DICA;
+
+  return (
+    <div>
+      <p className="text-[12.5px] leading-relaxed text-[#516278] sm:text-[14px]">
+        Quer usar <strong className="text-[#14213A]">{CUSTO_DICA} créditos</strong> para ver a Dica SIBRAP desta questão?
+        {saldo !== null && <> Você tem {saldo} créditos de ajuda.</>}
+      </p>
+      <button
+        type="button"
+        onClick={pedir}
+        disabled={carregando || semSaldo}
+        className="mt-3 w-full rounded-lg bg-brand px-4 py-2.5 text-[13px] font-bold text-white transition-colors hover:bg-brand-deep disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {carregando ? "Abrindo..." : "Ver a dica"}
+      </button>
+      {(semSaldo || aviso) && (
+        <p className="mt-2 text-[12px] leading-snug text-[#516278]">
+          {aviso ?? "Seus créditos de ajuda acabaram por enquanto. Você ganha mais estudando: leia um capítulo, conclua um simulado ou marque tópicos no cronograma."}
+        </p>
+      )}
     </div>
   );
 }
