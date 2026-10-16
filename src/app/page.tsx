@@ -32,6 +32,25 @@ export default async function Home() {
   const iscaTranspetroAtiva = !!iscaTranspetro?.ativo;
   const slugsPublicados = new Set(apostilas.map((a) => a.slug));
 
+  const slideMetodo: SlideComCta = {
+    id: "metodo",
+    cidade: "Método SIBRAP",
+    uf: "",
+    orgao: "SIBRAP",
+    titulo: "",
+    subtitulo: "",
+    banca: "",
+    edital: "",
+    provaIso: "",
+    imagem: "",
+    fatos: [],
+    href: "#apostilas",
+    cta: "Quero começar minha preparação",
+    hrefSecundario: "#metodo",
+    emProducao: false,
+    metodo: true,
+  };
+
   const slides: SlideComCta[] = SLIDES_HOME.map((s) => {
     const temApostila = !!s.apostilaSlug && slugsPublicados.has(s.apostilaSlug);
     return {
@@ -41,6 +60,7 @@ export default async function Home() {
       emProducao: !temApostila,
     };
   });
+  slides.unshift(slideMetodo);
 
   // Próxima prova entre as em destaque (barra superior)
   const proxima = SLIDES_HOME.map((s) => ({ s, dias: diasAte(s.provaIso) }))
@@ -135,7 +155,7 @@ export default async function Home() {
       )}
 
       {/* Diferenciais */}
-      <section className="border-y border-[#D7DEE6] bg-white py-12 sm:py-14">
+      <section id="metodo" className="scroll-mt-14 border-y border-[#D7DEE6] bg-white py-12 sm:py-14">
         <div className="mx-auto grid max-w-[1180px] grid-cols-1 gap-8 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
           <Reveal>
             <Diferencial

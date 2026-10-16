@@ -10,6 +10,9 @@ export type SlideComCta = SlideHome & {
   href: string;
   cta: string;
   emProducao: boolean;
+  // slide institucional do método (sem concurso específico)
+  metodo?: boolean;
+  hrefSecundario?: string;
 };
 
 const INTERVALO_MS = 6500;
@@ -57,7 +60,7 @@ export function CarrosselHome({ slides }: { slides: SlideComCta[] }) {
   return (
     <section
       aria-roledescription="carrossel"
-      aria-label="Concursos em destaque"
+      aria-label="Destaques"
       className="relative overflow-hidden bg-[#2e3192] text-white"
       onMouseEnter={() => setPausado(true)}
       onMouseLeave={() => setPausado(false)}
@@ -137,6 +140,7 @@ function Slide({
   total: number;
   hoje: string;
 }) {
+  if (slide.metodo) return <SlideMetodo slide={slide} ativo={ativo} indice={indice} total={total} />;
   const dias = hoje ? diasAte(slide.provaIso, new Date(`${hoje}T12:00:00`)) : null;
   const contagem =
     dias === null ? null : dias < 0 ? "Prova realizada" : dias === 0 ? "A prova é hoje" : dias === 1 ? "Falta 1 dia" : `Faltam ${dias} dias`;
@@ -241,6 +245,109 @@ function Slide({
           className="rounded-none object-cover object-right-bottom"
         />
         <span className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-[#1f5fb0] to-transparent" />
+      </div>
+    </div>
+  );
+}
+
+// Slide do método: promessa, benefícios e a apostila real com halo de luz.
+// Os dados vêm só de texto e da imagem do produto (nada de tela inventada).
+function SlideMetodo({
+  slide,
+  ativo,
+  indice,
+  total,
+}: {
+  slide: SlideComCta;
+  ativo: boolean;
+  indice: number;
+  total: number;
+}) {
+  const beneficios = [
+    { t: "Estude aos poucos", d: "3 páginas de leitura por dia e até 7 exercícios diários", c: "3 páginas por dia" },
+    { t: "Estude pelo celular", d: "Pratique de onde estiver", c: "de onde estiver" },
+    { t: "Simulados on-line", d: "Personalizáveis, começando com 30 questões do seu edital", c: "personalizáveis" },
+  ];
+  return (
+    <div
+      role="group"
+      aria-roledescription="slide"
+      aria-label={`${indice + 1} de ${total}`}
+      aria-hidden={!ativo}
+      inert={!ativo}
+      className={`relative col-start-1 row-start-1 flex flex-col overflow-hidden transition-opacity duration-700 md:flex-row md:items-center ${
+        ativo ? "z-10 opacity-100" : "z-0 opacity-0"
+      }`}
+      style={{ background: "linear-gradient(135deg, #2e3192 0%, #1f5fb0 55%, #0b7cc4 100%)" }}
+    >
+      {/* Halo luminoso atrás da apostila (só no fundo, longe do texto) */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -bottom-24 right-[-6rem] h-[26rem] w-[26rem] rounded-full opacity-70 blur-3xl md:bottom-auto md:right-[6%] md:top-1/2 md:h-[34rem] md:w-[34rem] md:-translate-y-1/2"
+        style={{ background: "radial-gradient(circle, rgba(255,214,102,0.55) 0%, rgba(120,190,255,0.35) 45%, transparent 70%)" }}
+      />
+
+      <div className="relative mx-auto grid w-full max-w-[1180px] items-center gap-6 px-6 pb-6 pt-8 md:grid-cols-[1.15fr_0.85fr] md:gap-10 md:py-12">
+        <div className="max-w-[620px]">
+          <p className="mb-3 inline-flex rounded bg-white/15 px-2 py-1 font-data text-[11.5px] font-semibold uppercase tracking-wide text-[#D7E6F7]">
+            Método SIBRAP
+          </p>
+          <h2 className="font-display text-[1.6rem] leading-[1.1] font-extrabold tracking-tight text-balance sm:text-[2.1rem] md:text-[2.5rem]">
+            Seu sonho de conquistar uma vaga no concurso pode estar mais perto do que você imagina!
+          </h2>
+          <p className="mt-3 text-[15px] text-[#D7E6F7] md:text-base">
+            Com o método de aprovação SIBRAP, você se prepara de forma crescente e organizada.
+          </p>
+
+          <ul className="mt-4 flex flex-wrap gap-2 sm:grid">
+            {beneficios.map((b) => (
+              <li
+                key={b.t}
+                className="flex items-start gap-3 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-[13.5px] leading-snug backdrop-blur-sm"
+              >
+                <span aria-hidden className="mt-0.5 text-accent">✓</span>
+                <span>
+                  <strong className="font-bold">{b.t}.</strong>{" "}
+                  <span className="text-[#D7E6F7] sm:hidden">{b.c}</span>
+                  <span className="hidden text-[#D7E6F7] sm:inline">{b.d}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-3 hidden text-[13.5px] text-[#D7E6F7] md:block">
+            Assim, você avança um pouco a cada dia e fortalece sua preparação para conquistar sua vaga.
+          </p>
+
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <Link
+              href={slide.href}
+              className="inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-3 text-[15px] font-bold text-accent-ink shadow-[0_0_22px_rgba(255,214,102,0.45)] transition-colors hover:brightness-95"
+            >
+              {slide.cta} <span aria-hidden>→</span>
+            </Link>
+            {slide.hrefSecundario && (
+              <Link
+                href={slide.hrefSecundario}
+                className="inline-flex items-center rounded-lg border border-white/40 px-4 py-3 text-[14.5px] font-semibold text-white transition-colors hover:bg-white/10"
+              >
+                Conheça o método
+              </Link>
+            )}
+          </div>
+        </div>
+
+        <div aria-hidden className="relative hidden justify-self-center md:block">
+          <Image
+            src="/mockup-curitiba1.png"
+            alt=""
+            width={1340}
+            height={2400}
+            priority={indice === 0}
+            sizes="(min-width: 768px) 280px, 1px"
+            className="h-auto w-[250px] rotate-[3deg] drop-shadow-[0_18px_40px_rgba(0,0,0,0.45)] lg:w-[290px]"
+          />
+        </div>
       </div>
     </div>
   );
