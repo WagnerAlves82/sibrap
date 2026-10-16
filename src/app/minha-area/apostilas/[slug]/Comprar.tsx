@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { sendGAEvent } from "@next/third-parties/google";
 import { fbqTrack } from "@/components/meta-pixel";
+import { gadsCompra } from "@/lib/google-ads";
 import { PixCheckoutClaro } from "@/components/pix-checkout-claro";
 import { Alert } from "@/components/alert";
 import {
@@ -76,6 +77,7 @@ export function ComprarApostila({
             items: [item],
           });
           fbqTrack("Purchase", { currency: "BRL", value: precoCentavos / 100 });
+          gadsCompra({ valor: precoCentavos / 100, pedidoId });
           router.refresh();
         }}
       />

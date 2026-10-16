@@ -8,6 +8,7 @@ import { PopupSaida } from "@/components/popup-saida";
 import { BotaoWhatsApp } from "@/components/botao-whatsapp";
 import { CapturarOrigem } from "@/components/capturar-origem";
 import "./globals.css";
+import { GOOGLE_ADS_ID } from "@/lib/google-ads";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -120,9 +121,14 @@ fbq('track', 'PageView');`}
         <MetaPixel />
         <CapturarOrigem />
       </body>
-      {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+      {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ? (
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+      ) : (
+        <Script id="gtag-loader" src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`} strategy="afterInteractive" />
       )}
+      <Script id="google-ads-config" strategy="afterInteractive">
+        {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('config','${GOOGLE_ADS_ID}');`}
+      </Script>
     </html>
   );
 }
