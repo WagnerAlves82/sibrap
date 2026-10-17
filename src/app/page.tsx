@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
-import { CarrosselHome, type SlideComCta } from "@/components/carrossel-home";
+import { CarrosselHome } from "@/components/carrossel-home";
 import { VitrineApostilas } from "@/components/vitrine-apostilas";
 import { VitrinePosts } from "@/components/vitrine-posts";
 import { IconeSolido, type NomeIconeSolido } from "@/components/icones-solidos";
@@ -30,38 +30,6 @@ export default async function Home() {
   // no banco e src/app/minha-area/page.tsx) — mesmo campo produtos.ativo
   // controla os dois lugares, reativar é só voltar ele a true.
   const iscaTranspetroAtiva = !!iscaTranspetro?.ativo;
-  const slugsPublicados = new Set(apostilas.map((a) => a.slug));
-
-  const slideMetodo: SlideComCta = {
-    id: "metodo",
-    cidade: "Método SIBRAP",
-    uf: "",
-    orgao: "SIBRAP",
-    titulo: "",
-    subtitulo: "",
-    banca: "",
-    edital: "",
-    provaIso: "",
-    imagem: "",
-    fatos: [],
-    href: "#apostilas",
-    cta: "Quero começar minha preparação",
-    hrefSecundario: "#metodo",
-    emProducao: false,
-    metodo: true,
-  };
-
-  const slides: SlideComCta[] = SLIDES_HOME.map((s) => {
-    const temApostila = !!s.apostilaSlug && slugsPublicados.has(s.apostilaSlug);
-    return {
-      ...s,
-      href: temApostila ? `/apostilas/${s.apostilaSlug}` : "#apostilas",
-      cta: temApostila ? "Ver a apostila" : "Ver apostilas disponíveis",
-      emProducao: !temApostila,
-    };
-  });
-  slides.unshift(slideMetodo);
-
   // Próxima prova entre as em destaque (barra superior)
   const proxima = SLIDES_HOME.map((s) => ({ s, dias: diasAte(s.provaIso) }))
     .filter((x) => x.dias !== null && x.dias >= 0)
@@ -91,7 +59,7 @@ export default async function Home() {
 
       <MenuAncora />
 
-      <CarrosselHome slides={slides} />
+      <CarrosselHome precoTexto={`A partir de ${formatarPreco(preco)}`} />
 
       {/* Vitrine de apostilas */}
       <section id="apostilas" className="scroll-mt-14 bg-[#F6F8FB] py-14 sm:py-16">
