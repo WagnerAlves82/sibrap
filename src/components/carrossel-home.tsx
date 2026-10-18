@@ -147,7 +147,7 @@ function Slide({
             "radial-gradient(circle, rgba(255,214,102,0.5) 0%, rgba(120,190,255,0.35) 45%, transparent 70%)",
         }}
       />
-      <div className="relative mx-auto grid w-full max-w-[1180px] items-center gap-6 px-6 pb-14 pt-8 md:grid-cols-[1.15fr_0.85fr] md:gap-10 md:py-12">
+      <div className="relative mx-auto grid w-full max-w-[1180px] items-center gap-6 px-6 pb-14 pt-8 md:grid-cols-[1fr_1fr] md:gap-8 md:py-12">
         {slide.id === "metodo" && <Metodo prioridade={indice === 0} />}
         {slide.id === "apostila" && <Apostila precoTexto={precoTexto} />}
         {slide.id === "simulado" && <Simulado />}
@@ -241,15 +241,15 @@ function Metodo({ prioridade }: { prioridade: boolean }) {
           <BotaoSecundario href="#metodo">Conheça o método</BotaoSecundario>
         </div>
       </div>
-      <div aria-hidden className="relative justify-self-center">
+      <div aria-hidden className="relative h-[250px] justify-self-center overflow-hidden md:h-[420px] lg:h-[490px] xl:h-[540px]">
         <Image
           src="/hero-mockup-curitiba.webp"
           alt=""
-          width={402}
-          height={720}
+          width={558}
+          height={1000}
           priority={prioridade}
-          sizes="290px"
-          className="h-auto w-[104px] rotate-[3deg] drop-shadow-[0_18px_40px_rgba(0,0,0,0.45)] md:w-[230px] lg:w-[270px]"
+          sizes="(min-width: 1024px) 380px, (min-width: 768px) 300px, 150px"
+          className="h-auto w-[150px] rotate-[3deg] drop-shadow-[0_18px_40px_rgba(0,0,0,0.45)] md:w-[250px] lg:w-[300px] xl:w-[360px]"
         />
       </div>
     </>
@@ -278,30 +278,30 @@ function Apostila({ precoTexto }: { precoTexto: string }) {
           <span className="font-data text-[13px] font-semibold text-[#D7E6F7]">{precoTexto}</span>
         </div>
       </div>
-      <div aria-hidden className="relative flex items-end justify-center justify-self-center">
+      <div aria-hidden className="relative flex items-end justify-center justify-self-center xl:-mr-10">
         <Image
           src="/hero-mockup-itajai.webp"
           alt=""
-          width={481}
-          height={720}
-          sizes="170px"
-          className="relative z-10 -mr-4 h-auto w-[78px] -rotate-[4deg] drop-shadow-[0_14px_30px_rgba(0,0,0,0.45)] md:-mr-6 md:w-[150px] lg:w-[170px]"
+          width={668}
+          height={1000}
+          sizes="(min-width: 1024px) 200px, (min-width: 768px) 125px, 110px"
+          className="relative z-10 -mr-5 h-auto w-[110px] -rotate-[4deg] drop-shadow-[0_14px_30px_rgba(0,0,0,0.45)] md:-mr-5 md:w-[105px] lg:-mr-6 lg:w-[140px] xl:-mr-8 xl:w-[205px]"
         />
         <Image
           src="/hero-mockup-curitiba.webp"
           alt=""
-          width={402}
-          height={720}
-          sizes="200px"
-          className="relative z-20 h-auto w-[92px] drop-shadow-[0_18px_40px_rgba(0,0,0,0.5)] md:w-[170px] lg:w-[200px]"
+          width={558}
+          height={1000}
+          sizes="(min-width: 1024px) 265px, (min-width: 768px) 165px, 130px"
+          className="relative z-20 h-auto w-[130px] drop-shadow-[0_18px_40px_rgba(0,0,0,0.5)] md:w-[140px] lg:w-[190px] xl:w-[270px]"
         />
         <Image
           src="/hero-mockup-amapa.webp"
           alt=""
-          width={478}
-          height={720}
-          sizes="170px"
-          className="relative z-10 -ml-4 h-auto w-[78px] rotate-[4deg] drop-shadow-[0_14px_30px_rgba(0,0,0,0.45)] md:-ml-6 md:w-[150px] lg:w-[170px]"
+          width={664}
+          height={1000}
+          sizes="(min-width: 1024px) 200px, (min-width: 768px) 125px, 110px"
+          className="relative z-10 -ml-5 h-auto w-[110px] rotate-[4deg] drop-shadow-[0_14px_30px_rgba(0,0,0,0.45)] md:-ml-5 md:w-[105px] lg:-ml-6 lg:w-[140px] xl:-ml-8 xl:w-[205px]"
         />
       </div>
     </>
@@ -331,14 +331,14 @@ function Simulado() {
         </div>
       </div>
       <div aria-hidden className="relative justify-self-center">
-        <div className="w-[230px] md:w-[280px] overflow-hidden rounded-2xl border border-white/30 bg-white shadow-[0_18px_50px_rgba(0,0,0,0.45),0_0_40px_rgba(255,214,102,0.25)] lg:w-[320px]">
+        <div className="w-[300px] overflow-hidden md:w-[330px] lg:w-[400px] xl:w-[470px] rounded-2xl border border-white/30 bg-white shadow-[0_18px_50px_rgba(0,0,0,0.45),0_0_40px_rgba(255,214,102,0.25)]">
           <Image
             src="/hero-simulado.webp"
             alt=""
-            width={560}
-            height={733}
-            sizes="320px"
-            className="h-[130px] w-full object-cover object-top md:h-[300px] lg:h-[340px]"
+            width={700}
+            height={916}
+            sizes="(min-width: 1024px) 470px, (min-width: 768px) 400px, 300px"
+            className="h-[190px] w-full object-cover object-top md:h-[330px] lg:h-[400px] xl:h-[460px]"
           />
         </div>
       </div>
