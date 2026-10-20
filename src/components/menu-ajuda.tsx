@@ -6,7 +6,7 @@
 // abrem o mesmo painel de conteúdo (lateral no desktop, "bottom sheet" no
 // mobile).
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type TermoGlossario = { termo: string; definicao: string };
 type ItemAjuda = "dica" | "glossario" | "capitulo";
@@ -17,12 +17,15 @@ type ItemAjuda = "dica" | "glossario" | "capitulo";
 export const CUSTO_DICA = 5;
 
 export type PedidoDica = { ok: true } | { ok: false; motivo: string };
+export type CapituloDaQuestao = { numero: number; secao: string | null } | null;
 
 export function MenuAjuda({
   temDica,
   dicaTexto,
   saldo,
   onUsarDica,
+  buscarCapitulo,
+  hrefLeitor,
   termosGlossario,
 }: {
   /** a questão tem dica (o texto só sai depois de a pessoa pedir) */
@@ -32,6 +35,10 @@ export function MenuAjuda({
   /** créditos de ajuda (null enquanto carrega) */
   saldo: number | null;
   onUsarDica: () => Promise<PedidoDica>;
+  /** capítulo/seção da apostila onde está o assunto da questão (null = ainda sem leitura online) */
+  buscarCapitulo: () => Promise<CapituloDaQuestao>;
+  /** endereço base do leitor: /minha-area/apostilas/<slug>/ler */
+  hrefLeitor: string;
   termosGlossario?: TermoGlossario[];
 }) {
   const [aberto, setAberto] = useState<ItemAjuda | null>(null);
@@ -41,7 +48,7 @@ export function MenuAjuda({
   const itens: { id: ItemAjuda; rotulo: string; disponivel: boolean; icone: React.ReactNode }[] = [
     { id: "dica", rotulo: "Dica", disponivel: temDica, icone: <IconeDica /> },
     { id: "glossario", rotulo: "Glossário", disponivel: temGlossario, icone: <IconeGlossario /> },
-    { id: "capitulo", rotulo: "Capítulo", disponivel: false, icone: <IconeCapitulo /> },
+    { id: "capitulo", rotulo: "Capítulo", disponivel: true, icone: <IconeCapitulo /> },
   ];
 
   function alternar(id: ItemAjuda) {
@@ -77,6 +84,8 @@ export function MenuAjuda({
           dicaTexto={dicaTexto ?? null}
           saldo={saldo}
           onUsarDica={onUsarDica}
+          buscarCapitulo={buscarCapitulo}
+          hrefLeitor={hrefLeitor}
           termos={termosGlossario}
           onFechar={() => setAberto(null)}
         />
@@ -153,6 +162,8 @@ function PainelAjuda({
   dicaTexto,
   saldo,
   onUsarDica,
+  buscarCapitulo,
+  hrefLeitor,
   termos,
   onFechar,
 }: {
@@ -161,6 +172,8 @@ function PainelAjuda({
   dicaTexto: string | null;
   saldo: number | null;
   onUsarDica: () => Promise<PedidoDica>;
+  buscarCapitulo: () => Promise<CapituloDaQuestao>;
+  hrefLeitor: string;
   termos?: TermoGlossario[];
   onFechar: () => void;
 }) {
@@ -203,13 +216,53 @@ function PainelAjuda({
 
         {tipo === "glossario" && <ConteudoGlossario termos={termos ?? []} />}
 
-        {tipo === "capitulo" && (
-          <p className="text-[12.5px] leading-relaxed text-[#516278] sm:text-[14px]">
-            Em breve você vai poder abrir direto o trecho da apostila que explica essa questão. Por
-            enquanto, use o PDF da apostila como referência.
-          </p>
-        )}
+        {tipo === "capitulo" && <ConteudoCapitulo buscarCapitulo={buscarCapitulo} hrefLeitor={hrefLeitor} />}
       </div>
+    </div>
+  );
+}
+
+function ConteudoCapitulo({ buscarCapitulo, hrefLeitor }: { buscarCapitulo: () => Promise<CapituloDaQuestao>; hrefLeitor: string }) {
+  const [estado, setEstado] = useState<"carregando" | "sem" | { numero: number; secao: string | null }>("carregando");
+
+  useEffect(() => {
+    let vivo = true;
+    buscarCapitulo().then((c) => {
+      if (vivo) setEstado(c ?? "sem");
+    });
+    return () => {
+      vivo = false;
+    };
+    // busca uma vez ao abrir o painel (o pai cria a função de novo a cada render)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const txt = "text-[12.5px] leading-relaxed text-[#516278] sm:text-[14px]";
+  if (estado === "carregando") return <p className={txt}>Procurando o trecho da apostila...</p>;
+  if (estado === "sem") {
+    return (
+      <p className={txt}>
+        Esta questão ainda não está ligada a um trecho da apostila. Você pode ler a apostila inteira em{" "}
+        <a href={hrefLeitor} className="font-bold text-brand underline underline-offset-2">
+          Ler a apostila
+        </a>
+        .
+      </p>
+    );
+  }
+  const href = `${hrefLeitor}/${estado.numero}?${estado.secao ? `secao=${estado.secao}&` : ""}de=simulado`;
+  return (
+    <div>
+      <p className={txt}>
+        O assunto desta questão está no <strong className="text-[#14213A]">capítulo {estado.numero}</strong>
+        {estado.secao ? ", na seção indicada" : ""}. Leia o trecho e volte para a questão quando quiser; suas respostas ficam salvas.
+      </p>
+      <a
+        href={href}
+        className="mt-3 flex w-full items-center justify-center rounded-lg bg-brand px-4 py-2.5 text-[13px] font-bold text-white transition-colors hover:bg-brand-deep"
+      >
+        Ler o trecho na apostila →
+      </a>
     </div>
   );
 }

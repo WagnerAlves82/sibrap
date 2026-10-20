@@ -15,6 +15,7 @@ import {
   glossarioAction,
   saldoCreditosAction,
   usarDicaAction,
+  capituloDaQuestaoAction,
   type QuestaoSimulado,
   type ResultadoSimulado,
   type DesempenhoDisciplina,
@@ -325,6 +326,8 @@ export function SimuladoApostilaApp({
           dicaTexto={dicas[atual.questao_id] ?? null}
           saldo={saldo}
           onUsarDica={() => usarDica(atual.questao_id)}
+          buscarCapitulo={() => capituloDaQuestaoAction(produtoId, atual.questao_id).then((r) => ("capitulo" in r ? r.capitulo : null))}
+          hrefLeitor={`${areaHref}/ler`}
           termosGlossario={termosGlossario}
         />
         <Cartao>
