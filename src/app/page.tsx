@@ -55,7 +55,7 @@ export default async function Home() {
         </div>
       )}
 
-      <CabecalhoSite logado={!!user} />
+      <CabecalhoSite logado={!!user} semLinks />
 
       <MenuAncora />
 
@@ -340,6 +340,7 @@ const ANCORAS: [string, string][] = [
   ["Simulado online", "#simulado-online"],
   ["Cursos gratuitos", "#cursos-gratuitos"],
   ["Sobre", "#sobre"],
+  ["Validar certificado", "/validar"],
 ];
 
 // Menu de âncoras da home. Cada item leva a uma seção da página e serve de

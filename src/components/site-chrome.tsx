@@ -5,7 +5,7 @@ import { sairDaConta } from "@/app/login/actions";
 import { BotaoPreferenciasCookies } from "@/components/cookies-consentimento";
 import { EMISSOR } from "@/lib/emissor";
 
-export function CabecalhoSite({ logado, next }: { logado: boolean; next?: string }) {
+export function CabecalhoSite({ logado, next, semLinks }: { logado: boolean; next?: string; semLinks?: boolean }) {
   const itemNav = "px-1.5 py-2 sm:px-2 text-[#33465E] transition-colors hover:text-brand";
   return (
     <header className="border-b-[3px] border-accent bg-white">
@@ -22,18 +22,22 @@ export function CabecalhoSite({ logado, next }: { logado: boolean; next?: string
         </Link>
 
         <nav className="flex min-w-0 items-center gap-0 text-[13px] font-semibold whitespace-nowrap sm:gap-3 sm:text-sm">
-          <Link href="/apostilas" className={itemNav}>
-            Apostilas
-          </Link>
-          <Link href="/noticias" className={`${logado ? "hidden sm:inline" : ""} ${itemNav}`}>
-            Notícias
-          </Link>
-          <Link href="/cursos" className={`hidden md:inline ${itemNav}`}>
-            Cursos gratuitos
-          </Link>
-          <Link href="/validar" className={`hidden lg:inline ${itemNav}`}>
-            Validar certificado
-          </Link>
+          {!semLinks && (
+            <>
+              <Link href="/apostilas" className={itemNav}>
+                Apostilas
+              </Link>
+              <Link href="/noticias" className={`${logado ? "hidden sm:inline" : ""} ${itemNav}`}>
+                Notícias
+              </Link>
+              <Link href="/cursos" className={`hidden md:inline ${itemNav}`}>
+                Cursos gratuitos
+              </Link>
+              <Link href="/validar" className={`hidden lg:inline ${itemNav}`}>
+                Validar certificado
+              </Link>
+            </>
+          )}
           <Link
             href={logado ? "/minha-area" : next ? `/login?next=${encodeURIComponent(next)}` : "/login"}
             className="ml-1 rounded-md bg-brand px-3 py-2 sm:px-4 text-white transition-colors hover:brightness-125"
