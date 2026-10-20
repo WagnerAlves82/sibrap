@@ -230,3 +230,15 @@ export async function usarDicaAction(
   if (!r) return { erro: "Não foi possível abrir a dica agora." };
   return { resultado: { ok: r.ok, dica: r.dica, saldo: r.saldo, cobrado: r.cobrado, motivo: r.motivo } };
 }
+
+/** Capítulo (e seção) da apostila onde está o assunto da questão, quando a apostila tem leitura online. */
+export async function capituloDaQuestaoAction(
+  produtoId: string,
+  questaoId: string
+): Promise<{ erro: string } | { capitulo: { numero: number; secao: string | null } | null }> {
+  const supabase = await criarClienteSupabaseServer();
+  const { data, error } = await supabase.rpc("capitulo_da_questao", { p_produto_id: produtoId, p_questao_id: questaoId });
+  if (error) return { erro: error.message };
+  const r = data?.[0];
+  return { capitulo: r ? { numero: r.numero, secao: r.secao ?? null } : null };
+}

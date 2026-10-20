@@ -43,6 +43,12 @@ export default async function ApostilaAreaPage({
     .eq("produto_id", apostila.produto_id)
     .maybeSingle();
 
+  // leitura online disponível (capítulos publicados no AVA)
+  const { count: capitulosOnline } = await admin
+    .from("apostila_capitulos")
+    .select("id", { count: "exact", head: true })
+    .eq("apostila_id", apostila.id);
+
   let tem = !!acesso;
   let aguardandoCartao = false;
   let pedidoCartaoConfirmadoAgora: string | null = null;
@@ -141,6 +147,14 @@ export default async function ApostilaAreaPage({
                   >
                     Baixar apostila (PDF) <span aria-hidden>↓</span>
                   </a>
+                  {(capitulosOnline ?? 0) > 0 && (
+                    <Link
+                      href={`/minha-area/apostilas/${apostila.slug}/ler`}
+                      className="inline-flex items-center gap-2 rounded-lg bg-accent-2 px-6 py-3.5 text-[15px] font-bold text-white transition-colors hover:brightness-110"
+                    >
+                      Ler a apostila online <span aria-hidden>→</span>
+                    </Link>
+                  )}
                   {temSimulado && (
                     <Link
                       href={`/minha-area/apostilas/${apostila.slug}/simulado`}

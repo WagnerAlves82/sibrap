@@ -209,6 +209,44 @@ export type Database = {
         }
         Relationships: []
       }
+      apostila_capitulos: {
+        Row: {
+          apostila_id: string
+          criado_em: string
+          html: string
+          id: string
+          numero: number
+          secoes: Json
+          titulo: string
+        }
+        Insert: {
+          apostila_id: string
+          criado_em?: string
+          html: string
+          id?: string
+          numero: number
+          secoes?: Json
+          titulo: string
+        }
+        Update: {
+          apostila_id?: string
+          criado_em?: string
+          html?: string
+          id?: string
+          numero?: number
+          secoes?: Json
+          titulo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "apostila_capitulos_apostila_id_fkey"
+            columns: ["apostila_id"]
+            isOneToOne: false
+            referencedRelation: "apostilas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       apostilas: {
         Row: {
           atualizado_em: string
@@ -1258,6 +1296,8 @@ export type Database = {
           ano: number | null
           ativa: boolean
           banca_id: string
+          capitulo: number | null
+          capitulo_secao: string | null
           cargo_id: string | null
           comentario: string | null
           concurso_id: string
@@ -1276,6 +1316,8 @@ export type Database = {
           ano?: number | null
           ativa?: boolean
           banca_id: string
+          capitulo?: number | null
+          capitulo_secao?: string | null
           cargo_id?: string | null
           comentario?: string | null
           concurso_id: string
@@ -1486,6 +1528,10 @@ export type Database = {
           correta: boolean
           gabarito: string
         }[]
+      }
+      capitulo_da_questao: {
+        Args: { p_produto_id: string; p_questao_id: string }
+        Returns: { numero: number; secao: string }[]
       }
       creditar_estudo: {
         Args: { p_motivo: string; p_ref: string; p_slug: string }

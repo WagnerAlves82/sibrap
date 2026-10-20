@@ -7,16 +7,27 @@ import { formatarDataIso, formatarPreco, type ApostilaVitrine } from "@/lib/apos
 
 const soLetras = (s: string) => s.replace(/[^\p{L}\p{N}]/gu, "");
 
+// Nome do estado em hashtag (sem acento), para alcançar quem busca pelo estado.
+const ESTADO_TAG: Record<string, string> = {
+  AC: "Acre", AL: "Alagoas", AP: "Amapá", AM: "Amazonas", BA: "Bahia", CE: "Ceará", DF: "DistritoFederal",
+  ES: "EspíritoSanto", GO: "Goiás", MA: "Maranhão", MT: "MatoGrosso", MS: "MatoGrossoDoSul", MG: "MinasGerais",
+  PA: "Pará", PB: "Paraíba", PR: "Paraná", PE: "Pernambuco", PI: "Piauí", RJ: "RioDeJaneiro",
+  RN: "RioGrandeDoNorte", RS: "RioGrandeDoSul", RO: "Rondônia", RR: "Roraima", SC: "SantaCatarina",
+  SP: "SãoPaulo", SE: "Sergipe", TO: "Tocantins",
+};
+
+// Primeiro as hashtags da localidade (cidade, estado), depois as do tema.
 export function hashtagsApostila(a: Pick<ApostilaVitrine, "cidade" | "uf" | "categoria" | "banca">): string {
   const cidade = soLetras(a.cidade ?? "");
+  const estado = a.uf ? ESTADO_TAG[a.uf] : undefined;
   const tags = [
     cidade ? `#Apostila${cidade}` : null,
     cidade ? `#Concurso${cidade}` : null,
+    estado ? `#${estado}` : null,
     a.uf ? `#Concurso${a.uf}` : null,
     a.categoria === "Educação" ? "#ConcursoEducação" : null,
     "#Concurso2026",
     "#ApostilaConcurso",
-    "#ApostilaPDF",
     "#SIBRAP",
   ];
   return [...new Set(tags.filter((t): t is string => !!t))].slice(0, 8).join(" ");
