@@ -147,7 +147,7 @@ function Slide({
             "radial-gradient(circle, rgba(255,214,102,0.5) 0%, rgba(120,190,255,0.35) 45%, transparent 70%)",
         }}
       />
-      <div className="relative mx-auto grid w-full max-w-[1180px] items-center gap-6 px-6 pb-14 pt-8 md:grid-cols-[1fr_1fr] md:gap-8 md:py-12">
+      <div className="relative mx-auto grid w-full max-w-[1180px] items-center 2xl:max-w-[1480px] gap-6 px-6 pb-14 pt-8 md:grid-cols-[1fr_1fr] md:gap-8 md:py-12">
         {slide.id === "metodo" && <Metodo prioridade={indice === 0} />}
         {slide.id === "apostila" && <Apostila precoTexto={precoTexto} />}
         {slide.id === "simulado" && <Simulado />}
@@ -166,7 +166,7 @@ function Rotulo({ children }: { children: React.ReactNode }) {
 
 function Titulo({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="font-display text-[1.6rem] leading-[1.1] font-extrabold tracking-tight text-balance sm:text-[2.1rem] md:text-[2.5rem]">
+    <h2 className="font-display text-[1.6rem] leading-[1.1] font-extrabold tracking-tight text-balance sm:text-[2.1rem] md:text-[2.5rem] 2xl:text-[3.1rem]">
       {children}
     </h2>
   );
@@ -241,7 +241,7 @@ function Metodo({ prioridade }: { prioridade: boolean }) {
           <BotaoSecundario href="#metodo">Conheça o método</BotaoSecundario>
         </div>
       </div>
-      <div aria-hidden className="relative h-[250px] justify-self-center overflow-hidden md:h-[420px] lg:h-[490px] xl:h-[540px]">
+      <div aria-hidden className="relative h-[250px] justify-self-center overflow-hidden md:h-[420px] lg:h-[490px] xl:h-[560px] 2xl:h-[700px]">
         <Image
           src="/hero-mockup-curitiba.webp"
           alt=""
@@ -249,7 +249,7 @@ function Metodo({ prioridade }: { prioridade: boolean }) {
           height={1000}
           priority={prioridade}
           sizes="(min-width: 1024px) 380px, (min-width: 768px) 300px, 150px"
-          className="h-auto w-[150px] rotate-[3deg] drop-shadow-[0_18px_40px_rgba(0,0,0,0.45)] md:w-[250px] lg:w-[300px] xl:w-[360px]"
+          className="h-auto w-[150px] rotate-[3deg] drop-shadow-[0_18px_40px_rgba(0,0,0,0.45)] md:w-[250px] lg:w-[300px] xl:w-[380px] 2xl:w-[470px]"
         />
       </div>
     </>
@@ -285,7 +285,7 @@ function Apostila({ precoTexto }: { precoTexto: string }) {
           width={668}
           height={1000}
           sizes="(min-width: 1024px) 200px, (min-width: 768px) 125px, 110px"
-          className="relative z-10 -mr-5 h-auto w-[110px] -rotate-[4deg] drop-shadow-[0_14px_30px_rgba(0,0,0,0.45)] md:-mr-5 md:w-[105px] lg:-mr-6 lg:w-[140px] xl:-mr-8 xl:w-[205px]"
+          className="relative z-10 -mr-5 h-auto w-[110px] -rotate-[4deg] drop-shadow-[0_14px_30px_rgba(0,0,0,0.45)] md:-mr-5 md:w-[105px] lg:-mr-6 lg:w-[140px] xl:-mr-8 xl:w-[215px] 2xl:-mr-12 2xl:w-[290px]"
         />
         <Image
           src="/hero-mockup-curitiba.webp"
@@ -293,7 +293,7 @@ function Apostila({ precoTexto }: { precoTexto: string }) {
           width={558}
           height={1000}
           sizes="(min-width: 1024px) 265px, (min-width: 768px) 165px, 130px"
-          className="relative z-20 h-auto w-[130px] drop-shadow-[0_18px_40px_rgba(0,0,0,0.5)] md:w-[140px] lg:w-[190px] xl:w-[270px]"
+          className="relative z-20 h-auto w-[130px] drop-shadow-[0_18px_40px_rgba(0,0,0,0.5)] md:w-[140px] lg:w-[190px] xl:w-[285px] 2xl:w-[385px]"
         />
         <Image
           src="/hero-mockup-amapa.webp"
@@ -301,7 +301,7 @@ function Apostila({ precoTexto }: { precoTexto: string }) {
           width={664}
           height={1000}
           sizes="(min-width: 1024px) 200px, (min-width: 768px) 125px, 110px"
-          className="relative z-10 -ml-5 h-auto w-[110px] rotate-[4deg] drop-shadow-[0_14px_30px_rgba(0,0,0,0.45)] md:-ml-5 md:w-[105px] lg:-ml-6 lg:w-[140px] xl:-ml-8 xl:w-[205px]"
+          className="relative z-10 -ml-5 h-auto w-[110px] rotate-[4deg] drop-shadow-[0_14px_30px_rgba(0,0,0,0.45)] md:-ml-5 md:w-[105px] lg:-ml-6 lg:w-[140px] xl:-ml-8 xl:w-[215px] 2xl:-ml-12 2xl:w-[290px]"
         />
       </div>
     </>
@@ -331,14 +331,14 @@ function Simulado() {
         </div>
       </div>
       <div aria-hidden className="relative justify-self-center">
-        <div className="w-[300px] overflow-hidden md:w-[330px] lg:w-[400px] xl:w-[470px] rounded-2xl border border-white/30 bg-white shadow-[0_18px_50px_rgba(0,0,0,0.45),0_0_40px_rgba(255,214,102,0.25)]">
+        <div className="w-[300px] overflow-hidden md:w-[330px] lg:w-[400px] xl:w-[500px] 2xl:w-[640px] rounded-2xl border border-white/30 bg-white shadow-[0_18px_50px_rgba(0,0,0,0.45),0_0_40px_rgba(255,214,102,0.25)]">
           <Image
             src="/hero-simulado.webp"
             alt=""
             width={700}
             height={916}
             sizes="(min-width: 1024px) 470px, (min-width: 768px) 400px, 300px"
-            className="h-[190px] w-full object-cover object-top md:h-[330px] lg:h-[400px] xl:h-[460px]"
+            className="h-[190px] w-full object-cover object-top md:h-[330px] lg:h-[400px] xl:h-[480px] 2xl:h-[600px]"
           />
         </div>
       </div>
