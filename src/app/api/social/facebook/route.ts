@@ -24,6 +24,9 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
 const API = `https://graph.facebook.com/${process.env.FACEBOOK_GRAPH_VERSION ?? "v26.0"}`;
 const JANELA_DIAS = 7; // não divulga matéria velha
 const MATERIAS_POR_APOSTILA = 3; // a cada 3 matérias, 1 post de apostila
+const APOSTILAS_EM_FOCO = 6; // rodízio só entre as 6 apostilas mais recentes (prova ainda por vir)
+const APOSTILAS_SEM_MATERIA_POR_DIA = 2; // sem matéria nova, até 2 posts de apostila no dia
+const INTERVALO_APOSTILA_SEM_MATERIA_H = 4;
 
 function autorizado(request: NextRequest): boolean {
   const recebido = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
@@ -75,8 +78,14 @@ async function postarApostila(
 ): Promise<NextResponse | null> {
   const todas = await listarApostilasPublicadas(admin as never);
   if (todas.length === 0) return null;
-  const ordenadas = [...todas].sort((a, b) => (a.facebook_postado_em ?? "").localeCompare(b.facebook_postado_em ?? ""));
-  const apostila = ordenadas[0];
+  // Foco nas apostilas mais recentes: entre as últimas publicadas cuja prova ainda não passou,
+  // posta a que ficou mais tempo sem divulgação (assim há rodízio, sem esquecer as novas).
+  const hoje = new Date().toISOString().slice(0, 10);
+  const vigentes = todas.filter((a) => !a.data_prova || a.data_prova >= hoje);
+  const base = (vigentes.length ? vigentes : todas)
+    .sort((a, b) => (b.criado_em ?? "").localeCompare(a.criado_em ?? ""))
+    .slice(0, APOSTILAS_EM_FOCO);
+  const apostila = [...base].sort((a, b) => (a.facebook_postado_em ?? "").localeCompare(b.facebook_postado_em ?? ""))[0];
 
   const { count: jaPostadas } = await admin
     .from("apostilas")
@@ -192,7 +201,17 @@ export async function POST(request: NextRequest) {
   const escolhido = (data ?? []).sort(
     (a, b) => (b.publicado_em ?? "").localeCompare(a.publicado_em ?? "") || pontuacaoDivulgacao(b) - pontuacaoDivulgacao(a)
   )[0];
-  if (!escolhido) return NextResponse.json({ ok: true, publicado: false, motivo: "nada pendente" });
+  if (!escolhido) {
+    // Sem matéria nova (fim de semana, blog sem publicar): o dia não fica sem post, entra uma apostila
+    // — no máximo 2 por dia e com 4 h de intervalo, para não virar spam.
+    const ultima = ultimaApostila?.facebook_postado_em ? new Date(ultimaApostila.facebook_postado_em).getTime() : 0;
+    const passouIntervalo = Date.now() - ultima >= INTERVALO_APOSTILA_SEM_MATERIA_H * 3600e3;
+    if ((apostilasHoje ?? 0) < APOSTILAS_SEM_MATERIA_POR_DIA && passouIntervalo) {
+      const vez = await postarApostila(admin, { dry, pageId, token });
+      if (vez) return vez;
+    }
+    return NextResponse.json({ ok: true, publicado: false, motivo: "nada pendente" });
+  }
 
   const link = `${siteUrl}/noticias/${escolhido.slug}?utm_source=facebook&utm_medium=organico&utm_campaign=${escolhido.slug}`;
   const message = montarTexto(escolhido);
