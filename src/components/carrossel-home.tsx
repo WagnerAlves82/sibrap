@@ -222,34 +222,38 @@ function Metodo({ prioridade }: { prioridade: boolean }) {
     <>
       <div className="max-w-[620px]">
         <Rotulo>Método SIBRAP</Rotulo>
-        <Titulo>Seu sonho de conquistar uma vaga no concurso pode estar mais perto do que você imagina!</Titulo>
+        <Titulo>Suporte material para a sua aprovação</Titulo>
         <p className="mt-3 text-[15px] text-[#D7E6F7] md:text-base">
-          Com o método de aprovação SIBRAP, você se prepara de forma crescente e organizada.
+          Estude pelo celular ou pelo computador, no seu ritmo, com tudo o que você precisa em um só lugar.
         </p>
         <Itens
           itens={[
-            { t: "Estude aos poucos", d: "3 páginas de leitura por dia e até 7 exercícios diários", c: "3 páginas por dia" },
-            { t: "Estude pelo celular", d: "Pratique de onde estiver", c: "de onde estiver" },
-            { t: "Simulados on-line", d: "Personalizáveis, começando com 30 questões do seu edital", c: "personalizáveis" },
+            { t: "Apostila completa", d: "Conteúdo na ordem do edital, com dicas, exemplos e resumos de cada capítulo", c: "na ordem do edital" },
+            { t: "Mais de 500 questões", d: "No simulado on-line, personalizável, para praticar quando e onde quiser", c: "no simulado on-line" },
+            {
+              t: "Conheça o estilo da banca",
+              d: "Método que estuda as provas anteriores da banca para você saber como ela cobra cada assunto",
+              c: "saiba como a banca cobra",
+            },
           ]}
         />
         <p className="mt-3 hidden text-[13.5px] text-[#D7E6F7] md:block">
-          Assim, você avança um pouco a cada dia e fortalece sua preparação para conquistar sua vaga.
+          Assim, você chega à prova conhecendo a banca e sabendo o que esperar.
         </p>
         <div className="mt-5 flex flex-wrap items-center gap-3">
           <BotaoPrincipal href="#apostilas">Quero começar minha preparação</BotaoPrincipal>
           <BotaoSecundario href="#metodo">Conheça o método</BotaoSecundario>
         </div>
       </div>
-      <div aria-hidden className="relative h-[250px] justify-self-center overflow-hidden md:h-[450px] lg:h-[540px] xl:h-[640px] 2xl:h-[780px]">
+      <div aria-hidden className="relative justify-self-center">
         <Image
-          src="/hero-mockup-curitiba.webp"
+          src="/hero-combo-enfermagem.webp"
           alt=""
-          width={558}
-          height={1000}
+          width={1000}
+          height={875}
           priority={prioridade}
-          sizes="(min-width: 1024px) 380px, (min-width: 768px) 300px, 150px"
-          className="h-auto w-[150px] rotate-[3deg] drop-shadow-[0_18px_40px_rgba(0,0,0,0.45)] md:w-[270px] lg:w-[330px] xl:w-[420px] 2xl:w-[520px]"
+          sizes="(min-width: 1536px) 640px, (min-width: 1280px) 560px, (min-width: 1024px) 460px, (min-width: 768px) 380px, 300px"
+          className="h-auto w-[300px] drop-shadow-[0_18px_40px_rgba(0,0,0,0.45)] md:w-[380px] lg:w-[460px] xl:w-[560px] 2xl:w-[640px]"
         />
       </div>
     </>
