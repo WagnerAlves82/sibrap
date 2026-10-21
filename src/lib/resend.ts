@@ -229,7 +229,7 @@ export async function enviarEntregaApostila({
       corpo: `<p style="margin:0 0 12px 0;">Recebemos o seu pagamento de <strong>${valor}</strong> e a apostila <strong>${esc(titulo)}</strong> já está disponível para download na sua área.</p>
 <p style="margin:0 0 6px 0;"><strong>Como acessar</strong></p>
 <p style="margin:0 0 12px 0;">Entre em sibrap.tec.br com o e-mail <strong>${esc(email)}</strong> e a senha que você criou no cadastro. Se não lembrar a senha, use <a href="${SITE_URL()}/esqueci-senha" style="color:#0B2A4A;">Esqueci minha senha</a>.</p>
-<p style="margin:0;font-size:12.5px;color:#93A0AF;">Pedido ${esc(pedidoId.slice(0, 8))}. Material de estudo independente, para uso pessoal — não compartilhe nem revenda o arquivo.</p>`,
+<p style="margin:0;font-size:12.5px;color:#93A0AF;">Pedido ${esc(pedidoId.slice(0, 8))}. Uso pessoal — não compartilhe nem revenda o arquivo.</p>`,
       botao: { texto: "Baixar minha apostila &rarr;", url: `${SITE_URL()}/minha-area/apostilas/${slug}` },
     }),
   });

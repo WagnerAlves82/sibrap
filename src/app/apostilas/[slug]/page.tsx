@@ -295,9 +295,7 @@ export default async function ApostilaPage({ params }: Props) {
             </div>
 
             <p className="max-w-[80ch] text-[12.5px] leading-relaxed text-[#516278] md:col-span-2">
-              Material de estudo independente, sem vínculo com a banca ou com a
-              prefeitura. O edital oficial sempre prevalece sobre qualquer
-              conteúdo da apostila. Vendido por {EMISSOR.nome}, CNPJ {EMISSOR.cnpj}.
+              Vendido por {EMISSOR.nome}, CNPJ {EMISSOR.cnpj}.
             </p>
           </div>
         </div>

@@ -292,8 +292,8 @@ export default async function Home() {
             </Reveal>
             <Reveal delay={300}>
               <Motivo titulo="Transparência">
-                Somos um material de estudo independente, sem vínculo com
-                bancas ou prefeituras. O edital oficial sempre prevalece.
+                Antes de comprar você vê o que a apostila traz: páginas,
+                questões, capítulos online e a data da prova.
               </Motivo>
             </Reveal>
           </div>

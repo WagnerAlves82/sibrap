@@ -189,8 +189,7 @@ export default async function ApostilaAreaPage({
                   )}
                 </div>
                 <p className="mt-4 text-[12.5px] leading-relaxed text-[#516278]">
-                  Material de estudo independente. O edital oficial sempre
-                  prevalece. Uso pessoal — não compartilhe nem revenda o arquivo.
+                  Uso pessoal — não compartilhe nem revenda o arquivo.
                 </p>
               </div>
             ) : (

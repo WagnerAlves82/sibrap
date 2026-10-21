@@ -164,7 +164,6 @@ export function RodapeSite() {
           <p>
             © {new Date().getFullYear()} {EMISSOR.nome}
           </p>
-          <p>Material de estudo independente, sem vínculo com bancas ou órgãos públicos.</p>
         </div>
       </div>
     </footer>
