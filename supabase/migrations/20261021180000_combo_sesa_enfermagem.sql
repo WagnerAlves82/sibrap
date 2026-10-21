@@ -34,3 +34,23 @@ begin
   return new;
 end;
 $function$;
+
+-- Videoaulas do combo, liberadas uma a uma (liberada=true + video_url preenchida) conforme forem ficando prontas.
+-- Só o servidor (chave de serviço) lê esta tabela; o aluno vê o título e, se liberada, o vídeo.
+create table if not exists public.combo_videoaulas (
+  id uuid primary key default gen_random_uuid(),
+  combo_slug text not null,
+  materia text not null,
+  ordem integer not null,
+  titulo text not null,
+  video_url text,
+  liberada boolean not null default false,
+  criado_em timestamptz not null default now(),
+  unique (combo_slug, materia, ordem)
+);
+alter table public.combo_videoaulas enable row level security;
+
+insert into public.combo_videoaulas (combo_slug, materia, ordem, titulo)
+select 'sesa-ap-tecnico-enfermagem', m.materia, n, 'Videoaula ' || n
+from (values ('Informática'), ('Legislação do SUS')) as m(materia), generate_series(1, 5) as n
+on conflict do nothing;

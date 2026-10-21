@@ -238,6 +238,39 @@ export type Database = {
           },
         ]
       }
+      combo_videoaulas: {
+        Row: {
+          combo_slug: string
+          criado_em: string
+          id: string
+          liberada: boolean
+          materia: string
+          ordem: number
+          titulo: string
+          video_url: string | null
+        }
+        Insert: {
+          combo_slug: string
+          criado_em?: string
+          id?: string
+          liberada?: boolean
+          materia: string
+          ordem: number
+          titulo: string
+          video_url?: string | null
+        }
+        Update: {
+          combo_slug?: string
+          criado_em?: string
+          id?: string
+          liberada?: boolean
+          materia?: string
+          ordem?: number
+          titulo?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
       apostila_capitulos: {
         Row: {
           apostila_id: string
