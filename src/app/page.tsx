@@ -9,6 +9,7 @@ import { VitrinePosts } from "@/components/vitrine-posts";
 import { IconeSolido, type NomeIconeSolido } from "@/components/icones-solidos";
 import { SeloAbed } from "@/components/selo-abed";
 import { Reveal } from "@/components/reveal";
+import { COMBOS } from "@/lib/combos";
 import { diasAte, formatarDataIso, formatarPreco, listarApostilasPublicadas } from "@/lib/apostilas";
 import { listarPostsVitrine } from "@/lib/blog";
 import { SLIDES_HOME } from "@/lib/home-slides";
@@ -86,6 +87,58 @@ export default async function Home() {
               Ver todas as apostilas
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Combo: apostila + videoaulas (por ora só SESA-AP / Técnico em Enfermagem) */}
+      <section id="combo" className="scroll-mt-14 overflow-hidden bg-brand py-14 text-white sm:py-16">
+        <div className="mx-auto grid max-w-[1180px] items-center gap-10 px-4 sm:px-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <Reveal variante="esquerda" className="max-w-[56ch]">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 font-data text-xs font-semibold text-[#D7E6F7]">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+              Combo · SESA-AP (Amapá)
+            </span>
+            <h2 className="mt-3.5 font-display text-[1.7rem] font-extrabold leading-tight sm:text-[2.3rem]">
+              Apostila + videoaulas para Técnico em Enfermagem.
+            </h2>
+            <p className="mt-3 text-[15.5px] leading-relaxed text-[#D7E6F7]">
+              Apostila completa do edital 001/2026, simulado on-line e videoaulas de Informática e Legislação do SUS, tudo
+              na sua área, por um preço só.
+            </p>
+            <ul className="mt-4 flex flex-col gap-2 text-[15px] text-white/90">
+              {["Apostila completa em PDF e para ler no celular", "Mais de 500 questões no simulado on-line", "Videoaulas de Informática e Legislação do SUS"].map((i) => (
+                <li key={i} className="flex gap-2">
+                  <span className="mt-0.5 text-accent" aria-hidden>
+                    ✓
+                  </span>
+                  {i}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+              <Link
+                href={`/combos/${COMBOS["sesa-ap-tecnico-enfermagem"].slug}`}
+                className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3.5 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"
+              >
+                Conhecer o combo <span aria-hidden>→</span>
+              </Link>
+              <span className="font-data text-[15px] font-semibold text-[#D7E6F7]">
+                {formatarPreco(COMBOS["sesa-ap-tecnico-enfermagem"].precoPadraoCentavos)} no PIX
+              </span>
+            </div>
+          </Reveal>
+          <Reveal variante="direita" delay={150}>
+            <Link href={`/combos/${COMBOS["sesa-ap-tecnico-enfermagem"].slug}`} aria-label="Ver o combo Técnico em Enfermagem">
+              <Image
+                src="/hero-combo-enfermagem.webp"
+                alt="Combo apostila e videoaulas, Técnico em Enfermagem SESA-AP"
+                width={1000}
+                height={875}
+                sizes="(min-width: 768px) 560px, 90vw"
+                className="mx-auto h-auto w-full max-w-[560px] drop-shadow-[0_22px_40px_rgba(0,0,0,0.45)]"
+              />
+            </Link>
+          </Reveal>
         </div>
       </section>
 
@@ -336,6 +389,7 @@ const RECURSOS_SIMULADO: [NomeIconeSolido, string, string][] = [
 
 const ANCORAS: [string, string][] = [
   ["Apostilas", "#apostilas"],
+  ["Combo", "#combo"],
   ["Notícias", "#noticias"],
   ["Simulado online", "#simulado-online"],
   ["Cursos gratuitos", "#cursos-gratuitos"],

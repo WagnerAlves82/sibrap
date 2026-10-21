@@ -188,7 +188,7 @@ export function RodapeSite() {
 
         <div className="mt-10 flex flex-col gap-2 border-t border-white/10 pt-6 text-[12px] text-white/45 sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {new Date().getFullYear()} {EMISSOR.nome}
+            © {new Date().getFullYear()} {EMISSOR.nome} · CNPJ {EMISSOR.cnpj}
           </p>
         </div>
       </div>

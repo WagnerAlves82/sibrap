@@ -16,13 +16,6 @@ import { PrecoApostila } from "@/components/preco-apostila";
 import { VendaApostila, perguntasVenda, type DadosVenda } from "@/components/venda-apostila";
 import { formatarPreco } from "@/lib/apostilas";
 
-function resumir(texto: string, limite: number): string {
-  if (texto.length <= limite) return texto;
-  const corte = texto.slice(0, limite);
-  const fim = Math.max(corte.lastIndexOf(", "), corte.lastIndexOf(": "), corte.lastIndexOf(" "));
-  return `${corte.slice(0, fim > limite * 0.6 ? fim : limite).replace(/[,:;]$/, "")}…`;
-}
-
 type Props = { params: Promise<{ slug: string }> };
 
 async function carregar(slug: string) {
@@ -207,9 +200,7 @@ export default async function ApostilaPage({ params }: Props) {
               {apostila.titulo}
             </h1>
             {apostila.descricao && (
-              <p className="mt-3 max-w-[60ch] text-[16px] leading-relaxed text-[#516278]">
-                {resumir(apostila.descricao, 190)}
-              </p>
+              <p className="mt-3 max-w-[64ch] text-[15px] leading-relaxed text-[#516278]">{apostila.descricao}</p>
             )}
 
             {apostila.selos?.length > 0 && (
@@ -293,10 +284,6 @@ export default async function ApostilaPage({ params }: Props) {
                 ))}
               </ul>
             </div>
-
-            <p className="max-w-[80ch] text-[12.5px] leading-relaxed text-[#516278] md:col-span-2">
-              Vendido por {EMISSOR.nome}, CNPJ {EMISSOR.cnpj}.
-            </p>
           </div>
         </div>
       </main>

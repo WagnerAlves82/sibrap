@@ -17,7 +17,7 @@ type PedidoDaApostilaOk = {
 
 /** Cria o pedido pendente (RPC) e devolve o essencial pra gerar a cobrança,
  * ou o erro já formatado — compartilhado pelos dois meios de pagamento. */
-async function criarPedidoDaApostila(slug: string): Promise<PedidoDaApostilaErro | PedidoDaApostilaOk> {
+async function criarPedidoDaApostila(slug: string, combo = false): Promise<PedidoDaApostilaErro | PedidoDaApostilaOk> {
   if (!slugValido(slug)) return { ok: false, erro: "Apostila não encontrada." };
 
   const supabase = await criarClienteSupabaseServer();
@@ -34,7 +34,8 @@ async function criarPedidoDaApostila(slug: string): Promise<PedidoDaApostilaErro
     .eq("slug", slug)
     .eq("status", "publicada")
     .maybeSingle();
-  const produtoSlug = apostila?.produtos?.slug;
+  // combo: o produto do combo tem o mesmo slug do da apostila, com prefixo "combo-"
+  const produtoSlug = combo ? apostila?.produtos?.slug?.replace(/^apostila-/, "combo-") : apostila?.produtos?.slug;
   if (!produtoSlug) return { ok: false, erro: "Esta apostila não está disponível para compra agora." };
 
   const { data: pedidoRows, error } = await supabase.rpc("criar_pedido_por_slug", {
@@ -47,8 +48,8 @@ async function criarPedidoDaApostila(slug: string): Promise<PedidoDaApostilaErro
   return { ok: true, supabase, user: { id: user.id, email: user.email, user_metadata: user.user_metadata }, produtoSlug, pedido: pedidoRows[0] };
 }
 
-export async function criarPagamentoApostilaAction(slug: string): Promise<EstadoPix> {
-  const r = await criarPedidoDaApostila(slug);
+export async function criarPagamentoApostilaAction(slug: string, combo = false): Promise<EstadoPix> {
+  const r = await criarPedidoDaApostila(slug, combo);
   if (!r.ok) return { erro: r.erro };
   const { supabase, user, pedido } = r;
   return gerarPixParaPedido({
@@ -61,8 +62,8 @@ export async function criarPagamentoApostilaAction(slug: string): Promise<Estado
   });
 }
 
-export async function criarPagamentoCartaoApostilaAction(slug: string): Promise<EstadoCheckoutCartao> {
-  const r = await criarPedidoDaApostila(slug);
+export async function criarPagamentoCartaoApostilaAction(slug: string, combo = false): Promise<EstadoCheckoutCartao> {
+  const r = await criarPedidoDaApostila(slug, combo);
   if (!r.ok) return { erro: r.erro };
   const { supabase, user, produtoSlug, pedido } = r;
 
@@ -74,6 +75,6 @@ export async function criarPagamentoCartaoApostilaAction(slug: string): Promise<
     produtoNome: pedido.produto_nome,
     valorCentavos: pedido.valor_centavos,
     email: user.email,
-    voltarPara: `${origem}/minha-area/apostilas/${slug}`,
+    voltarPara: `${origem}/minha-area/${combo ? "combos" : "apostilas"}/${slug}`,
   });
 }

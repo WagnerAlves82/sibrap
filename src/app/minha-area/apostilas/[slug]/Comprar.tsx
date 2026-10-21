@@ -18,19 +18,21 @@ export function ComprarApostila({
   preco,
   precoCentavos,
   cartaoAtivo = false,
+  combo = false,
 }: {
   slug: string;
   titulo: string;
   preco: string;
   precoCentavos: number;
   cartaoAtivo?: boolean;
+  combo?: boolean;
 }) {
   const router = useRouter();
   const [carregandoCartao, setCarregandoCartao] = useState(false);
   const [erroCartao, setErroCartao] = useState<string | null>(null);
 
   const item = {
-    item_id: slug,
+    item_id: combo ? `combo-${slug}` : slug,
     item_name: titulo,
     price: precoCentavos / 100,
     quantity: 1,
@@ -45,7 +47,7 @@ export function ComprarApostila({
     });
     setCarregandoCartao(true);
     setErroCartao(null);
-    const r = await criarPagamentoCartaoApostilaAction(slug);
+    const r = await criarPagamentoCartaoApostilaAction(slug, combo);
     if ("erro" in r) {
       setErroCartao(r.erro);
       setCarregandoCartao(false);
@@ -66,7 +68,7 @@ export function ComprarApostila({
             items: [item],
           });
           fbqTrack("InitiateCheckout", { currency: "BRL", value: precoCentavos / 100 });
-          return criarPagamentoApostilaAction(slug);
+          return criarPagamentoApostilaAction(slug, combo);
         }}
         rotuloBotao={`Pagar ${preco} com PIX`}
         aoAprovar={(pedidoId) => {

@@ -256,7 +256,7 @@ export default async function CursoPublicoPage({ params }: Props) {
             </Reveal>
           </div>
           <p className="mt-6 max-w-[70ch] text-[12.5px] leading-relaxed text-[#93A0AF]">
-            {AVISO_CURSO_LIVRE} Emitido por {EMISSOR.nome}, CNPJ {EMISSOR.cnpj}.
+            {AVISO_CURSO_LIVRE}
           </p>
         </div>
       </section>
