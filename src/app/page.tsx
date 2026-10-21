@@ -118,13 +118,10 @@ export default async function Home() {
             <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
               <Link
                 href={`/combos/${COMBOS["sesa-ap-tecnico-enfermagem"].slug}`}
-                className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3.5 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"
+                className="btn-pulso brilho inline-flex items-center gap-2 rounded-lg bg-accent px-7 py-4 text-[16px] font-extrabold text-accent-ink"
               >
                 Conhecer o combo <span aria-hidden>→</span>
               </Link>
-              <span className="font-data text-[15px] font-semibold text-[#D7E6F7]">
-                {formatarPreco(COMBOS["sesa-ap-tecnico-enfermagem"].precoPadraoCentavos)} no PIX
-              </span>
             </div>
           </Reveal>
           <Reveal variante="direita" delay={150}>
