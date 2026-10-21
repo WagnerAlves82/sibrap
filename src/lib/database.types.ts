@@ -209,6 +209,35 @@ export type Database = {
         }
         Relationships: []
       }
+      plano_progresso: {
+        Row: {
+          concluido_em: string
+          item: string
+          produto_id: string
+          user_id: string
+        }
+        Insert: {
+          concluido_em?: string
+          item: string
+          produto_id: string
+          user_id: string
+        }
+        Update: {
+          concluido_em?: string
+          item?: string
+          produto_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plano_progresso_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       apostila_capitulos: {
         Row: {
           apostila_id: string
@@ -1528,6 +1557,10 @@ export type Database = {
           correta: boolean
           gabarito: string
         }[]
+      }
+      marcar_item_plano: {
+        Args: { p_concluido: boolean; p_item: string; p_slug: string }
+        Returns: undefined
       }
       capitulo_da_questao: {
         Args: { p_produto_id: string; p_questao_id: string }

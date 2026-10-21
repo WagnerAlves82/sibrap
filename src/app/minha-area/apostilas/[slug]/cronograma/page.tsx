@@ -5,7 +5,9 @@ import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { diasAte, formatarDataIso, slugValido } from "@/lib/apostilas";
+import { hojeEmSaoPaulo, minutosDoCapitulo, montarPlano, type ItemPlano } from "@/lib/plano-estudos";
 import { ListaCronograma, type TopicoCronograma } from "./ListaCronograma";
+import { PlanoDiario, type DiaTela } from "./PlanoDiario";
 
 export const metadata: Metadata = {
   title: "Cronograma de estudos",
@@ -29,7 +31,7 @@ export default async function CronogramaPage({
   const admin = criarClienteSupabaseAdmin();
   const { data: apostila } = await admin
     .from("apostilas")
-    .select("titulo, produto_id, data_prova, produtos(cargo_id)")
+    .select("id, titulo, produto_id, data_prova, produtos(cargo_id)")
     .eq("slug", slug)
     .maybeSingle();
   if (!apostila) notFound();
@@ -40,6 +42,78 @@ export default async function CronogramaPage({
     .eq("produto_id", apostila.produto_id)
     .maybeSingle();
   if (!acesso) redirect(`/minha-area/apostilas/${slug}`);
+
+  // Apostila com capítulos online: plano diário automático até a prova.
+  const { data: capitulos } = await supabase
+    .from("apostila_capitulos")
+    .select("numero, titulo, html")
+    .eq("apostila_id", apostila.id)
+    .order("numero");
+  if ((capitulos ?? []).length > 0) {
+    const { data: feitosPlano } = await supabase.from("plano_progresso").select("item").eq("produto_id", apostila.produto_id);
+    const concluidos = (feitosPlano ?? []).map((f) => f.item);
+    const feitosSet = new Set(concluidos);
+    const itens: ItemPlano[] = capitulos!.map((c) => ({
+      id: `cap${c.numero}`,
+      numero: c.numero,
+      titulo: c.titulo,
+      minutos: minutosDoCapitulo(c.html.replace(/<[^>]+>/g, " ").length),
+    }));
+    const hoje = hojeEmSaoPaulo();
+    const plano = montarPlano(
+      itens.filter((i) => !feitosSet.has(i.id)),
+      apostila.data_prova,
+      hoje
+    );
+    const nomeDia = new Intl.DateTimeFormat("pt-BR", { weekday: "long", day: "2-digit", month: "2-digit", timeZone: "UTC" });
+    const dias: DiaTela[] = plano.dias.map((d) => ({
+      data: d.data,
+      rotulo: nomeDia.format(new Date(`${d.data}T12:00:00Z`)),
+      tipo: d.tipo,
+      itens: d.itens,
+      minutos: d.minutos,
+    }));
+    const diasProva = plano.diasRestantes;
+    const dataProva = formatarDataIso(apostila.data_prova);
+    return (
+      <div className="flex min-h-screen flex-col bg-surface-2 font-body">
+        <CabecalhoSite logado />
+        <main className="mx-auto w-full max-w-[820px] flex-1 px-4 py-10 sm:px-6">
+          <Link href={`/minha-area/apostilas/${slug}`} className="text-[13px] font-semibold text-brand underline underline-offset-4">
+            ← Voltar pra apostila
+          </Link>
+          <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <h1 className="font-display text-2xl font-extrabold text-[#14213A] sm:text-[1.75rem]">Seu plano de estudos</h1>
+              <p className="mt-1 text-[14px] text-[#516278]">{apostila.titulo}</p>
+            </div>
+            {diasProva !== null && diasProva > 0 && (
+              <span className="rounded-lg bg-brand px-4 py-2.5 font-data text-[13px] font-bold text-white">
+                {diasProva === 1 ? "A prova é amanhã" : `Faltam ${diasProva - 1} dias`}
+                {dataProva ? ` · ${dataProva}` : ""}
+              </span>
+            )}
+          </div>
+          <p className="mt-3 text-[13.5px] text-[#516278]">
+            {plano.semData
+              ? "Esta apostila ainda não tem data de prova definida, então o plano segue um ritmo de 35 dias."
+              : "O plano distribui os capítulos que faltam pelos dias até a prova. Se você atrasar, ele se reorganiza sozinho."}
+            {plano.prazoCurto && !plano.semData ? " O prazo está curto: priorize os capítulos de cada dia e treine no simulado." : ""}
+          </p>
+          <div className="mt-6">
+            {plano.dias.every((d) => d.itens.length === 0) && feitosSet.size >= itens.length ? (
+              <p className="rounded-xl border border-[#D7DEE6] bg-white p-5 text-[14.5px] text-[#33465E]">
+                Você concluiu todos os capítulos. Agora é revisar e praticar no simulado até a prova.
+              </p>
+            ) : (
+              <PlanoDiario slug={slug} dias={dias} concluidos={concluidos} total={itens.length} />
+            )}
+          </div>
+        </main>
+        <RodapeSite />
+      </div>
+    );
+  }
 
   const cargoId = apostila.produtos?.cargo_id;
   if (!cargoId) redirect(`/minha-area/apostilas/${slug}`);
