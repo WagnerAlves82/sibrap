@@ -163,7 +163,7 @@ export default async function ApostilaAreaPage({
                       Fazer simulado online <span aria-hidden>→</span>
                     </Link>
                   )}
-                  {temSimulado && (
+                  {(temSimulado || (capitulosOnline ?? 0) > 0) && (
                     <Link
                       href={`/minha-area/apostilas/${apostila.slug}/cronograma`}
                       className="inline-flex items-center gap-2 rounded-lg border-[1.5px] border-brand px-6 py-3.5 text-[15px] font-bold text-brand transition-colors hover:bg-brand/5"

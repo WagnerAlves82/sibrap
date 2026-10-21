@@ -31,7 +31,7 @@ export default async function CronogramaPage({
   const admin = criarClienteSupabaseAdmin();
   const { data: apostila } = await admin
     .from("apostilas")
-    .select("id, titulo, produto_id, data_prova, produtos(cargo_id)")
+    .select("id, titulo, produto_id, data_prova, produtos(cargo_id, inclui_simulado)")
     .eq("slug", slug)
     .maybeSingle();
   if (!apostila) notFound();
@@ -106,7 +106,7 @@ export default async function CronogramaPage({
                 Você concluiu todos os capítulos. Agora é revisar e praticar no simulado até a prova.
               </p>
             ) : (
-              <PlanoDiario slug={slug} dias={dias} concluidos={concluidos} total={itens.length} />
+              <PlanoDiario slug={slug} comSimulado={!!apostila.produtos?.inclui_simulado} dias={dias} concluidos={concluidos} total={itens.length} />
             )}
           </div>
         </main>

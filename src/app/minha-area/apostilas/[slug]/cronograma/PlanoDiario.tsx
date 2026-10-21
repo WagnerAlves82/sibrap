@@ -18,11 +18,13 @@ function duracao(min: number): string {
 // Ao concluir um capítulo, a página recalcula (revalidatePath) e o plano se ajusta sozinho.
 export function PlanoDiario({
   slug,
+  comSimulado,
   dias,
   concluidos,
   total,
 }: {
   slug: string;
+  comSimulado: boolean;
   dias: DiaTela[];
   concluidos: string[];
   total: number;
@@ -105,11 +107,11 @@ export function PlanoDiario({
           <h2 className="font-display text-[1.15rem] font-extrabold text-[#14213A]">Hoje, {hoje.rotulo}</h2>
           {hoje.tipo === "revisao" ? (
             <p className="mt-2 rounded-xl border border-[#D7DEE6] bg-white p-4 text-[14px] text-[#516278]">
-              Dia de revisão: refaça os resumos dos capítulos e treine no simulado.
+              Dia de revisão: refaça os resumos dos capítulos{comSimulado ? " e treine no simulado" : ""}.
             </p>
           ) : hoje.itens.length === 0 ? (
             <p className="mt-2 rounded-xl border border-[#D7DEE6] bg-white p-4 text-[14px] text-[#516278]">
-              Hoje não há capítulo novo. Aproveite para praticar no simulado e revisar o que já estudou.
+              Hoje não há capítulo novo. Aproveite para revisar o que já estudou.
             </p>
           ) : (
             <ul className="mt-2 divide-y divide-[#EEF1F5] overflow-hidden rounded-xl border border-[#D7DEE6] bg-white">
@@ -119,9 +121,9 @@ export function PlanoDiario({
             </ul>
           )}
           <div className="mt-3 flex flex-wrap items-center gap-3">
-            <Link href={`${base}/simulado`} className="inline-flex items-center gap-2 rounded-lg bg-brand px-5 py-3 text-[14.5px] font-bold text-white hover:brightness-125">
-              Praticar com o simulado <span aria-hidden>→</span>
-            </Link>
+            {comSimulado && (            <Link href={`${base}/simulado`} className="inline-flex items-center gap-2 rounded-lg bg-brand px-5 py-3 text-[14.5px] font-bold text-white hover:brightness-125">
+                Praticar com o simulado <span aria-hidden>→</span>
+              </Link>)}
             {hoje.minutos > 0 && <span className="font-data text-[12.5px] text-[#516278]">Estudo de hoje: ~{duracao(hoje.minutos)}</span>}
           </div>
         </section>
