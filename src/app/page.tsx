@@ -10,7 +10,7 @@ import { IconeSolido, type NomeIconeSolido } from "@/components/icones-solidos";
 import { SeloAbed } from "@/components/selo-abed";
 import { Reveal } from "@/components/reveal";
 import { diasAte, formatarDataIso, formatarPreco, listarApostilasPublicadas } from "@/lib/apostilas";
-import { listarPostsPublicados } from "@/lib/blog";
+import { listarPostsVitrine } from "@/lib/blog";
 import { SLIDES_HOME } from "@/lib/home-slides";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
@@ -23,7 +23,7 @@ export default async function Home() {
 
   const [apostilas, posts, { data: iscaTranspetro }] = await Promise.all([
     listarApostilasPublicadas(supabase),
-    listarPostsPublicados(supabase, { limite: 6 }),
+    listarPostsVitrine(supabase),
     supabase.from("produtos").select("ativo").eq("slug", "simulado-gratis").maybeSingle(),
   ]);
   // Isca gratuita do Transpetro desativada por ora (ver handle_new_user()
@@ -79,7 +79,7 @@ export default async function Home() {
             </p>
           </Reveal>
 
-          <VitrineApostilas apostilas={apostilas} />
+          <VitrineApostilas apostilas={apostilas} comBusca />
 
           <div className="mt-8 text-center">
             <Link href="/apostilas" className="text-sm font-semibold text-brand underline underline-offset-4">
@@ -111,7 +111,7 @@ export default async function Home() {
             </Reveal>
 
   
-            <VitrinePosts posts={posts} />
+            <VitrinePosts posts={posts} limiteInicial={6} />
 
             <div className="mt-8 text-center">
               <Link href="/noticias" className="text-sm font-semibold text-brand underline underline-offset-4">

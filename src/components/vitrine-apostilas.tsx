@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { ApostilaVitrine } from "@/lib/apostilas";
 import { CardApostila } from "@/components/card-apostila";
+import { casaComTermos, termosDaBusca, textoDaApostila } from "@/lib/busca";
 
 // Vitrine com filtros (categoria, estado e busca). A lista é pequena e
 // já vem completa do servidor — filtrar no navegador evita ida e volta.
@@ -31,15 +32,9 @@ export function VitrineApostilas({
   );
 
   const filtradas = useMemo(() => {
-    const termo = busca.trim().toLowerCase();
+    const termos = termosDaBusca(busca);
     const lista = apostilas.filter(
-      (a) =>
-        (categoria === "Todas" || a.categoria === categoria) &&
-        (!uf || a.uf === uf) &&
-        (!termo ||
-          `${a.titulo} ${a.orgao} ${a.cargo} ${a.cidade ?? ""} ${a.banca ?? ""}`
-            .toLowerCase()
-            .includes(termo))
+      (a) => (categoria === "Todas" || a.categoria === categoria) && (!uf || a.uf === uf) && casaComTermos(textoDaApostila(a), termos)
     );
     return limite ? lista.slice(0, limite) : lista;
   }, [apostilas, categoria, uf, busca, limite]);
@@ -83,9 +78,9 @@ export function VitrineApostilas({
                 type="search"
                 value={busca}
                 onChange={(e) => setBusca(e.target.value)}
-                placeholder="Buscar órgão, cargo ou cidade"
+                placeholder="Buscar: apostila, cidade, cargo…"
                 aria-label="Buscar apostila"
-                className="w-full min-w-0 rounded-lg border border-[#D7DEE6] bg-white px-3 py-2 text-[13.5px] text-[#14213A] sm:w-64"
+                className="w-full min-w-0 rounded-lg border border-[#D7DEE6] bg-white px-3 py-2 text-[13.5px] text-[#14213A] sm:w-72"
               />
             )}
           </div>

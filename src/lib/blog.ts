@@ -212,6 +212,15 @@ export async function listarPostsPublicados(
   return data ?? [];
 }
 
+/**
+ * Lista para vitrines e busca: todas as notícias publicadas, mas com o texto cortado
+ * (só o suficiente para o resumo do cartão), para não mandar o conteúdo inteiro ao navegador.
+ */
+export async function listarPostsVitrine(supabase: SupabaseClient<Database>): Promise<PostVitrine[]> {
+  const { data } = await supabase.from("posts").select("*").eq("status", "publicada").order("publicado_em", { ascending: false });
+  return (data ?? []).map((p) => ({ ...p, conteudo: (p.conteudo ?? "").slice(0, 700) }));
+}
+
 function normalizar(t: string): string {
   return t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 }
