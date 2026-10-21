@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Sobre o SIBRAP",
   alternates: { canonical: "/sobre" },
   description:
-    "Conheça o SIBRAP: apostilas em PDF, simulados e matérias sobre concursos públicos municipais, produzidos de forma independente em Manaus/AM.",
+    "Conheça o SIBRAP: apostilas em PDF, simulados e matérias sobre concursos públicos municipais, produzidos em Manaus/AM.",
 };
 
 export default function SobrePage() {
@@ -36,11 +36,10 @@ export default function SobrePage() {
         <p>
           As matérias são escritas por nós a partir das informações do edital e de fontes oficiais, como o site da
           prefeitura, da câmara ou da banca organizadora, conferidas em mais de uma fonte. Sempre que possível,
-          indicamos o link do edital. Os dados mudam: antes de se inscrever, confira o edital oficial.
+          indicamos o link do edital.
         </p>
         <p>
-          O SIBRAP é <strong>independente</strong> e não tem vínculo com bancas organizadoras nem com os órgãos que
-          abrem os concursos. Se encontrar algum erro, avise pelo e-mail abaixo e corrigimos.
+          Se encontrar algum erro, avise pelo e-mail abaixo e corrigimos.
         </p>
       </Secao>
 

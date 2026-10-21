@@ -218,12 +218,6 @@ export default async function PostPage({ params }: Props) {
             );
           })()}
 
-          <p className="mt-10 max-w-[62ch] text-[12.5px] leading-relaxed text-[#516278]">
-            Conteúdo informativo, sem vínculo com a banca ou o órgão do
-            concurso. O edital oficial sempre prevalece sobre qualquer
-            conteúdo deste post.
-          </p>
-
           {post.edital_url && (
             <aside className="mt-12 flex flex-col gap-3 rounded-2xl border border-[#D7DEE6] bg-white p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
               <div>
