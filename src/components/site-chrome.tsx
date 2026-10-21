@@ -5,7 +5,7 @@ import { sairDaConta } from "@/app/login/actions";
 import { BotaoPreferenciasCookies } from "@/components/cookies-consentimento";
 import { EMISSOR } from "@/lib/emissor";
 
-export function CabecalhoSite({ logado, next, semLinks }: { logado: boolean; next?: string; semLinks?: boolean }) {
+export function CabecalhoSite({ logado, next, semLinks, semBusca }: { logado: boolean; next?: string; semLinks?: boolean; semBusca?: boolean }) {
   const itemNav = "px-1.5 py-2 sm:px-2 text-[#33465E] transition-colors hover:text-brand";
   return (
     <header className="border-b-[3px] border-accent bg-white">
@@ -20,6 +20,32 @@ export function CabecalhoSite({ logado, next, semLinks }: { logado: boolean; nex
             className="h-7 w-auto min-[400px]:h-9 sm:h-12"
           />
         </Link>
+
+        {!semBusca && (
+          <>
+            <form action="/busca" method="get" role="search" className="mx-2 hidden min-w-0 max-w-[340px] flex-1 md:block">
+              <label className="relative block">
+                <span className="sr-only">Buscar apostilas e notícias</span>
+                <svg aria-hidden width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#7A8A99]">
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="m20 20-3.5-3.5" />
+                </svg>
+                <input
+                  type="search"
+                  name="q"
+                  placeholder="Buscar apostila ou cidade…"
+                  className="w-full rounded-full border border-[#D7DEE6] bg-[#F6F8FB] py-2 pl-9 pr-3 text-[13px] font-normal text-[#14213A] placeholder:text-[#7A8A99] focus:border-brand focus:bg-white focus:outline-none"
+                />
+              </label>
+            </form>
+            <Link href="/busca" aria-label="Buscar" className="ml-auto mr-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[#33465E] hover:bg-[#F0F4F8] md:hidden">
+              <svg aria-hidden width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-3.5-3.5" />
+              </svg>
+            </Link>
+          </>
+        )}
 
         <nav className="flex min-w-0 items-center gap-0 text-[13px] font-semibold whitespace-nowrap sm:gap-3 sm:text-sm">
           {!semLinks && (

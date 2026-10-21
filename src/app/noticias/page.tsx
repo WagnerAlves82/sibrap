@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { VitrinePosts } from "@/components/vitrine-posts";
-import { listarPostsPublicados } from "@/lib/blog";
+import { listarPostsVitrine } from "@/lib/blog";
 import { listarApostilasPublicadas } from "@/lib/apostilas";
 
 export const metadata: Metadata = {
@@ -13,10 +13,11 @@ export const metadata: Metadata = {
   openGraph: { title: "Notícias de concursos públicos | SIBRAP", url: "/noticias", type: "website", locale: "pt_BR" },
 };
 
-export default async function NoticiasPage() {
+export default async function NoticiasPage({ searchParams }: { searchParams: Promise<{ uf?: string }> }) {
+  const { uf } = await searchParams;
   const supabase = await criarClienteSupabaseServer();
   const [posts, apostilas, { data: userData }] = await Promise.all([
-    listarPostsPublicados(supabase),
+    listarPostsVitrine(supabase),
     listarApostilasPublicadas(supabase),
     supabase.auth.getUser(),
   ]);
@@ -33,7 +34,7 @@ export default async function NoticiasPage() {
             Editais novos, prazos de inscrição e vagas abertas. Escolha o seu
             estado pra ver as oportunidades mais atuais primeiro.
           </p>
-          <VitrinePosts posts={posts} apostilas={apostilas} comBusca />
+          <VitrinePosts posts={posts} apostilas={apostilas} comBusca ufInicial={uf && /^[A-Z]{2}$/.test(uf) ? uf : ""} />
         </div>
       </main>
       <RodapeSite />

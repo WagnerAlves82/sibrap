@@ -100,8 +100,7 @@ export async function listarApostilasPublicadas(
     .from("apostilas")
     .select("*, produtos(preco_centavos)")
     .eq("status", "publicada")
-    .order("ordem")
-    .order("data_prova", { nullsFirst: false });
+    .order("criado_em", { ascending: false });  // mais recentes primeiro
 
   return (data ?? [])
     .filter((a) => a.produtos)

@@ -5,6 +5,8 @@ import { ESFERAS, type PostVitrine } from "@/lib/blog";
 import { CardPost } from "@/components/card-post";
 import { PromoApostila } from "@/components/promo-apostila";
 import type { ApostilaVitrine } from "@/lib/apostilas";
+import { casaComTermos, termosDaBusca, textoDoPost, UF_NOMES } from "@/lib/busca";
+import Link from "next/link";
 
 const UFS = [
   "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB",
@@ -28,11 +30,14 @@ export function VitrinePosts({
   apostilas = [],
   comBusca = false,
   ufInicial = "",
+  limiteInicial,
 }: {
   posts: PostVitrine[];
   apostilas?: ApostilaVitrine[];
   comBusca?: boolean;
   ufInicial?: string;
+  /** Na home: sem filtro mostra só as N mais recentes; com filtro mostra as correspondentes de todo o banco. */
+  limiteInicial?: number;
 }) {
   const [uf, setUf] = useState(ufInicial);
   const [federal, setFederal] = useState(false);
@@ -40,27 +45,30 @@ export function VitrinePosts({
   const [esfera, setEsfera] = useState("");
   const [tipo, setTipo] = useState<"" | "concurso" | "processo">("");
 
-  const ufsComPosts = useMemo(() => new Set(posts.map((p) => p.uf).filter(Boolean)), [posts]);
+  const comFiltro = !!uf || federal || !!esfera || !!tipo || busca.trim() !== "";
 
-  const filtrados = useMemo(() => {
-    const termo = busca.trim().toLowerCase();
+  const todosFiltrados = useMemo(() => {
+    const termos = termosDaBusca(busca);
     return posts.filter(
       (p) =>
         (!federal ? !uf || p.uf === uf : p.esfera === "nacional") &&
         (!esfera || p.esfera === esfera) &&
         (!tipo || tipoDoCertame(p) === tipo) &&
-        (!termo || `${p.titulo} ${p.resumo ?? ""} ${p.categoria}`.toLowerCase().includes(termo))
+        casaComTermos(textoDoPost(p), termos)
     );
   }, [posts, uf, federal, esfera, tipo, busca]);
 
+  // na home, sem filtro só as mais recentes; com filtro, o que existir no banco (até 12 aqui, o resto em /noticias)
+  const maximo = limiteInicial ? (comFiltro ? 12 : limiteInicial) : undefined;
+  const filtrados = maximo ? todosFiltrados.slice(0, maximo) : todosFiltrados;
+  const restantes = todosFiltrados.length - filtrados.length;
+
   const base = "transition-all duration-150 hover:-translate-y-0.5 active:translate-y-0";
-  const chipUf = (ativo: boolean, vazio: boolean) =>
+  const chipUf = (ativo: boolean) =>
     `${base} min-w-[2.6rem] rounded-md border px-2 py-1.5 text-center text-[12.5px] font-bold ${
       ativo
         ? "border-brand bg-brand text-white shadow-md"
-        : vazio
-          ? "border-[#E6EBF1] bg-white text-[#A5B1C0] hover:border-accent hover:bg-[#FFF7E3] hover:text-[#8A6A1F]"
-          : "border-[#D7DEE6] bg-white text-[#33465E] hover:border-accent hover:bg-[#FFF7E3] hover:text-brand hover:shadow-md"
+        : "border-[#D7DEE6] bg-white text-[#33465E] hover:border-accent hover:bg-[#FFF7E3] hover:text-brand hover:shadow-md"
     }`;
 
   const segmento = (ativo: boolean) =>
@@ -120,7 +128,7 @@ export function VitrinePosts({
           <button
             type="button"
             onClick={() => { setUf(""); setFederal(false); }}
-            className={chipUf(!uf && !federal, false)}
+            className={chipUf(!uf && !federal)}
             aria-pressed={!uf && !federal}
           >
             Todos os estados
@@ -128,7 +136,7 @@ export function VitrinePosts({
           <button
             type="button"
             onClick={() => { setFederal(!federal); setUf(""); }}
-            className={chipUf(federal, false)}
+            className={chipUf(federal)}
             aria-pressed={federal}
             title="Concursos de órgãos federais, de todo o país"
           >
@@ -140,7 +148,8 @@ export function VitrinePosts({
               key={u}
               type="button"
               onClick={() => { setUf(uf === u ? "" : u); setFederal(false); }}
-              className={chipUf(!federal && uf === u, !ufsComPosts.has(u))}
+              className={chipUf(!federal && uf === u)}
+              title={UF_NOMES[u]}
               aria-pressed={!federal && uf === u}
             >
               {u}
@@ -153,7 +162,9 @@ export function VitrinePosts({
         <p className="border border-dashed border-[#C4CEDA] bg-white px-6 py-12 text-center text-[15px] text-[#516278]">
           {posts.length === 0
             ? "Ainda não publicamos nenhuma notícia por aqui. Volte em breve!"
-            : "Nenhuma notícia encontrada com esses filtros."}
+            : uf && !federal && !esfera && !tipo && !busca.trim()
+              ? `Ainda não publicamos notícias de ${UF_NOMES[uf] ?? uf}. Veja os concursos dos outros estados.`
+              : "Nenhuma notícia encontrada com esses filtros."}
         </p>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
@@ -166,6 +177,18 @@ export function VitrinePosts({
             }
             return itens;
           })}
+        </div>
+      )}
+
+      {limiteInicial && restantes > 0 && (
+        <div className="mt-6 text-center">
+          <Link
+            href={uf && !federal ? `/noticias?uf=${uf}` : "/noticias"}
+            className="text-sm font-semibold text-brand underline underline-offset-4"
+          >
+            Ver mais {restantes} {restantes === 1 ? "notícia" : "notícias"}
+            {uf && !federal ? ` de ${UF_NOMES[uf] ?? uf}` : ""}
+          </Link>
         </div>
       )}
     </div>
