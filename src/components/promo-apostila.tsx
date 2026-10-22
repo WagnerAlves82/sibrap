@@ -38,7 +38,7 @@ export function PromoApostila({
       </span>
       <div
         className={`relative shrink-0 bg-gradient-to-b from-[#E6EEF7] to-[#F6F9FC] ${
-          faixa ? "h-28 w-24 rounded-lg sm:h-36 sm:w-32" : "aspect-[4/3] w-full"
+          faixa ? "h-40 w-32 rounded-lg sm:h-56 sm:w-44" : "aspect-[4/3] w-full"
         }`}
       >
         {imagem ? (
@@ -46,8 +46,8 @@ export function PromoApostila({
             src={imagem.url}
             alt={`Apostila ${apostila.orgao} — ${apostila.cargo}`}
             fill
-            sizes={faixa ? "128px" : "(min-width: 1024px) 360px, 92vw"}
-            className={imagem.mockup ? "object-contain p-2 drop-shadow-[0_14px_16px_rgba(11,42,74,0.3)]" : "object-cover"}
+            sizes={faixa ? "(min-width: 640px) 176px, 128px" : "(min-width: 1024px) 360px, 92vw"}
+            className={imagem.mockup ? "object-contain p-1 drop-shadow-[0_14px_16px_rgba(11,42,74,0.3)]" : "object-cover"}
           />
         ) : null}
         {pct !== null && (
@@ -59,13 +59,16 @@ export function PromoApostila({
 
       <div className={`flex min-w-0 flex-1 flex-col gap-1 ${faixa ? "pr-2" : "p-4"}`}>
         <p className="font-data text-[11px] font-semibold uppercase tracking-wide text-accent-2">
-          {apostila.uf} · {apostila.orgao}
+          Apostila · {apostila.uf} · {apostila.orgao}
           {dias !== null && dias >= 0 ? ` · prova em ${dias} dias` : ""}
         </p>
         <h3 className="line-clamp-2 font-display text-[16px] font-extrabold leading-snug text-[#14213A]">
           {apostila.titulo}
         </h3>
-        <p className="text-[12.5px] text-[#516278]">Questões no estilo da banca, comentadas, com simulado online.</p>
+        <p className="text-[13px] leading-snug text-[#516278]">
+          Material preparatório para a prova do concurso: conteúdo na ordem do edital, questões no estilo da banca,
+          comentadas, e simulado on-line.
+        </p>
         <div className="mt-1 flex flex-wrap items-end gap-x-3 gap-y-1">
           {pct !== null && apostila.preco_original_centavos && (
             <span className="text-[13px] text-[#516278] line-through">{formatarPreco(apostila.preco_original_centavos)}</span>
