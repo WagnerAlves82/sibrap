@@ -14,7 +14,10 @@ import {
 import { GaleriaApostila, type ImagemGaleria } from "@/components/galeria-apostila";
 import { PrecoApostila } from "@/components/preco-apostila";
 import { VendaApostila, perguntasVenda, type DadosVenda } from "@/components/venda-apostila";
-import { formatarPreco } from "@/lib/apostilas";
+import { formatarPreco, listarApostilasPublicadas } from "@/lib/apostilas";
+import { listarPostsVitrine, postsDaApostila } from "@/lib/blog";
+import { CardPost } from "@/components/card-post";
+import { slugDaBanca } from "@/lib/bancas";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -37,22 +40,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { apostila } = await carregar(slug);
   if (!apostila) return {};
   const capa = urlCapa(apostila.capa_path);
+  const local = apostila.cidade ?? apostila.orgao;
+  const ano = apostila.data_prova ? apostila.data_prova.slice(0, 4) : "2026";
+  const tituloSeo = `Apostila ${local} ${ano}: ${apostila.cargo}${apostila.banca ? ` (banca ${apostila.banca})` : ""}`;
   const descricao =
-    apostila.descricao ??
-    `Apostila em PDF para ${apostila.cargo} — ${apostila.orgao}${apostila.banca ? ` (banca ${apostila.banca})` : ""}, com questões e gabarito comentado.`;
+    `Apostila em PDF para o concurso ${apostila.orgao}, cargo de ${apostila.cargo}${apostila.banca ? `, banca ${apostila.banca}` : ""}${apostila.data_prova ? `, prova em ${formatarDataIso(apostila.data_prova)}` : ""}. Conteúdo na ordem do edital, questões comentadas e simulado on-line.`;
   return {
-    title: apostila.titulo,
+    title: tituloSeo,
     description: descricao,
     alternates: { canonical: `/apostilas/${slug}` },
     openGraph: {
       url: `/apostilas/${slug}`,
       locale: "pt_BR",
-      title: apostila.titulo,
+      title: tituloSeo,
       description: descricao,
       type: "website",
       images: capa ? [{ url: capa }] : undefined,
     },
-    twitter: { card: "summary_large_image", title: apostila.titulo, description: descricao, images: capa ? [capa] : undefined },
+    twitter: { card: "summary_large_image", title: tituloSeo, description: descricao, images: capa ? [capa] : undefined },
   };
 }
 
@@ -74,6 +79,10 @@ export default async function ApostilaPage({ params }: Props) {
       .maybeSingle();
     jaTem = !!acesso;
   }
+
+  const [todasApostilas, todosPosts] = await Promise.all([listarApostilasPublicadas(supabase), listarPostsVitrine(supabase)]);
+  const atual = todasApostilas.find((a) => a.slug === apostila.slug);
+  const noticias = atual ? postsDaApostila(atual, todosPosts, 3) : [];
 
   const areaHref = `/minha-area/apostilas/${apostila.slug}`;
   const ctaHref = user ? areaHref : `/cadastro?next=${encodeURIComponent(areaHref)}`;
@@ -194,6 +203,14 @@ export default async function ApostilaPage({ params }: Props) {
               <span className="mx-1.5 opacity-50">/</span>
               {apostila.uf}
               {apostila.cidade ? ` · ${apostila.cidade}` : ""}
+              {apostila.banca && (
+                <>
+                  <span className="mx-1.5 opacity-50">·</span>
+                  <Link href={`/bancas/${slugDaBanca(apostila.banca)}`} className="hover:text-brand">
+                    Banca {apostila.banca}
+                  </Link>
+                </>
+              )}
             </nav>
 
             <h1 className="font-display text-[1.9rem] leading-[1.08] font-extrabold text-balance text-[#14213A] sm:text-[2.5rem]">
@@ -288,6 +305,20 @@ export default async function ApostilaPage({ params }: Props) {
         </div>
       </main>
       <VendaApostila d={venda} />
+      {noticias.length > 0 && (
+        <section className="border-t border-[#D7DEE6] bg-[#F6F8FB] py-12 sm:py-14">
+          <div className="mx-auto max-w-[1080px] px-4 sm:px-6">
+            <h2 className="font-display text-[1.4rem] font-extrabold text-[#14213A] sm:text-[1.8rem]">
+              Notícias do concurso: {apostila.cidade ?? apostila.orgao}
+            </h2>
+            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+              {noticias.map((p) => (
+                <CardPost key={p.id} post={p} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
       {!jaTem && (
         <div className="fixed inset-x-0 bottom-0 z-40 overflow-hidden border-t border-[#D7DEE6] bg-white/95 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur md:hidden">
           <div className="mx-auto flex max-w-[400px] items-center justify-between gap-3">

@@ -36,7 +36,8 @@ export default async function Home() {
     .filter((x) => x.dias !== null && x.dias >= 0)
     .sort((a, b) => a.dias! - b.dias!)[0];
 
-  const preco = apostilas[0]?.preco_centavos ?? 3990;
+  // menor preço da vitrine (a primeira da lista é a mais nova, não a mais barata)
+  const preco = apostilas.length ? Math.min(...apostilas.map((a) => a.preco_centavos)) : 2990;
 
   return (
     <div className="flex flex-1 flex-col bg-white font-body">
@@ -336,7 +337,7 @@ export default async function Home() {
             </Reveal>
             <Reveal delay={200}>
               <Motivo titulo="Preço justo, pagamento único">
-                {formatarPreco(preco)} por apostila, sem mensalidade e sem
+                Apostilas a partir de {formatarPreco(preco)}, sem mensalidade e sem
                 assinatura. O arquivo é seu para sempre.
               </Motivo>
             </Reveal>

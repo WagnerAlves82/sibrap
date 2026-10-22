@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
+import { slugDaBanca } from "@/lib/bancas";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
 
@@ -8,6 +9,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: siteUrl, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
     { url: `${siteUrl}/apostilas`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.95 },
     { url: `${siteUrl}/combos/sesa-ap-tecnico-enfermagem`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
+    { url: `${siteUrl}/bancas`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 },
     { url: `${siteUrl}/noticias`, lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
     { url: `${siteUrl}/cursos`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: `${siteUrl}/cadastro`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
@@ -34,6 +36,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .from("apostilas")
       .select("slug, atualizado_em")
       .eq("status", "publicada");
+    const bancasVistas = new Set<string>();
+    const { data: comBanca } = await criarClienteSupabaseAdmin().from("apostilas").select("banca").eq("status", "publicada");
+    for (const a of comBanca ?? []) {
+      if (!a.banca) continue;
+      const slugBanca = slugDaBanca(a.banca);
+      if (bancasVistas.has(slugBanca)) continue;
+      bancasVistas.add(slugBanca);
+      paginas.push({ url: `${siteUrl}/bancas/${slugBanca}`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 });
+    }
     for (const a of apostilas ?? []) {
       paginas.push({
         url: `${siteUrl}/apostilas/${a.slug}`,

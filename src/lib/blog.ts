@@ -249,6 +249,15 @@ export function apostilasRelacionadas(
     const orgao = normalizar(a.orgao);
     if (titulo.includes(orgao)) n += 6;
     else if (texto.includes(orgao)) n += 3;
+    // A notícia costuma dizer "Prefeitura de X" ou só o nome da cidade, e não o nome oficial completo.
+    const cidade = a.cidade ? normalizar(a.cidade) : "";
+    if (cidade && cidade !== orgao) {
+      if (titulo.includes(cidade)) n += 4;
+      else if (texto.includes(cidade)) n += 2;
+    }
+    // Sigla entre parênteses no órgão (ex.: "Secretaria de Estado da Saúde do Amapá (SESA-AP)").
+    const sigla = a.orgao.match(/\(([^)]{2,12})\)/)?.[1];
+    if (sigla && texto.includes(normalizar(sigla))) n += 3;
     if (a.banca && titulo.includes(normalizar(a.banca))) n += 2;
     else if (a.banca && texto.includes(normalizar(a.banca))) n += 1;
     if (texto.includes(normalizar(a.cargo))) n += 2;
@@ -257,4 +266,36 @@ export function apostilasRelacionadas(
   });
   const achadas = pontos.filter((x) => x.n >= 2).sort((x, y) => y.n - x.n);
   return achadas.slice(0, limite).map((x) => x.a);
+}
+
+/**
+ * Notícias ligadas a uma apostila (o caminho inverso de apostilasRelacionadas), para a página da apostila:
+ * os slugs escolhidos no admin têm prioridade; depois cidade, órgão, sigla e cargo citados no título e no texto.
+ */
+export function postsDaApostila(apostila: ApostilaVitrine, posts: PostVitrine[], limite = 3): PostVitrine[] {
+  const cidade = apostila.cidade ? normalizar(apostila.cidade) : "";
+  const orgao = normalizar(apostila.orgao);
+  const cargo = normalizar(apostila.cargo);
+  const sigla = apostila.orgao.match(/\(([^)]{2,12})\)/)?.[1];
+  const siglaNorm = sigla ? normalizar(sigla) : "";
+  const pontos = posts.map((p) => {
+    let n = p.apostilas_slugs?.includes(apostila.slug) ? 10 : 0;
+    const titulo = normalizar(p.titulo);
+    const texto = normalizar(`${p.titulo} ${p.conteudo}`);
+    if (titulo.includes(orgao)) n += 6;
+    else if (texto.includes(orgao)) n += 3;
+    if (cidade) {
+      if (titulo.includes(cidade)) n += 4;
+      else if (texto.includes(cidade)) n += 2;
+    }
+    if (siglaNorm && texto.includes(siglaNorm)) n += 3;
+    if (texto.includes(cargo)) n += 2;
+    if (p.uf && p.uf === apostila.uf) n += 1;
+    return { p, n };
+  });
+  return pontos
+    .filter((x) => x.n >= 5)
+    .sort((a, b) => b.n - a.n || +new Date(b.p.publicado_em ?? 0) - +new Date(a.p.publicado_em ?? 0))
+    .slice(0, limite)
+    .map((x) => x.p);
 }
