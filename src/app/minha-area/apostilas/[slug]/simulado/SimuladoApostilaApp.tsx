@@ -30,6 +30,9 @@ export function SimuladoApostilaApp({
   cargoId,
   tituloApostila,
   slugApostila,
+  areaHref: areaHrefProp,
+  rotuloVoltar = "Voltar pra apostila",
+  aoTrocarCargo,
   padrao,
   totalDisponivel,
   retomada,
@@ -37,7 +40,13 @@ export function SimuladoApostilaApp({
   produtoId: string;
   cargoId: string;
   tituloApostila: string;
-  slugApostila: string;
+  /** para apostilas: a área da apostila é /minha-area/apostilas/<slug> */
+  slugApostila?: string;
+  /** para outros produtos (ex.: simulado completo Transpetro): para onde "voltar" leva */
+  areaHref?: string;
+  rotuloVoltar?: string;
+  /** quando o produto tem vários cargos: botão para escolher outro cargo */
+  aoTrocarCargo?: () => void;
   /** quantidade da prova real (ex.: 30) */
   padrao: number;
   /** quantas questões o banco tem para esse cargo */
@@ -118,8 +127,8 @@ export function SimuladoApostilaApp({
   const [quantidade, setQuantidade] = useState<number>(base);
   const [quantidadeTexto, setQuantidadeTexto] = useState<string>(String(base));
 
-  const areaHref = `/minha-area/apostilas/${slugApostila}`;
-  const opcoes = Array.from(new Set([base, 60, 120, 200].filter((n) => n <= maximo))).sort((a, b) => a - b);
+  const areaHref = areaHrefProp ?? `/minha-area/apostilas/${slugApostila}`;
+  const opcoes = Array.from(new Set([10, 20, 30, base, 60, 100, 200].filter((n) => n <= maximo))).sort((a, b) => a - b);
 
   function escolher(n: number) {
     const v = Math.min(Math.max(Math.floor(n) || 1, 1), maximo);
@@ -221,7 +230,7 @@ export function SimuladoApostilaApp({
     return (
       <Cartao>
         <Link href={areaHref} className="text-[13px] font-semibold text-brand underline underline-offset-4">
-          ← Voltar pra apostila
+          ← {rotuloVoltar}
         </Link>
         <h1 className="mt-4 font-display text-2xl font-extrabold text-[#14213A]">Simulado online</h1>
         <p className="mt-2 text-[15px] leading-relaxed text-[#516278]">
@@ -279,8 +288,8 @@ export function SimuladoApostilaApp({
         </label>
 
         <Alert variant="info" claro className="mt-4">
-          As questões vêm na proporção de cada matéria na prova. Pode refazer quantas vezes quiser: elas mudam
-          a cada tentativa.
+          As questões vêm na proporção de cada matéria na prova. Pode refazer quantas vezes quiser: a cada tentativa
+          elas são sorteadas de novo, dando prioridade às que você ainda não respondeu.
         </Alert>
         <button
           onClick={comecar}
@@ -288,6 +297,14 @@ export function SimuladoApostilaApp({
         >
           Começar simulado com {quantidade} {quantidade === 1 ? "questão" : "questões"}
         </button>
+        {aoTrocarCargo && (
+          <button
+            onClick={aoTrocarCargo}
+            className="mt-3 w-full text-center text-[13px] font-semibold text-brand underline underline-offset-4"
+          >
+            Trocar cargo
+          </button>
+        )}
       </Cartao>
     );
   }
@@ -530,13 +547,21 @@ export function SimuladoApostilaApp({
           onClick={reiniciar}
           className="w-full rounded-lg bg-brand px-4 py-3 text-center text-[14px] font-bold text-white transition-colors hover:brightness-125"
         >
-          Fazer outro simulado
+          Fazer outro simulado (escolher quantas questões e sortear novas)
         </button>
+        {aoTrocarCargo && (
+          <button
+            onClick={aoTrocarCargo}
+            className="w-full rounded-lg border border-brand px-4 py-3 text-center text-[14px] font-bold text-brand transition-colors hover:bg-brand/5"
+          >
+            Escolher outro cargo
+          </button>
+        )}
         <Link
           href={areaHref}
           className="text-center text-[13.5px] font-semibold text-brand underline underline-offset-4"
         >
-          Voltar pra apostila
+          {rotuloVoltar}
         </Link>
       </div>
     </Cartao>
