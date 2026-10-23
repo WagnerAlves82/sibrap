@@ -174,7 +174,7 @@ export default async function CertificadoPage({
 
               <div style={{ marginTop: cq(1.8), fontSize: cq(1.6), lineHeight: 1.55, textAlign: "center", maxWidth: cq(74), color: "#2B3A52" }}>
                 concluiu com aproveitamento o curso livre de{" "}
-                <strong style={{ color: NAVY }}>{cert.curso_nome}</strong>, na modalidade a distância, com carga
+                <strong style={{ color: NAVY }}>{cert.curso_nome}</strong>, com carga
                 horária de <strong style={{ color: NAVY }}>{cert.carga_horaria_horas} horas</strong>, em{" "}
                 {formatarData(cert.emitido_em)}.
               </div>

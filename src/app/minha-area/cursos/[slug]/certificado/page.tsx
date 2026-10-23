@@ -5,6 +5,7 @@ import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite } from "@/components/site-chrome";
 import { Alert } from "@/components/alert";
 import { FormComprovante, FormEmitir, PagamentoCertificado } from "./Formularios";
+import { PopupParabens } from "./PopupParabens";
 
 export const metadata: Metadata = {
   title: "Certificado",
@@ -133,6 +134,9 @@ export default async function CertificadoAreaPage({
           </div>
         ) : (
           <div className="mt-6 flex flex-col gap-5">
+            {aulasOk && provaOk && !elegivel && (
+              <PopupParabens preco={preco} permiteCadunico={permiteCadunico} cursoSlug={slug} />
+            )}
             <section className="rounded-xl border border-[#D7DEE6] bg-white p-6">
               <h2 className="font-display text-lg font-extrabold text-[#14213A]">Requisitos</h2>
               <ul className="mt-4 flex flex-col gap-3">
