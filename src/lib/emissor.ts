@@ -5,7 +5,7 @@ export const EMISSOR = {
 } as const;
 
 export const AVISO_CURSO_LIVRE =
-  "Curso livre, de qualificação profissional, sem equivalência a curso regulamentado pelo MEC. Conteúdo independente, sem vínculo com a Microsoft.";
+  "Curso livre de qualificação profissional, oferecido nos termos do art. 42 da Lei nº 9.394/1996 (Lei de Diretrizes e Bases da Educação Nacional), sem equivalência a curso regular ou diploma reconhecido pelo MEC. Conteúdo independente, sem vínculo com a Microsoft.";
 
 export function formatarHoras(minutos: number): string {
   const h = Math.floor(minutos / 60);

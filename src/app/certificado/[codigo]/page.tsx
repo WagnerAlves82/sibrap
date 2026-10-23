@@ -166,6 +166,12 @@ export default async function CertificadoPage({
                 {cert.nome_completo}
               </div>
 
+              {cert.cpf_mascarado && (
+                <div style={{ marginTop: cq(0.6), fontSize: cq(1.1), letterSpacing: cq(0.1), color: "#516278", fontFamily: "var(--font-plex-mono), monospace" }}>
+                  CPF {cert.cpf_mascarado}
+                </div>
+              )}
+
               <div style={{ marginTop: cq(1.8), fontSize: cq(1.6), lineHeight: 1.55, textAlign: "center", maxWidth: cq(74), color: "#2B3A52" }}>
                 concluiu com aproveitamento o curso livre de{" "}
                 <strong style={{ color: NAVY }}>{cert.curso_nome}</strong>, na modalidade a distância, com carga
@@ -201,9 +207,9 @@ export default async function CertificadoPage({
                 <SeloAbed altura={cq(8)} fonteLegenda={cq(0.95)} />
 
                 <div style={{ textAlign: "center", fontSize: cq(1.05), color: "#516278" }}>
-                  <div style={{ width: cq(28), borderTop: `${cq(0.12)} solid ${TINTA}`, paddingTop: cq(0.5) }}>
-                    <div style={{ fontWeight: 700, color: NAVY }}>{EMISSOR.nomeCurto} — Coordenação</div>
-                    <div>{EMISSOR.nome}</div>
+                  <div style={{ width: cq(30), borderTop: `${cq(0.12)} solid ${TINTA}`, paddingTop: cq(0.5) }}>
+                    <div style={{ fontWeight: 700, color: NAVY }}>Wagner Alves de Souza Junior</div>
+                    <div>Professor habilitado — {EMISSOR.nomeCurto}</div>
                     <div>CNPJ {EMISSOR.cnpj}</div>
                   </div>
                 </div>

@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { gerarPixParaPedido, type EstadoPix } from "@/lib/pix";
+import { cpfValido, normalizarCpf } from "@/lib/cpf";
 
 const TAMANHO_MAXIMO = 3.5 * 1024 * 1024;
 
@@ -116,11 +117,17 @@ export async function emitirCertificadoAction(
 ): Promise<EstadoEmissao> {
   const cursoId = String(formData.get("curso_id") ?? "");
   const nome = String(formData.get("nome") ?? "");
+  const cpf = normalizarCpf(String(formData.get("cpf") ?? ""));
+
+  if (!cpfValido(cpf)) {
+    return { erro: "Digite um CPF válido." };
+  }
 
   const supabase = await criarClienteSupabaseServer();
   const { data: codigo, error } = await supabase.rpc("emitir_certificado", {
     p_curso_id: cursoId,
     p_nome: nome,
+    p_cpf: cpf,
   });
   if (error || !codigo) {
     return { erro: error?.message ?? "Não foi possível emitir o certificado agora." };

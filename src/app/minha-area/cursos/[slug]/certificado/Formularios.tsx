@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Alert } from "@/components/alert";
 import { PixCheckoutClaro } from "@/components/pix-checkout-claro";
 import { CLASSE_INPUT } from "@/components/auth-shell";
+import { formatarCpf } from "@/lib/cpf";
 import {
   criarPagamentoCertificadoAction,
   emitirCertificadoAction,
@@ -115,6 +116,7 @@ export function FormEmitir({
     emitirCertificadoAction,
     null
   );
+  const [cpf, setCpf] = useState("");
 
   return (
     <form action={action} className="flex flex-col gap-3">
@@ -132,7 +134,25 @@ export function FormEmitir({
         autoComplete="name"
         className={CLASSE_INPUT}
       />
+      <label htmlFor="cpf" className="text-[13.5px] font-semibold text-[#14213A]">
+        Seu CPF
+      </label>
+      <input
+        id="cpf"
+        name="cpf"
+        type="text"
+        inputMode="numeric"
+        value={cpf}
+        onChange={(e) => setCpf(formatarCpf(e.target.value))}
+        placeholder="000.000.000-00"
+        required
+        minLength={14}
+        maxLength={14}
+        autoComplete="off"
+        className={CLASSE_INPUT}
+      />
       <p className="text-[12px] text-[#93A0AF]">
+        Usamos o CPF só para identificação no certificado — ele aparece parcialmente oculto na versão pública.
         Confira com atenção: depois de emitido, o certificado não pode ser alterado.
       </p>
       <button type="submit" disabled={pending} className={BOTAO}>

@@ -580,6 +580,7 @@ export type Database = {
         Row: {
           carga_horaria_horas: number
           codigo: string
+          cpf: string | null
           curso_id: string
           emitido_em: string
           forma: string
@@ -590,6 +591,7 @@ export type Database = {
         Insert: {
           carga_horaria_horas: number
           codigo: string
+          cpf?: string | null
           curso_id: string
           emitido_em?: string
           forma: string
@@ -600,6 +602,7 @@ export type Database = {
         Update: {
           carga_horaria_horas?: number
           codigo?: string
+          cpf?: string | null
           curso_id?: string
           emitido_em?: string
           forma?: string
@@ -1678,10 +1681,12 @@ export type Database = {
           total: number
         }[]
       }
-      emitir_certificado: {
-        Args: { p_curso_id: string; p_nome: string }
-        Returns: string
-      }
+      emitir_certificado:
+        | { Args: { p_curso_id: string; p_nome: string }; Returns: string }
+        | {
+            Args: { p_cpf: string; p_curso_id: string; p_nome: string }
+            Returns: string
+          }
       finalizar_quiz: {
         Args: { p_respostas: Json; p_tentativa_id: string }
         Returns: {
@@ -1840,6 +1845,7 @@ export type Database = {
         Args: { p_codigo: string }
         Returns: {
           carga_horaria_horas: number
+          cpf_mascarado: string
           curso_nome: string
           curso_slug: string
           emitido_em: string
