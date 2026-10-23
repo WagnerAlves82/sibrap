@@ -61,8 +61,8 @@ export default function TermosPage() {
         <Lista
           itens={[
             "Para emitir o certificado é preciso concluir todas as aulas e obter, na prova final, a nota mínima informada no curso.",
-            <><strong>Gratuito</strong> para quem envia um comprovante de inscrição no CadÚnico que seja aprovado pela nossa equipe. Podemos recusar documentos ilegíveis, incompletos ou que não comprovem a inscrição, e você pode enviar outro.</>,
-            <>Para os demais participantes, o certificado custa <strong>R$ 49,90</strong>, pagos uma única vez por PIX. O curso e as aulas continuam gratuitos.</>,
+            <>Em cursos que oferecem isenção, o certificado é <strong>gratuito</strong> para quem envia um comprovante de inscrição no CadÚnico aprovado pela nossa equipe. Podemos recusar documentos ilegíveis, incompletos ou que não comprovem a inscrição, e você pode enviar outro.</>,
+            <>O valor do certificado, quando não há isenção, é informado na página de cada curso e pago uma única vez por PIX. O curso e as aulas continuam gratuitos.</>,
             "O certificado traz um código e um QR Code de validação, e qualquer pessoa pode conferir a sua autenticidade no site.",
             "Comprovante falso ou adulterado resulta no cancelamento do certificado e pode gerar responsabilização civil e criminal.",
           ]}

@@ -1,9 +1,3 @@
-// src/lib/database.types.ts
-//
-// Gerado a partir do schema do projeto Supabase "sibrap"
-// (mcp__supabase__generate_typescript_types). Não editar à mão — rodar
-// de novo depois de qualquer migration nova.
-
 export type Json =
   | string
   | number
@@ -16,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5"
+    PostgrestVersion: "14.17"
   }
   public: {
     Tables: {
@@ -206,68 +200,6 @@ export type Database = {
           liberar_em?: string
           token_hash?: string
           usado_em?: string | null
-        }
-        Relationships: []
-      }
-      plano_progresso: {
-        Row: {
-          concluido_em: string
-          item: string
-          produto_id: string
-          user_id: string
-        }
-        Insert: {
-          concluido_em?: string
-          item: string
-          produto_id: string
-          user_id: string
-        }
-        Update: {
-          concluido_em?: string
-          item?: string
-          produto_id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "plano_progresso_produto_id_fkey"
-            columns: ["produto_id"]
-            isOneToOne: false
-            referencedRelation: "produtos"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      combo_videoaulas: {
-        Row: {
-          combo_slug: string
-          criado_em: string
-          id: string
-          liberada: boolean
-          materia: string
-          ordem: number
-          titulo: string
-          video_url: string | null
-        }
-        Insert: {
-          combo_slug: string
-          criado_em?: string
-          id?: string
-          liberada?: boolean
-          materia: string
-          ordem: number
-          titulo: string
-          video_url?: string | null
-        }
-        Update: {
-          combo_slug?: string
-          criado_em?: string
-          id?: string
-          liberada?: boolean
-          materia?: string
-          ordem?: number
-          titulo?: string
-          video_url?: string | null
         }
         Relationships: []
       }
@@ -685,6 +617,39 @@ export type Database = {
           },
         ]
       }
+      combo_videoaulas: {
+        Row: {
+          combo_slug: string
+          criado_em: string
+          id: string
+          liberada: boolean
+          materia: string
+          ordem: number
+          titulo: string
+          video_url: string | null
+        }
+        Insert: {
+          combo_slug: string
+          criado_em?: string
+          id?: string
+          liberada?: boolean
+          materia: string
+          ordem: number
+          titulo: string
+          video_url?: string | null
+        }
+        Update: {
+          combo_slug?: string
+          criado_em?: string
+          id?: string
+          liberada?: boolean
+          materia?: string
+          ordem?: number
+          titulo?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
       comprovantes_cadunico: {
         Row: {
           analisado_em: string | null
@@ -764,6 +729,44 @@ export type Database = {
             columns: ["banca_id"]
             isOneToOne: false
             referencedRelation: "bancas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creditos_movimentos: {
+        Row: {
+          criado_em: string
+          delta: number
+          id: string
+          motivo: string
+          produto_id: string
+          ref: string
+          user_id: string
+        }
+        Insert: {
+          criado_em?: string
+          delta: number
+          id?: string
+          motivo: string
+          produto_id: string
+          ref?: string
+          user_id: string
+        }
+        Update: {
+          criado_em?: string
+          delta?: number
+          id?: string
+          motivo?: string
+          produto_id?: string
+          ref?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creditos_movimentos_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
             referencedColumns: ["id"]
           },
         ]
@@ -852,6 +855,7 @@ export type Database = {
           nome: string
           nota_minima: number
           ordem_obrigatoria: boolean
+          permite_isencao_cadunico: boolean
           quiz_num_questoes: number
           slug: string
           subtitulo: string | null
@@ -865,6 +869,7 @@ export type Database = {
           nome: string
           nota_minima?: number
           ordem_obrigatoria?: boolean
+          permite_isencao_cadunico?: boolean
           quiz_num_questoes?: number
           slug: string
           subtitulo?: string | null
@@ -878,6 +883,7 @@ export type Database = {
           nome?: string
           nota_minima?: number
           ordem_obrigatoria?: boolean
+          permite_isencao_cadunico?: boolean
           quiz_num_questoes?: number
           slug?: string
           subtitulo?: string | null
@@ -1080,9 +1086,9 @@ export type Database = {
           gateway_charge_id: string | null
           id: string
           mercadopago_order_id: string | null
-          origem: Json | null
           mercadopago_payment_id: string | null
           mercadopago_preference_id: string | null
+          origem: Json | null
           produto_id: string
           status: string
           user_id: string
@@ -1096,9 +1102,9 @@ export type Database = {
           gateway_charge_id?: string | null
           id?: string
           mercadopago_order_id?: string | null
-          origem?: Json | null
           mercadopago_payment_id?: string | null
           mercadopago_preference_id?: string | null
+          origem?: Json | null
           produto_id: string
           status?: string
           user_id: string
@@ -1112,9 +1118,9 @@ export type Database = {
           gateway_charge_id?: string | null
           id?: string
           mercadopago_order_id?: string | null
-          origem?: Json | null
           mercadopago_payment_id?: string | null
           mercadopago_preference_id?: string | null
+          origem?: Json | null
           produto_id?: string
           status?: string
           user_id?: string
@@ -1123,6 +1129,35 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "pedidos_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plano_progresso: {
+        Row: {
+          concluido_em: string
+          item: string
+          produto_id: string
+          user_id: string
+        }
+        Insert: {
+          concluido_em?: string
+          item: string
+          produto_id: string
+          user_id: string
+        }
+        Update: {
+          concluido_em?: string
+          item?: string
+          produto_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plano_progresso_produto_id_fkey"
             columns: ["produto_id"]
             isOneToOne: false
             referencedRelation: "produtos"
@@ -1398,6 +1433,8 @@ export type Database = {
           ano?: number | null
           ativa?: boolean
           banca_id?: string
+          capitulo?: number | null
+          capitulo_secao?: string | null
           cargo_id?: string | null
           comentario?: string | null
           concurso_id?: string
@@ -1577,11 +1614,28 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _creditar: {
+        Args: {
+          p_motivo: string
+          p_produto: string
+          p_ref: string
+          p_user: string
+          p_valor: number
+        }
+        Returns: boolean
+      }
       abandonar_simulado: {
         Args: { p_tentativa_id: string }
         Returns: undefined
       }
       abrir_aula: { Args: { p_aula_id: string }; Returns: undefined }
+      capitulo_da_questao: {
+        Args: { p_produto_id: string; p_questao_id: string }
+        Returns: {
+          numero: number
+          secao: string
+        }[]
+      }
       concluir_aula: { Args: { p_aula_id: string }; Returns: undefined }
       conferir_miniquiz: {
         Args: { p_letra: string; p_questao_id: string }
@@ -1591,29 +1645,11 @@ export type Database = {
           gabarito: string
         }[]
       }
-      marcar_item_plano: {
-        Args: { p_concluido: boolean; p_item: string; p_slug: string }
-        Returns: undefined
-      }
-      capitulo_da_questao: {
-        Args: { p_produto_id: string; p_questao_id: string }
-        Returns: { numero: number; secao: string }[]
-      }
       creditar_estudo: {
         Args: { p_motivo: string; p_ref: string; p_slug: string }
         Returns: number
       }
       creditos_saldo: { Args: { p_produto_id: string }; Returns: number }
-      usar_dica: {
-        Args: { p_produto_id: string; p_questao_id: string }
-        Returns: {
-          cobrado: boolean
-          dica: string
-          motivo: string
-          ok: boolean
-          saldo: number
-        }[]
-      }
       criar_pedido_por_slug: {
         Args: { p_slug: string }
         Returns: {
@@ -1714,6 +1750,10 @@ export type Database = {
         }[]
       }
       marcar_apostila_enviada: { Args: never; Returns: undefined }
+      marcar_item_plano: {
+        Args: { p_concluido: boolean; p_item: string; p_slug: string }
+        Returns: undefined
+      }
       marcar_topico_cronograma: {
         Args: { p_concluido: boolean; p_topico_id: string }
         Returns: undefined
@@ -1784,6 +1824,16 @@ export type Database = {
           alternativa: string
           correta: boolean
           enunciado: string
+        }[]
+      }
+      usar_dica: {
+        Args: { p_produto_id: string; p_questao_id: string }
+        Returns: {
+          cobrado: boolean
+          dica: string
+          motivo: string
+          ok: boolean
+          saldo: number
         }[]
       }
       validar_certificado: {

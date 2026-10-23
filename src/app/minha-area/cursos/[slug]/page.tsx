@@ -22,12 +22,12 @@ export default async function AreaDoCursoPage({
 
   const { data: curso } = await supabase
     .from("cursos")
-    .select("id, slug, nome, carga_horaria_horas, nota_minima, ordem_obrigatoria")
+    .select("id, slug, nome, carga_horaria_horas, nota_minima, ordem_obrigatoria, permite_isencao_cadunico")
     .eq("slug", slug)
     .maybeSingle();
   if (!curso) notFound();
 
-  const [{ data: matricula }, { data: modulos }, { data: progresso }, { data: tentativas }, { data: certificado }] =
+  const [{ data: matricula }, { data: modulos }, { data: progresso }, { data: tentativas }, { data: certificado }, { data: produto }] =
     await Promise.all([
       supabase.from("matriculas").select("curso_id").eq("curso_id", curso.id).maybeSingle(),
       supabase
@@ -43,7 +43,15 @@ export default async function AreaDoCursoPage({
         .eq("curso_id", curso.id)
         .not("finalizado_em", "is", null),
       supabase.from("certificados").select("codigo").eq("curso_id", curso.id).maybeSingle(),
+      supabase.from("produtos").select("preco_centavos").eq("curso_id", curso.id).eq("ativo", true).maybeSingle(),
     ]);
+
+  const precoCertificado = produto
+    ? (produto.preco_centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+    : null;
+  const textoCertificado = curso.permite_isencao_cadunico
+    ? `Grátis com CadÚnico ou ${precoCertificado ?? "pago"}`
+    : precoCertificado ?? "Pago";
 
   if (!matricula) {
     return (
@@ -82,19 +90,16 @@ export default async function AreaDoCursoPage({
   const todasAulas = (modulos ?? []).flatMap((m) => m.aulas);
   const total = todasAulas.length;
   const feitas = todasAulas.filter((a) => concluidas.has(a.id)).length;
-  const publicadas = todasAulas.filter((a) => a.youtube_id).length;
   const minutosFeitos = todasAulas
     .filter((a) => concluidas.has(a.id))
     .reduce((s, a) => s + a.carga_min, 0);
   const percentual = total ? (feitas / total) * 100 : 0;
-  const aulasOk = total > 0 && publicadas === total && feitas === total;
+  const aulasOk = total > 0 && feitas === total;
   const melhorNota = (tentativas ?? []).reduce((m, t) => Math.max(m, Number(t.nota ?? 0)), 0);
   const provaOk = melhorNota >= curso.nota_minima;
-  const proxima = todasAulas.find((a) => a.youtube_id && !concluidas.has(a.id));
+  const proxima = todasAulas.find((a) => !concluidas.has(a.id));
   const liberada = (id: string) => {
     const i = todasAulas.findIndex((a) => a.id === id);
-    const a = todasAulas[i];
-    if (!a?.youtube_id) return false;
     if (!curso.ordem_obrigatoria || i === 0 || concluidas.has(id)) return true;
     return concluidas.has(todasAulas[i - 1].id);
   };
@@ -122,19 +127,13 @@ export default async function AreaDoCursoPage({
               </p>
             </div>
             <BarraProgresso percentual={percentual} className="mt-3" />
-            {proxima ? (
+            {proxima && (
               <Link
                 href={`/minha-area/cursos/${curso.slug}/aula/${proxima.id}`}
                 className="mt-5 inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"
               >
                 {feitas === 0 ? "Começar a primeira aula" : "Continuar de onde parei"} <span aria-hidden>→</span>
               </Link>
-            ) : (
-              publicadas < total && (
-                <p className="mt-4 text-[13.5px] text-[#516278]">
-                  Novas aulas são liberadas aos poucos. Volte em breve!
-                </p>
-              )
             )}
           </div>
         </Reveal>
@@ -154,7 +153,7 @@ export default async function AreaDoCursoPage({
               numero={3}
               titulo="Certificado"
               ok={!!certificado}
-              texto={certificado ? "Emitido" : "Grátis com CadÚnico ou R$ 49,90"}
+              texto={certificado ? "Emitido" : textoCertificado}
               href={`/minha-area/cursos/${curso.slug}/certificado`}
               rotuloLink={certificado ? "Ver certificado" : "Como obter"}
             />
@@ -172,7 +171,6 @@ export default async function AreaDoCursoPage({
                   {modulo.aulas.map((aula) => {
                     const feita = concluidas.has(aula.id);
                     const disponivel = liberada(aula.id);
-                    const bloqueada = !!aula.youtube_id && !disponivel;
                     const conteudo = (
                       <>
                         <span
@@ -185,11 +183,11 @@ export default async function AreaDoCursoPage({
                                 : "border border-[#C4CEDA] text-[#93A0AF]"
                           }`}
                         >
-                          {feita ? "✓" : disponivel ? "▶" : bloqueada ? "🔒" : "·"}
+                          {feita ? "✓" : disponivel ? "▶" : "🔒"}
                         </span>
                         <span className="flex-1 text-[15px] text-[#14213A]">{aula.titulo}</span>
                         <span className="font-data text-xs text-[#93A0AF]">
-                          {aula.youtube_id ? formatarHoras(aula.carga_min) : "em breve"}
+                          {formatarHoras(aula.carga_min)}
                         </span>
                       </>
                     );

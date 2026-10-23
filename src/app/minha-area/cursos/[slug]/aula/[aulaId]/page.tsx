@@ -53,7 +53,7 @@ export default async function AulaPage({
   const lista = (modulos ?? []).flatMap((m) => m.aulas.map((a) => ({ ...a, modulo: m.titulo })));
   const indice = lista.findIndex((a) => a.id === aulaId);
   const aula = lista[indice];
-  if (!aula || !aula.youtube_id) redirect(cursoHref);
+  if (!aula) redirect(cursoHref);
 
   // a regra de ordem também é conferida no banco; aqui só evita mostrar tela vazia
   const { error: erroAbrir } = await supabase.rpc("abrir_aula", { p_aula_id: aula.id });
@@ -73,7 +73,7 @@ export default async function AulaPage({
   }));
 
   const anterior = lista[indice - 1];
-  const proxima = lista.slice(indice + 1).find((a) => a.youtube_id);
+  const proxima = lista[indice + 1] ?? null;
   const aulaHref = (id: string) => `${cursoHref}/aula/${id}`;
 
   return (
@@ -85,7 +85,7 @@ export default async function AulaPage({
             <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent-2">
               {aula.modulo} · Aula {indice + 1} de {lista.length}
             </p>
-            {anterior?.youtube_id && (
+            {anterior && (
               <Link href={aulaHref(anterior.id)} className="text-[13px] font-semibold text-brand underline underline-offset-4">
                 ← Aula anterior
               </Link>
@@ -167,9 +167,8 @@ export default async function AulaPage({
                     const feita = concluidas.has(a.id);
                     const atual = a.id === aula.id;
                     const anteriorFeita = i === 0 || concluidas.has(lista[i - 1].id);
-                    const liberada =
-                      !!a.youtube_id && (feita || atual || !curso.ordem_obrigatoria || anteriorFeita);
-                    const icone = feita ? "✓" : atual ? "▶" : liberada ? "○" : a.youtube_id ? "🔒" : "·";
+                    const liberada = feita || atual || !curso.ordem_obrigatoria || anteriorFeita;
+                    const icone = feita ? "✓" : atual ? "▶" : liberada ? "○" : "🔒";
                     const linha = (
                       <>
                         <span
@@ -182,7 +181,7 @@ export default async function AulaPage({
                         </span>
                         <span className="flex-1 text-[13.5px] leading-snug">{a.titulo}</span>
                         <span className="font-data text-[11px] text-[#93A0AF]">
-                          {a.youtube_id ? formatarHoras(a.carga_min) : "em breve"}
+                          {formatarHoras(a.carga_min)}
                         </span>
                       </>
                     );

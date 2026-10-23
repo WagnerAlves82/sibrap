@@ -36,7 +36,7 @@ export default async function CertificadoAreaPage({
 
   const { data: curso } = await supabase
     .from("cursos")
-    .select("id, nome, nota_minima, carga_horaria_horas")
+    .select("id, nome, nota_minima, carga_horaria_horas, permite_isencao_cadunico")
     .eq("slug", slug)
     .maybeSingle();
   if (!curso) notFound();
@@ -55,7 +55,7 @@ export default async function CertificadoAreaPage({
     supabase.auth.getUser(),
     supabase.from("matriculas").select("curso_id").eq("curso_id", curso.id).maybeSingle(),
     supabase.from("certificados").select("codigo").eq("curso_id", curso.id).maybeSingle(),
-    supabase.from("aulas").select("id, youtube_id").eq("curso_id", curso.id),
+    supabase.from("aulas").select("id").eq("curso_id", curso.id),
     supabase.from("progresso_aulas").select("aula_id, concluida_em"),
     supabase
       .from("tentativas_quiz")
@@ -89,17 +89,18 @@ export default async function CertificadoAreaPage({
   const totalAulas = aulas?.length ?? 0;
   const aulasOk =
     totalAulas > 0 &&
-    (aulas ?? []).every((a) => a.youtube_id && concluidas.has(a.id));
+    (aulas ?? []).every((a) => concluidas.has(a.id));
   const melhorNota = (tentativas ?? []).reduce((m, t) => Math.max(m, Number(t.nota ?? 0)), 0);
   const provaOk = melhorNota >= curso.nota_minima;
 
-  const cadunicoAprovado = comprovante?.status === "aprovado";
+  const permiteCadunico = curso.permite_isencao_cadunico;
+  const cadunicoAprovado = permiteCadunico && comprovante?.status === "aprovado";
   const pago = !!acessoPago;
   const elegivel = cadunicoAprovado || pago;
   const podeEmitir = aulasOk && provaOk && elegivel;
   const preco = produto
     ? (produto.preco_centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
-    : "R$ 49,90";
+    : "R$ 29,90";
   const nome = (userData.user?.user_metadata as { nome?: string } | undefined)?.nome ?? "";
 
   return (
@@ -165,7 +166,9 @@ export default async function CertificadoAreaPage({
                     ? "Comprovante do CadÚnico aprovado (certificado gratuito)"
                     : pago
                       ? "Pagamento do certificado confirmado"
-                      : "Comprovar inscrição no CadÚnico ou pagar o certificado"}
+                      : permiteCadunico
+                        ? "Comprovar inscrição no CadÚnico ou pagar o certificado"
+                        : "Pagar o certificado"}
                 </Item>
               </ul>
             </section>
@@ -179,33 +182,35 @@ export default async function CertificadoAreaPage({
                   Você pode fazer isso agora, mesmo antes de terminar o curso.
                 </p>
 
-                <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
-                  <div className="rounded-lg border-2 border-accent p-5">
-                    <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent">
-                      Baixa renda · grátis
-                    </p>
-                    {comprovante?.status === "pendente" ? (
-                      <Alert variant="info" claro className="mt-3 text-sm">
-                        Comprovante em análise. Assim que for conferido, o
-                        resultado aparece aqui.
-                      </Alert>
-                    ) : (
-                      <div className="mt-3 flex flex-col gap-3">
-                        {comprovante?.status === "recusado" && (
-                          <Alert variant="erro" claro className="text-sm">
-                            Seu último comprovante não foi aceito
-                            {comprovante.motivo_recusa ? `: ${comprovante.motivo_recusa}` : "."}{" "}
-                            Você pode enviar outro.
-                          </Alert>
-                        )}
-                        <FormComprovante />
-                      </div>
-                    )}
-                  </div>
+                <div className={`mt-5 grid grid-cols-1 gap-5 ${permiteCadunico ? "md:grid-cols-2" : "max-w-sm"}`}>
+                  {permiteCadunico && (
+                    <div className="rounded-lg border-2 border-accent p-5">
+                      <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent">
+                        Baixa renda · grátis
+                      </p>
+                      {comprovante?.status === "pendente" ? (
+                        <Alert variant="info" claro className="mt-3 text-sm">
+                          Comprovante em análise. Assim que for conferido, o
+                          resultado aparece aqui.
+                        </Alert>
+                      ) : (
+                        <div className="mt-3 flex flex-col gap-3">
+                          {comprovante?.status === "recusado" && (
+                            <Alert variant="erro" claro className="text-sm">
+                              Seu último comprovante não foi aceito
+                              {comprovante.motivo_recusa ? `: ${comprovante.motivo_recusa}` : "."}{" "}
+                              Você pode enviar outro.
+                            </Alert>
+                          )}
+                          <FormComprovante />
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   <div className="rounded-lg border border-[#D7DEE6] p-5">
                     <p className="font-data text-xs font-semibold uppercase tracking-wide text-[#516278]">
-                      Demais participantes
+                      {permiteCadunico ? "Demais participantes" : "Emissão do certificado"}
                     </p>
                     <p className="mt-1 font-data text-3xl font-semibold text-[#14213A]">{preco}</p>
                     <p className="mb-4 text-[13px] text-[#516278]">Pagamento único por PIX</p>

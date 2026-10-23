@@ -13,7 +13,7 @@ async function carregarCurso(slug: string) {
   const supabase = await criarClienteSupabaseServer();
   const { data: curso } = await supabase
     .from("cursos")
-    .select("id, slug, nome, subtitulo, descricao, carga_horaria_horas, nota_minima")
+    .select("id, slug, nome, subtitulo, descricao, carga_horaria_horas, nota_minima, permite_isencao_cadunico")
     .eq("slug", slug)
     .maybeSingle();
   return { supabase, curso };
@@ -227,23 +227,25 @@ export default async function CursoPublicoPage({ params }: Props) {
               conclusão das aulas e da aprovação na prova final.
             </p>
           </Reveal>
-          <div className="mt-8 grid max-w-3xl grid-cols-1 gap-6 md:grid-cols-2">
-            <Reveal>
-              <div className="h-full rounded-xl border-2 border-accent bg-white p-6">
-                <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent">
-                  Baixa renda
-                </p>
-                <p className="mt-2 font-data text-3xl font-semibold text-[#14213A]">Grátis</p>
-                <p className="mt-3 text-[14.5px] leading-relaxed text-[#516278]">
-                  Envie seu comprovante de inscrição no CadÚnico. Nossa equipe
-                  confere e libera o certificado sem custo.
-                </p>
-              </div>
-            </Reveal>
+          <div className={`mt-8 grid max-w-3xl grid-cols-1 gap-6 ${curso.permite_isencao_cadunico ? "md:grid-cols-2" : ""}`}>
+            {curso.permite_isencao_cadunico && (
+              <Reveal>
+                <div className="h-full rounded-xl border-2 border-accent bg-white p-6">
+                  <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent">
+                    Baixa renda
+                  </p>
+                  <p className="mt-2 font-data text-3xl font-semibold text-[#14213A]">Grátis</p>
+                  <p className="mt-3 text-[14.5px] leading-relaxed text-[#516278]">
+                    Envie seu comprovante de inscrição no CadÚnico. Nossa equipe
+                    confere e libera o certificado sem custo.
+                  </p>
+                </div>
+              </Reveal>
+            )}
             <Reveal delay={120}>
-              <div className="h-full rounded-xl border border-[#D7DEE6] bg-white p-6">
+              <div className="h-full max-w-sm rounded-xl border border-[#D7DEE6] bg-white p-6">
                 <p className="font-data text-xs font-semibold uppercase tracking-wide text-[#516278]">
-                  Demais participantes
+                  {curso.permite_isencao_cadunico ? "Demais participantes" : "Certificado"}
                 </p>
                 <p className="mt-2 font-data text-3xl font-semibold text-[#14213A]">
                   {preco ?? "—"}

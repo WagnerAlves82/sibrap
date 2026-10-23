@@ -56,7 +56,7 @@ export function PlayerAula({
   cursoHref,
 }: {
   aulaId: string;
-  youtubeId: string;
+  youtubeId: string | null;
   titulo: string;
   concluidaInicial: boolean;
   proximaHref: string | null;
@@ -91,7 +91,7 @@ export function PlayerAula({
   }, [aulaId, router]);
 
   useEffect(() => {
-    if (!iniciado || !alvoRef.current) return;
+    if (!iniciado || !alvoRef.current || !youtubeId) return;
     let intervalo: ReturnType<typeof setInterval> | undefined;
     let cancelado = false;
 
@@ -125,29 +125,38 @@ export function PlayerAula({
 
   return (
     <div>
-      <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-brand-deep">
-        {iniciado ? (
-          <div ref={alvoRef} className="h-full w-full [&>iframe]:h-full [&>iframe]:w-full" />
-        ) : (
-          <button
-            type="button"
-            onClick={() => setIniciado(true)}
-            aria-label={`Assistir: ${titulo}`}
-            className="group absolute inset-0 flex items-center justify-center"
-          >
-            {/* miniatura leve: o vídeo só carrega quando a pessoa toca (economiza dados) */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`}
-              alt=""
-              className="absolute inset-0 h-full w-full object-cover opacity-70"
-            />
-            <span className="relative flex h-16 w-16 items-center justify-center rounded-full bg-accent text-2xl text-accent-ink shadow-lg transition-transform group-hover:scale-110">
-              ▶
-            </span>
-          </button>
-        )}
-      </div>
+      {youtubeId ? (
+        <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-brand-deep">
+          {iniciado ? (
+            <div ref={alvoRef} className="h-full w-full [&>iframe]:h-full [&>iframe]:w-full" />
+          ) : (
+            <button
+              type="button"
+              onClick={() => setIniciado(true)}
+              aria-label={`Assistir: ${titulo}`}
+              className="group absolute inset-0 flex items-center justify-center"
+            >
+              {/* miniatura leve: o vídeo só carrega quando a pessoa toca (economiza dados) */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`}
+                alt=""
+                className="absolute inset-0 h-full w-full object-cover opacity-70"
+              />
+              <span className="relative flex h-16 w-16 items-center justify-center rounded-full bg-accent text-2xl text-accent-ink shadow-lg transition-transform group-hover:scale-110">
+                ▶
+              </span>
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="flex aspect-video w-full flex-col items-center justify-center gap-1 rounded-xl bg-brand-deep text-center">
+          <span className="text-[15px] font-semibold text-white/80">Vídeo em breve</span>
+          <span className="max-w-[80%] text-[13px] text-white/55">
+            Leia o conteúdo abaixo e responda ao mini-quiz — você já pode avançar normalmente.
+          </span>
+        </div>
+      )}
 
       <div className="mt-5 flex flex-col gap-3">
         {concluida ? (
@@ -158,7 +167,8 @@ export function PlayerAula({
           <>
             {aviso && (
               <Alert variant="info" claro className="text-sm">
-                {aviso}. A aula é marcada como concluída sozinha quando o vídeo termina.
+                {aviso}
+                {youtubeId ? ". A aula é marcada como concluída sozinha quando o vídeo termina." : ""}
               </Alert>
             )}
             <button
@@ -167,9 +177,13 @@ export function PlayerAula({
                 ultimaTentativaRef.current = 0;
                 concluir();
               }}
-              className="self-start text-[13px] text-[#516278] underline underline-offset-4 hover:text-brand"
+              className={
+                youtubeId
+                  ? "self-start text-[13px] text-[#516278] underline underline-offset-4 hover:text-brand"
+                  : "self-start rounded-lg bg-accent px-5 py-2.5 text-[14px] font-bold text-accent-ink transition-colors hover:brightness-105"
+              }
             >
-              Já assisti — marcar como concluída
+              {youtubeId ? "Já assisti — marcar como concluída" : "Marcar aula como concluída"}
             </button>
           </>
         )}

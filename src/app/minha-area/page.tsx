@@ -139,8 +139,15 @@ export default async function MinhaAreaPage() {
                   <Reveal key={curso.id} delay={i * 80}>
                     <Link
                       href={`/minha-area/cursos/${curso.slug}`}
-                      className={`${cartao} block transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)]`}
+                      className="block overflow-hidden rounded-xl border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)]"
                     >
+                      <div className="flex items-center gap-2 bg-brand px-6 py-3">
+                        <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                        <span className="font-data text-[11px] font-bold uppercase tracking-[0.15em] text-white">
+                          SIBRAP
+                        </span>
+                      </div>
+                      <div className="p-6">
                       <p className="font-data text-xs font-semibold text-accent-2">
                         {curso.carga_horaria_horas}h · {Math.round(pct)}% concluído
                       </p>
@@ -151,6 +158,7 @@ export default async function MinhaAreaPage() {
                       <span className="mt-4 block text-[13.5px] font-bold text-brand">
                         Continuar →
                       </span>
+                      </div>
                     </Link>
                   </Reveal>
                 );
