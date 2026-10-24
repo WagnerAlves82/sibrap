@@ -68,7 +68,7 @@ export default async function CursosPage() {
                 </div>
                 <div className="flex flex-1 flex-col p-7">
                   <span className="font-data text-xs font-semibold text-accent-2">
-                    {curso.carga_horaria_horas}h · 100% online
+                    {curso.carga_horaria_horas}h
                   </span>
                   <h2 className="mt-2 font-display text-2xl font-extrabold text-[#14213A]">
                     {curso.nome}
