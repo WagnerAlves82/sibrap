@@ -150,10 +150,9 @@ export function PlayerAula({
           )}
         </div>
       ) : (
-        <div className="flex aspect-video w-full flex-col items-center justify-center gap-1 rounded-xl bg-brand-deep text-center">
-          <span className="text-[15px] font-semibold text-white/80">Vídeo em breve</span>
-          <span className="max-w-[80%] text-[13px] text-white/55">
-            Leia o conteúdo abaixo e responda ao mini-quiz — você já pode avançar normalmente.
+        <div className="flex aspect-video w-full items-center justify-center rounded-xl bg-brand-deep opacity-50" aria-hidden>
+          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 text-2xl text-white/30">
+            ▶
           </span>
         </div>
       )}

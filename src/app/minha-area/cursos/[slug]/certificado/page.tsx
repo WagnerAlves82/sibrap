@@ -149,6 +149,11 @@ export default async function CertificadoAreaPage({
             {aulasOk && provaOk && !elegivel && (
               <PopupParabens precoOnline={precoOnline} precoImpresso={precoImpresso} permiteCadunico={permiteCadunico} />
             )}
+            {!podeEmitir && (
+              <Alert variant="info" claro>
+                Você precisa concluir todas as etapas para liberar o seu certificado. Bons estudos!
+              </Alert>
+            )}
             <section className="rounded-xl border border-[#D7DEE6] bg-white p-6">
               <h2 className="font-display text-lg font-extrabold text-[#14213A]">Requisitos</h2>
               <ul className="mt-4 flex flex-col gap-3">
@@ -195,7 +200,8 @@ export default async function CertificadoAreaPage({
                   Como obter o certificado
                 </h2>
                 <p className="mt-1 text-[14px] text-[#516278]">
-                  Você pode fazer isso agora, mesmo antes de terminar o curso.
+                  O pagamento (ou o envio do comprovante) pode ser feito a qualquer momento, mas o
+                  certificado só é liberado depois que você concluir todas as aulas e passar na prova final.
                 </p>
 
                 <div className={`mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 ${permiteCadunico ? "lg:grid-cols-3" : "lg:max-w-[640px]"}`}>

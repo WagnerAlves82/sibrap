@@ -142,7 +142,7 @@ export default async function CertificadoPage({
                 alt="SIBRAP — Sistema Brasileiro de Aprendizagem Profissional"
                 width={758}
                 height={256}
-                style={{ height: cq(5), width: "auto" }}
+                style={{ height: cq(6.9), width: "auto" }}
               />
 
               <div
@@ -159,7 +159,7 @@ export default async function CertificadoPage({
                 CERTIFICADO
               </div>
               <div style={{ marginTop: cq(0.7), fontSize: cq(1.15), letterSpacing: cq(0.35), color: OURO, fontWeight: 700 }}>
-                DE CONCLUSÃO DE CURSO LIVRE
+                DE CONCLUSÃO DE CURSO
               </div>
 
               <div style={{ marginTop: cq(2.6), fontSize: cq(1.45), color: "#516278", textAlign: "center" }}>
@@ -190,7 +190,7 @@ export default async function CertificadoPage({
               )}
 
               <div style={{ marginTop: cq(1.8), fontSize: cq(1.6), lineHeight: 1.55, textAlign: "center", maxWidth: cq(74), color: "#2B3A52" }}>
-                concluiu com aproveitamento o curso livre de{" "}
+                concluiu com aproveitamento o curso de{" "}
                 <strong style={{ color: NAVY }}>{cert.curso_nome}</strong>, com carga
                 horária de <strong style={{ color: NAVY }}>{cert.carga_horaria_horas} horas</strong>, em{" "}
                 {formatarData(cert.emitido_em)}.
@@ -221,10 +221,10 @@ export default async function CertificadoPage({
                   </div>
                 </div>
 
-                <SeloAbed altura={cq(8)} fonteLegenda={cq(0.95)} />
+                <SeloAbed altura={cq(6.8)} fonteLegenda={cq(0.95)} />
 
                 <div style={{ textAlign: "center", fontSize: cq(1.05), color: "#516278" }}>
-                  <div style={{ fontFamily: "var(--font-signature), cursive", fontSize: cq(2.9), color: NAVY, lineHeight: 1 }}>
+                  <div style={{ fontFamily: "var(--font-signature), cursive", fontSize: cq(2.9), color: "#000000", lineHeight: 1 }}>
                     Wagner Alves de S. Jr
                   </div>
                   <div style={{ width: cq(30), borderTop: `${cq(0.12)} solid ${TINTA}`, paddingTop: cq(0.5), marginTop: cq(0.3) }}>
