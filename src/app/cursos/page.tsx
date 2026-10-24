@@ -1,8 +1,17 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { Reveal } from "@/components/reveal";
+
+// Foto de capa por curso (slug -> arquivo em /public). Enquanto só há uma
+// foto oficial, os dois cursos usam a mesma; troque aqui quando tiver fotos
+// específicas de cada curso.
+const FOTO_PADRAO = "/alunos.png";
+const FOTOS_POR_CURSO: Record<string, string> = {
+  "atendimento-ao-cliente": "/atendimento-cliente-foto.jpg",
+};
 
 export const metadata: Metadata = {
   title: "Cursos gratuitos",
@@ -46,23 +55,34 @@ export default async function CursosPage() {
             <Reveal key={curso.slug} delay={i * 100}>
               <Link
                 href={`/cursos/${curso.slug}`}
-                className="group flex h-full flex-col rounded-xl border border-[#D7DEE6] bg-white p-7 transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)]"
+                className="group flex h-full flex-col overflow-hidden rounded-xl border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)]"
               >
-                <span className="font-data text-xs font-semibold text-accent-2">
-                  {curso.carga_horaria_horas}h · 100% online
-                </span>
-                <h2 className="mt-2 font-display text-2xl font-extrabold text-[#14213A]">
-                  {curso.nome}
-                </h2>
-                <p className="mt-3 flex-1 text-[15px] leading-relaxed text-[#516278]">
-                  {curso.descricao}
-                </p>
-                <span
-                  aria-hidden
-                  className="mt-6 flex justify-end text-lg text-accent transition-transform group-hover:translate-x-1"
-                >
-                  →
-                </span>
+                <div className="relative aspect-[16/10] w-full overflow-hidden bg-surface-2">
+                  <Image
+                    src={FOTOS_POR_CURSO[curso.slug] ?? FOTO_PADRAO}
+                    alt=""
+                    fill
+                    sizes="(min-width: 768px) 560px, 100vw"
+                    className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
+                <div className="flex flex-1 flex-col p-7">
+                  <span className="font-data text-xs font-semibold text-accent-2">
+                    {curso.carga_horaria_horas}h · 100% online
+                  </span>
+                  <h2 className="mt-2 font-display text-2xl font-extrabold text-[#14213A]">
+                    {curso.nome}
+                  </h2>
+                  <p className="mt-3 flex-1 text-[15px] leading-relaxed text-[#516278]">
+                    {curso.descricao}
+                  </p>
+                  <span
+                    aria-hidden
+                    className="mt-6 flex justify-end text-lg text-accent transition-transform group-hover:translate-x-1"
+                  >
+                    →
+                  </span>
+                </div>
               </Link>
             </Reveal>
           ))}
