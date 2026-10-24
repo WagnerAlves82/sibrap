@@ -1,11 +1,10 @@
-import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
+import { SITE_URL, blocoCombos, blocoSobre, carregarCatalogo, linhaApostila } from "@/lib/llms";
 
 // llms.txt (llmstxt.org): resumo do site pensado pra assistentes de IA
-// lerem. Gerado dinamicamente pra listar as apostilas e cursos realmente
-// publicados, no mesmo espírito do sitemap.ts.
+// lerem. Gerado dinamicamente a partir do banco, no mesmo espírito do
+// sitemap.ts. A versão completa (com perguntas e respostas) fica em
+// /llms-full.txt.
 export const revalidate = 3600;
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
 
 export async function GET() {
   const linhas: string[] = [];
@@ -13,48 +12,38 @@ export async function GET() {
   linhas.push("# SIBRAP — Sistema Brasileiro de Aprendizagem Profissional");
   linhas.push("");
   linhas.push(
-    "> Apostilas em PDF para concursos públicos municipais (com questões comentadas, gabarito e simulado online) e cursos livres gratuitos, com certificado com QR Code de validação."
+    "> Apostilas em PDF para concursos públicos de todo o Brasil (municipais e estaduais), com questões comentadas, gabarito e simulado online, e cursos livres gratuitos com certificado validável por QR Code."
   );
   linhas.push("");
-  linhas.push(
-    "Cada apostila é focada em um cargo e edital específico de um concurso municipal real, com preço fixo (pagamento único, sem mensalidade) e conteúdo na ordem do próprio edital. Quem compra também tem acesso a um Ambiente Virtual de Aprendizagem (AVA) por apostila: simulado online, cronograma de estudos e missões."
-  );
-  linhas.push("");
+  for (const l of blocoSobre()) linhas.push(l, "");
 
   linhas.push("## Páginas principais");
-  linhas.push(`- [Página inicial](${siteUrl}): apresentação do SIBRAP e vitrine das apostilas.`);
-  linhas.push(`- [Apostilas](${siteUrl}/apostilas): catálogo completo de apostilas para concursos públicos.`);
-  linhas.push(`- [Cursos gratuitos](${siteUrl}/cursos): cursos livres com certificado, sem custo.`);
-  linhas.push(`- [Notícias](${siteUrl}/noticias): notícias sobre concursos públicos (vagas efetivas) e processos seletivos (contratações temporárias).`);
+  linhas.push(`- [Página inicial](${SITE_URL}): apresentação do SIBRAP e vitrine das apostilas.`);
+  linhas.push(`- [Apostilas](${SITE_URL}/apostilas): catálogo completo de apostilas para concursos públicos.`);
+  linhas.push(`- [Bancas](${SITE_URL}/bancas): apostilas organizadas por banca organizadora.`);
+  linhas.push(`- [Cursos gratuitos](${SITE_URL}/cursos): cursos livres com certificado, sem custo.`);
+  linhas.push(`- [Notícias](${SITE_URL}/noticias): notícias sobre concursos públicos (vagas efetivas) e processos seletivos (contratações temporárias).`);
+  linhas.push(`- [Versão completa deste resumo](${SITE_URL}/llms-full.txt): todas as apostilas, cursos e perguntas frequentes em um só arquivo.`);
   linhas.push("");
 
   try {
-    const admin = criarClienteSupabaseAdmin();
-
-    const { data: apostilas } = await admin
-      .from("apostilas")
-      .select("slug, titulo, orgao, cidade, uf, cargo, descricao")
-      .eq("status", "publicada")
-      .order("ordem");
-    if (apostilas && apostilas.length > 0) {
+    const { apostilas, cursos } = await carregarCatalogo();
+    if (apostilas.length > 0) {
       linhas.push("## Apostilas publicadas");
-      for (const a of apostilas) {
-        const local = [a.cidade, a.uf].filter(Boolean).join("/");
-        linhas.push(
-          `- [${a.titulo} — ${a.orgao}${local ? ` (${local})` : ""}](${siteUrl}/apostilas/${a.slug}): ${a.descricao ?? `apostila para o cargo de ${a.cargo}.`}`
-        );
-      }
+      for (const a of apostilas) linhas.push(linhaApostila(a));
       linhas.push("");
+      const combos = blocoCombos(apostilas);
+      if (combos.length > 0) {
+        linhas.push("## Combos (apostila + videoaulas)");
+        linhas.push(...combos);
+        linhas.push("");
+      }
     }
-
-    const { data: cursos } = await admin
-      .from("cursos")
-      .select("slug, nome, descricao")
-      .eq("ativo", true);
-    if (cursos && cursos.length > 0) {
+    if (cursos.length > 0) {
       linhas.push("## Cursos gratuitos");
       for (const c of cursos) {
-        linhas.push(`- [${c.nome}](${siteUrl}/cursos/${c.slug})${c.descricao ? `: ${c.descricao}` : ""}`);
+        const horas = c.carga_horaria_horas ? ` (${c.carga_horaria_horas} horas, gratuito, com certificado)` : " (gratuito, com certificado)";
+        linhas.push(`- [${c.nome}](${SITE_URL}/cursos/${c.slug})${horas}${c.descricao ? `: ${c.descricao}` : ""}`);
       }
       linhas.push("");
     }
@@ -63,9 +52,11 @@ export async function GET() {
   }
 
   linhas.push("## Outras páginas");
-  linhas.push(`- [Termos de uso](${siteUrl}/termos)`);
-  linhas.push(`- [Política de privacidade](${siteUrl}/privacidade)`);
-  linhas.push(`- [Validar certificado](${siteUrl}/validar)`);
+  linhas.push(`- [Sobre o SIBRAP](${SITE_URL}/sobre)`);
+  linhas.push(`- [Contato](${SITE_URL}/contato)`);
+  linhas.push(`- [Termos de uso](${SITE_URL}/termos)`);
+  linhas.push(`- [Política de privacidade](${SITE_URL}/privacidade)`);
+  linhas.push(`- [Validar certificado](${SITE_URL}/validar)`);
 
   return new Response(linhas.join("\n") + "\n", {
     headers: { "Content-Type": "text/plain; charset=utf-8" },

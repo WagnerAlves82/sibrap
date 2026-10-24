@@ -85,7 +85,11 @@ export default async function ComboPage({ params }: Props) {
     name: `Combo ${apostila.cargo} — ${apostila.orgao}`,
     description: apostila.descricao ?? undefined,
     image: "https://sibrap.tec.br/hero-combo-enfermagem.webp",
+    sku: `combo-${slug}`,
+    category: "Apostilas e videoaulas para concursos públicos",
+    inLanguage: "pt-BR",
     brand: { "@type": "Brand", name: "SIBRAP" },
+    additionalProperty: fatos.map(([name, value]) => ({ "@type": "PropertyValue", name, value })),
     offers: {
       "@type": "Offer",
       url: `https://sibrap.tec.br/combos/${slug}`,

@@ -74,7 +74,7 @@ type Admin = ReturnType<typeof criarClienteSupabaseAdmin>;
 // leva também o link da matéria sobre o concurso, quando existir.
 async function postarApostila(
   admin: Admin,
-  { dry, pageId, token }: { dry: boolean; pageId?: string; token?: string }
+  { dry, pageId, token, slug }: { dry: boolean; pageId?: string; token?: string; slug?: string }
 ): Promise<NextResponse | null> {
   const todas = await listarApostilasPublicadas(admin as never);
   if (todas.length === 0) return null;
@@ -85,7 +85,11 @@ async function postarApostila(
   const base = (vigentes.length ? vigentes : todas)
     .sort((a, b) => (b.criado_em ?? "").localeCompare(a.criado_em ?? ""))
     .slice(0, APOSTILAS_EM_FOCO);
-  const apostila = [...base].sort((a, b) => (a.facebook_postado_em ?? "").localeCompare(b.facebook_postado_em ?? ""))[0];
+  // `slug` (parâmetro ?apostila=) força uma apostila específica, fora do rodízio
+  const apostila = slug
+    ? todas.find((a) => a.slug === slug)
+    : [...base].sort((a, b) => (a.facebook_postado_em ?? "").localeCompare(b.facebook_postado_em ?? ""))[0];
+  if (!apostila) return NextResponse.json({ ok: false, erro: `apostila não encontrada: ${slug}` }, { status: 404 });
 
   const { count: jaPostadas } = await admin
     .from("apostilas")
@@ -167,6 +171,13 @@ export async function POST(request: NextRequest) {
   ]);
   if ((materiasHoje ?? 0) + (apostilasHoje ?? 0) >= limiteDia) {
     return NextResponse.json({ ok: true, publicado: false, motivo: `teto diário (${limiteDia}) atingido` });
+  }
+
+  // ?apostila=<slug>: divulga essa apostila agora, sem esperar o rodízio
+  const forcada = request.nextUrl.searchParams.get("apostila");
+  if (forcada) {
+    const vez = await postarApostila(admin, { dry, pageId, token, slug: forcada });
+    if (vez) return vez;
   }
 
   // Rodízio: depois de MATERIAS_POR_APOSTILA matérias postadas desde o último post de apostila, é a vez de uma apostila.

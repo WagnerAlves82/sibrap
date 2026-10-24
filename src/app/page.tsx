@@ -13,6 +13,7 @@ import { COMBOS } from "@/lib/combos";
 import { diasAte, formatarDataIso, formatarPreco, listarApostilasPublicadas } from "@/lib/apostilas";
 import { listarPostsVitrine } from "@/lib/blog";
 import { SLIDES_HOME } from "@/lib/home-slides";
+import { EMAIL_CONTATO, EMISSOR, RAZAO_SOCIAL, WHATSAPP_NUMERO } from "@/lib/emissor";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
@@ -39,8 +40,46 @@ export default async function Home() {
   // menor preço da vitrine (a primeira da lista é a mais nova, não a mais barata)
   const preco = apostilas.length ? Math.min(...apostilas.map((a) => a.preco_centavos)) : 2990;
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
+  const organizacao = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${siteUrl}/#organizacao`,
+        name: EMISSOR.nomeCurto,
+        legalName: RAZAO_SOCIAL,
+        alternateName: EMISSOR.nome,
+        taxID: EMISSOR.cnpj,
+        url: siteUrl,
+        logo: `${siteUrl}/logo.png`,
+        description:
+          "Apostilas em PDF para concursos públicos de todo o Brasil, com questões comentadas e simulado online, e cursos livres gratuitos com certificado.",
+        areaServed: "BR",
+        contactPoint: [
+          { "@type": "ContactPoint", contactType: "customer support", email: EMAIL_CONTATO, availableLanguage: "pt-BR" },
+          { "@type": "ContactPoint", contactType: "customer support", url: `https://wa.me/${WHATSAPP_NUMERO}`, availableLanguage: "pt-BR" },
+        ],
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${siteUrl}/#site`,
+        url: siteUrl,
+        name: "SIBRAP",
+        inLanguage: "pt-BR",
+        publisher: { "@id": `${siteUrl}/#organizacao` },
+        potentialAction: {
+          "@type": "SearchAction",
+          target: { "@type": "EntryPoint", urlTemplate: `${siteUrl}/busca?q={termo}` },
+          "query-input": "required name=termo",
+        },
+      },
+    ],
+  };
+
   return (
     <div className="flex flex-1 flex-col bg-white font-body">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizacao) }} />
       {proxima && (
         <div className="bg-brand-deep text-[#C9D6E6]">
           <div className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-2 text-[12.5px] sm:px-6">

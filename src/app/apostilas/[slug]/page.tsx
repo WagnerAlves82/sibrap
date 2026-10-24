@@ -124,10 +124,29 @@ export default async function ApostilaPage({ params }: Props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
-    name: apostila.titulo,
+    name: `Apostila ${apostila.cargo} — ${apostila.orgao}${apostila.banca ? ` (banca ${apostila.banca})` : ""}`,
     description: apostila.descricao ?? undefined,
-    image: capa ?? undefined,
+    url: `${siteUrl}/apostilas/${apostila.slug}`,
+    sku: apostila.slug,
+    mpn: apostila.slug,
+    category: apostila.categoria ?? "Apostilas para concursos públicos",
+    inLanguage: "pt-BR",
+    image: galeria.length ? galeria.map((g) => g.url) : capa ? [capa] : undefined,
     brand: { "@type": "Brand", name: "SIBRAP" },
+    manufacturer: { "@type": "Organization", name: EMISSOR.nome, url: siteUrl },
+    audience: { "@type": "Audience", audienceType: `Candidatos ao cargo de ${apostila.cargo} (${apostila.orgao})` },
+    additionalProperty: [
+      { "@type": "PropertyValue", name: "Órgão", value: apostila.orgao },
+      { "@type": "PropertyValue", name: "Cargo", value: apostila.cargo },
+      ...(apostila.banca ? [{ "@type": "PropertyValue", name: "Banca", value: apostila.banca }] : []),
+      ...(apostila.data_prova ? [{ "@type": "PropertyValue", name: "Data da prova", value: apostila.data_prova }] : []),
+      ...(apostila.inscricoes_ate ? [{ "@type": "PropertyValue", name: "Inscrições até", value: apostila.inscricoes_ate }] : []),
+      ...(apostila.vagas ? [{ "@type": "PropertyValue", name: "Vagas", value: apostila.vagas }] : []),
+      ...(apostila.salario ? [{ "@type": "PropertyValue", name: "Remuneração", value: apostila.salario }] : []),
+      ...(apostila.paginas ? [{ "@type": "PropertyValue", name: "Páginas", value: String(apostila.paginas) }] : []),
+      ...(apostila.questoes ? [{ "@type": "PropertyValue", name: "Questões comentadas", value: String(apostila.questoes) }] : []),
+      { "@type": "PropertyValue", name: "Formato", value: "PDF, com capítulos online e simulado" },
+    ],
     offers: {
       "@type": "Offer",
       url: `${siteUrl}/apostilas/${apostila.slug}`,
@@ -136,6 +155,7 @@ export default async function ApostilaPage({ params }: Props) {
       availability: "https://schema.org/InStock",
       priceValidUntil: apostila.data_prova ?? undefined,
       itemCondition: "https://schema.org/NewCondition",
+      description: `Apostila em PDF mais simulado online${apostila.questoes ? ` com ${apostila.questoes} questões comentadas` : ""} para treinar até a data da prova, no mesmo preço.`,
       seller: { "@type": "Organization", name: EMISSOR.nome },
     },
   };
@@ -158,6 +178,15 @@ export default async function ApostilaPage({ params }: Props) {
     ctaHref: jaTem ? `${areaHref}/baixar` : ctaHref,
     ctaRotulo: jaTem ? "Baixar minha apostila" : "Quero minha aprovação",
   };
+  const breadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Início", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Apostilas", item: `${siteUrl}/apostilas` },
+      { "@type": "ListItem", position: 3, name: apostila.cargo, item: `${siteUrl}/apostilas/${apostila.slug}` },
+    ],
+  };
   const faq = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -172,6 +201,7 @@ export default async function ApostilaPage({ params }: Props) {
     <div className="flex min-h-screen flex-col overflow-x-clip bg-white pb-16 font-body md:pb-0">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
       <CabecalhoSite logado={!!user} next={areaHref} />
 
       <main className="flex-1 bg-[#F6F8FB] py-10 sm:py-14">

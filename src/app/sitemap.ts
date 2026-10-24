@@ -1,6 +1,10 @@
 import type { MetadataRoute } from "next";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { slugDaBanca } from "@/lib/bancas";
+import { COMBOS } from "@/lib/combos";
+
+// Sem isto o sitemap era gerado só no build e não listava apostilas novas.
+export const revalidate = 3600;
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
 
@@ -8,7 +12,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const paginas: MetadataRoute.Sitemap = [
     { url: siteUrl, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
     { url: `${siteUrl}/apostilas`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.95 },
-    { url: `${siteUrl}/combos/sesa-ap-tecnico-enfermagem`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
+    ...Object.keys(COMBOS).map((slug) => ({ url: `${siteUrl}/combos/${slug}`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.9 })),
+    { url: `${siteUrl}/llms.txt`, lastModified: new Date(), changeFrequency: "daily", priority: 0.3 },
+    { url: `${siteUrl}/llms-full.txt`, lastModified: new Date(), changeFrequency: "daily", priority: 0.3 },
     { url: `${siteUrl}/bancas`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 },
     { url: `${siteUrl}/noticias`, lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
     { url: `${siteUrl}/cursos`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },

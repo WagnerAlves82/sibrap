@@ -82,6 +82,9 @@ export default async function CursoPublicoPage({ params }: Props) {
     description: curso.descricao,
     inLanguage: "pt-BR",
     isAccessibleForFree: true,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br"}/cursos/${curso.slug}`,
+    educationalCredentialAwarded: "Certificado de conclusão com QR Code de validação",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "BRL", category: "Free", availability: "https://schema.org/InStock" },
     provider: {
       "@type": "Organization",
       name: EMISSOR.nome,
