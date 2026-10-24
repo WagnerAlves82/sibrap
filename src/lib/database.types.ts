@@ -620,6 +620,68 @@ export type Database = {
           },
         ]
       }
+      certificados_envio: {
+        Row: {
+          bairro: string
+          cep: string
+          certificado_id: string
+          cidade: string
+          codigo_rastreio: string | null
+          complemento: string | null
+          criado_em: string
+          enviado_em: string | null
+          id: string
+          logradouro: string
+          numero: string
+          status: string
+          telefone: string
+          uf: string
+          user_id: string
+        }
+        Insert: {
+          bairro: string
+          cep: string
+          certificado_id: string
+          cidade: string
+          codigo_rastreio?: string | null
+          complemento?: string | null
+          criado_em?: string
+          enviado_em?: string | null
+          id?: string
+          logradouro: string
+          numero: string
+          status?: string
+          telefone: string
+          uf: string
+          user_id: string
+        }
+        Update: {
+          bairro?: string
+          cep?: string
+          certificado_id?: string
+          cidade?: string
+          codigo_rastreio?: string | null
+          complemento?: string | null
+          criado_em?: string
+          enviado_em?: string | null
+          id?: string
+          logradouro?: string
+          numero?: string
+          status?: string
+          telefone?: string
+          uf?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificados_envio_certificado_id_fkey"
+            columns: ["certificado_id"]
+            isOneToOne: true
+            referencedRelation: "certificados"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       combo_videoaulas: {
         Row: {
           combo_slug: string
@@ -1266,6 +1328,36 @@ export type Database = {
           uf?: string | null
         }
         Relationships: []
+      }
+      produto_combo_itens: {
+        Row: {
+          produto_combo_id: string
+          produto_item_id: string
+        }
+        Insert: {
+          produto_combo_id: string
+          produto_item_id: string
+        }
+        Update: {
+          produto_combo_id?: string
+          produto_item_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produto_combo_itens_produto_combo_id_fkey"
+            columns: ["produto_combo_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produto_combo_itens_produto_item_id_fkey"
+            columns: ["produto_item_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       produtos: {
         Row: {

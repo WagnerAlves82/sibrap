@@ -6,6 +6,7 @@ import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { gerarPixParaPedido, type EstadoPix } from "@/lib/pix";
 import { cpfValido, normalizarCpf } from "@/lib/cpf";
+import { enviarCertificadoEmitido } from "@/lib/resend";
 
 const TAMANHO_MAXIMO = 3.5 * 1024 * 1024;
 
@@ -81,7 +82,8 @@ export async function enviarComprovanteAction(
 }
 
 export async function criarPagamentoCertificadoAction(
-  cursoSlug: string
+  cursoSlug: string,
+  formato: "online" | "impresso" = "online"
 ): Promise<EstadoPix> {
   const supabase = await criarClienteSupabaseServer();
   const {
@@ -91,8 +93,9 @@ export async function criarPagamentoCertificadoAction(
     return { erro: "Você precisa estar logado com um e-mail válido." };
   }
 
+  const produtoSlug = formato === "impresso" ? `certificado-impresso-${cursoSlug}` : `certificado-${cursoSlug}`;
   const { data: pedidoRows, error } = await supabase.rpc("criar_pedido_por_slug", {
-    p_slug: `certificado-${cursoSlug}`,
+    p_slug: produtoSlug,
   });
   if (error || !pedidoRows?.[0]) {
     return { erro: error?.message ?? "Não deu pra criar o pedido agora. Tenta de novo." };
@@ -123,7 +126,39 @@ export async function emitirCertificadoAction(
     return { erro: "Digite um CPF válido." };
   }
 
+  const impresso = String(formData.get("formato") ?? "") === "impresso";
+  let endereco: {
+    cep: string;
+    logradouro: string;
+    numero: string;
+    complemento: string | null;
+    bairro: string;
+    cidade: string;
+    uf: string;
+    telefone: string;
+  } | null = null;
+  if (impresso) {
+    const campo = (chave: string) => String(formData.get(chave) ?? "").trim();
+    endereco = {
+      cep: campo("cep"),
+      logradouro: campo("logradouro"),
+      numero: campo("numero"),
+      complemento: campo("complemento") || null,
+      bairro: campo("bairro"),
+      cidade: campo("cidade"),
+      uf: campo("uf").toUpperCase(),
+      telefone: campo("telefone"),
+    };
+    if (!endereco.cep || !endereco.logradouro || !endereco.numero || !endereco.bairro || !endereco.cidade || !endereco.uf || !endereco.telefone) {
+      return { erro: "Preencha todos os campos do endereço de entrega." };
+    }
+  }
+
   const supabase = await criarClienteSupabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const { data: codigo, error } = await supabase.rpc("emitir_certificado", {
     p_curso_id: cursoId,
     p_nome: nome,
@@ -131,6 +166,29 @@ export async function emitirCertificadoAction(
   });
   if (error || !codigo) {
     return { erro: error?.message ?? "Não foi possível emitir o certificado agora." };
+  }
+
+  const [{ data: cert }, { data: curso }] = await Promise.all([
+    supabase.from("certificados").select("id").eq("codigo", codigo).maybeSingle(),
+    supabase.from("cursos").select("nome").eq("id", cursoId).maybeSingle(),
+  ]);
+
+  if (endereco && cert && user) {
+    await supabase.from("certificados_envio").insert({
+      certificado_id: cert.id,
+      user_id: user.id,
+      ...endereco,
+    });
+  }
+
+  if (user?.email) {
+    await enviarCertificadoEmitido({
+      email: user.email,
+      nome: (user.user_metadata as { nome?: string } | undefined)?.nome,
+      cursoNome: curso?.nome ?? "",
+      codigo,
+      impresso,
+    }).catch((e) => console.error("Falha ao enviar e-mail do certificado", e));
   }
 
   redirect(`/certificado/${codigo}`);

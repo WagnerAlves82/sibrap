@@ -94,33 +94,49 @@ export function FormComprovante() {
   );
 }
 
-export function PagamentoCertificado({ cursoSlug }: { cursoSlug: string }) {
+export function PagamentoCertificado({
+  cursoSlug,
+  formato = "online",
+}: {
+  cursoSlug: string;
+  formato?: "online" | "impresso";
+}) {
   const router = useRouter();
   return (
     <PixCheckoutClaro
       rotuloBotao="Pagar com PIX"
-      criarPix={() => criarPagamentoCertificadoAction(cursoSlug)}
+      criarPix={() => criarPagamentoCertificadoAction(cursoSlug, formato)}
       aoAprovar={() => router.refresh()}
     />
   );
 }
 
+// Só dígitos, formatado como 00000-000.
+function formatarCep(valor: string): string {
+  const digitos = valor.replace(/\D/g, "").slice(0, 8);
+  return digitos.length > 5 ? `${digitos.slice(0, 5)}-${digitos.slice(5)}` : digitos;
+}
+
 export function FormEmitir({
   cursoId,
   nomeSugerido,
+  formato = "online",
 }: {
   cursoId: string;
   nomeSugerido: string;
+  formato?: "online" | "impresso";
 }) {
   const [estado, action, pending] = useActionState<EstadoEmissao, FormData>(
     emitirCertificadoAction,
     null
   );
   const [cpf, setCpf] = useState("");
+  const [cep, setCep] = useState("");
 
   return (
     <form action={action} className="flex flex-col gap-3">
       <input type="hidden" name="curso_id" value={cursoId} />
+      <input type="hidden" name="formato" value={formato} />
       <label htmlFor="nome" className="text-[13.5px] font-semibold text-[#14213A]">
         Seu nome completo, como deve aparecer no certificado
       </label>
@@ -151,6 +167,40 @@ export function FormEmitir({
         autoComplete="off"
         className={CLASSE_INPUT}
       />
+
+      {formato === "impresso" && (
+        <>
+          <p className="mt-2 text-[13.5px] font-semibold text-[#14213A]">
+            Endereço de entrega
+          </p>
+          <div className="grid grid-cols-2 gap-3">
+            <input
+              name="cep"
+              type="text"
+              inputMode="numeric"
+              value={cep}
+              onChange={(e) => setCep(formatarCep(e.target.value))}
+              placeholder="CEP"
+              required
+              minLength={9}
+              maxLength={9}
+              className={CLASSE_INPUT}
+            />
+            <input name="telefone" type="tel" placeholder="Telefone p/ contato" required className={CLASSE_INPUT} />
+          </div>
+          <input name="logradouro" type="text" placeholder="Rua / Avenida" required className={CLASSE_INPUT} />
+          <div className="grid grid-cols-2 gap-3">
+            <input name="numero" type="text" placeholder="Número" required className={CLASSE_INPUT} />
+            <input name="complemento" type="text" placeholder="Complemento (opcional)" className={CLASSE_INPUT} />
+          </div>
+          <input name="bairro" type="text" placeholder="Bairro" required className={CLASSE_INPUT} />
+          <div className="grid grid-cols-[1fr_90px] gap-3">
+            <input name="cidade" type="text" placeholder="Cidade" required className={CLASSE_INPUT} />
+            <input name="uf" type="text" placeholder="UF" required maxLength={2} className={CLASSE_INPUT} />
+          </div>
+        </>
+      )}
+
       <p className="text-[12px] text-[#93A0AF]">
         Usamos o CPF só para identificação no certificado — ele aparece parcialmente oculto na versão pública.
         Confira com atenção: depois de emitido, o certificado não pode ser alterado.

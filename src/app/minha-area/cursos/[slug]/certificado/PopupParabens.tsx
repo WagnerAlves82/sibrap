@@ -1,16 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { PagamentoCertificado } from "./Formularios";
 
 export function PopupParabens({
-  preco,
+  precoOnline,
+  precoImpresso,
   permiteCadunico,
-  cursoSlug,
 }: {
-  preco: string;
+  precoOnline: string;
+  precoImpresso: string;
   permiteCadunico: boolean;
-  cursoSlug: string;
 }) {
   const [aberto, setAberto] = useState(true);
   if (!aberto) return null;
@@ -38,30 +37,19 @@ export function PopupParabens({
           Você concluiu todas as aulas e passou na prova
         </h2>
         <p className="mt-2 text-[14.5px] leading-relaxed text-[#516278]">
-          As aulas são gratuitas — o certificado, com nome, carga horária e QR Code de
-          validação, custa {preco} (pagamento único por PIX).
+          As aulas são gratuitas — o certificado, com nome, carga horária e QR Code de validação, custa{" "}
+          <strong className="text-[#14213A]">{precoOnline}</strong> na versão online (chega no seu e-mail na
+          hora) ou <strong className="text-[#14213A]">{precoImpresso}</strong> na versão impressa, enviada pelos
+          Correios.
           {permiteCadunico && " Se você se enquadra no CadÚnico, pode pedir o certificado grátis logo abaixo."}
         </p>
-        <div className="mt-5">
-          <PagamentoCertificado cursoSlug={cursoSlug} />
-        </div>
-        {permiteCadunico ? (
-          <button
-            type="button"
-            onClick={() => setAberto(false)}
-            className="mt-3 block w-full text-center text-[13.5px] font-semibold text-brand underline underline-offset-4"
-          >
-            Prefiro ver a opção do CadÚnico
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setAberto(false)}
-            className="mt-3 block w-full text-center text-[13px] text-[#93A0AF] underline underline-offset-4"
-          >
-            Agora não
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={() => setAberto(false)}
+          className="mt-5 block w-full rounded-lg bg-accent px-5 py-3 text-center text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"
+        >
+          Ver as opções
+        </button>
       </div>
     </div>
   );

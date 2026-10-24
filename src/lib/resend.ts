@@ -235,6 +235,38 @@ export async function enviarEntregaApostila({
   });
 }
 
+// Enviado assim que o certificado é emitido (gratuito, pago ou impresso) —
+// leva o link direto, sem anexo.
+export async function enviarCertificadoEmitido({
+  email,
+  nome,
+  cursoNome,
+  codigo,
+  impresso,
+}: {
+  email: string;
+  nome?: string | null;
+  cursoNome: string;
+  codigo: string;
+  impresso: boolean;
+}): Promise<Resultado> {
+  const primeiroNome = nome?.split(" ")[0];
+  const saudacao = primeiroNome ? `Olá, ${esc(primeiroNome)}!` : "Olá!";
+  const url = `${SITE_URL()}/certificado/${codigo}`;
+
+  return enviarEmail({
+    para: email,
+    assunto: "Seu certificado foi emitido 🎓",
+    html: moldura({
+      saudacao,
+      titulo: "Seu certificado está pronto",
+      corpo: `<p style="margin:0 0 12px 0;">Seu certificado do curso <strong>${esc(cursoNome)}</strong> foi emitido com sucesso. Abra, imprima ou salve em PDF — qualquer pessoa pode conferir se é verdadeiro pelo QR Code.</p>
+${impresso ? `<p style="margin:0;">Como você escolheu a versão impressa, uma via também será enviada para o endereço informado, em até 20 dias úteis (prazo dos Correios).</p>` : ""}`,
+      botao: { texto: "Ver meu certificado &rarr;", url },
+    }),
+  });
+}
+
 // Aviso de lançamento: avisa quem já está matriculado num curso que ele
 // ficou acessível (ex.: vídeo-aulas/prova liberadas depois de um período
 // sem conteúdo). Usado pra campanhas pontuais, não por um fluxo automático.

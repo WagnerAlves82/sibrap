@@ -50,8 +50,9 @@ export default async function CertificadoAreaPage({
     { data: progresso },
     { data: tentativas },
     { data: comprovante },
-    { data: acessoPago },
-    { data: produto },
+    { data: acessos },
+    { data: produtoOnline },
+    { data: produtoImpresso },
   ] = await Promise.all([
     supabase.auth.getUser(),
     supabase.from("matriculas").select("curso_id").eq("curso_id", curso.id).maybeSingle(),
@@ -71,13 +72,18 @@ export default async function CertificadoAreaPage({
       .maybeSingle(),
     supabase
       .from("acessos")
-      .select("id, produtos!inner(curso_id)")
-      .eq("produtos.curso_id", curso.id)
+      .select("produtos!inner(slug, curso_id)")
+      .eq("produtos.curso_id", curso.id),
+    supabase
+      .from("produtos")
+      .select("preco_centavos")
+      .eq("slug", `certificado-${slug}`)
+      .eq("ativo", true)
       .maybeSingle(),
     supabase
       .from("produtos")
       .select("preco_centavos")
-      .eq("curso_id", curso.id)
+      .eq("slug", `certificado-impresso-${slug}`)
       .eq("ativo", true)
       .maybeSingle(),
   ]);
@@ -96,12 +102,18 @@ export default async function CertificadoAreaPage({
 
   const permiteCadunico = curso.permite_isencao_cadunico;
   const cadunicoAprovado = permiteCadunico && comprovante?.status === "aprovado";
-  const pago = !!acessoPago;
+  const pagoImpresso = (acessos ?? []).some((a) => a.produtos.slug === `certificado-impresso-${slug}`);
+  const pagoOnline = (acessos ?? []).some((a) => a.produtos.slug === `certificado-${slug}`);
+  const pago = pagoOnline || pagoImpresso;
   const elegivel = cadunicoAprovado || pago;
   const podeEmitir = aulasOk && provaOk && elegivel;
-  const preco = produto
-    ? (produto.preco_centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+  const formatoEmissao: "online" | "impresso" = pagoImpresso ? "impresso" : "online";
+  const precoOnline = produtoOnline
+    ? (produtoOnline.preco_centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
     : "R$ 29,90";
+  const precoImpresso = produtoImpresso
+    ? (produtoImpresso.preco_centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+    : "R$ 89,90";
   const nome = (userData.user?.user_metadata as { nome?: string } | undefined)?.nome ?? "";
 
   return (
@@ -135,7 +147,7 @@ export default async function CertificadoAreaPage({
         ) : (
           <div className="mt-6 flex flex-col gap-5">
             {aulasOk && provaOk && !elegivel && (
-              <PopupParabens preco={preco} permiteCadunico={permiteCadunico} cursoSlug={slug} />
+              <PopupParabens precoOnline={precoOnline} precoImpresso={precoImpresso} permiteCadunico={permiteCadunico} />
             )}
             <section className="rounded-xl border border-[#D7DEE6] bg-white p-6">
               <h2 className="font-display text-lg font-extrabold text-[#14213A]">Requisitos</h2>
@@ -186,7 +198,7 @@ export default async function CertificadoAreaPage({
                   Você pode fazer isso agora, mesmo antes de terminar o curso.
                 </p>
 
-                <div className={`mt-5 grid grid-cols-1 gap-5 ${permiteCadunico ? "md:grid-cols-2" : "max-w-sm"}`}>
+                <div className={`mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 ${permiteCadunico ? "lg:grid-cols-3" : "lg:max-w-[640px]"}`}>
                   {permiteCadunico && (
                     <div className="rounded-lg border-2 border-accent p-5">
                       <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent">
@@ -214,11 +226,28 @@ export default async function CertificadoAreaPage({
 
                   <div className="rounded-lg border border-[#D7DEE6] p-5">
                     <p className="font-data text-xs font-semibold uppercase tracking-wide text-[#516278]">
-                      {permiteCadunico ? "Demais participantes" : "Emissão do certificado"}
+                      Certificado online (PDF)
                     </p>
-                    <p className="mt-1 font-data text-3xl font-semibold text-[#14213A]">{preco}</p>
-                    <p className="mb-4 text-[13px] text-[#516278]">Pagamento único por PIX</p>
-                    <PagamentoCertificado cursoSlug={slug} />
+                    <p className="mt-1 font-data text-3xl font-semibold text-[#14213A]">{precoOnline}</p>
+                    <p className="text-[13px] text-[#516278]">Pagamento único por PIX</p>
+                    <p className="mb-4 mt-2 text-[12.5px] leading-relaxed text-accent-2">
+                      Assim que o pagamento for confirmado, seu certificado é liberado na hora e também enviado
+                      automaticamente para o seu e-mail.
+                    </p>
+                    <PagamentoCertificado cursoSlug={slug} formato="online" />
+                  </div>
+
+                  <div className="rounded-lg border border-[#D7DEE6] p-5">
+                    <p className="font-data text-xs font-semibold uppercase tracking-wide text-[#516278]">
+                      Certificado impresso
+                    </p>
+                    <p className="mt-1 font-data text-3xl font-semibold text-[#14213A]">{precoImpresso}</p>
+                    <p className="text-[13px] text-[#516278]">Pagamento único por PIX</p>
+                    <p className="mb-4 mt-2 text-[12.5px] leading-relaxed text-[#516278]">
+                      Enviado pelos Correios para o seu endereço, além da versão online. Prazo: 5 a 20 dias úteis
+                      (varia conforme os Correios).
+                    </p>
+                    <PagamentoCertificado cursoSlug={slug} formato="impresso" />
                   </div>
                 </div>
               </section>
@@ -230,7 +259,7 @@ export default async function CertificadoAreaPage({
               </h2>
               {podeEmitir ? (
                 <div className="mt-4">
-                  <FormEmitir cursoId={curso.id} nomeSugerido={nome} />
+                  <FormEmitir cursoId={curso.id} nomeSugerido={nome} formato={formatoEmissao} />
                 </div>
               ) : (
                 <p className="mt-2 text-[14.5px] text-[#516278]">
