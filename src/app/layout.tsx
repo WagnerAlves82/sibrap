@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Archivo, Public_Sans, IBM_Plex_Mono, Poppins } from "next/font/google";
+import { Geist, Geist_Mono, Archivo, Public_Sans, IBM_Plex_Mono, Poppins, Alex_Brush } from "next/font/google";
 import Script from "next/script";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { AvisoCookies } from "@/components/cookies-consentimento";
@@ -48,6 +48,13 @@ const plexMono = IBM_Plex_Mono({
   weight: ["500", "600"],
 });
 
+// Assinatura manuscrita no certificado em PDF/HTML.
+const assinatura = Alex_Brush({
+  variable: "--font-signature",
+  subsets: ["latin"],
+  weight: "400",
+});
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
 const titulo = "SIBRAP — Apostilas e simulados para concursos públicos";
 const descricao =
@@ -90,7 +97,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="pt-BR"
-      className={`${geistSans.variable} ${geistMono.variable} ${archivo.variable} ${publicSans.variable} ${plexMono.variable} ${poppins.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${archivo.variable} ${publicSans.variable} ${plexMono.variable} ${poppins.variable} ${assinatura.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <noscript>
