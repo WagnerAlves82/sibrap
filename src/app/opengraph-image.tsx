@@ -25,17 +25,17 @@ async function carregarFonteGoogle(
 }
 
 export default async function Image() {
-  const titulo = "Apostilas e simulados para concursos públicos";
+  const titulo = "Curso gratuito de Informática Básica com IA";
   const subtitulo =
-    "Estude o edital como quem já decorou ele — questões no estilo da banca.";
-  const eyebrow = "APOSTILAS SIBRAP";
-  const destaque = "A partir de R$ 29,90";
+    "40 horas em videoaulas, com certificado e QR Code de validação. Apostilas para concursos a partir de R$ 29,90.";
+  const eyebrow = "CURSO LIVRE";
+  const destaque = "Grátis · 100% online";
   const dominio = "sibrap.tec.br";
 
   const [logoBuffer, capaBuffer, archivoBlack, publicSansSemiBold] =
     await Promise.all([
       readFile(join(process.cwd(), "public", "logo.png")),
-      readFile(join(process.cwd(), "public", "capa-saobenedito.png")),
+      readFile(join(process.cwd(), "public", "alunos.png")),
       carregarFonteGoogle(
         "Archivo",
         800,
@@ -44,7 +44,7 @@ export default async function Image() {
       carregarFonteGoogle(
         "Public+Sans",
         600,
-        `${subtitulo}${eyebrow}${dominio}`
+        `${subtitulo}${eyebrow}${destaque}${dominio}`
       ),
     ]);
 
@@ -69,8 +69,8 @@ export default async function Image() {
             flexDirection: "column",
             justifyContent: "center",
             gap: 22,
-            padding: "0 40px 0 72px",
-            width: 660,
+            padding: "0 30px 0 72px",
+            width: 700,
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
@@ -122,7 +122,7 @@ export default async function Image() {
           <span
             style={{
               fontFamily: "Archivo",
-              fontSize: 46,
+              fontSize: 42,
               fontWeight: 800,
               lineHeight: 1.15,
               color: "#FFFFFF",
@@ -163,14 +163,7 @@ export default async function Image() {
             position: "relative",
           }}
         >
-          <img
-            src={capaSrc}
-            height={520}
-            style={{
-              borderRadius: 10,
-              boxShadow: "0 30px 60px rgba(0,0,0,0.45)",
-            }}
-          />
+          <img src={capaSrc} height={580} />
         </div>
 
         <div
