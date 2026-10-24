@@ -257,13 +257,13 @@ export default async function Home() {
           <Reveal variante="esquerda" className="max-w-[60ch]">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-brand">
               <span className="h-1.5 w-1.5 rounded-full bg-accent-2" />
-              Comece de graça
+              Cursos para o mercado de trabalho
             </span>
             <h2 className="mt-3.5 font-display text-[1.7rem] font-extrabold text-[#14213A] sm:text-[2.2rem]">
-              Quer experimentar antes de comprar?
+              Comece gratuitamente. Aprenda no seu ritmo.
             </h2>
-            <ul className="mt-4 flex flex-col gap-3 text-[15.5px] leading-relaxed text-[#516278]">
-              {iscaTranspetroAtiva && (
+            {iscaTranspetroAtiva && (
+              <ul className="mt-4 flex flex-col gap-3 text-[15.5px] leading-relaxed text-[#516278]">
                 <li className="flex gap-2">
                   <span className="mt-0.5 text-accent-2" aria-hidden>✓</span>
                   <span>
@@ -271,15 +271,23 @@ export default async function Home() {
                     — Conhecimentos Básicos e um teste de 10 questões, no estilo da banca.
                   </span>
                 </li>
-              )}
-              <li className="flex gap-2">
-                <span className="mt-0.5 text-accent-2" aria-hidden>✓</span>
-                <span>
-                  <strong className="text-[#14213A]">Curso livre de Informática Básica com IA</strong>{" "}
-                  — 40 horas, online e gratuito para quem precisa, com certificado validável.
-                </span>
-              </li>
-            </ul>
+              </ul>
+            )}
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {CURSOS_HOME.map((curso) => (
+                <Link
+                  key={curso.slug}
+                  href={`/cursos/${curso.slug}`}
+                  className="rounded-lg border border-[#D7DEE6] bg-white p-4 transition-colors hover:border-brand"
+                >
+                  <p className="font-display text-[15px] font-bold text-[#14213A]">{curso.nome}</p>
+                  <p className="mt-1 text-[13px] leading-relaxed text-[#516278]">
+                    Acesse o curso gratuito e aprenda no seu ritmo.
+                  </p>
+                  <p className="mt-1 text-[12px] text-[#516278]">Certificado disponível após a conclusão.</p>
+                </Link>
+              ))}
+            </div>
             <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-4">
               {iscaTranspetroAtiva && (
                 <Link
@@ -289,11 +297,8 @@ export default async function Home() {
                   Fazer simulado grátis <span aria-hidden>→</span>
                 </Link>
               )}
-              <Link
-                href="/cursos/informatica-basica-ia"
-                className={iscaTranspetroAtiva ? "text-sm font-semibold text-brand underline underline-offset-4" : "inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3.5 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"}
-              >
-                {iscaTranspetroAtiva ? "Conhecer o curso gratuito" : "Conhecer o curso gratuito →"}
+              <Link href="/cursos" className="text-sm font-semibold text-brand underline underline-offset-4">
+                Ver todos os cursos gratuitos
               </Link>
               <SeloAbed altura={60} />
             </div>
@@ -375,6 +380,11 @@ export default async function Home() {
     </div>
   );
 }
+
+const CURSOS_HOME: { slug: string; nome: string }[] = [
+  { slug: "informatica-basica-ia", nome: "Informática Básica com IA" },
+  { slug: "atendimento-ao-cliente", nome: "Atendimento ao Cliente" },
+];
 
 const RECURSOS_SIMULADO: [NomeIconeSolido, string, string][] = [
   ["questoes", "Questões do seu cargo", "O banco é montado para o cargo da apostila. A cada tentativa, as questões são sorteadas na proporção da prova, e você escolhe quantas quer fazer."],
