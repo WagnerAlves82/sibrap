@@ -22,12 +22,12 @@ export default async function AreaDoCursoPage({
 
   const { data: curso } = await supabase
     .from("cursos")
-    .select("id, slug, nome, carga_horaria_horas, nota_minima, ordem_obrigatoria, permite_isencao_cadunico")
+    .select("id, slug, nome, carga_horaria_horas, nota_minima, ordem_obrigatoria")
     .eq("slug", slug)
     .maybeSingle();
   if (!curso) notFound();
 
-  const [{ data: matricula }, { data: modulos }, { data: progresso }, { data: tentativas }, { data: certificado }, { data: produto }] =
+  const [{ data: matricula }, { data: modulos }, { data: progresso }, { data: tentativas }, { data: certificado }] =
     await Promise.all([
       supabase.from("matriculas").select("curso_id").eq("curso_id", curso.id).maybeSingle(),
       supabase
@@ -43,15 +43,7 @@ export default async function AreaDoCursoPage({
         .eq("curso_id", curso.id)
         .not("finalizado_em", "is", null),
       supabase.from("certificados").select("codigo").eq("curso_id", curso.id).maybeSingle(),
-      supabase.from("produtos").select("preco_centavos").eq("curso_id", curso.id).eq("ativo", true).maybeSingle(),
     ]);
-
-  const precoCertificado = produto
-    ? (produto.preco_centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
-    : null;
-  const textoCertificado = curso.permite_isencao_cadunico
-    ? `Grátis com CadÚnico ou ${precoCertificado ?? "pago"}`
-    : precoCertificado ?? "Pago";
 
   if (!matricula) {
     return (
@@ -153,7 +145,7 @@ export default async function AreaDoCursoPage({
               numero={3}
               titulo="Certificado"
               ok={!!certificado}
-              texto={certificado ? "Emitido" : textoCertificado}
+              texto={certificado ? "Emitido" : undefined}
               href={`/minha-area/cursos/${curso.slug}/certificado`}
               rotuloLink={certificado ? "Ver certificado" : "Como obter"}
             />
@@ -228,7 +220,7 @@ function EtapaCard({
 }: {
   numero: number;
   titulo: string;
-  texto: string;
+  texto?: string;
   ok: boolean;
   href?: string;
   rotuloLink?: string;
