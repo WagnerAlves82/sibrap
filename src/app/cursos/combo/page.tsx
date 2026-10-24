@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
@@ -71,15 +72,26 @@ export default async function ComboCursosPage() {
       <CabecalhoSite logado={logado} />
 
       <section className="overflow-hidden border-b border-[#D7DEE6] bg-surface-2 py-16">
-        <div className="mx-auto max-w-[860px] px-6 text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-brand">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent-2" />
-            Combo · 2 cursos gratuitos, 2 certificados
-          </span>
-          <h1 className="mt-4 font-display text-3xl font-extrabold leading-[1.1] text-[#14213A] sm:text-5xl">
-            {produto.nome}
-          </h1>
-          <p className="mx-auto mt-5 max-w-[56ch] text-[17px] leading-relaxed text-[#516278]">{descricao}</p>
+        <div className="mx-auto grid max-w-[1100px] items-center gap-10 px-6 lg:grid-cols-[minmax(0,1fr)_420px]">
+          <div>
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-brand">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent-2" />
+              Combo · 2 cursos gratuitos, 2 certificados
+            </span>
+            <h1 className="mt-4 font-display text-3xl font-extrabold leading-[1.1] text-[#14213A] sm:text-5xl">
+              {produto.nome}
+            </h1>
+            <p className="mt-5 max-w-[56ch] text-[17px] leading-relaxed text-[#516278]">{descricao}</p>
+          </div>
+          <Image
+            src="/combo-informatica-atendimento.webp"
+            alt="Combo SIBRAP: Informática Básica com IA e Atendimento ao Cliente"
+            width={1536}
+            height={1024}
+            priority
+            sizes="(min-width: 1024px) 420px, 90vw"
+            className="w-full rounded-xl shadow-[0_20px_45px_-20px_rgba(11,42,74,0.35)]"
+          />
         </div>
       </section>
 
@@ -89,7 +101,7 @@ export default async function ComboCursosPage() {
             {lista.map((curso) => (
               <div key={curso.slug} className="rounded-xl border border-[#D7DEE6] bg-white p-6">
                 <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent-2">
-                  {formatarHoras(curso.carga_horaria_horas * 60)} · curso livre
+                  {formatarHoras(curso.carga_horaria_horas * 60)} · curso
                 </p>
                 <h2 className="mt-2 font-display text-xl font-extrabold text-[#14213A]">{curso.nome}</h2>
                 <p className="mt-2 text-[14.5px] leading-relaxed text-[#516278]">{curso.descricao}</p>

@@ -10,6 +10,7 @@ import { Reveal } from "@/components/reveal";
 // específicas de cada curso.
 const FOTO_PADRAO = "/alunos.png";
 const FOTOS_POR_CURSO: Record<string, string> = {
+  "informatica-basica-ia": "/informatica-basica-foto.jpg",
   "atendimento-ao-cliente": "/atendimento-cliente-foto.jpg",
 };
 
