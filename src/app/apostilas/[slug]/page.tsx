@@ -13,6 +13,7 @@ import {
 } from "@/lib/apostilas";
 import { GaleriaApostila, type ImagemGaleria } from "@/components/galeria-apostila";
 import { PrecoApostila } from "@/components/preco-apostila";
+import { CompartilharWhatsApp } from "@/components/compartilhar-whatsapp";
 import { VendaApostila, perguntasVenda, type DadosVenda } from "@/components/venda-apostila";
 import { formatarPreco, listarApostilasPublicadas } from "@/lib/apostilas";
 import { listarPostsVitrine, postsDaApostila } from "@/lib/blog";
@@ -283,6 +284,11 @@ export default async function ApostilaPage({ params }: Props) {
                     tamanho="grande"
                   />
                   <p className="mt-1 text-[13px] text-[#516278]">Pagamento único · sem mensalidade</p>
+                  <CompartilharWhatsApp
+                    className="mt-2"
+                    url={`${siteUrl}/apostilas/${apostila.slug}`}
+                    texto={`📘 Apostila ${apostila.cargo} — ${apostila.orgao}${apostila.banca ? ` (banca ${apostila.banca})` : ""}, ${formatarPreco(apostila.preco_centavos)} no PIX, com simulado online incluso:`}
+                  />
                 </div>
                 <Link
                   href={jaTem ? `${areaHref}/baixar` : ctaHref}

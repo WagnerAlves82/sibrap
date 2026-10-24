@@ -1,3 +1,4 @@
+import { CompartilharWhatsApp } from "@/components/compartilhar-whatsapp";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -151,6 +152,11 @@ export default async function ComboPage({ params }: Props) {
                 <div>
                   <p className="font-data text-4xl font-semibold text-[#14213A]">{formatarPreco(preco)}</p>
                   <p className="mt-1 text-[13px] text-[#516278]">Apostila + videoaulas · pagamento único, sem mensalidade</p>
+                  <CompartilharWhatsApp
+                    className="mt-2"
+                    url={`https://sibrap.tec.br/combos/${slug}`}
+                    texto={`📘 Combo ${apostila.cargo} — ${apostila.orgao}: apostila + videoaulas por ${formatarPreco(preco)} no PIX:`}
+                  />
                 </div>
                 <Link
                   href={ctaHref}

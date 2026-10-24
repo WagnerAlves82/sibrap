@@ -1,3 +1,4 @@
+import { CompartilharWhatsApp } from "@/components/compartilhar-whatsapp";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -130,6 +131,11 @@ export default async function CursoPublicoPage({ params }: Props) {
                 Sem mensalidade. Estude no seu ritmo.
               </span>
             </div>
+            <CompartilharWhatsApp
+              className="mt-4"
+              url={`${process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br"}/cursos/${curso.slug}`}
+              texto={`🎓 Curso gratuito de ${curso.nome}, com certificado:`}
+            />
           </div>
 
           <div className="entrar entrar-cima mt-12" style={{ animationDelay: "150ms" }}>
