@@ -200,8 +200,8 @@ export default async function CertificadoAreaPage({
                   Como obter o certificado
                 </h2>
                 <p className="mt-1 text-[14px] text-[#516278]">
-                  O pagamento (ou o envio do comprovante) pode ser feito a qualquer momento, mas o
-                  certificado só é liberado depois que você concluir todas as aulas e passar na prova final.
+                  O pagamento pode ser feito a qualquer momento, mas o certificado só é liberado
+                  depois que você concluir todas as aulas e passar na prova final.
                 </p>
 
                 <div className={`mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 ${permiteCadunico ? "lg:grid-cols-3" : "lg:max-w-[640px]"}`}>
