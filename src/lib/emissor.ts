@@ -5,7 +5,7 @@ export const EMISSOR = {
 } as const;
 
 export const AVISO_CURSO_LIVRE =
-  "Curso livre de qualificação profissional, oferecido nos termos do art. 42 da Lei nº 9.394/1996 (Lei de Diretrizes e Bases da Educação Nacional), sem equivalência a curso regular ou diploma reconhecido pelo MEC.";
+  "Curso livre de qualificação profissional, amparado pelo art. 42 da Lei nº 9.394/1996 (Lei de Diretrizes e Bases da Educação Nacional), que garante seu valor como capacitação profissional em todo o território nacional.";
 
 export function formatarHoras(minutos: number): string {
   const h = Math.floor(minutos / 60);

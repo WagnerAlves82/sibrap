@@ -9,6 +9,18 @@ import { AVISO_CURSO_LIVRE, EMISSOR, formatarHoras } from "@/lib/emissor";
 
 type Props = { params: Promise<{ slug: string }> };
 
+const FOTO_HERO_PADRAO = {
+  src: "/alunos.png",
+  alt: "Alunos aprendendo juntos com os aplicativos do Office e o Copilot",
+};
+
+const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string }> = {
+  "atendimento-ao-cliente": {
+    src: "/atendente-sem-fundo.png",
+    alt: "Atendente de call center sorrindo, usando headset",
+  },
+};
+
 async function carregarCurso(slug: string) {
   const supabase = await criarClienteSupabaseServer();
   const { data: curso } = await supabase
@@ -136,8 +148,8 @@ export default async function CursoPublicoPage({ params }: Props) {
 
           <div className="entrar entrar-direita" style={{ animationDelay: "250ms" }}>
             <Image
-              src="/alunos.png"
-              alt="Alunos aprendendo juntos com os aplicativos do Office e o Copilot"
+              src={(FOTOS_HERO_POR_CURSO[curso.slug] ?? FOTO_HERO_PADRAO).src}
+              alt={(FOTOS_HERO_POR_CURSO[curso.slug] ?? FOTO_HERO_PADRAO).alt}
               width={1122}
               height={1402}
               sizes="(min-width: 1024px) 400px, 80vw"
