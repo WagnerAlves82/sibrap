@@ -100,10 +100,10 @@ export default async function CursosPage() {
             >
               <div>
                 <span className="font-data text-xs font-semibold uppercase tracking-wide text-accent">
-                  Combo · os 2 cursos
+                  Combo · para o currículo do jovem aprendiz
                 </span>
                 <h2 className="mt-1 font-display text-xl font-extrabold text-[#14213A]">
-                  Leve os 2 certificados por R$ 39,90
+                  Leve os 2 cursos por R$ 39,90, com certificação validada por QR Code
                 </h2>
                 <p className="mt-1 text-[14.5px] text-[#516278]">
                   Informática Básica com IA + Atendimento ao Cliente, em vez de R$ 29,90 cada um.

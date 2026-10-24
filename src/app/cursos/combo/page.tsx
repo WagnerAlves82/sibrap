@@ -60,7 +60,6 @@ export default async function ComboCursosPage() {
   const lista = CURSOS_SLUGS.map((slug) => cursos?.find((c) => c.slug === slug)).filter(
     (c): c is NonNullable<typeof c> => !!c
   );
-  const cargaTotal = lista.reduce((s, c) => s + c.carga_horaria_horas, 0);
 
   const preco = (produto.preco_centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   const precoUnitario = (2990 / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -116,14 +115,15 @@ export default async function ComboCursosPage() {
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent">
-                  Combo · {formatarHoras(cargaTotal * 60)} de curso no total
+                  Combo · para o currículo do jovem aprendiz
                 </p>
                 <p className="mt-2 text-[14px] text-[#516278] line-through">
                   {precoUnitario} + {precoUnitario}
                 </p>
                 <p className="font-data text-4xl font-semibold text-[#14213A]">{preco}</p>
                 <p className="mt-2 max-w-[42ch] text-[13.5px] leading-relaxed text-[#516278]">
-                  As aulas dos dois cursos são gratuitas. O valor é só pelos 2 certificados, com QR Code de validação.
+                  As aulas dos dois cursos são gratuitas. O valor é só pelos certificados, emitidos após a
+                  conclusão das atividades, com QR Code de validação.
                 </p>
               </div>
 
