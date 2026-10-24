@@ -281,9 +281,7 @@ export default async function Home() {
                   className="rounded-lg border border-[#D7DEE6] bg-white p-4 transition-colors hover:border-brand"
                 >
                   <p className="font-display text-[15px] font-bold text-[#14213A]">{curso.nome}</p>
-                  <p className="mt-1 text-[13px] leading-relaxed text-[#516278]">
-                    Acesse o curso gratuito e aprenda no seu ritmo.
-                  </p>
+                  <p className="mt-1 text-[13px] leading-relaxed text-[#516278]">{curso.resumo}</p>
                   <p className="mt-1 text-[12px] text-[#516278]">Certificado disponível após a conclusão.</p>
                 </Link>
               ))}
@@ -381,9 +379,17 @@ export default async function Home() {
   );
 }
 
-const CURSOS_HOME: { slug: string; nome: string }[] = [
-  { slug: "informatica-basica-ia", nome: "Informática Básica com IA" },
-  { slug: "atendimento-ao-cliente", nome: "Atendimento ao Cliente" },
+const CURSOS_HOME: { slug: string; nome: string; resumo: string }[] = [
+  {
+    slug: "informatica-basica-ia",
+    nome: "Informática Básica com IA",
+    resumo: "Computador, internet, pacote Office e Inteligência Artificial (Copilot) no dia a dia.",
+  },
+  {
+    slug: "atendimento-ao-cliente",
+    nome: "Atendimento ao Cliente",
+    resumo: "Comunicação, escuta ativa e como lidar com reclamações e clientes difíceis.",
+  },
 ];
 
 const RECURSOS_SIMULADO: [NomeIconeSolido, string, string][] = [
