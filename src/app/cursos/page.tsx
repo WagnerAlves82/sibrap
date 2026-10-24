@@ -70,6 +70,30 @@ export default async function CursosPage() {
             <p className="text-[#516278]">Novos cursos em breve.</p>
           )}
         </div>
+
+        {(cursos?.length ?? 0) >= 2 && (
+          <Reveal delay={200}>
+            <Link
+              href="/cursos/combo"
+              className="group mt-6 flex flex-col items-start justify-between gap-4 rounded-xl border-2 border-accent bg-white p-7 transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)] sm:flex-row sm:items-center"
+            >
+              <div>
+                <span className="font-data text-xs font-semibold uppercase tracking-wide text-accent">
+                  Combo · os 2 cursos
+                </span>
+                <h2 className="mt-1 font-display text-xl font-extrabold text-[#14213A]">
+                  Leve os 2 certificados por R$ 39,90
+                </h2>
+                <p className="mt-1 text-[14.5px] text-[#516278]">
+                  Informática Básica com IA + Atendimento ao Cliente, em vez de R$ 29,90 cada um.
+                </p>
+              </div>
+              <span className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-accent px-6 py-3 text-[14.5px] font-bold text-accent-ink transition-transform group-hover:translate-x-1">
+                Ver o combo <span aria-hidden>→</span>
+              </span>
+            </Link>
+          </Reveal>
+        )}
       </main>
 
       <RodapeSite />

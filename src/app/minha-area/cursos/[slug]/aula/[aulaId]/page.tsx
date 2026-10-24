@@ -111,44 +111,43 @@ export default async function AulaPage({
             titulo={aula.titulo}
             concluidaInicial={concluidas.has(aula.id)}
             proximaHref={proxima ? aulaHref(proxima.id) : null}
-            cursoHref={cursoHref}
-          />
+          >
+            {aula.resumo && (
+              <Secao titulo="Resumo da aula">
+                <TextoSimples texto={aula.resumo} />
+              </Secao>
+            )}
 
-          {aula.resumo && (
-            <Secao titulo="Resumo da aula">
-              <TextoSimples texto={aula.resumo} />
-            </Secao>
-          )}
+            {(aula.atividade || (materiais?.length ?? 0) > 0) && (
+              <Secao titulo="Pratique">
+                <div className="rounded-xl border-2 border-accent bg-white p-5">
+                  {aula.atividade && <TextoSimples texto={aula.atividade} />}
+                  {(materiais?.length ?? 0) > 0 && (
+                    <ul className="mt-4 flex flex-col gap-2">
+                      {materiais?.map((m) => (
+                        <li key={m.id}>
+                          <a
+                            href={m.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 text-[14.5px] font-semibold text-brand underline underline-offset-4"
+                          >
+                            <span aria-hidden>↓</span> {m.titulo}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </Secao>
+            )}
 
-          {(aula.atividade || (materiais?.length ?? 0) > 0) && (
-            <Secao titulo="Pratique">
-              <div className="rounded-xl border-2 border-accent bg-white p-5">
-                {aula.atividade && <TextoSimples texto={aula.atividade} />}
-                {(materiais?.length ?? 0) > 0 && (
-                  <ul className="mt-4 flex flex-col gap-2">
-                    {materiais?.map((m) => (
-                      <li key={m.id}>
-                        <a
-                          href={m.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 text-[14.5px] font-semibold text-brand underline underline-offset-4"
-                        >
-                          <span aria-hidden>↓</span> {m.titulo}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            </Secao>
-          )}
-
-          {questoes.length > 0 && (
-            <Secao titulo="Fixe o que aprendeu">
-              <MiniQuiz key={aula.id} questoes={questoes} />
-            </Secao>
-          )}
+            {questoes.length > 0 && (
+              <Secao titulo="Fixe o que aprendeu">
+                <MiniQuiz key={aula.id} questoes={questoes} />
+              </Secao>
+            )}
+          </PlayerAula>
         </article>
 
         <aside className="lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto">

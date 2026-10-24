@@ -235,6 +235,36 @@ export async function enviarEntregaApostila({
   });
 }
 
+// Aviso de lançamento: avisa quem já está matriculado num curso que ele
+// ficou acessível (ex.: vídeo-aulas/prova liberadas depois de um período
+// sem conteúdo). Usado pra campanhas pontuais, não por um fluxo automático.
+export async function enviarCursoLiberado({
+  email,
+  nome,
+  cursoNome,
+  cursoSlug,
+}: {
+  email: string;
+  nome?: string | null;
+  cursoNome: string;
+  cursoSlug: string;
+}): Promise<Resultado> {
+  const primeiroNome = nome?.split(" ")[0];
+  const saudacao = primeiroNome ? `Olá, ${esc(primeiroNome)}!` : "Olá!";
+
+  return enviarEmail({
+    para: email,
+    assunto: `Seu curso de ${cursoNome} já está acessível`,
+    html: moldura({
+      saudacao,
+      titulo: "Seu curso está liberado",
+      corpo: `<p style="margin:0 0 12px 0;">O curso <strong>${esc(cursoNome)}</strong>, em que você já está matriculado, está com todas as aulas liberadas agora. Venha estudar com a gente.</p>
+<p style="margin:0;">É só entrar na sua área e continuar de onde parou.</p>`,
+      botao: { texto: "Acessar meu curso &rarr;", url: `${SITE_URL()}/minha-area/cursos/${cursoSlug}` },
+    }),
+  });
+}
+
 /** Aviso para o dono do site a cada venda confirmada. */
 export async function enviarAvisoVenda({
   comprador,

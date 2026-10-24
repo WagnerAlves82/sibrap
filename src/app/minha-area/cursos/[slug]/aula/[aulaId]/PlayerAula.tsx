@@ -53,14 +53,14 @@ export function PlayerAula({
   titulo,
   concluidaInicial,
   proximaHref,
-  cursoHref,
+  children,
 }: {
   aulaId: string;
   youtubeId: string | null;
   titulo: string;
   concluidaInicial: boolean;
   proximaHref: string | null;
-  cursoHref: string;
+  children?: React.ReactNode;
 }) {
   const router = useRouter();
   const [iniciado, setIniciado] = useState(false);
@@ -158,7 +158,9 @@ export function PlayerAula({
         </div>
       )}
 
-      <div className="mt-5 flex flex-col gap-3">
+      {children}
+
+      <div className="mt-8 flex flex-col gap-3 border-t border-[#D7DEE6] pt-6">
         {concluida ? (
           <Alert variant="sucesso" claro className="text-sm">
             Aula concluída! Seu progresso foi salvo.
@@ -177,30 +179,21 @@ export function PlayerAula({
                 ultimaTentativaRef.current = 0;
                 concluir();
               }}
-              className={
-                youtubeId
-                  ? "self-start text-[13px] text-[#516278] underline underline-offset-4 hover:text-brand"
-                  : "self-start rounded-lg bg-accent px-5 py-2.5 text-[14px] font-bold text-accent-ink transition-colors hover:brightness-105"
-              }
+              className="self-start rounded-lg bg-accent px-5 py-2.5 text-[14px] font-bold text-accent-ink transition-colors hover:brightness-105"
             >
               {youtubeId ? "Já assisti — marcar como concluída" : "Marcar aula como concluída"}
             </button>
           </>
         )}
 
-        <div className="flex flex-wrap items-center gap-3">
-          {proximaHref && concluida && (
-            <Link
-              href={proximaHref}
-              className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"
-            >
-              Próxima aula <span aria-hidden>→</span>
-            </Link>
-          )}
-          <Link href={cursoHref} className="text-[14px] font-semibold text-brand underline underline-offset-4">
-            Voltar ao curso
+        {proximaHref && concluida && (
+          <Link
+            href={proximaHref}
+            className="inline-flex w-fit items-center gap-2 rounded-lg bg-accent px-6 py-3 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"
+          >
+            Próxima aula <span aria-hidden>→</span>
           </Link>
-        </div>
+        )}
       </div>
     </div>
   );
