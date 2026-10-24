@@ -16,8 +16,8 @@ const FOTO_HERO_PADRAO = {
 
 const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string }> = {
   "atendimento-ao-cliente": {
-    src: "/atendente-sem-fundo.png",
-    alt: "Atendente de call center sorrindo, usando headset",
+    src: "/atendimento-ao-cliente-card.png",
+    alt: "Equipe de atendimento ao cliente sorrindo, com headset e tablet",
   },
 };
 
