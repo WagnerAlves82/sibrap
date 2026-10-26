@@ -46,7 +46,7 @@ export function AnuncioLateral({ apostila, origem = "blog-lateral" }: { apostila
         )}
         <span className="font-display text-[2rem] leading-none font-extrabold text-white">{formatarPreco(apostila.preco_centavos)}</span>
       </div>
-      <p className="mt-1 text-[13px] font-semibold text-white/80">à vista no Pix · download na hora</p>
+      <p className="mt-1 text-[13px] font-semibold text-white/80">à vista no Pix · download automático</p>
       <span className="mt-4 w-full bg-accent px-4 py-2.5 text-[14px] font-extrabold text-accent-ink transition-all group-hover:brightness-110">
         Quero estudar →
       </span>
