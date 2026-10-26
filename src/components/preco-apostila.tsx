@@ -4,6 +4,7 @@ import {
   formatarPreco,
   textoParcela,
 } from "@/lib/apostilas";
+import { SeloPromocao } from "@/components/selo-promocao";
 
 // Bloco de preço. Mostra o "de" riscado e o selo de percentual somente
 // quando há preço de referência cadastrado para aquela apostila; mostra
@@ -22,6 +23,7 @@ export function PrecoApostila({
 
   return (
     <div>
+      {pct !== null && original && <SeloPromocao />}
       {pct !== null && original && (
         <p className="flex items-center gap-2 text-[12px] text-[#516278]">
           <span className="line-through">{formatarPreco(original)}</span>

@@ -20,14 +20,13 @@ export async function entregarPedido(pedidoId: string): Promise<void> {
     .maybeSingle();
   if (!pedido || pedido.status !== "aprovado" || pedido.entrega_enviada_em) return;
 
-  // Por ora só apostilas têm e-mail de entrega (cursos/certificado seguem
-  // pela própria área do aluno).
-  const { data: apostila } = await admin
-    .from("apostilas")
-    .select("slug, titulo")
-    .eq("produto_id", pedido.produto_id)
-    .maybeSingle();
-  if (!apostila) return;
+  // Só apostilas têm e-mail de entrega (cursos, certificados, combos e
+  // Premium seguem pela própria área do aluno), mas toda venda gera o aviso
+  // ao dono, com a origem.
+  const [{ data: apostila }, { data: produto }] = await Promise.all([
+    admin.from("apostilas").select("slug, titulo").eq("produto_id", pedido.produto_id).maybeSingle(),
+    admin.from("produtos").select("nome, tipo").eq("id", pedido.produto_id).maybeSingle(),
+  ]);
 
   const { data: reivindicado } = await admin
     .from("pedidos")
@@ -39,22 +38,26 @@ export async function entregarPedido(pedidoId: string): Promise<void> {
 
   const { data: usuario } = await admin.auth.admin.getUserById(pedido.user_id);
   const email = usuario.user?.email;
-  const resultado = email
-    ? await enviarEntregaApostila({
-        email,
-        nome: (usuario.user?.user_metadata as { nome?: string } | undefined)?.nome,
-        titulo: apostila.titulo,
-        slug: apostila.slug,
-        valorCentavos: pedido.valor_centavos,
-        pedidoId: pedido.id,
-      })
-    : ({ ok: false, erro: "usuário sem e-mail" } as const);
+  const nome = (usuario.user?.user_metadata as { nome?: string } | undefined)?.nome;
+  const resultado = !apostila
+    ? ({ ok: true } as const)
+    : email
+      ? await enviarEntregaApostila({
+          email,
+          nome,
+          titulo: apostila.titulo,
+          slug: apostila.slug,
+          valorCentavos: pedido.valor_centavos,
+          pedidoId: pedido.id,
+        })
+      : ({ ok: false, erro: "usuário sem e-mail" } as const);
 
   // aviso ao dono a cada venda; falha aqui não atrapalha a entrega ao cliente
   await enviarAvisoVenda({
-    comprador: (usuario.user?.user_metadata as { nome?: string } | undefined)?.nome,
+    comprador: nome,
     email,
-    titulo: apostila.titulo,
+    titulo: apostila?.titulo ?? produto?.nome ?? "Produto sem nome",
+    tipo: apostila ? "apostila" : produto?.tipo ?? null,
     valorCentavos: pedido.valor_centavos,
     pedidoId: pedido.id,
     entregaOk: resultado.ok,
@@ -65,6 +68,6 @@ export async function entregarPedido(pedidoId: string): Promise<void> {
     // libera para uma nova tentativa (próxima confirmação); o download
     // continua disponível na área do aluno de qualquer forma
     await admin.from("pedidos").update({ entrega_enviada_em: null }).eq("id", pedido.id);
-    console.error("E-mail de entrega não enviado:", resultado.erro);
+    console.error("E-mail de entrega não enviado:", "erro" in resultado ? resultado.erro : "");
   }
 }

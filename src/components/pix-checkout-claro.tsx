@@ -4,19 +4,24 @@ import { useEffect, useRef, useState } from "react";
 import { Alert } from "@/components/alert";
 import { verificarPagamentoPixAction } from "@/app/minha-area/premium/actions";
 import type { EstadoPix } from "@/lib/pix";
+import { gadsCompra } from "@/lib/google-ads";
 
 type Fase = "inicio" | "gerando" | "aguardando" | "aprovado" | "erro";
 
 // Checkout PIX com QR Code e copia-e-cola na própria página (tema claro).
 // Confere o pagamento de 4 em 4 segundos e chama `aoAprovar` quando cai.
+// Com `conversaoAds`, também registra a compra no Google Ads (a apostila
+// registra por conta própria, no seu `aoAprovar`).
 export function PixCheckoutClaro({
   criarPix,
   rotuloBotao,
   aoAprovar,
+  conversaoAds = false,
 }: {
   criarPix: () => Promise<EstadoPix>;
   rotuloBotao: string;
   aoAprovar: (pedidoId: string) => void;
+  conversaoAds?: boolean;
 }) {
   const [fase, setFase] = useState<Fase>("inicio");
   const [qrCode, setQrCode] = useState<string | null>(null);
@@ -50,6 +55,7 @@ export function PixCheckoutClaro({
       if (status.status === "aprovado") {
         if (intervaloRef.current) clearInterval(intervaloRef.current);
         setFase("aprovado");
+        if (conversaoAds) gadsCompra({ valor: r.valorCentavos / 100, pedidoId: r.pedidoId });
         aoAprovar(r.pedidoId);
       } else if (status.status === "recusado") {
         if (intervaloRef.current) clearInterval(intervaloRef.current);

@@ -107,6 +107,7 @@ export function PagamentoCertificado({
       rotuloBotao="Pagar com PIX"
       criarPix={() => criarPagamentoCertificadoAction(cursoSlug, formato)}
       aoAprovar={() => router.refresh()}
+      conversaoAds
     />
   );
 }

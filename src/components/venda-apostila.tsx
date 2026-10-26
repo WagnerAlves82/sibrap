@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { IconeSolido, type NomeIconeSolido } from "@/components/icones-solidos";
 import { Reveal } from "@/components/reveal";
+import { SeloPromocao } from "@/components/selo-promocao";
 import { descontoPercentual, formatarPreco } from "@/lib/apostilas";
 
 export type DadosVenda = {
@@ -315,7 +316,12 @@ export function VendaApostila({ d }: { d: DadosVenda }) {
             <h2 className="font-display text-[1.7rem] font-extrabold leading-tight sm:text-[2.3rem]">
               Comece a estudar hoje, com acesso imediato.
             </h2>
-            <p className="mt-4 max-w-[56ch] text-[15.5px] leading-relaxed text-[#B9CBDF]">
+            {pct !== null && d.precoOriginalCentavos && (
+              <p className="mt-4">
+                <SeloPromocao escuro />
+              </p>
+            )}
+            <p className="mt-2 max-w-[56ch] text-[15.5px] leading-relaxed text-[#B9CBDF]">
               {pct !== null && d.precoOriginalCentavos ? (
                 <>
                   De <span className="line-through">{formatarPreco(d.precoOriginalCentavos)}</span> por{" "}

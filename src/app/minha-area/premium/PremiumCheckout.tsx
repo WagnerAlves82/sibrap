@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Alert } from "@/components/alert";
+import { gadsCompra } from "@/lib/google-ads";
 import {
   criarPagamentoPixAction,
   verificarPagamentoPixAction,
@@ -45,6 +46,7 @@ export function PremiumCheckout() {
       if (status.status === "aprovado") {
         if (intervaloRef.current) clearInterval(intervaloRef.current);
         setFase("aprovado");
+        gadsCompra({ valor: r.valorCentavos / 100, pedidoId: r.pedidoId });
         router.push("/minha-area/premium/sucesso");
       } else if (status.status === "recusado") {
         if (intervaloRef.current) clearInterval(intervaloRef.current);

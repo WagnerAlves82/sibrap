@@ -18,6 +18,8 @@ export type EstadoPix =
       pedidoId: string;
       qrCode: string;
       qrCodeBase64: string;
+      // valor cobrado, para a conversão do Google Ads na aprovação
+      valorCentavos: number;
     };
 
 export async function gerarPixParaPedido({
@@ -62,6 +64,7 @@ export async function gerarPixParaPedido({
         qrCode: cobranca.brCode,
         // o AbacatePay devolve "data:image/png;base64,..."; a tela monta o prefixo
         qrCodeBase64: cobranca.brCodeBase64.replace(/^data:image\/png;base64,/, ""),
+        valorCentavos,
       };
     } catch (e) {
       console.error("Falha ao criar PIX no AbacatePay", e);
@@ -139,5 +142,5 @@ export async function gerarPixParaPedido({
     .eq("status", "pendente")
     .is("mercadopago_order_id", null);
 
-  return { pedidoId, qrCode, qrCodeBase64 };
+  return { pedidoId, qrCode, qrCodeBase64, valorCentavos };
 }

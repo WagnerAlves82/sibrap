@@ -11,6 +11,7 @@ export function PagamentoCombo() {
       rotuloBotao="Pagar com PIX"
       criarPix={() => criarPagamentoComboAction()}
       aoAprovar={() => router.refresh()}
+      conversaoAds
     />
   );
 }
