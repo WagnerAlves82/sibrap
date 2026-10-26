@@ -112,6 +112,17 @@ export default async function PostPage({ params }: Props) {
   const apostilasEspecificas = apostilasRelacionadas(post, todasApostilas, 4);
   const apostilas = apostilasEspecificas.length > 0 ? apostilasEspecificas : todasApostilas.slice(0, 2);
   const apostilasSaoEspecificas = apostilasEspecificas.length > 0;
+  // anúncio da lateral: a apostila do próprio concurso; senão uma do mesmo estado da matéria
+  // (a de prova mais próxima); só sem nenhuma no estado cai na primeira da loja
+  const hoje = new Date().toISOString().slice(0, 10);
+  const doMesmoEstado = todasApostilas
+    .filter((a) => post.uf && a.uf === post.uf)
+    .sort((a, b) => {
+      const pa = a.data_prova && a.data_prova >= hoje ? a.data_prova : "9999";
+      const pb = b.data_prova && b.data_prova >= hoje ? b.data_prova : "9999";
+      return pa.localeCompare(pb);
+    });
+  const anuncioLateral = apostilasEspecificas[0] ?? doMesmoEstado[0] ?? todasApostilas[0];
 
   const urlPost = `${siteUrl}/noticias/${slug}`;
   const resumo = post.resumo || post.seo_descricao || resumoAutomatico(post.conteudo);
@@ -306,7 +317,7 @@ export default async function PostPage({ params }: Props) {
 
         <aside className="flex flex-col gap-6" aria-label="Mais notícias">
           <BlocoNoticias titulo="Leia também" posts={recentes} />
-          {apostilas[0] && <AnuncioLateral apostila={apostilas[0]} />}
+          {anuncioLateral && <AnuncioLateral apostila={anuncioLateral} />}
           {doEstado.length >= 2 && <BlocoNoticias titulo={`Concursos em ${post.uf}`} posts={doEstado} />}
         </aside>
         </div>
