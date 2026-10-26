@@ -6,13 +6,30 @@ const COMPRA_APOSTILA = `${GOOGLE_ADS_ID}/MafuCL_HhZ8dEKO7grAB`;
 
 type JanelaGtag = Window & { gtag?: (...args: unknown[]) => void };
 
+// Pedidos cuja conversão já saiu deste navegador (a tela do PIX e o
+// rastreador da área do aluno podem ver a mesma compra).
+const chave = (pedidoId: string) => `sibrap_conv_${pedidoId}`;
+
+export function compraJaRegistrada(pedidoId: string): boolean {
+  try {
+    return localStorage.getItem(chave(pedidoId)) === "1";
+  } catch {
+    return false;
+  }
+}
+
 export function gadsCompra({ valor, pedidoId }: { valor: number; pedidoId: string }) {
   const gtag = (window as JanelaGtag).gtag;
-  if (!gtag) return;
+  if (!gtag || compraJaRegistrada(pedidoId)) return;
   gtag("event", "conversion", {
     send_to: COMPRA_APOSTILA,
     value: valor,
     currency: "BRL",
     transaction_id: pedidoId,
   });
+  try {
+    localStorage.setItem(chave(pedidoId), "1");
+  } catch {
+    // sem armazenamento: o Google ainda descarta a repetição pelo transaction_id
+  }
 }
