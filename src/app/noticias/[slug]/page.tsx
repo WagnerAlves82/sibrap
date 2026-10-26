@@ -7,13 +7,14 @@ import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { BlocoNoticias } from "@/components/noticias-lateral";
 import { listarApostilasPublicadas } from "@/lib/apostilas";
 import { CapaImagem } from "@/components/capa-imagem";
-import { PromoApostila } from "@/components/promo-apostila";
+import { CarrosselEstado } from "@/components/carrossel-estado";
 import { CardApostilaMini } from "@/components/card-apostila-mini";
 import { GarantaPreparacao } from "@/components/garanta-preparacao";
 import {
   apostilasRelacionadas,
   formatarDataLonga,
   markdownParaHtml,
+  pontuacaoDivulgacao,
   resumoAutomatico,
   slugValidoPost,
   capaDoPost,
@@ -45,7 +46,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: post.seo_titulo || post.titulo,
     description: descricao,
     keywords: post.palavras_chave?.length ? post.palavras_chave : undefined,
-    alternates: { canonical: `/noticias/${slug}` },
+    alternates: { canonical: `/noticias/${slug}`, types: { "application/rss+xml": "/noticias/feed.xml" } },
+    // trecho e imagem grandes liberados: ajuda no Google Discover e nas respostas com IA
+    robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
     openGraph: {
       title: post.titulo,
       description: descricao,
@@ -96,28 +99,49 @@ export default async function PostPage({ params }: Props) {
         .eq("uf", post.uf)
         .neq("id", post.id)
         .order("publicado_em", { ascending: false })
-        .limit(5)
+        .limit(12)
     : { data: null };
-  const doEstado = doEstadoData ?? [];
+  const doEstado = (doEstadoData ?? []).slice(0, 5);
+  // carrossel do meio: as mais importantes do mesmo estado (esfera + destaque + ajuste manual), depois as mais novas
+  const carrossel = [...(doEstadoData ?? [])]
+    .sort((a, b) => pontuacaoDivulgacao(b) - pontuacaoDivulgacao(a))
+    .slice(0, 8)
+    .map((p) => ({ id: p.id, slug: p.slug, titulo: p.titulo, uf: p.uf, regiao: p.regiao, data: formatarDataLonga(p.publicado_em ?? p.criado_em) }));
   const todasApostilas = await listarApostilasPublicadas(supabase);
   const apostilasEspecificas = apostilasRelacionadas(post, todasApostilas, 4);
   const apostilas = apostilasEspecificas.length > 0 ? apostilasEspecificas : todasApostilas.slice(0, 2);
   const apostilasSaoEspecificas = apostilasEspecificas.length > 0;
 
   const urlPost = `${siteUrl}/noticias/${slug}`;
+  const resumo = post.resumo || post.seo_descricao || resumoAutomatico(post.conteudo);
+  const atualizado = formatarDataLonga(post.atualizado_em);
+  const foiAtualizado = new Date(post.atualizado_em).getTime() - new Date(post.publicado_em ?? post.criado_em).getTime() > 6 * 3600 * 1000;
+  const orgSibrap = { "@type": "Organization", "@id": `${siteUrl}/#organizacao`, name: "SIBRAP", url: siteUrl, logo: { "@type": "ImageObject", url: `${siteUrl}/logo.png` } };
+  // NewsArticle completo: é o que o Google (Notícias e AI Overviews), o Bing/ChatGPT e o Perplexity leem para
+  // entender do que se trata, de quando é, onde é e quem publicou. "speakable" aponta o título e o resumo.
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "NewsArticle",
     mainEntityOfPage: { "@type": "WebPage", "@id": urlPost },
+    url: urlPost,
     inLanguage: "pt-BR",
-    publisher: { "@type": "Organization", name: "SIBRAP", logo: { "@type": "ImageObject", url: `${siteUrl}/logo.png` } },
-    headline: post.titulo,
-    description: post.seo_descricao || post.resumo || resumoAutomatico(post.conteudo),
+    publisher: orgSibrap,
+    author: post.autor && post.autor !== "SIBRAP" ? { "@type": "Person", name: post.autor } : orgSibrap,
+    headline: post.titulo.slice(0, 110),
+    alternativeHeadline: post.seo_titulo && post.seo_titulo !== post.titulo ? post.seo_titulo : undefined,
+    description: post.seo_descricao || resumo,
+    abstract: resumo,
+    articleSection: post.categoria,
     keywords: post.palavras_chave?.length ? post.palavras_chave.join(", ") : undefined,
-    image: capa ?? undefined,
+    image: capa ? [capa] : undefined,
+    thumbnailUrl: capa ?? undefined,
     datePublished: post.publicado_em ?? post.criado_em,
     dateModified: post.atualizado_em,
-    author: { "@type": "Organization", name: post.autor || "SIBRAP" },
+    isAccessibleForFree: true,
+    wordCount: post.conteudo.split(/\s+/).filter(Boolean).length,
+    contentLocation: post.uf ? { "@type": "Place", address: { "@type": "PostalAddress", addressRegion: post.uf, addressCountry: "BR" } } : undefined,
+    citation: post.edital_url ?? undefined,
+    speakable: { "@type": "SpeakableSpecification", cssSelector: ["h1", "#resumo-materia"] },
   };
 
   const breadcrumb = {
@@ -153,11 +177,30 @@ export default async function PostPage({ params }: Props) {
 
           <p className="font-data text-[11.5px] font-semibold uppercase tracking-wide text-accent-2">
             {post.categoria}
-            {data ? ` · ${data}` : ""}
+            {data && (
+              <>
+                {" · "}
+                <time dateTime={post.publicado_em ?? post.criado_em}>{data}</time>
+              </>
+            )}
+            {foiAtualizado && atualizado && (
+              <>
+                {" · Atualizado em "}
+                <time dateTime={post.atualizado_em}>{atualizado}</time>
+              </>
+            )}
           </p>
           <h1 className="mt-1.5 font-display text-[1.9rem] leading-[1.1] font-extrabold text-balance text-[#14213A] sm:text-[2.4rem]">
             {post.titulo}
           </h1>
+
+          {/* resposta direta logo no topo: é o trecho que os buscadores com IA costumam citar */}
+          {resumo && (
+            <p id="resumo-materia" className="mt-4 border-l-4 border-accent bg-[#F6F9FC] px-4 py-3 text-[15.5px] leading-relaxed text-[#2A3A52]">
+              <strong className="text-[#14213A]">Resumo: </strong>
+              {resumo}
+            </p>
+          )}
 
           <NotaCertame tipo={post.certame_tipo} />
 
@@ -204,23 +247,19 @@ export default async function PostPage({ params }: Props) {
           )}
 
           {(() => {
-            // propaganda orgânica no meio do texto: divide o HTML no bloco central
+            // no meio do texto só o carrossel de matérias do mesmo estado (a loja fica no pé da matéria);
+            // sem outra matéria do estado, o texto segue inteiro
             const blocos = html.split("\n");
             const meio = Math.ceil(blocos.length / 2);
-            const promo = apostilas[0];
-            const comPromo = !!promo && blocos.length >= 6;
+            const comCarrossel = !!post.uf && carrossel.length > 0 && blocos.length >= 6;
             return (
               <>
                 <div
                   className="post-conteudo mt-8 text-[16px] leading-relaxed"
-                  dangerouslySetInnerHTML={{ __html: comPromo ? blocos.slice(0, meio).join("\n") : html }}
+                  dangerouslySetInnerHTML={{ __html: comCarrossel ? blocos.slice(0, meio).join("\n") : html }}
                 />
-                {comPromo && (
-                  <div className="my-8 grid">
-                    <PromoApostila apostila={promo} variante="faixa" origem="blog-post" />
-                  </div>
-                )}
-                {comPromo && (
+                {comCarrossel && <CarrosselEstado uf={post.uf!} itens={carrossel} />}
+                {comCarrossel && (
                   <div
                     className="post-conteudo text-[16px] leading-relaxed"
                     dangerouslySetInnerHTML={{ __html: blocos.slice(meio).join("\n") }}
@@ -267,18 +306,6 @@ export default async function PostPage({ params }: Props) {
         <aside className="flex flex-col gap-6" aria-label="Mais notícias">
           <BlocoNoticias titulo="Leia também" posts={recentes} />
           {doEstado.length >= 2 && <BlocoNoticias titulo={`Concursos em ${post.uf}`} posts={doEstado} />}
-          {apostilas.length > 0 && (
-            <section aria-label="Apostilas" className="rounded-xl border border-[#D7DEE6] bg-[#F6F9FC] p-3 lg:sticky lg:top-24">
-              <h2 className="mb-2 px-1 font-data text-[11px] font-bold uppercase tracking-wide text-[#516278]">
-                {apostilasSaoEspecificas ? "Apostila deste concurso" : "Estude com a SIBRAP"}
-              </h2>
-              <div className="grid gap-2">
-                {apostilas.slice(0, 2).map((a) => (
-                  <CardApostilaMini key={a.id} apostila={a} />
-                ))}
-              </div>
-            </section>
-          )}
         </aside>
         </div>
       </main>

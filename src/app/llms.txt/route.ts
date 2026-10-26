@@ -1,4 +1,5 @@
 import { SITE_URL, blocoCombos, blocoSobre, carregarCatalogo, linhaApostila } from "@/lib/llms";
+import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 
 // llms.txt (llmstxt.org): resumo do site pensado pra assistentes de IA
 // lerem. Gerado dinamicamente a partir do banco, no mesmo espírito do
@@ -44,6 +45,23 @@ export async function GET() {
       for (const c of cursos) {
         const horas = c.carga_horaria_horas ? ` (${c.carga_horaria_horas} horas, gratuito, com certificado)` : " (gratuito, com certificado)";
         linhas.push(`- [${c.nome}](${SITE_URL}/cursos/${c.slug})${horas}${c.descricao ? `: ${c.descricao}` : ""}`);
+      }
+      linhas.push("");
+    }
+    // notícias recentes: editais abertos com vagas, salários e prazos (o que mais se pergunta aos assistentes)
+    const { data: posts } = await criarClienteSupabaseAdmin()
+      .from("posts")
+      .select("slug, titulo, resumo, seo_descricao, uf, publicado_em")
+      .eq("status", "publicada")
+      .order("publicado_em", { ascending: false })
+      .limit(40);
+    if (posts?.length) {
+      linhas.push("## Notícias recentes de concursos e processos seletivos");
+      linhas.push(`Feed RSS: ${SITE_URL}/noticias/feed.xml`);
+      for (const p of posts) {
+        const quando = p.publicado_em ? ` (${p.publicado_em.slice(0, 10)})` : "";
+        const sobre = p.resumo || p.seo_descricao;
+        linhas.push(`- [${p.titulo}](${SITE_URL}/noticias/${p.slug})${quando}${sobre ? `: ${sobre}` : ""}`);
       }
       linhas.push("");
     }

@@ -13,8 +13,23 @@ export default function robots(): MetadataRoute.Robots {
       // Rastreadores de busca/assistentes de IA: liberados de forma explícita
       // (o ChatGPT, por exemplo, usa o OAI-SearchBot para citar sites).
       {
-        userAgent: ["GPTBot", "OAI-SearchBot", "ChatGPT-User", "PerplexityBot", "ClaudeBot", "Claude-User", "Google-Extended"],
-        allow: ["/", "/llms.txt", "/llms-full.txt"],
+        userAgent: [
+          "GPTBot",
+          "OAI-SearchBot",
+          "ChatGPT-User",
+          "PerplexityBot",
+          "Perplexity-User",
+          "ClaudeBot",
+          "Claude-SearchBot",
+          "Claude-User",
+          "Google-Extended",
+          "Applebot-Extended",
+          "xAI-Bot",
+          "GrokBot",
+          "meta-externalagent",
+          "Bingbot",
+        ],
+        allow: ["/", "/llms.txt", "/llms-full.txt", "/noticias/feed.xml"],
         disallow: ["/minha-area", "/admin", "/certificado/"],
       },
     ],

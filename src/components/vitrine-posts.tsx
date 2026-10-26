@@ -168,15 +168,16 @@ export function VitrinePosts({
         </p>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
-          {filtrados.flatMap((p, i) => {
-            const itens = [<CardPost key={p.id} post={p} />];
-            // a cada 6 matérias, uma apostila em destaque (rotaciona entre as publicadas)
-            if (apostilas.length > 0 && (i + 1) % 6 === 0) {
-              const a = apostilas[((i + 1) / 6 - 1) % apostilas.length];
-              itens.push(<PromoApostila key={`promo-${i}`} apostila={a} variante="faixa" origem="blog-lista" />);
-            }
-            return itens;
-          })}
+          {filtrados.map((p) => (
+            <CardPost key={p.id} post={p} />
+          ))}
+        </div>
+      )}
+
+      {/* a loja fica só no pé da lista, depois das matérias (o meio fica para o conteúdo e o AdSense) */}
+      {filtrados.length > 0 && apostilas.length > 0 && (
+        <div className="mt-10 grid">
+          <PromoApostila apostila={apostilas[0]} variante="faixa" origem="blog-lista" />
         </div>
       )}
 

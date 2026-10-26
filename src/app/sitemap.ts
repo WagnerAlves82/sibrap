@@ -67,8 +67,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       paginas.push({
         url: `${siteUrl}/noticias/${p.slug}`,
         lastModified: new Date(p.atualizado_em),
-        changeFrequency: "monthly",
-        priority: 0.6,
+        changeFrequency: "weekly",
+        priority: 0.7,
       });
     }
   } catch {
