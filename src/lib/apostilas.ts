@@ -92,6 +92,9 @@ export function slugValido(slug: string): boolean {
   return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) && slug.length <= 80;
 }
 
+// Apostilas com ordem a partir deste valor ficam no fim da vitrine.
+export const FIM_DA_VITRINE = 100;
+
 // Apostilas publicadas (o RLS já esconde os rascunhos de quem não é admin)
 export async function listarApostilasPublicadas(
   supabase: SupabaseClient<Database>
@@ -107,5 +110,8 @@ export async function listarApostilasPublicadas(
     .map(({ produtos, ...resto }) => ({
       ...resto,
       preco_centavos: produtos!.preco_centavos,
-    }));
+    }))
+    // ordem >= FIM_DA_VITRINE: vende pela publicidade, não pela vitrine — vai
+    // para o fim da lista (sort estável: o resto segue do mais novo ao mais antigo)
+    .sort((a, b) => Number((a.ordem ?? 0) >= FIM_DA_VITRINE) - Number((b.ordem ?? 0) >= FIM_DA_VITRINE));
 }
