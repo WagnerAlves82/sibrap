@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { CapaImagem } from "@/components/capa-imagem";
-import { capaDoPost, formatarDataLonga, type PostVitrine } from "@/lib/blog";
+import { urlCapa } from "@/lib/apostilas";
+import { formatarDataLonga, type PostVitrine } from "@/lib/blog";
 
-// Coluna lateral das Notícias: listas curtas (miniatura, título e data) que sugerem o próximo clique,
-// com um destaque no hover (faixa dourada, miniatura que aproxima e título que muda de cor).
+// Coluna lateral das Notícias: listas curtas (brasão do órgão, título e data) que sugerem o próximo clique,
+// com um destaque no hover (faixa dourada, brasão que aproxima e título que muda de cor).
 export function BlocoNoticias({ titulo, posts }: { titulo: string; posts: PostVitrine[] }) {
   if (posts.length === 0) return null;
   return (
@@ -13,7 +14,9 @@ export function BlocoNoticias({ titulo, posts }: { titulo: string; posts: PostVi
       </h2>
       <ul className="divide-y divide-[#EDF1F6]">
         {posts.map((p) => {
-          const capa = capaDoPost(p);
+          // só o brasão do órgão, recortado da capa (posts/brasao-<slug>.webp); sem ele, a sigla do estado
+          const brasao = urlCapa(`posts/brasao-${p.slug}.webp`)!;
+          const sigla = p.uf ?? p.regiao ?? "BR";
           const data = formatarDataLonga(p.publicado_em ?? p.criado_em);
           return (
             <li key={p.id}>
@@ -21,21 +24,18 @@ export function BlocoNoticias({ titulo, posts }: { titulo: string; posts: PostVi
                 href={`/noticias/${p.slug}`}
                 className="group flex gap-3 border-l-4 border-transparent px-3 py-3 transition-all duration-200 hover:border-accent hover:bg-[#F4F8FD] hover:pl-4"
               >
-                <span className="relative h-[68px] w-[92px] shrink-0 overflow-hidden rounded-md bg-gradient-to-b from-[#E6EEF7] to-[#F6F9FC]">
-                  {capa && (
-                    <CapaImagem
-                      src={capa}
-                      alt=""
-                      sizes="92px"
-                      className="object-cover transition-transform duration-300 group-hover:scale-110"
-                      fallback={null}
-                    />
-                  )}
-                  {(p.uf || p.regiao) && (
-                    <span className="absolute left-1 top-1 rounded bg-brand px-1.5 py-0.5 font-data text-[9.5px] font-semibold text-white">
-                      {p.uf ?? p.regiao}
-                    </span>
-                  )}
+                <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-white">
+                  <CapaImagem
+                    src={brasao}
+                    alt=""
+                    sizes="64px"
+                    className="object-contain transition-transform duration-300 group-hover:scale-110"
+                    fallback={
+                      <span className="flex h-full w-full items-center justify-center font-display text-[17px] font-extrabold text-brand">
+                        {sigla}
+                      </span>
+                    }
+                  />
                 </span>
                 <span className="min-w-0">
                   <span className="line-clamp-3 block font-display text-[13.5px] font-bold leading-snug text-[#14213A] transition-colors group-hover:text-brand">
