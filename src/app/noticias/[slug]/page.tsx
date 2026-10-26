@@ -8,6 +8,7 @@ import { BlocoNoticias } from "@/components/noticias-lateral";
 import { listarApostilasPublicadas } from "@/lib/apostilas";
 import { CapaImagem } from "@/components/capa-imagem";
 import { CarrosselEstado } from "@/components/carrossel-estado";
+import { AnuncioLateral } from "@/components/anuncio-lateral";
 import { CardApostilaMini } from "@/components/card-apostila-mini";
 import { GarantaPreparacao } from "@/components/garanta-preparacao";
 import {
@@ -305,6 +306,7 @@ export default async function PostPage({ params }: Props) {
 
         <aside className="flex flex-col gap-6" aria-label="Mais notícias">
           <BlocoNoticias titulo="Leia também" posts={recentes} />
+          {apostilas[0] && <AnuncioLateral apostila={apostilas[0]} />}
           {doEstado.length >= 2 && <BlocoNoticias titulo={`Concursos em ${post.uf}`} posts={doEstado} />}
         </aside>
         </div>
