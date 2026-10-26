@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
-import { CardPost } from "@/components/card-post";
+import { BlocoNoticias } from "@/components/noticias-lateral";
 import { listarApostilasPublicadas } from "@/lib/apostilas";
 import { CapaImagem } from "@/components/capa-imagem";
 import { PromoApostila } from "@/components/promo-apostila";
@@ -80,14 +80,25 @@ export default async function PostPage({ params }: Props) {
   const data = formatarDataLonga(post.publicado_em ?? post.criado_em);
   const html = markdownParaHtml(post.conteudo);
 
-  const { data: relacionadosData } = await supabase
+  const { data: recentesData } = await supabase
     .from("posts")
     .select("*")
     .eq("status", "publicada")
     .neq("id", post.id)
     .order("publicado_em", { ascending: false })
-    .limit(3);
-  const relacionados = relacionadosData ?? [];
+    .limit(6);
+  const recentes = recentesData ?? [];
+  const { data: doEstadoData } = post.uf
+    ? await supabase
+        .from("posts")
+        .select("*")
+        .eq("status", "publicada")
+        .eq("uf", post.uf)
+        .neq("id", post.id)
+        .order("publicado_em", { ascending: false })
+        .limit(5)
+    : { data: null };
+  const doEstado = doEstadoData ?? [];
   const todasApostilas = await listarApostilasPublicadas(supabase);
   const apostilasEspecificas = apostilasRelacionadas(post, todasApostilas, 4);
   const apostilas = apostilasEspecificas.length > 0 ? apostilasEspecificas : todasApostilas.slice(0, 2);
@@ -126,7 +137,8 @@ export default async function PostPage({ params }: Props) {
       <CabecalhoSite logado={!!user} />
 
       <main className="flex-1 bg-white py-10 sm:py-14">
-        <article className="mx-auto max-w-[760px] px-4 sm:px-6">
+        <div className="mx-auto grid max-w-[1180px] gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <article className="min-w-0 max-w-[760px]">
           <nav aria-label="Você está em" className="mb-4 text-[13px] text-[#516278]">
             <Link href="/noticias" className="hover:text-brand">
               Notícias
@@ -250,17 +262,25 @@ export default async function PostPage({ params }: Props) {
             </aside>
           )}
 
-          {relacionados.length > 0 && (
-            <div className="mt-14">
-              <h2 className="font-display text-xl font-extrabold text-[#14213A]">Veja também</h2>
-              <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
-                {relacionados.map((p) => (
-                  <CardPost key={p.id} post={p} />
+        </article>
+
+        <aside className="flex flex-col gap-6" aria-label="Mais notícias">
+          <BlocoNoticias titulo="Leia também" posts={recentes} />
+          {doEstado.length >= 2 && <BlocoNoticias titulo={`Concursos em ${post.uf}`} posts={doEstado} />}
+          {apostilas.length > 0 && (
+            <section aria-label="Apostilas" className="rounded-xl border border-[#D7DEE6] bg-[#F6F9FC] p-3 lg:sticky lg:top-24">
+              <h2 className="mb-2 px-1 font-data text-[11px] font-bold uppercase tracking-wide text-[#516278]">
+                {apostilasSaoEspecificas ? "Apostila deste concurso" : "Estude com a SIBRAP"}
+              </h2>
+              <div className="grid gap-2">
+                {apostilas.slice(0, 2).map((a) => (
+                  <CardApostilaMini key={a.id} apostila={a} />
                 ))}
               </div>
-            </div>
+            </section>
           )}
-        </article>
+        </aside>
+        </div>
       </main>
       <RodapeSite />
     </div>
