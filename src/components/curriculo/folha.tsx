@@ -87,8 +87,13 @@ export function FolhaCurriculo({ doc, modelo, foto }: { doc: Documento; modelo: 
   if (modelo === "compacto") {
     return (
       <div style={{ ...folha, padding: "44px 48px" }}>
-        <h1 style={{ fontSize: 27, color: AZUL, margin: 0 }}>{nome}</h1>
-        <p style={{ fontSize: 12.5, color: CINZA, margin: "6px 0 18px" }}>{doc.contatos.join("  ·  ")}</p>
+        <header style={{ display: "flex", gap: 18, alignItems: "center", marginBottom: 18 }}>
+          {foto && <Foto foto={foto} largura={66} />}
+          <div>
+            <h1 style={{ fontSize: 27, color: AZUL, margin: 0 }}>{nome}</h1>
+            <p style={{ fontSize: 12.5, color: CINZA, margin: "6px 0 0" }}>{doc.contatos.join("  ·  ")}</p>
+          </div>
+        </header>
         {doc.secoes.map((s) => (
           <section key={s.chave} style={{ display: "flex", gap: 18, borderTop: "1px solid #d7dee6", padding: "10px 0" }}>
             <h2 style={{ width: 150, flexShrink: 0, fontSize: 12, textTransform: "uppercase", letterSpacing: 1, color: AZUL, margin: "2px 0 0" }}>{s.titulo}</h2>

@@ -117,11 +117,16 @@ function Classico({ doc, foto }: { doc: Documento; foto?: string | null }) {
   );
 }
 
-function Compacto({ doc }: { doc: Documento }) {
+function Compacto({ doc, foto }: { doc: Documento; foto?: string | null }) {
   return (
     <Page size="A4" style={[s.pagina, { paddingVertical: px(44), paddingHorizontal: px(48) }]}>
-      <Text style={[s.negrito, { fontSize: px(27), color: AZUL }]}>{doc.nome}</Text>
-      <Text style={{ fontSize: px(12.5), color: CINZA, marginTop: px(6), marginBottom: px(18) }}>{doc.contatos.join("  ·  ")}</Text>
+      <View style={{ flexDirection: "row", alignItems: "center", marginBottom: px(18) }}>
+        {foto ? <View style={{ marginRight: px(18) }}><Foto foto={foto} largura={66} /></View> : null}
+        <View style={{ flexShrink: 1 }}>
+          <Text style={[s.negrito, { fontSize: px(27), color: AZUL }]}>{doc.nome}</Text>
+          <Text style={{ fontSize: px(12.5), color: CINZA, marginTop: px(6) }}>{doc.contatos.join("  ·  ")}</Text>
+        </View>
+      </View>
       {doc.secoes.map((sec) => {
         // título preso ao primeiro item; os demais itens seguem na mesma coluna
         const [primeiro, resto] = sec.tipo === "itens" ? [{ ...sec, itens: sec.itens.slice(0, 1) }, sec.itens.slice(1)] : [sec, []];
@@ -188,7 +193,7 @@ function Moderno({ doc, foto }: { doc: Documento; foto?: string | null }) {
 
 export async function gerarPdfCurriculo(doc: Documento, modelo: Modelo, foto?: string | null): Promise<Buffer> {
   const pagina =
-    modelo === "moderno" ? <Moderno doc={doc} foto={foto} /> : modelo === "compacto" ? <Compacto doc={doc} /> : <Classico doc={doc} foto={foto} />;
+    modelo === "moderno" ? <Moderno doc={doc} foto={foto} /> : modelo === "compacto" ? <Compacto doc={doc} foto={foto} /> : <Classico doc={doc} foto={foto} />;
   return renderToBuffer(
     <Document title={`Currículo - ${doc.nome}`} author={doc.nome} creator="SIBRAP · sibrap.tec.br" producer="SIBRAP" language="pt-BR">
       {pagina}

@@ -85,8 +85,8 @@ export const PERFIS: Record<
 
 export const MODELOS: Record<Modelo, { titulo: string; resumo: string; temFoto: boolean }> = {
   classico: { titulo: "Clássico", resumo: "Uma coluna, sóbrio, serve para qualquer vaga.", temFoto: true },
-  moderno: { titulo: "Moderno", resumo: "Coluna lateral azul com contatos, habilidades e foto.", temFoto: true },
-  compacto: { titulo: "Compacto", resumo: "Mais informação em uma página, sem foto.", temFoto: false },
+  moderno: { titulo: "Moderno", resumo: "Coluna lateral azul com foto, contatos e habilidades.", temFoto: true },
+  compacto: { titulo: "Compacto", resumo: "Mais informação em uma página, com foto pequena.", temFoto: true },
 };
 
 export function dadosVazios(): DadosCurriculo {

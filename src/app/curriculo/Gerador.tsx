@@ -151,7 +151,7 @@ function GeradorNoNavegador({ logado, emailConta, salvo, precoCentavos }: Props)
               />
               <Campo rotulo="E-mail" valor={r.dados.email} aoMudar={(email) => mudar({ email: email.trim() })} erro={e("email")} tipo="email" autoComplete="email" maxLength={120} />
               <Campo rotulo="LinkedIn ou portfólio" opcional valor={r.dados.link} aoMudar={(link) => mudar({ link })} placeholder="linkedin.com/in/seunome" maxLength={200} />
-              {r.modelo !== "compacto" && <EscolherFoto foto={r.foto} aoMudar={(foto) => setR((x) => ({ ...x, foto }))} />}
+              <EscolherFoto foto={r.foto} aoMudar={(foto) => setR((x) => ({ ...x, foto }))} />
             </div>
           )}
 
