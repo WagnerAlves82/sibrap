@@ -11,6 +11,8 @@ import { CarrosselEstado } from "@/components/carrossel-estado";
 import { AnuncioLateral } from "@/components/anuncio-lateral";
 import { CardApostilaMini } from "@/components/card-apostila-mini";
 import { GarantaPreparacao } from "@/components/garanta-preparacao";
+import { BlocoAnuncio, ScriptAdsense } from "@/components/adsense";
+import { blocoAdsense, clienteAdsense } from "@/lib/adsense";
 import {
   apostilasRelacionadas,
   formatarDataLonga,
@@ -83,6 +85,7 @@ export default async function PostPage({ params }: Props) {
   const capa = capaDoPost(post);
   const data = formatarDataLonga(post.publicado_em ?? post.criado_em);
   const html = markdownParaHtml(post.conteudo);
+  const adsense = clienteAdsense();
 
   const { data: recentesData } = await supabase
     .from("posts")
@@ -259,19 +262,22 @@ export default async function PostPage({ params }: Props) {
           )}
 
           {(() => {
-            // no meio do texto só o carrossel de matérias do mesmo estado (a loja fica no pé da matéria);
-            // sem outra matéria do estado, o texto segue inteiro
+            // no meio do texto: o bloco do AdSense e o carrossel de matérias do mesmo estado (a loja fica no pé da matéria);
+            // texto curto, sem anúncio e sem outra matéria do estado, segue inteiro
             const blocos = html.split("\n");
             const meio = Math.ceil(blocos.length / 2);
             const comCarrossel = !!post.uf && carrossel.length > 0 && blocos.length >= 6;
+            const comAnuncioMeio = !!adsense && !!blocoAdsense("NOTICIA_MEIO") && blocos.length >= 6;
+            const partir = comCarrossel || comAnuncioMeio;
             return (
               <>
                 <div
                   className="post-conteudo mt-8 text-[16px] leading-relaxed"
-                  dangerouslySetInnerHTML={{ __html: comCarrossel ? blocos.slice(0, meio).join("\n") : html }}
+                  dangerouslySetInnerHTML={{ __html: partir ? blocos.slice(0, meio).join("\n") : html }}
                 />
+                {comAnuncioMeio && <BlocoAnuncio cliente={adsense} slot={blocoAdsense("NOTICIA_MEIO")} />}
                 {comCarrossel && <CarrosselEstado uf={post.uf!} itens={carrossel} />}
-                {comCarrossel && (
+                {partir && (
                   <div
                     className="post-conteudo text-[16px] leading-relaxed"
                     dangerouslySetInnerHTML={{ __html: blocos.slice(meio).join("\n") }}
@@ -280,6 +286,9 @@ export default async function PostPage({ params }: Props) {
               </>
             );
           })()}
+
+          <BlocoAnuncio cliente={adsense} slot={blocoAdsense("NOTICIA_FIM")} />
+          <ScriptAdsense cliente={adsense} />
 
           {post.edital_url && (
             <aside className="mt-12 flex flex-col gap-3 rounded-2xl border border-[#D7DEE6] bg-white p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">

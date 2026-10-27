@@ -7,12 +7,14 @@ import type { NextConfig } from "next";
 const CSP_BASE = "frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'";
 const CSP_ESTRITO = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://www.youtube.com https://s.ytimg.com https://www.googletagmanager.com https://connect.facebook.net https://www.googleadservices.com https://googleads.g.doubleclick.net",
+  // AdSense (Notícias e aulas dos cursos gratuitos): *.googlesyndication.com, *.doubleclick.net,
+  // *.adtrafficquality.google e *.gstatic.com, além dos domínios do Google Ads que já existiam
+  "script-src 'self' 'unsafe-inline' https://www.youtube.com https://s.ytimg.com https://www.googletagmanager.com https://connect.facebook.net https://www.googleadservices.com https://googleads.g.doubleclick.net https://*.googlesyndication.com https://*.adtrafficquality.google https://www.google.com https://*.gstatic.com",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://bdansoccbklggqqnxexn.supabase.co https://i.ytimg.com https://www.googletagmanager.com https://www.facebook.com https://www.google.com https://www.google.com.br https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://*.google-analytics.com",
+  "img-src 'self' data: blob: https://bdansoccbklggqqnxexn.supabase.co https://i.ytimg.com https://www.googletagmanager.com https://www.facebook.com https://www.google.com https://www.google.com.br https://*.googlesyndication.com https://*.doubleclick.net https://*.google-analytics.com https://*.adtrafficquality.google https://*.gstatic.com",
   "font-src 'self'",
-  "connect-src 'self' https://bdansoccbklggqqnxexn.supabase.co https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://www.facebook.com https://connect.facebook.net https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://www.google.com https://www.google.com.br https://stats.g.doubleclick.net",
-  "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://td.doubleclick.net https://www.googletagmanager.com",
+  "connect-src 'self' https://bdansoccbklggqqnxexn.supabase.co https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://www.facebook.com https://connect.facebook.net https://*.googlesyndication.com https://*.doubleclick.net https://www.google.com https://www.google.com.br https://*.adtrafficquality.google",
+  "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://td.doubleclick.net https://www.googletagmanager.com https://*.googlesyndication.com https://*.doubleclick.net https://www.google.com https://*.adtrafficquality.google",
   "media-src 'self'",
 ].join("; ");
 

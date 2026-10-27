@@ -10,6 +10,7 @@ import { CapturarOrigem } from "@/components/capturar-origem";
 import { ContarVisita } from "@/components/contar-visita";
 import "./globals.css";
 import { GOOGLE_ADS_ID } from "@/lib/google-ads";
+import { clienteAdsense } from "@/lib/adsense";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -92,6 +93,8 @@ export const metadata: Metadata = {
     title: titulo,
     description: descricao,
   },
+  // verificação do site no AdSense (só com ADSENSE_PUB_ID na Vercel; não mostra anúncio)
+  ...(clienteAdsense() ? { other: { "google-adsense-account": clienteAdsense()! } } : {}),
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
