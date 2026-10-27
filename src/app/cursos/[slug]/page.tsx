@@ -17,7 +17,8 @@ const FOTO_HERO_PADRAO = {
   alt: "Alunos aprendendo juntos com os aplicativos do Office e o Copilot",
 };
 
-const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string }> = {
+// largura e altura só quando a imagem não é o retrato padrão de 1122x1402
+const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?: number; altura?: number }> = {
   "atendimento-ao-cliente": {
     src: "/atendimento-ao-cliente-card.png",
     alt: "Equipe de atendimento ao cliente sorrindo, com headset e tablet",
@@ -31,8 +32,10 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string }> = {
     alt: "Auxiliar de estoque conferindo caixas com leitor de código de barras no almoxarifado",
   },
   "conserto-e-manutencao-de-celulares": {
-    src: "/conserto-celulares-card.webp",
-    alt: "Técnico de celular consertando um smartphone aberto na bancada, com pulseira antiestática e ferramentas",
+    src: "/conserto-celulares-curso.webp",
+    alt: "Curso online de Conserto e Manutenção de Celulares, 40 horas, com certificado incluso: técnico consertando um celular na bancada",
+    largura: 1200,
+    altura: 896,
   },
 };
 
@@ -250,11 +253,11 @@ export default async function CursoPublicoPage({ params }: Props) {
             <Image
               src={(FOTOS_HERO_POR_CURSO[curso.slug] ?? FOTO_HERO_PADRAO).src}
               alt={(FOTOS_HERO_POR_CURSO[curso.slug] ?? FOTO_HERO_PADRAO).alt}
-              width={1122}
-              height={1402}
+              width={FOTOS_HERO_POR_CURSO[curso.slug]?.largura ?? 1122}
+              height={FOTOS_HERO_POR_CURSO[curso.slug]?.altura ?? 1402}
               sizes="(min-width: 1024px) 400px, 80vw"
               priority
-              className="flutuar mx-auto h-auto w-full max-w-[320px] lg:max-w-none"
+              className={`flutuar mx-auto h-auto w-full lg:max-w-none ${FOTOS_HERO_POR_CURSO[curso.slug]?.largura ? "max-w-[480px] rounded-xl" : "max-w-[320px]"}`}
             />
           </div>
         </div>

@@ -14,7 +14,7 @@ const FOTOS_POR_CURSO: Record<string, string> = {
   "atendimento-ao-cliente": "/atendimento-cliente-foto.jpg",
   "auxiliar-administrativo": "/auxiliar-administrativo-foto.jpg",
   "estoque-logistica-controle-de-mercadorias": "/estoque-logistica-foto.jpg",
-  "conserto-e-manutencao-de-celulares": "/conserto-celulares-foto.jpg",
+  "conserto-e-manutencao-de-celulares": "/conserto-celulares-curso.webp",
 };
 
 export const metadata: Metadata = {
