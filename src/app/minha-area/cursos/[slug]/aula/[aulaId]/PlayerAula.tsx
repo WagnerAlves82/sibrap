@@ -150,11 +150,11 @@ export function PlayerAula({
           )}
         </div>
       ) : (
-        <div className="flex aspect-video w-full items-center justify-center rounded-xl bg-brand-deep opacity-50" aria-hidden>
-          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 text-2xl text-white/30">
-            ▶
-          </span>
-        </div>
+        // aula só em texto: nada de "vídeo" falso (os alunos achavam que precisavam assistir algo para avançar)
+        <p className="border-l-4 border-accent bg-white px-4 py-3 text-[14.5px] leading-relaxed text-[#33465E]">
+          <strong className="text-[#14213A]">Aula em texto.</strong> Leia o resumo, faça a atividade e, no fim da página, toque em
+          &quot;Li a aula, marcar como concluída&quot; para liberar a próxima.
+        </p>
       )}
 
       {children}
@@ -180,7 +180,7 @@ export function PlayerAula({
               }}
               className="self-start rounded-lg bg-accent px-5 py-2.5 text-[14px] font-bold text-accent-ink transition-colors hover:brightness-105"
             >
-              {youtubeId ? "Já assisti — marcar como concluída" : "Marcar aula como concluída"}
+              {youtubeId ? "Já assisti — marcar como concluída" : "Li a aula, marcar como concluída"}
             </button>
           </>
         )}

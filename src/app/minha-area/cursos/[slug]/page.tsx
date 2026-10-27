@@ -152,7 +152,7 @@ export default async function AreaDoCursoPage({
 
         <Reveal delay={100} className="mt-6">
           <ol className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <EtapaCard numero={1} titulo="Assistir às aulas" ok={aulasOk} texto={`${feitas}/${total} concluídas`} />
+            <EtapaCard numero={1} titulo="Concluir as aulas" ok={aulasOk} texto={`${feitas}/${total} concluídas`} />
             <EtapaCard
               numero={2}
               titulo="Prova final"
