@@ -5,7 +5,7 @@
 import { useId } from "react";
 
 const caixa =
-  "w-full rounded-lg border border-[#C9D3DE] bg-white px-3.5 py-2.5 text-[15px] text-[#14213A] outline-none transition-colors placeholder:text-[#93A0AF] focus:border-brand focus:ring-2 focus:ring-brand/15";
+  "w-full  border border-[#C9D3DE] bg-white px-3.5 py-2.5 text-[15px] text-[#14213A] outline-none transition-colors placeholder:text-[#93A0AF] focus:border-brand focus:ring-2 focus:ring-brand/15";
 
 type Base = { rotulo: string; dica?: string; erro?: string; opcional?: boolean };
 
@@ -96,6 +96,19 @@ export function Selecao({
   );
 }
 
+export function Titulo({ titulo, texto }: { titulo: string; texto: string }) {
+  return (
+    <div className="mb-1">
+      <h2 className="font-display text-2xl font-extrabold text-[#14213A]">{titulo}</h2>
+      <p className="mt-1 text-[14.5px] leading-relaxed text-[#516278]">{texto}</p>
+    </div>
+  );
+}
+
+export function Aviso({ texto }: { texto: string }) {
+  return <p className="border border-[#F3C9C5] bg-[#FDF0EE] px-3.5 py-2.5 text-[14px] font-semibold text-[#B42318]">{texto}</p>;
+}
+
 /** Lista de itens repetíveis (formações, experiências, cursos...) com adicionar e remover. */
 export function ListaItens<T>({
   itens, aoMudar, novo, max, rotuloItem, rotuloAdicionar, render,
@@ -111,7 +124,7 @@ export function ListaItens<T>({
   return (
     <div className="flex flex-col gap-4">
       {itens.map((item, i) => (
-        <fieldset key={i} className="rounded-xl border border-[#D7DEE6] bg-[#F8FAFC] p-4">
+        <fieldset key={i} className="border border-[#D7DEE6] bg-[#F8FAFC] p-4">
           <div className="mb-3 flex items-center justify-between">
             <legend className="font-display text-[15px] font-extrabold text-[#14213A]">
               {rotuloItem} {i + 1}
@@ -133,7 +146,7 @@ export function ListaItens<T>({
         <button
           type="button"
           onClick={() => aoMudar([...itens, novo()])}
-          className="rounded-xl border-2 border-dashed border-[#C9D3DE] px-4 py-3 text-[14.5px] font-bold text-brand transition-colors hover:border-brand hover:bg-white"
+          className="border-2 border-dashed border-[#C9D3DE] px-4 py-3 text-[14.5px] font-bold text-brand transition-colors hover:border-brand hover:bg-white"
         >
           + {rotuloAdicionar}
         </button>

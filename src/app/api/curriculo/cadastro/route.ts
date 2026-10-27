@@ -12,7 +12,7 @@ import { validarSenha } from "@/lib/senha";
 import { VERSAO_TERMOS } from "@/lib/emissor";
 import { lerOrigem } from "@/lib/origem";
 import { apenasDigitos, normalizar, UFS, validar } from "@/lib/curriculo/tipos";
-import { fotoValida, respostaPdf, salvarEGerarPdf } from "@/lib/curriculo/servidor";
+import { criarPixDownload, fotoValida, PagamentoNecessario, respostaPdf, salvarEGerarPdf } from "@/lib/curriculo/servidor";
 
 export const runtime = "nodejs";
 
@@ -81,6 +81,12 @@ export async function POST(request: NextRequest) {
     });
     return respostaPdf(pdf, curriculo.dados.nome, curriculoId);
   } catch (e) {
+    // modo pago: conta criada e currículo salvo; devolve o PIX (sem sessão, o pedido segue por token)
+    if (e instanceof PagamentoNecessario) {
+      const pix = await criarPixDownload(data.user.id, email, nome);
+      if ("erro" in pix) return erro(pix.erro, 500);
+      return NextResponse.json({ pagar: true, curriculoId: e.message, ...pix }, { status: 402 });
+    }
     console.error("curriculo/cadastro", e);
     return erro("Sua conta foi criada, mas o PDF falhou. Confirme o e-mail, entre e baixe de novo.", 500);
   }

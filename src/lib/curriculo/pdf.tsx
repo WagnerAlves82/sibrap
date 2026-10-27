@@ -95,7 +95,7 @@ function SecaoComTitulo({ sec, titulo }: { sec: Secao; titulo: React.ReactNode }
 
 function Foto({ foto, largura }: { foto: string; largura: number }) {
   // eslint-disable-next-line jsx-a11y/alt-text
-  return <Image src={foto} style={{ width: px(largura), height: px(largura * (4 / 3)), objectFit: "cover", borderRadius: 3 }} />;
+  return <Image src={foto} style={{ width: px(largura), height: px(largura * (4 / 3)), objectFit: "cover" }} />;
 }
 
 function Classico({ doc, foto }: { doc: Documento; foto?: string | null }) {

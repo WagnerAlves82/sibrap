@@ -198,12 +198,12 @@ export default async function CursoPublicoPage({ params }: Props) {
         <div className="mx-auto grid max-w-[1180px] items-center gap-10 px-6 py-16 lg:grid-cols-[minmax(0,1fr)_400px]">
           <div>
           <div className="entrar entrar-cima">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-brand">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent-2" />
+            <span className="inline-flex items-center gap-2 border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-brand">
+              <span className="h-1.5 w-1.5 bg-accent-2" />
               Curso livre · 100% online · {precoCurso ?? "Gratuito"}
             </span>
             {mostrarVisitas && (
-              <span className="ml-2 inline-flex items-center gap-1.5 rounded-full border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-[#516278]">
+              <span className="ml-2 inline-flex items-center gap-1.5 border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-[#516278]">
                 <span aria-hidden>👁</span>
                 {visitas.toLocaleString("pt-BR")} visitas
               </span>
@@ -211,13 +211,13 @@ export default async function CursoPublicoPage({ params }: Props) {
             <h1 className="mt-4 max-w-[20ch] font-display text-4xl font-extrabold leading-[1.05] text-[#14213A] sm:text-6xl">
               {curso.nome}
             </h1>
-            <p className="mt-5 max-w-[60ch] text-[17px] leading-relaxed text-[#516278]">
+            <p className="mt-5 line-clamp-3 max-w-[60ch] text-[17px] leading-relaxed text-[#516278]">
               {curso.descricao}
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link
                 href={ctaHref}
-                className="inline-flex items-center gap-2 rounded-lg bg-accent px-7 py-4 text-base font-bold text-accent-ink shadow-[0_20px_45px_-20px_rgba(11,42,74,0.35)] transition-colors hover:brightness-105"
+                className="inline-flex items-center gap-2 bg-accent px-7 py-4 text-base font-bold text-accent-ink shadow-[0_20px_45px_-20px_rgba(11,42,74,0.35)] transition-colors hover:brightness-105"
               >
                 {logado ? "Ir para o curso" : precoCurso ? "Quero fazer o curso" : "Quero me inscrever grátis"} <span aria-hidden>→</span>
               </Link>
@@ -233,7 +233,7 @@ export default async function CursoPublicoPage({ params }: Props) {
           </div>
 
           <div className="entrar entrar-cima mt-12" style={{ animationDelay: "150ms" }}>
-            <dl className="grid max-w-3xl grid-cols-2 gap-px overflow-hidden rounded-[10px] border border-[#D7DEE6] bg-[#D7DEE6] sm:grid-cols-4">
+            <dl className="grid max-w-3xl grid-cols-2 gap-px overflow-hidden border border-[#D7DEE6] bg-[#D7DEE6] sm:grid-cols-4">
               {[
                 [`${curso.carga_horaria_horas}h`, "carga horária"],
                 [String(modulos?.length ?? 0), "módulos"],
@@ -257,7 +257,7 @@ export default async function CursoPublicoPage({ params }: Props) {
               height={FOTOS_HERO_POR_CURSO[curso.slug]?.altura ?? 1402}
               sizes="(min-width: 1024px) 400px, 80vw"
               priority
-              className={`flutuar mx-auto h-auto w-full lg:max-w-none ${FOTOS_HERO_POR_CURSO[curso.slug]?.largura ? "max-w-[480px] rounded-xl" : "max-w-[320px]"}`}
+              className={`flutuar mx-auto h-auto w-full lg:max-w-none ${FOTOS_HERO_POR_CURSO[curso.slug]?.largura ? "max-w-[480px] " : "max-w-[320px]"}`}
             />
           </div>
         </div>
@@ -279,7 +279,7 @@ export default async function CursoPublicoPage({ params }: Props) {
               ["Receba o certificado", `Certificado de ${curso.carga_horaria_horas}h com QR Code que qualquer pessoa pode conferir.`],
             ].map(([titulo, texto], i) => (
               <Reveal key={titulo} delay={i * 120}>
-                <li className="h-full rounded-xl border border-[#D7DEE6] bg-white p-6">
+                <li className="h-full border border-[#D7DEE6] bg-white p-6">
                   <span className="font-data text-sm font-semibold text-accent">Etapa {i + 1}</span>
                   <p className="mt-2 font-display text-xl font-extrabold text-[#14213A]">{titulo}</p>
                   <p className="mt-2 text-[15px] leading-relaxed text-[#516278]">{texto}</p>
@@ -302,7 +302,7 @@ export default async function CursoPublicoPage({ params }: Props) {
               const minutos = modulo.aulas.reduce((s, a) => s + a.carga_min, 0);
               return (
                 <Reveal key={modulo.id} delay={Math.min(i, 4) * 60}>
-                  <details className="group rounded-xl border border-[#D7DEE6] bg-white">
+                  <details className="group border border-[#D7DEE6] bg-white">
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4">
                       <span>
                         <span className="block font-display text-[17px] font-extrabold text-[#14213A]">
@@ -347,7 +347,7 @@ export default async function CursoPublicoPage({ params }: Props) {
           <div className={`mt-8 grid max-w-3xl grid-cols-1 gap-6 ${curso.permite_isencao_cadunico ? "md:grid-cols-2" : ""}`}>
             {curso.permite_isencao_cadunico && (
               <Reveal>
-                <div className="h-full rounded-xl border-2 border-accent bg-white p-6">
+                <div className="h-full border-2 border-accent bg-white p-6">
                   <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent">
                     Baixa renda
                   </p>
@@ -360,7 +360,7 @@ export default async function CursoPublicoPage({ params }: Props) {
               </Reveal>
             )}
             <Reveal delay={120}>
-              <div className="h-full max-w-sm rounded-xl border border-[#D7DEE6] bg-white p-6">
+              <div className="h-full max-w-sm border border-[#D7DEE6] bg-white p-6">
                 <p className="font-data text-xs font-semibold uppercase tracking-wide text-[#516278]">
                   {precoCurso ? "Curso + certificado online" : curso.permite_isencao_cadunico ? "Demais participantes" : "Certificado"}
                 </p>
@@ -388,7 +388,7 @@ export default async function CursoPublicoPage({ params }: Props) {
           </Reveal>
           <div className="mt-8 flex max-w-3xl flex-col gap-3">
             {faq.map(([pergunta, resposta]) => (
-              <details key={pergunta} className="group rounded-xl border border-[#D7DEE6] bg-white">
+              <details key={pergunta} className="group border border-[#D7DEE6] bg-white">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-display text-[16px] font-extrabold text-[#14213A]">
                   {pergunta}
                   <span aria-hidden className="text-accent transition-transform group-open:rotate-90">→</span>
@@ -407,7 +407,7 @@ export default async function CursoPublicoPage({ params }: Props) {
           </p>
           <Link
             href={ctaHref}
-            className="inline-flex items-center gap-2 rounded-lg bg-accent px-7 py-4 text-base font-bold text-accent-ink transition-colors hover:brightness-105"
+            className="inline-flex items-center gap-2 bg-accent px-7 py-4 text-base font-bold text-accent-ink transition-colors hover:brightness-105"
           >
             {logado ? "Ir para o curso" : precoCurso ? "Quero fazer o curso" : "Quero me inscrever grátis"} <span aria-hidden>→</span>
           </Link>

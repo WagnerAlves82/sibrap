@@ -52,10 +52,8 @@ export default async function CursosPage() {
             Cursos online com certificado.
           </h1>
           <p className="mt-4 max-w-[60ch] text-[16px] leading-relaxed text-[#516278]">
-            Aprenda no seu ritmo, pelo celular ou computador. Nos cursos
-            marcados como grátis, todas as aulas são gratuitas e você só paga
-            se quiser o certificado. Nos cursos com preço, o pagamento é único
-            no PIX e o certificado já vem incluso.
+            Cursos curtos e práticos para conseguir sua vaga, no celular ou no
+            computador, com certificado validado por QR Code.
           </p>
         </Reveal>
 
@@ -64,7 +62,7 @@ export default async function CursosPage() {
             <Reveal key={curso.slug} delay={i * 100}>
               <Link
                 href={`/cursos/${curso.slug}`}
-                className="group flex h-full flex-col overflow-hidden rounded-xl border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)]"
+                className="group flex h-full flex-col overflow-hidden border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)]"
               >
                 <div className="relative aspect-[16/10] w-full overflow-hidden bg-surface-2">
                   <Image
@@ -87,7 +85,7 @@ export default async function CursosPage() {
                   <h2 className="mt-2 font-display text-2xl font-extrabold text-[#14213A]">
                     {curso.nome}
                   </h2>
-                  <p className="mt-3 flex-1 text-[15px] leading-relaxed text-[#516278]">
+                  <p className="mt-3 line-clamp-3 flex-1 text-[15px] leading-relaxed text-[#516278]">
                     {curso.descricao}
                   </p>
                   <span
@@ -109,7 +107,7 @@ export default async function CursosPage() {
           <Reveal delay={200}>
             <Link
               href="/cursos/combo"
-              className="group mt-6 flex flex-col items-start justify-between gap-4 rounded-xl border-2 border-accent bg-white p-7 transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)] sm:flex-row sm:items-center"
+              className="group mt-6 flex flex-col items-start justify-between gap-4 border-2 border-accent bg-white p-7 transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)] sm:flex-row sm:items-center"
             >
               <div>
                 <span className="font-data text-xs font-semibold uppercase tracking-wide text-accent">
@@ -122,7 +120,7 @@ export default async function CursosPage() {
                   Informática Básica com IA + Atendimento ao Cliente, em vez de R$ 29,90 cada um.
                 </p>
               </div>
-              <span className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-accent px-6 py-3 text-[14.5px] font-bold text-accent-ink transition-transform group-hover:translate-x-1">
+              <span className="inline-flex shrink-0 items-center gap-2 bg-accent px-6 py-3 text-[14.5px] font-bold text-accent-ink transition-transform group-hover:translate-x-1">
                 Ver o combo <span aria-hidden>→</span>
               </span>
             </Link>

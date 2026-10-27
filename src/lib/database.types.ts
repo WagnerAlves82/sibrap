@@ -915,6 +915,7 @@ export type Database = {
           criado_em: string
           curriculo_id: string | null
           id: number
+          pedido_id: string | null
           primeiro: boolean
           user_id: string | null
         }
@@ -922,6 +923,7 @@ export type Database = {
           criado_em?: string
           curriculo_id?: string | null
           id?: never
+          pedido_id?: string | null
           primeiro?: boolean
           user_id?: string | null
         }
@@ -929,6 +931,7 @@ export type Database = {
           criado_em?: string
           curriculo_id?: string | null
           id?: never
+          pedido_id?: string | null
           primeiro?: boolean
           user_id?: string | null
         }

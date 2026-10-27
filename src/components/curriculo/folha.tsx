@@ -35,7 +35,7 @@ function Conteudo({ s, compacto }: { s: Secao; compacto?: boolean }) {
 
 function Foto({ foto, largura }: { foto: string; largura: number }) {
   // eslint-disable-next-line @next/next/no-img-element
-  return <img src={foto} alt="" style={{ width: largura, height: largura * (4 / 3), objectFit: "cover", borderRadius: 4, display: "block" }} />;
+  return <img src={foto} alt="" style={{ width: largura, height: largura * (4 / 3), objectFit: "cover", display: "block" }} />;
 }
 
 export function FolhaCurriculo({ doc, modelo, foto }: { doc: Documento; modelo: Modelo; foto?: string | null }) {

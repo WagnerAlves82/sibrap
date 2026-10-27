@@ -25,10 +25,15 @@ export async function enviarEmail({
   para,
   assunto,
   html,
+  responderPara,
+  anexos,
 }: {
   para: string;
   assunto: string;
   html: string;
+  /** quem recebe a resposta (padrão: o e-mail do dono) */
+  responderPara?: string;
+  anexos?: { nome: string; conteudoBase64: string }[];
 }): Promise<Resultado> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -44,10 +49,11 @@ export async function enviarEmail({
     body: JSON.stringify({
       from: "SIBRAP <apostila@sibrap.tec.br>",
       // o remetente não tem caixa de entrada: as respostas dos clientes vão para o e-mail do dono
-      reply_to: process.env.EMAIL_RESPOSTA ?? "wagnerjuniorsouza@gmail.com",
+      reply_to: responderPara ?? process.env.EMAIL_RESPOSTA ?? "wagnerjuniorsouza@gmail.com",
       to: [para],
       subject: assunto,
       html,
+      ...(anexos?.length ? { attachments: anexos.map((a) => ({ filename: a.nome, content: a.conteudoBase64 })) } : {}),
     }),
   });
 
@@ -293,6 +299,38 @@ export async function enviarCursoLiberado({
       corpo: `<p style="margin:0 0 12px 0;">O curso <strong>${esc(cursoNome)}</strong>, em que você já está matriculado, está com todas as aulas liberadas agora. Venha estudar com a gente.</p>
 <p style="margin:0;">É só entrar na sua área e continuar de onde parou.</p>`,
       botao: { texto: "Acessar meu curso &rarr;", url: `${SITE_URL()}/minha-area/cursos/${cursoSlug}` },
+    }),
+  });
+}
+
+/** Currículo do gerador enviado por e-mail (para a empresa ou para a própria pessoa), com o PDF anexo. */
+export async function enviarCurriculoPorEmail({
+  para,
+  nomeCandidato,
+  emailCandidato,
+  pdfBase64,
+  arquivo,
+}: {
+  para: string;
+  nomeCandidato: string;
+  emailCandidato?: string | null;
+  pdfBase64: string;
+  arquivo: string;
+}): Promise<Resultado> {
+  const nome = esc(nomeCandidato);
+  return enviarEmail({
+    para,
+    assunto: `Currículo de ${nomeCandidato}`,
+    // a resposta da empresa vai direto para o candidato
+    responderPara: emailCandidato || undefined,
+    anexos: [{ nome: arquivo, conteudoBase64: pdfBase64 }],
+    html: moldura({
+      saudacao: "Olá!",
+      titulo: `Currículo de ${nome}`,
+      corpo: `<p style="margin:0 0 12px 0;">Segue em anexo o currículo de <strong>${nome}</strong>, em PDF.</p>
+${emailCandidato ? `<p style="margin:0 0 12px 0;">Para falar com o candidato, é só responder este e-mail ou escrever para <strong>${esc(emailCandidato)}</strong>.</p>` : ""}
+<p style="margin:0;font-size:13px;color:#93A0AF;">Currículo montado no gerador gratuito do SIBRAP.</p>`,
+      botao: { texto: "Montar meu currículo grátis &rarr;", url: `${SITE_URL()}/curriculo` },
     }),
   });
 }
