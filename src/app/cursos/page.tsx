@@ -8,7 +8,7 @@ import { Reveal } from "@/components/reveal";
 // Foto de capa por curso (slug -> arquivo em /public). Enquanto só há uma
 // foto oficial, os dois cursos usam a mesma; troque aqui quando tiver fotos
 // específicas de cada curso.
-const FOTO_PADRAO = "/alunos.png";
+const FOTO_PADRAO = "/alunos.webp";
 const FOTOS_POR_CURSO: Record<string, string> = {
   "informatica-basica-ia": "/informatica-basica-foto.jpg",
   "atendimento-ao-cliente": "/atendimento-cliente-foto.jpg",

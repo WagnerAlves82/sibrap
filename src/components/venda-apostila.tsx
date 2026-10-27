@@ -242,7 +242,7 @@ export function VendaApostila({ d }: { d: DadosVenda }) {
           </Reveal>
           <Reveal variante="direita" delay={120}>
             <Image
-              src="/alunos.png"
+              src="/alunos.webp"
               alt="Alunos aprendendo juntos"
               width={1122}
               height={1402}

@@ -13,14 +13,14 @@ import { formatarReais, produtoDoCursoPago } from "@/lib/curso-pago";
 type Props = { params: Promise<{ slug: string }> };
 
 const FOTO_HERO_PADRAO = {
-  src: "/alunos.png",
+  src: "/alunos.webp",
   alt: "Alunos aprendendo juntos com os aplicativos do Office e o Copilot",
 };
 
 // largura e altura só quando a imagem não é o retrato padrão de 1122x1402
 const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?: number; altura?: number }> = {
   "atendimento-ao-cliente": {
-    src: "/atendimento-ao-cliente-card.png",
+    src: "/atendimento-ao-cliente-card.webp",
     alt: "Equipe de atendimento ao cliente sorrindo, com headset e tablet",
   },
   "auxiliar-administrativo": {

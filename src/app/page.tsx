@@ -342,7 +342,7 @@ export default async function Home() {
           </Reveal>
           <Reveal variante="direita" delay={200}>
             <Image
-              src="/alunos.png"
+              src="/alunos.webp"
               alt="Alunos aprendendo juntos com os aplicativos do Office e o Copilot"
               width={1122}
               height={1402}
