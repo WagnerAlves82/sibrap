@@ -168,8 +168,7 @@ export function PlayerAula({
           <>
             {aviso && (
               <Alert variant="info" claro className="text-sm">
-                {aviso}
-                {youtubeId ? ". A aula é marcada como concluída sozinha quando o vídeo termina." : ""}
+                {aviso}.
               </Alert>
             )}
             <button
@@ -180,7 +179,7 @@ export function PlayerAula({
               }}
               className="self-start rounded-lg bg-accent px-5 py-2.5 text-[14px] font-bold text-accent-ink transition-colors hover:brightness-105"
             >
-              {youtubeId ? "Já assisti — marcar como concluída" : "Li a aula, marcar como concluída"}
+              Li a aula, marcar como concluída
             </button>
           </>
         )}
