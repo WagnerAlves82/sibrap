@@ -106,7 +106,9 @@ export default async function CursoPublicoPage({ params }: Props) {
     : null;
 
   const totalAulas = modulos?.reduce((s, m) => s + m.aulas.length, 0) ?? 0;
-  const temVideo = !!modulos?.some((m) => m.aulas.some((a) => a.youtube_id));
+  // "aulas em vídeo" só quando todas têm vídeo; com parte delas, diz quantas
+  const aulasComVideo = modulos?.reduce((s, m) => s + m.aulas.filter((a) => a.youtube_id).length, 0) ?? 0;
+  const temVideo = totalAulas > 0 && aulasComVideo === totalAulas;
   const nomesModulos = (modulos ?? []).map((m) => m.titulo);
   const faq = perguntasFrequentes(curso, preco, nomesModulos);
   const urlCurso = `${SITE}/cursos/${curso.slug}`;
@@ -206,7 +208,7 @@ export default async function CursoPublicoPage({ params }: Props) {
               {[
                 [`${curso.carga_horaria_horas}h`, "carga horária"],
                 [String(modulos?.length ?? 0), "módulos"],
-                [String(totalAulas), temVideo ? "aulas em vídeo" : "aulas"],
+                [String(totalAulas), temVideo ? "aulas em vídeo" : aulasComVideo > 0 ? `aulas (${aulasComVideo} com vídeo)` : "aulas"],
                 ["QR Code", "certificado validável"],
               ].map(([valor, rotulo]) => (
                 <div key={rotulo} className="bg-white px-5 py-4">
@@ -243,7 +245,7 @@ export default async function CursoPublicoPage({ params }: Props) {
             {[
               temVideo
                 ? ["Assista às aulas", "Vídeo-aulas curtas e práticas, no celular ou no computador. Seu progresso fica salvo."]
-                : ["Estude as aulas", "Aulas curtas e práticas, com exemplos e atividades, no celular ou no computador. Seu progresso fica salvo."],
+                : ["Estude as aulas", `Aulas curtas e práticas, com exemplos e atividades${aulasComVideo > 0 ? " e vídeos de apoio" : ""}, no celular ou no computador. Seu progresso fica salvo.`],
               ["Faça a prova final", `Prova com questões de múltipla escolha. Nota mínima: ${curso.nota_minima}%. Pode refazer.`],
               ["Receba o certificado", `Certificado de ${curso.carga_horaria_horas}h com QR Code que qualquer pessoa pode conferir.`],
             ].map(([titulo, texto], i) => (
