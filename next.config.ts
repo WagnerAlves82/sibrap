@@ -42,6 +42,9 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
+    // Imagens servidas direto, sem o otimizador da Vercel: a cota do plano acabou em 27/10/2026
+    // (/_next/image respondia 402 e as imagens novas apareciam quebradas).
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
