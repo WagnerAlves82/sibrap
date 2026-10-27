@@ -33,15 +33,34 @@ async function carregarCurso(slug: string) {
   return { supabase, curso };
 }
 
+const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const { curso } = await carregarCurso(slug);
   if (!curso) return {};
+  const titulo = `Curso de ${curso.nome} grátis com certificado (${curso.carga_horaria_horas}h)`;
+  const descricao = `Curso online gratuito de ${curso.nome}, ${curso.carga_horaria_horas} horas, com certificado validável por QR Code. ${curso.subtitulo ?? ""}`.trim();
+  const foto = `${SITE}${(FOTOS_HERO_POR_CURSO[slug] ?? FOTO_HERO_PADRAO).src}`;
   return {
-    title: curso.nome,
+    title: titulo,
+    description: descricao.length > 300 ? `${descricao.slice(0, 297)}...` : descricao,
+    keywords: [`curso de ${curso.nome.toLowerCase()}`, `curso de ${curso.nome.toLowerCase()} gratuito`, `curso de ${curso.nome.toLowerCase()} com certificado`, "curso online gratuito com certificado", "curso livre"],
     alternates: { canonical: `/cursos/${slug}` },
-    description: `${curso.descricao ?? ""} Curso gratuito de ${curso.carga_horaria_horas}h com certificado.`.trim(),
+    openGraph: { title: titulo, description: descricao, url: `${SITE}/cursos/${slug}`, type: "website", locale: "pt_BR", images: [{ url: foto, alt: curso.nome }] },
+    twitter: { card: "summary_large_image", title: titulo, description: descricao, images: [foto] },
   };
+}
+
+// Perguntas frequentes da página do curso (visíveis na página e marcadas como FAQPage para buscadores e IAs)
+function perguntasFrequentes(curso: { nome: string; carga_horaria_horas: number; nota_minima: number }, preco: string | null, modulos: string[]) {
+  return [
+    [`O curso de ${curso.nome} é gratuito?`, `Sim. Todas as aulas do curso de ${curso.nome} são gratuitas e 100% online. Só o certificado é opcional e pago${preco ? ` (${preco})` : ""}.`],
+    [`O curso de ${curso.nome} tem certificado?`, `Sim. Depois de concluir as aulas e ser aprovado na prova final (nota mínima de ${curso.nota_minima}%), você pode emitir o certificado de ${curso.carga_horaria_horas} horas, com QR Code para qualquer pessoa conferir a autenticidade.`],
+    [`Qual é a carga horária do curso de ${curso.nome}?`, `O curso tem ${curso.carga_horaria_horas} horas, divididas em ${modulos.length} módulos. Você estuda no seu ritmo, pelo celular ou pelo computador, e o progresso fica salvo.`],
+    [`O que se aprende no curso de ${curso.nome}?`, `Os módulos são: ${modulos.join("; ")}.`],
+    ["Preciso de experiência ou de algum curso antes?", "Não. O curso é livre e não tem pré-requisito: basta saber ler e ter acesso à internet."],
+  ] as const;
 }
 
 export default async function CursoPublicoPage({ params }: Props) {
@@ -52,7 +71,7 @@ export default async function CursoPublicoPage({ params }: Props) {
   const [{ data: modulos }, { data: produto }, { data: userData }, visitas] = await Promise.all([
     supabase
       .from("modulos")
-      .select("id, titulo, ordem, aulas(id, titulo, ordem, carga_min)")
+      .select("id, titulo, ordem, aulas(id, titulo, ordem, carga_min, youtube_id)")
       .eq("curso_id", curso.id)
       .order("ordem")
       .order("ordem", { referencedTable: "aulas" }),
@@ -79,28 +98,54 @@ export default async function CursoPublicoPage({ params }: Props) {
     : null;
 
   const totalAulas = modulos?.reduce((s, m) => s + m.aulas.length, 0) ?? 0;
+  const temVideo = !!modulos?.some((m) => m.aulas.some((a) => a.youtube_id));
+  const nomesModulos = (modulos ?? []).map((m) => m.titulo);
+  const faq = perguntasFrequentes(curso, preco, nomesModulos);
+  const urlCurso = `${SITE}/cursos/${curso.slug}`;
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Course",
-    name: curso.nome,
-    description: curso.descricao,
-    inLanguage: "pt-BR",
-    isAccessibleForFree: true,
-    url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br"}/cursos/${curso.slug}`,
-    educationalCredentialAwarded: "Certificado de conclusão com QR Code de validação",
-    offers: { "@type": "Offer", price: "0", priceCurrency: "BRL", category: "Free", availability: "https://schema.org/InStock" },
-    provider: {
-      "@type": "Organization",
-      name: EMISSOR.nome,
-      url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br",
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      name: curso.nome,
+      description: curso.descricao,
+      inLanguage: "pt-BR",
+      isAccessibleForFree: true,
+      url: urlCurso,
+      image: `${SITE}${(FOTOS_HERO_POR_CURSO[curso.slug] ?? FOTO_HERO_PADRAO).src}`,
+      teaches: nomesModulos,
+      coursePrerequisites: "Nenhum",
+      educationalLevel: "Iniciante",
+      educationalCredentialAwarded: "Certificado de conclusão com QR Code de validação",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "BRL", category: "Free", availability: "https://schema.org/InStock", url: urlCurso },
+      provider: { "@type": "Organization", name: EMISSOR.nome, url: SITE },
+      syllabusSections: (modulos ?? []).map((m) => ({
+        "@type": "Syllabus",
+        name: m.titulo,
+        description: m.aulas.map((a) => a.titulo).join("; "),
+        timeRequired: `PT${Math.round(m.aulas.reduce((s, a) => s + a.carga_min, 0) / 60)}H`,
+      })),
+      hasCourseInstance: {
+        "@type": "CourseInstance",
+        courseMode: "online",
+        courseWorkload: `PT${curso.carga_horaria_horas}H`,
+      },
     },
-    hasCourseInstance: {
-      "@type": "CourseInstance",
-      courseMode: "online",
-      courseWorkload: `PT${curso.carga_horaria_horas}H`,
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: faq.map(([pergunta, resposta]) => ({ "@type": "Question", name: pergunta, acceptedAnswer: { "@type": "Answer", text: resposta } })),
     },
-  };
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Início", item: SITE },
+        { "@type": "ListItem", position: 2, name: "Cursos", item: `${SITE}/cursos` },
+        { "@type": "ListItem", position: 3, name: curso.nome, item: urlCurso },
+      ],
+    },
+  ];
 
   return (
     <div className="flex min-h-screen flex-col bg-white font-body">
@@ -153,7 +198,7 @@ export default async function CursoPublicoPage({ params }: Props) {
               {[
                 [`${curso.carga_horaria_horas}h`, "carga horária"],
                 [String(modulos?.length ?? 0), "módulos"],
-                [String(totalAulas), "aulas em vídeo"],
+                [String(totalAulas), temVideo ? "aulas em vídeo" : "aulas"],
                 ["QR Code", "certificado validável"],
               ].map(([valor, rotulo]) => (
                 <div key={rotulo} className="bg-white px-5 py-4">
@@ -188,7 +233,9 @@ export default async function CursoPublicoPage({ params }: Props) {
           </Reveal>
           <ol className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
             {[
-              ["Assista às aulas", "Vídeo-aulas curtas e práticas, no celular ou no computador. Seu progresso fica salvo."],
+              temVideo
+                ? ["Assista às aulas", "Vídeo-aulas curtas e práticas, no celular ou no computador. Seu progresso fica salvo."]
+                : ["Estude as aulas", "Aulas curtas e práticas, com exemplos e atividades, no celular ou no computador. Seu progresso fica salvo."],
               ["Faça a prova final", `Prova com questões de múltipla escolha. Nota mínima: ${curso.nota_minima}%. Pode refazer.`],
               ["Receba o certificado", `Certificado de ${curso.carga_horaria_horas}h com QR Code que qualquer pessoa pode conferir.`],
             ].map(([titulo, texto], i) => (
@@ -291,6 +338,25 @@ export default async function CursoPublicoPage({ params }: Props) {
           <p className="mt-6 max-w-[70ch] text-[12.5px] leading-relaxed text-[#93A0AF]">
             {AVISO_CURSO_LIVRE}
           </p>
+        </div>
+      </section>
+
+      <section className="bg-surface-2 py-16">
+        <div className="mx-auto max-w-[1180px] px-6">
+          <Reveal>
+            <h2 className="font-display text-3xl font-extrabold text-[#14213A]">Perguntas frequentes</h2>
+          </Reveal>
+          <div className="mt-8 flex max-w-3xl flex-col gap-3">
+            {faq.map(([pergunta, resposta]) => (
+              <details key={pergunta} className="group rounded-xl border border-[#D7DEE6] bg-white">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-display text-[16px] font-extrabold text-[#14213A]">
+                  {pergunta}
+                  <span aria-hidden className="text-accent transition-transform group-open:rotate-90">→</span>
+                </summary>
+                <p className="border-t border-[#E7EDF3] px-5 py-4 text-[15px] leading-relaxed text-[#516278]">{resposta}</p>
+              </details>
+            ))}
+          </div>
         </div>
       </section>
 
