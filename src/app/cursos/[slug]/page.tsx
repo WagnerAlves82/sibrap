@@ -30,6 +30,10 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string }> = {
     src: "/estoque-logistica-card.webp",
     alt: "Auxiliar de estoque conferindo caixas com leitor de código de barras no almoxarifado",
   },
+  "conserto-e-manutencao-de-celulares": {
+    src: "/conserto-celulares-card.webp",
+    alt: "Técnico de celular consertando um smartphone aberto na bancada, com pulseira antiestática e ferramentas",
+  },
 };
 
 async function carregarCurso(slug: string) {

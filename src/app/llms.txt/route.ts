@@ -22,7 +22,7 @@ export async function GET() {
   linhas.push(`- [Página inicial](${SITE_URL}): apresentação do SIBRAP e vitrine das apostilas.`);
   linhas.push(`- [Apostilas](${SITE_URL}/apostilas): catálogo completo de apostilas para concursos públicos.`);
   linhas.push(`- [Bancas](${SITE_URL}/bancas): apostilas organizadas por banca organizadora.`);
-  linhas.push(`- [Cursos gratuitos](${SITE_URL}/cursos): cursos livres com certificado, sem custo.`);
+  linhas.push(`- [Cursos](${SITE_URL}/cursos): cursos livres online com certificado, gratuitos (só o certificado é pago) ou com pagamento único que já inclui o certificado.`);
   linhas.push(`- [Notícias](${SITE_URL}/noticias): notícias sobre concursos públicos (vagas efetivas) e processos seletivos (contratações temporárias).`);
   linhas.push(`- [Versão completa deste resumo](${SITE_URL}/llms-full.txt): todas as apostilas, cursos e perguntas frequentes em um só arquivo.`);
   linhas.push("");

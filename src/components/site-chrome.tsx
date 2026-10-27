@@ -57,7 +57,7 @@ export function CabecalhoSite({ logado, next, semLinks, semBusca }: { logado: bo
                 Notícias
               </Link>
               <Link href="/cursos" className={`hidden md:inline ${itemNav}`}>
-                Cursos gratuitos
+                Cursos
               </Link>
               <Link href="/validar" className={`hidden lg:inline ${itemNav}`}>
                 Validar certificado
@@ -128,7 +128,7 @@ export function RodapeSite() {
               </li>
               <li>
                 <Link href="/cursos" className={linkRodape}>
-                  Cursos gratuitos
+                  Cursos
                 </Link>
               </li>
               <li>

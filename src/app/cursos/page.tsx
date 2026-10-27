@@ -14,13 +14,14 @@ const FOTOS_POR_CURSO: Record<string, string> = {
   "atendimento-ao-cliente": "/atendimento-cliente-foto.jpg",
   "auxiliar-administrativo": "/auxiliar-administrativo-foto.jpg",
   "estoque-logistica-controle-de-mercadorias": "/estoque-logistica-foto.jpg",
+  "conserto-e-manutencao-de-celulares": "/conserto-celulares-foto.jpg",
 };
 
 export const metadata: Metadata = {
-  title: "Cursos gratuitos",
+  title: "Cursos online com certificado",
   alternates: { canonical: "/cursos" },
   description:
-    "Cursos livres gratuitos do SIBRAP para pessoas de baixa renda, com certificado e QR Code de validação.",
+    "Cursos livres do SIBRAP, 100% online, com certificado e QR Code de validação: cursos gratuitos e cursos profissionalizantes com pagamento único no PIX.",
 };
 
 export default async function CursosPage() {
@@ -48,12 +49,13 @@ export default async function CursosPage() {
             Educação que transforma vidas e o futuro
           </p>
           <h1 className="mt-3 max-w-[18ch] font-display text-4xl font-extrabold text-[#14213A] sm:text-5xl">
-            Cursos gratuitos com certificado.
+            Cursos online com certificado.
           </h1>
           <p className="mt-4 max-w-[60ch] text-[16px] leading-relaxed text-[#516278]">
-            Aprenda no seu ritmo, pelo celular ou computador. Os cursos
-            marcados como grátis têm todas as aulas gratuitas; você só paga
-            se quiser o certificado.
+            Aprenda no seu ritmo, pelo celular ou computador. Nos cursos
+            marcados como grátis, todas as aulas são gratuitas e você só paga
+            se quiser o certificado. Nos cursos com preço, o pagamento é único
+            no PIX e o certificado já vem incluso.
           </p>
         </Reveal>
 
