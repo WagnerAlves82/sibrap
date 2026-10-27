@@ -44,11 +44,14 @@ export async function GET() {
     const combos = blocoCombos(apostilas);
     if (combos.length > 0) linhas.push("## Combos", "", ...combos, "");
 
-    linhas.push("## Cursos gratuitos", "");
+    linhas.push("## Cursos livres com certificado", "");
     for (const c of cursos) {
+      const valor = c.preco_centavos
+        ? `${(c.preco_centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} no PIX, pagamento único, certificado online incluso`
+        : "gratuito (o certificado é opcional e pago)";
       linhas.push(`### ${c.nome}`);
       linhas.push(`URL: ${SITE_URL}/cursos/${c.slug}`);
-      linhas.push(`Dados: gratuito; ${c.carga_horaria_horas ? `${c.carga_horaria_horas} horas; ` : ""}100% online; certificado com QR Code de validação em ${SITE_URL}/validar.`);
+      linhas.push(`Dados: ${valor}; ${c.carga_horaria_horas ? `${c.carga_horaria_horas} horas; ` : ""}100% online; certificado com QR Code de validação em ${SITE_URL}/validar.`);
       if (c.descricao) linhas.push("", c.descricao);
       linhas.push("");
     }

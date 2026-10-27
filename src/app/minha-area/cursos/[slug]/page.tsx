@@ -6,6 +6,8 @@ import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { BarraProgresso, Reveal } from "@/components/reveal";
 import { formatarHoras } from "@/lib/emissor";
 import { matricularAction } from "./actions";
+import { ComprarCurso } from "./ComprarCurso";
+import { formatarReais, produtoDoCursoPago } from "@/lib/curso-pago";
 
 export const metadata: Metadata = {
   title: "Meu curso",
@@ -46,17 +48,33 @@ export default async function AreaDoCursoPage({
     ]);
 
   if (!matricula) {
+    // curso pago: sem compra, mostra o pagamento (a matrícula é travada no banco até o pagamento ser aprovado)
+    const produtoPago = await produtoDoCursoPago(supabase, curso.slug);
     return (
       <div className="flex min-h-screen flex-col bg-surface-2 font-body">
         <CabecalhoSite logado />
         <main className="mx-auto flex w-full max-w-[640px] flex-1 items-center px-6 py-14">
           <div className="w-full rounded-xl border border-[#D7DEE6] bg-white p-8">
             <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent-2">
-              Curso gratuito · {curso.carga_horaria_horas}h
+              {produtoPago ? "Curso online" : "Curso gratuito"} · {curso.carga_horaria_horas}h
             </p>
             <h1 className="mt-2 font-display text-3xl font-extrabold text-[#14213A]">
               {curso.nome}
             </h1>
+            {produtoPago ? (
+              <>
+                <p className="mt-3 text-[15px] leading-relaxed text-[#516278]">
+                  Pagamento único de{" "}
+                  <strong className="text-[#14213A]">{formatarReais(produtoPago.preco_centavos)}</strong> no PIX, com
+                  acesso a todas as aulas e o certificado online incluso. Assim que o pagamento cair, o curso é
+                  liberado nesta página.
+                </p>
+                <div className="mt-6">
+                  <ComprarCurso slug={curso.slug} preco={formatarReais(produtoPago.preco_centavos)} />
+                </div>
+              </>
+            ) : (
+            <>
             <p className="mt-3 text-[15px] leading-relaxed text-[#516278]">
               Confirme sua matrícula para começar. Seu progresso fica salvo e
               você pode continuar de onde parou.
@@ -70,6 +88,8 @@ export default async function AreaDoCursoPage({
                 Começar o curso →
               </button>
             </form>
+            </>
+            )}
           </div>
         </main>
       </div>

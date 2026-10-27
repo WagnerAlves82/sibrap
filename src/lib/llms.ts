@@ -29,11 +29,12 @@ export type ApostilaLlm = {
   atualizado_em: string | null;
 };
 
-export type CursoLlm = { slug: string; nome: string; descricao: string | null; carga_horaria_horas: number | null };
+// preco_centavos: só nos cursos pagos (produto 'curso-<slug>'); null = curso gratuito
+export type CursoLlm = { slug: string; nome: string; descricao: string | null; carga_horaria_horas: number | null; preco_centavos: number | null };
 
 export async function carregarCatalogo(): Promise<{ apostilas: ApostilaLlm[]; cursos: CursoLlm[] }> {
   const admin = criarClienteSupabaseAdmin();
-  const [{ data: ap }, { data: cursos }] = await Promise.all([
+  const [{ data: ap }, { data: cursos }, { data: pagos }] = await Promise.all([
     admin
       .from("apostilas")
       .select(
@@ -42,13 +43,15 @@ export async function carregarCatalogo(): Promise<{ apostilas: ApostilaLlm[]; cu
       .eq("status", "publicada")
       .order("data_prova", { ascending: true, nullsFirst: false }),
     admin.from("cursos").select("slug, nome, descricao, carga_horaria_horas").eq("ativo", true),
+    admin.from("produtos").select("slug, preco_centavos").like("slug", "curso-%").eq("ativo", true),
   ]);
+  const precoCurso = new Map((pagos ?? []).map((p) => [p.slug.slice("curso-".length), p.preco_centavos]));
   const apostilas = (ap ?? []).map((a) => {
     const { produtos, ...resto } = a as typeof a & { produtos: { preco_centavos: number } | { preco_centavos: number }[] | null };
     const preco = Array.isArray(produtos) ? produtos[0]?.preco_centavos : produtos?.preco_centavos;
     return { ...resto, preco_centavos: preco ?? null } as ApostilaLlm;
   });
-  return { apostilas, cursos: (cursos ?? []) as CursoLlm[] };
+  return { apostilas, cursos: (cursos ?? []).map((c) => ({ ...c, preco_centavos: precoCurso.get(c.slug) ?? null })) };
 }
 
 export function localDe(a: Pick<ApostilaLlm, "cidade" | "uf">): string {

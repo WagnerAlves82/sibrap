@@ -8,6 +8,7 @@ import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { Reveal } from "@/components/reveal";
 import { AVISO_CURSO_LIVRE, EMISSOR, formatarHoras } from "@/lib/emissor";
 import { VISITAS_MINIMAS_PARA_EXIBIR, visitasDoCurso } from "@/lib/visitas";
+import { formatarReais, produtoDoCursoPago } from "@/lib/curso-pago";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -45,15 +46,24 @@ const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const { curso } = await carregarCurso(slug);
+  const { supabase, curso } = await carregarCurso(slug);
   if (!curso) return {};
-  const titulo = `Curso de ${curso.nome} grátis com certificado (${curso.carga_horaria_horas}h)`;
-  const descricao = `Curso online gratuito de ${curso.nome}, ${curso.carga_horaria_horas} horas, com certificado validável por QR Code. ${curso.subtitulo ?? ""}`.trim();
+  const pago = await produtoDoCursoPago(supabase, slug);
+  const titulo = pago
+    ? `Curso de ${curso.nome} online com certificado (${curso.carga_horaria_horas}h)`
+    : `Curso de ${curso.nome} grátis com certificado (${curso.carga_horaria_horas}h)`;
+  const descricao = (pago
+    ? `Curso online de ${curso.nome}, ${curso.carga_horaria_horas} horas, por ${formatarReais(pago.preco_centavos)} no PIX, com certificado incluso. ${curso.subtitulo ?? ""}`
+    : `Curso online gratuito de ${curso.nome}, ${curso.carga_horaria_horas} horas, com certificado validável por QR Code. ${curso.subtitulo ?? ""}`
+  ).trim();
   const foto = `${SITE}${(FOTOS_HERO_POR_CURSO[slug] ?? FOTO_HERO_PADRAO).src}`;
+  const nome = curso.nome.toLowerCase();
   return {
     title: titulo,
     description: descricao.length > 300 ? `${descricao.slice(0, 297)}...` : descricao,
-    keywords: [`curso de ${curso.nome.toLowerCase()}`, `curso de ${curso.nome.toLowerCase()} gratuito`, `curso de ${curso.nome.toLowerCase()} com certificado`, "curso online gratuito com certificado", "curso livre"],
+    keywords: pago
+      ? [`curso de ${nome}`, `curso de ${nome} online`, `curso de ${nome} com certificado`, "curso online com certificado", "curso livre"]
+      : [`curso de ${nome}`, `curso de ${nome} gratuito`, `curso de ${nome} com certificado`, "curso online gratuito com certificado", "curso livre"],
     alternates: { canonical: `/cursos/${slug}` },
     openGraph: { title: titulo, description: descricao, url: `${SITE}/cursos/${slug}`, type: "website", locale: "pt_BR", images: [{ url: foto, alt: curso.nome }] },
     twitter: { card: "summary_large_image", title: titulo, description: descricao, images: [foto] },
@@ -61,10 +71,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 // Perguntas frequentes da página do curso (visíveis na página e marcadas como FAQPage para buscadores e IAs)
-function perguntasFrequentes(curso: { nome: string; carga_horaria_horas: number; nota_minima: number }, preco: string | null, modulos: string[]) {
+function perguntasFrequentes(
+  curso: { nome: string; carga_horaria_horas: number; nota_minima: number },
+  preco: string | null,
+  modulos: string[],
+  precoCurso: string | null
+) {
   return [
-    [`O curso de ${curso.nome} é gratuito?`, `Sim. Todas as aulas do curso de ${curso.nome} são gratuitas e 100% online. Só o certificado é opcional e pago${preco ? ` (${preco})` : ""}.`],
-    [`O curso de ${curso.nome} tem certificado?`, `Sim. Depois de concluir as aulas e ser aprovado na prova final (nota mínima de ${curso.nota_minima}%), você pode emitir o certificado de ${curso.carga_horaria_horas} horas, com QR Code para qualquer pessoa conferir a autenticidade.`],
+    precoCurso
+      ? [`Quanto custa o curso de ${curso.nome}?`, `O curso custa ${precoCurso}, pagamento único no PIX, sem mensalidade. O valor dá acesso a todas as aulas, 100% online, e já inclui o certificado.`]
+      : [`O curso de ${curso.nome} é gratuito?`, `Sim. Todas as aulas do curso de ${curso.nome} são gratuitas e 100% online. Só o certificado é opcional e pago${preco ? ` (${preco})` : ""}.`],
+    [`O curso de ${curso.nome} tem certificado?`, `Sim. Depois de concluir as aulas e ser aprovado na prova final (nota mínima de ${curso.nota_minima}%), você pode emitir o certificado de ${curso.carga_horaria_horas} horas, com QR Code para qualquer pessoa conferir a autenticidade${precoCurso ? ". O certificado online já está incluso no valor do curso" : ""}.`],
     [`Qual é a carga horária do curso de ${curso.nome}?`, `O curso tem ${curso.carga_horaria_horas} horas, divididas em ${modulos.length} módulos. Você estuda no seu ritmo, pelo celular ou pelo computador, e o progresso fica salvo.`],
     [`O que se aprende no curso de ${curso.nome}?`, `Os módulos são: ${modulos.join("; ")}.`],
     ["Preciso de experiência ou de algum curso antes?", "Não. O curso é livre e não tem pré-requisito: basta saber ler e ter acesso à internet."],
@@ -76,22 +93,25 @@ export default async function CursoPublicoPage({ params }: Props) {
   const { supabase, curso } = await carregarCurso(slug);
   if (!curso) notFound();
 
-  const [{ data: modulos }, { data: produto }, { data: userData }, visitas] = await Promise.all([
+  const [{ data: modulos }, { data: produto }, { data: userData }, visitas, pago] = await Promise.all([
     supabase
       .from("modulos")
       .select("id, titulo, ordem, aulas(id, titulo, ordem, carga_min, youtube_id)")
       .eq("curso_id", curso.id)
       .order("ordem")
       .order("ordem", { referencedTable: "aulas" }),
+    // preço do certificado online (cada curso tem também o impresso e, se for pago, o produto do curso)
     supabase
       .from("produtos")
       .select("preco_centavos")
-      .eq("curso_id", curso.id)
+      .eq("slug", `certificado-${curso.slug}`)
       .eq("ativo", true)
       .maybeSingle(),
     supabase.auth.getUser(),
     visitasDoCurso(supabase, curso.slug),
+    produtoDoCursoPago(supabase, curso.slug),
   ]);
+  const precoCurso = pago ? formatarReais(pago.preco_centavos) : null;
   // o contador fica invisível até o curso passar de 1.000 visitas
   const mostrarVisitas = visitas >= VISITAS_MINIMAS_PARA_EXIBIR;
 
@@ -110,7 +130,7 @@ export default async function CursoPublicoPage({ params }: Props) {
   const aulasComVideo = modulos?.reduce((s, m) => s + m.aulas.filter((a) => a.youtube_id).length, 0) ?? 0;
   const temVideo = totalAulas > 0 && aulasComVideo === totalAulas;
   const nomesModulos = (modulos ?? []).map((m) => m.titulo);
-  const faq = perguntasFrequentes(curso, preco, nomesModulos);
+  const faq = perguntasFrequentes(curso, preco, nomesModulos, precoCurso);
   const urlCurso = `${SITE}/cursos/${curso.slug}`;
 
   const jsonLd = [
@@ -120,14 +140,16 @@ export default async function CursoPublicoPage({ params }: Props) {
       name: curso.nome,
       description: curso.descricao,
       inLanguage: "pt-BR",
-      isAccessibleForFree: true,
+      isAccessibleForFree: !pago,
       url: urlCurso,
       image: `${SITE}${(FOTOS_HERO_POR_CURSO[curso.slug] ?? FOTO_HERO_PADRAO).src}`,
       teaches: nomesModulos,
       coursePrerequisites: "Nenhum",
       educationalLevel: "Iniciante",
       educationalCredentialAwarded: "Certificado de conclusão com QR Code de validação",
-      offers: { "@type": "Offer", price: "0", priceCurrency: "BRL", category: "Free", availability: "https://schema.org/InStock", url: urlCurso },
+      offers: pago
+        ? { "@type": "Offer", price: (pago.preco_centavos / 100).toFixed(2), priceCurrency: "BRL", category: "Paid", availability: "https://schema.org/InStock", url: urlCurso }
+        : { "@type": "Offer", price: "0", priceCurrency: "BRL", category: "Free", availability: "https://schema.org/InStock", url: urlCurso },
       provider: { "@type": "Organization", name: EMISSOR.nome, url: SITE },
       syllabusSections: (modulos ?? []).map((m) => ({
         "@type": "Syllabus",
@@ -171,7 +193,7 @@ export default async function CursoPublicoPage({ params }: Props) {
           <div className="entrar entrar-cima">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-brand">
               <span className="h-1.5 w-1.5 rounded-full bg-accent-2" />
-              Curso livre · 100% online · Gratuito
+              Curso livre · 100% online · {precoCurso ?? "Gratuito"}
             </span>
             {mostrarVisitas && (
               <span className="ml-2 inline-flex items-center gap-1.5 rounded-full border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-[#516278]">
@@ -190,16 +212,16 @@ export default async function CursoPublicoPage({ params }: Props) {
                 href={ctaHref}
                 className="inline-flex items-center gap-2 rounded-lg bg-accent px-7 py-4 text-base font-bold text-accent-ink shadow-[0_20px_45px_-20px_rgba(11,42,74,0.35)] transition-colors hover:brightness-105"
               >
-                {logado ? "Ir para o curso" : "Quero me inscrever grátis"} <span aria-hidden>→</span>
+                {logado ? "Ir para o curso" : precoCurso ? "Quero fazer o curso" : "Quero me inscrever grátis"} <span aria-hidden>→</span>
               </Link>
               <span className="text-[13px] text-[#516278]">
-                Sem mensalidade. Estude no seu ritmo.
+                {precoCurso ? `Pagamento único de ${precoCurso} no PIX. Certificado incluso.` : "Sem mensalidade. Estude no seu ritmo."}
               </span>
             </div>
             <CompartilharWhatsApp
               className="mt-4"
               url={`${process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br"}/cursos/${curso.slug}`}
-              texto={`🎓 Curso gratuito de ${curso.nome}, com certificado:`}
+              texto={precoCurso ? `🎓 Curso de ${curso.nome}, online e com certificado:` : `🎓 Curso gratuito de ${curso.nome}, com certificado:`}
             />
           </div>
 
@@ -310,8 +332,8 @@ export default async function CursoPublicoPage({ params }: Props) {
               Sobre o certificado
             </h2>
             <p className="mt-3 max-w-[62ch] text-[15.5px] leading-relaxed text-[#516278]">
-              As aulas são gratuitas para todos. O certificado (com nome,
-              carga horária e QR Code de validação) é emitido depois da
+              {precoCurso ? "O certificado online já está incluso no valor do curso." : "As aulas são gratuitas para todos."} O
+              certificado (com nome, carga horária e QR Code de validação) é emitido depois da
               conclusão das aulas e da aprovação na prova final.
             </p>
           </Reveal>
@@ -333,14 +355,15 @@ export default async function CursoPublicoPage({ params }: Props) {
             <Reveal delay={120}>
               <div className="h-full max-w-sm rounded-xl border border-[#D7DEE6] bg-white p-6">
                 <p className="font-data text-xs font-semibold uppercase tracking-wide text-[#516278]">
-                  {curso.permite_isencao_cadunico ? "Demais participantes" : "Certificado"}
+                  {precoCurso ? "Curso + certificado online" : curso.permite_isencao_cadunico ? "Demais participantes" : "Certificado"}
                 </p>
                 <p className="mt-2 font-data text-3xl font-semibold text-[#14213A]">
-                  {preco ?? "—"}
+                  {precoCurso ?? preco ?? "—"}
                 </p>
                 <p className="mt-3 text-[14.5px] leading-relaxed text-[#516278]">
-                  Pagamento único por PIX, direto na página. O valor é só do
-                  certificado — o curso continua gratuito.
+                  {precoCurso
+                    ? "Pagamento único por PIX, direto na página, sem mensalidade. Acesso a todas as aulas e certificado online incluso."
+                    : "Pagamento único por PIX, direto na página. O valor é só do certificado — o curso continua gratuito."}
                 </p>
               </div>
             </Reveal>
@@ -373,13 +396,13 @@ export default async function CursoPublicoPage({ params }: Props) {
       <section className="border-t-[3px] border-accent bg-brand py-14 text-white">
         <div className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-6 px-6">
           <p className="max-w-[24ch] font-display text-3xl font-extrabold leading-tight">
-            Comece hoje. É de graça.
+            {precoCurso ? `Comece hoje por ${precoCurso}.` : "Comece hoje. É de graça."}
           </p>
           <Link
             href={ctaHref}
             className="inline-flex items-center gap-2 rounded-lg bg-accent px-7 py-4 text-base font-bold text-accent-ink transition-colors hover:brightness-105"
           >
-            {logado ? "Ir para o curso" : "Quero me inscrever grátis"} <span aria-hidden>→</span>
+            {logado ? "Ir para o curso" : precoCurso ? "Quero fazer o curso" : "Quero me inscrever grátis"} <span aria-hidden>→</span>
           </Link>
         </div>
       </section>

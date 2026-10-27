@@ -29,10 +29,14 @@ export default async function CursosPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: cursos } = await supabase
-    .from("cursos")
-    .select("slug, nome, subtitulo, descricao, carga_horaria_horas")
-    .order("criado_em");
+  const [{ data: cursos }, { data: pagos }] = await Promise.all([
+    supabase.from("cursos").select("slug, nome, subtitulo, descricao, carga_horaria_horas").order("criado_em"),
+    // cursos pagos têm produto ativo 'curso-<slug>'; os demais são gratuitos (só o certificado é pago)
+    supabase.from("produtos").select("slug, preco_centavos").like("slug", "curso-%").eq("ativo", true),
+  ]);
+  const precoDoCurso = new Map(
+    (pagos ?? []).map((p) => [p.slug.slice("curso-".length), (p.preco_centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })])
+  );
 
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
@@ -47,9 +51,9 @@ export default async function CursosPage() {
             Cursos gratuitos com certificado.
           </h1>
           <p className="mt-4 max-w-[60ch] text-[16px] leading-relaxed text-[#516278]">
-            Aprenda no seu ritmo, pelo celular ou computador. As aulas são
-            gratuitas para todos; o certificado é gratuito para quem
-            comprova inscrição no CadÚnico.
+            Aprenda no seu ritmo, pelo celular ou computador. Os cursos
+            marcados como grátis têm todas as aulas gratuitas; você só paga
+            se quiser o certificado.
           </p>
         </Reveal>
 
@@ -71,7 +75,12 @@ export default async function CursosPage() {
                 </div>
                 <div className="flex flex-1 flex-col p-7">
                   <span className="font-data text-xs font-semibold text-accent-2">
-                    {curso.carga_horaria_horas}h
+                    {curso.carga_horaria_horas}h ·{" "}
+                    {precoDoCurso.get(curso.slug) ? (
+                      <span className="text-[#14213A]">{precoDoCurso.get(curso.slug)} com certificado</span>
+                    ) : (
+                      "Grátis"
+                    )}
                   </span>
                   <h2 className="mt-2 font-display text-2xl font-extrabold text-[#14213A]">
                     {curso.nome}

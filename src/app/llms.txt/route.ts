@@ -41,9 +41,10 @@ export async function GET() {
       }
     }
     if (cursos.length > 0) {
-      linhas.push("## Cursos gratuitos");
+      linhas.push("## Cursos livres com certificado");
       for (const c of cursos) {
-        const horas = c.carga_horaria_horas ? ` (${c.carga_horaria_horas} horas, gratuito, com certificado)` : " (gratuito, com certificado)";
+        const valor = c.preco_centavos ? `${(c.preco_centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} no PIX, certificado incluso` : "gratuito, com certificado";
+        const horas = c.carga_horaria_horas ? ` (${c.carga_horaria_horas} horas, ${valor})` : ` (${valor})`;
         linhas.push(`- [${c.nome}](${SITE_URL}/cursos/${c.slug})${horas}${c.descricao ? `: ${c.descricao}` : ""}`);
       }
       linhas.push("");
