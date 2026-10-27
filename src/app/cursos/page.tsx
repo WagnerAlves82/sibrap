@@ -12,6 +12,8 @@ const FOTO_PADRAO = "/alunos.png";
 const FOTOS_POR_CURSO: Record<string, string> = {
   "informatica-basica-ia": "/informatica-basica-foto.jpg",
   "atendimento-ao-cliente": "/atendimento-cliente-foto.jpg",
+  "auxiliar-administrativo": "/auxiliar-administrativo-foto.jpg",
+  "estoque-logistica-controle-de-mercadorias": "/estoque-logistica-foto.jpg",
 };
 
 export const metadata: Metadata = {

@@ -21,6 +21,14 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string }> = {
     src: "/atendimento-ao-cliente-card.png",
     alt: "Equipe de atendimento ao cliente sorrindo, com headset e tablet",
   },
+  "auxiliar-administrativo": {
+    src: "/auxiliar-administrativo-card.webp",
+    alt: "Auxiliar administrativo sorrindo na mesa do escritório, com notebook, pastas e calculadora",
+  },
+  "estoque-logistica-controle-de-mercadorias": {
+    src: "/estoque-logistica-card.webp",
+    alt: "Auxiliar de estoque conferindo caixas com leitor de código de barras no almoxarifado",
+  },
 };
 
 async function carregarCurso(slug: string) {
