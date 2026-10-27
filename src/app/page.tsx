@@ -353,6 +353,51 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Gerador de currículo */}
+      <section id="curriculo" className="scroll-mt-14 border-t border-[#D7DEE6] bg-white py-14 sm:py-16">
+        <div className="mx-auto grid max-w-[1180px] items-center gap-10 px-4 sm:px-6 md:grid-cols-[minmax(0,1fr)_260px]">
+          <Reveal variante="esquerda" className="max-w-[56ch]">
+            <span className="font-data text-xs font-semibold uppercase tracking-[0.18em] text-accent-2">Gerador de currículo grátis</span>
+            <h2 className="mt-3 font-display text-[1.7rem] font-extrabold text-[#14213A] sm:text-[2.2rem]">
+              Seu currículo pronto em 5 minutos.
+            </h2>
+            <p className="mt-3 text-[16px] leading-relaxed text-[#516278]">
+              Responda algumas perguntas e baixe em PDF, com modelo profissional para o primeiro emprego ou para quem já tem experiência.
+            </p>
+            <Link
+              href="/curriculo"
+              className="mt-6 inline-flex items-center gap-2 bg-accent px-6 py-3.5 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"
+            >
+              Montar meu currículo grátis <span aria-hidden>→</span>
+            </Link>
+          </Reveal>
+          <Reveal variante="direita" delay={150}>
+            {/* miniatura de uma folha de currículo (só desenho, sem dados de ninguém) */}
+            <Link href="/curriculo" aria-label="Abrir o gerador de currículo" className="mx-auto flex aspect-[210/297] w-full max-w-[220px] border border-[#D7DEE6] bg-white shadow-[0_24px_50px_-30px_rgba(11,42,74,0.55)]">
+              <span className="flex w-[34%] flex-col gap-1.5 bg-[#0b2a4a] p-2.5">
+                <span className="block aspect-[3/4] w-4/5 bg-[#4a6584]" />
+                <span className="mt-1 block h-1 w-4/5 bg-[#d4a24a]" />
+                <span className="block h-1 w-3/5 bg-[#6d86a3]" />
+                <span className="block h-1 w-2/3 bg-[#6d86a3]" />
+                <span className="mt-1 block h-1 w-4/5 bg-[#d4a24a]" />
+                <span className="block h-1 w-1/2 bg-[#6d86a3]" />
+              </span>
+              <span className="flex flex-1 flex-col gap-1.5 p-2.5">
+                <span className="block h-2 w-4/5 bg-[#0b2a4a]" />
+                {[0, 1, 2].map((i) => (
+                  <span key={i} className="mt-1.5 flex flex-col gap-1">
+                    <span className="block h-1 w-2/5 bg-[#d4a24a]" />
+                    <span className="block h-1 w-full bg-[#D7DEE6]" />
+                    <span className="block h-1 w-11/12 bg-[#D7DEE6]" />
+                    <span className="block h-1 w-4/5 bg-[#D7DEE6]" />
+                  </span>
+                ))}
+              </span>
+            </Link>
+          </Reveal>
+        </div>
+      </section>
+
       {/* Por que escolher */}
       <section id="sobre" className="scroll-mt-14 bg-brand py-16 text-white sm:py-20">
         <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
@@ -446,6 +491,7 @@ const ANCORAS: [string, string][] = [
   ["Notícias", "#noticias"],
   ["Simulado online", "#simulado-online"],
   ["Cursos gratuitos", "#cursos-gratuitos"],
+  ["Currículo grátis", "#curriculo"],
   ["Sobre", "#sobre"],
   ["Validar certificado", "/validar"],
 ];
