@@ -7,6 +7,7 @@ import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { Reveal } from "@/components/reveal";
 import { AVISO_CURSO_LIVRE, EMISSOR, formatarHoras } from "@/lib/emissor";
+import { VISITAS_MINIMAS_PARA_EXIBIR, visitasDoCurso } from "@/lib/visitas";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -48,7 +49,7 @@ export default async function CursoPublicoPage({ params }: Props) {
   const { supabase, curso } = await carregarCurso(slug);
   if (!curso) notFound();
 
-  const [{ data: modulos }, { data: produto }, { data: userData }] = await Promise.all([
+  const [{ data: modulos }, { data: produto }, { data: userData }, visitas] = await Promise.all([
     supabase
       .from("modulos")
       .select("id, titulo, ordem, aulas(id, titulo, ordem, carga_min)")
@@ -62,7 +63,10 @@ export default async function CursoPublicoPage({ params }: Props) {
       .eq("ativo", true)
       .maybeSingle(),
     supabase.auth.getUser(),
+    visitasDoCurso(supabase, curso.slug),
   ]);
+  // o contador fica invisível até o curso passar de 1.000 visitas
+  const mostrarVisitas = visitas >= VISITAS_MINIMAS_PARA_EXIBIR;
 
   const logado = !!userData.user;
   const areaHref = `/minha-area/cursos/${curso.slug}`;
@@ -114,6 +118,12 @@ export default async function CursoPublicoPage({ params }: Props) {
               <span className="h-1.5 w-1.5 rounded-full bg-accent-2" />
               Curso livre · 100% online · Gratuito
             </span>
+            {mostrarVisitas && (
+              <span className="ml-2 inline-flex items-center gap-1.5 rounded-full border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-[#516278]">
+                <span aria-hidden>👁</span>
+                {visitas.toLocaleString("pt-BR")} visitas
+              </span>
+            )}
             <h1 className="mt-4 max-w-[20ch] font-display text-4xl font-extrabold leading-[1.05] text-[#14213A] sm:text-6xl">
               {curso.nome}
             </h1>

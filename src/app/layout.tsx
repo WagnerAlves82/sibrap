@@ -7,6 +7,7 @@ import { MetaPixel } from "@/components/meta-pixel";
 import { PopupSaida } from "@/components/popup-saida";
 import { BotaoWhatsApp } from "@/components/botao-whatsapp";
 import { CapturarOrigem } from "@/components/capturar-origem";
+import { ContarVisita } from "@/components/contar-visita";
 import "./globals.css";
 import { GOOGLE_ADS_ID } from "@/lib/google-ads";
 
@@ -127,6 +128,7 @@ fbq('track', 'PageView');`}
         <PopupSaida />
         <MetaPixel />
         <CapturarOrigem />
+        <ContarVisita />
       </body>
       {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ? (
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />

@@ -1881,6 +1881,10 @@ export type Database = {
         Args: { p_chave: string; p_janela_segundos: number; p_limite: number }
         Returns: boolean
       }
+      registrar_visita: {
+        Args: { p_caminho: string }
+        Returns: number
+      }
       retomar_simulado: {
         Args: { p_produto_id: string }
         Returns: {
