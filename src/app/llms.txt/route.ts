@@ -23,6 +23,7 @@ export async function GET() {
   linhas.push(`- [Apostilas](${SITE_URL}/apostilas): catálogo completo de apostilas para concursos públicos.`);
   linhas.push(`- [Bancas](${SITE_URL}/bancas): apostilas organizadas por banca organizadora.`);
   linhas.push(`- [Cursos](${SITE_URL}/cursos): cursos livres online com certificado, gratuitos (só o certificado é pago) ou com pagamento único que já inclui o certificado.`);
+  linhas.push(`- [Gerador de currículo](${SITE_URL}/curriculo): monta currículo passo a passo (Jovem Aprendiz/primeiro emprego e nível médio), com prévia e download em PDF gratuito.`);
   linhas.push(`- [Notícias](${SITE_URL}/noticias): notícias sobre concursos públicos (vagas efetivas) e processos seletivos (contratações temporárias).`);
   linhas.push(`- [Versão completa deste resumo](${SITE_URL}/llms-full.txt): todas as apostilas, cursos e perguntas frequentes em um só arquivo.`);
   linhas.push("");

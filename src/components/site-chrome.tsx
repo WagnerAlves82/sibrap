@@ -59,6 +59,9 @@ export function CabecalhoSite({ logado, next, semLinks, semBusca }: { logado: bo
               <Link href="/cursos" className={`hidden md:inline ${itemNav}`}>
                 Cursos
               </Link>
+              <Link href="/curriculo" className={`hidden md:inline ${itemNav}`}>
+                Currículo
+              </Link>
               <Link href="/validar" className={`hidden lg:inline ${itemNav}`}>
                 Validar certificado
               </Link>
@@ -129,6 +132,11 @@ export function RodapeSite() {
               <li>
                 <Link href="/cursos" className={linkRodape}>
                   Cursos
+                </Link>
+              </li>
+              <li>
+                <Link href="/curriculo" className={linkRodape}>
+                  Gerador de currículo
                 </Link>
               </li>
               <li>

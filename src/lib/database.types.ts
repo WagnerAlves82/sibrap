@@ -910,6 +910,92 @@ export type Database = {
           },
         ]
       }
+      curriculo_downloads: {
+        Row: {
+          criado_em: string
+          curriculo_id: string | null
+          id: number
+          primeiro: boolean
+          user_id: string | null
+        }
+        Insert: {
+          criado_em?: string
+          curriculo_id?: string | null
+          id?: never
+          primeiro?: boolean
+          user_id?: string | null
+        }
+        Update: {
+          criado_em?: string
+          curriculo_id?: string | null
+          id?: never
+          primeiro?: boolean
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "curriculo_downloads_curriculo_id_fkey"
+            columns: ["curriculo_id"]
+            isOneToOne: false
+            referencedRelation: "curriculos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      curriculos: {
+        Row: {
+          aceite_marketing: boolean
+          aceite_marketing_em: string | null
+          area: string | null
+          atualizado_em: string
+          cidade: string | null
+          criado_em: string
+          dados: Json
+          escolaridade: string | null
+          id: string
+          modelo: string
+          perfil: string
+          uf: string | null
+          ultimo_acesso_em: string
+          user_id: string
+          whatsapp: string | null
+        }
+        Insert: {
+          aceite_marketing?: boolean
+          aceite_marketing_em?: string | null
+          area?: string | null
+          atualizado_em?: string
+          cidade?: string | null
+          criado_em?: string
+          dados: Json
+          escolaridade?: string | null
+          id?: string
+          modelo: string
+          perfil: string
+          uf?: string | null
+          ultimo_acesso_em?: string
+          user_id: string
+          whatsapp?: string | null
+        }
+        Update: {
+          aceite_marketing?: boolean
+          aceite_marketing_em?: string | null
+          area?: string | null
+          atualizado_em?: string
+          cidade?: string | null
+          criado_em?: string
+          dados?: Json
+          escolaridade?: string | null
+          id?: string
+          modelo?: string
+          perfil?: string
+          uf?: string | null
+          ultimo_acesso_em?: string
+          user_id?: string
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
       cursos: {
         Row: {
           ativo: boolean
@@ -1704,6 +1790,24 @@ export type Database = {
           },
         ]
       }
+      visitas_paginas: {
+        Row: {
+          atualizado_em: string
+          caminho: string
+          total: number
+        }
+        Insert: {
+          atualizado_em?: string
+          caminho: string
+          total?: number
+        }
+        Update: {
+          atualizado_em?: string
+          caminho?: string
+          total?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -1724,6 +1828,7 @@ export type Database = {
         Returns: undefined
       }
       abrir_aula: { Args: { p_aula_id: string }; Returns: undefined }
+      apagar_curriculos_inativos: { Args: never; Returns: number }
       capitulo_da_questao: {
         Args: { p_produto_id: string; p_questao_id: string }
         Returns: {
@@ -1881,10 +1986,7 @@ export type Database = {
         Args: { p_chave: string; p_janela_segundos: number; p_limite: number }
         Returns: boolean
       }
-      registrar_visita: {
-        Args: { p_caminho: string }
-        Returns: number
-      }
+      registrar_visita: { Args: { p_caminho: string }; Returns: number }
       retomar_simulado: {
         Args: { p_produto_id: string }
         Returns: {
@@ -1927,6 +2029,7 @@ export type Database = {
           enunciado: string
         }[]
       }
+      total_curriculos_gerados: { Args: never; Returns: number }
       usar_dica: {
         Args: { p_produto_id: string; p_questao_id: string }
         Returns: {

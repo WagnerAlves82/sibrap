@@ -29,6 +29,7 @@ export default function PrivacidadePage() {
             <><strong>Cadastro:</strong> nome, e-mail e senha (a senha é guardada de forma criptografada; nem nós conseguimos lê-la), a data em que você aceitou estes textos e a origem do cadastro (por exemplo, a campanha em que você nos encontrou).</>,
             <><strong>Uso da plataforma:</strong> aulas concluídas, resultados de provas e simulados, e certificados emitidos.</>,
             <><strong>Comprovante do CadÚnico:</strong> somente se você escolher o certificado gratuito. É o documento que você mesmo envia.</>,
+            <><strong>Gerador de currículo:</strong> o texto do currículo que você preenche (dados de contato, formação, experiências, cursos e habilidades), salvo na sua conta para você editar e baixar de novo. A foto, se você usar, fica só no seu aparelho: ela é enviada apenas para montar o PDF e não é guardada. No cadastro feito pelo gerador também pedimos WhatsApp, cidade e estado.</>,
             <><strong>Pagamentos:</strong> o pagamento é feito por provedores como o Mercado Pago e a AbacatePay. Não recebemos nem guardamos dados de cartão ou de conta bancária; guardamos apenas o número do pedido, o valor e a situação do pagamento.</>,
             <><strong>Dados técnicos e de navegação:</strong> cookies essenciais para manter você logado e, se você permitir, cookies de medição de acessos e de publicidade (veja o item 10).</>,
           ]}
@@ -44,6 +45,7 @@ export default function PrivacidadePage() {
             <>Processar pagamentos e cumprir obrigações fiscais: <em>execução de contrato</em> e <em>obrigação legal</em> (art. 7º, II).</>,
             <>Enviar e-mails do serviço (confirmação de cadastro, recuperação de senha, resultado do comprovante, apostila): <em>execução de contrato</em>.</>,
             <>Manter a segurança e prevenir fraudes: <em>legítimo interesse</em>.</>,
+            <>Guardar e gerar o seu currículo: <em>execução de contrato</em>. Enviar vagas, concursos e cursos da sua região por e-mail e WhatsApp usando nome, contato, cidade, área pretendida e escolaridade: <em>somente com o seu consentimento</em> (art. 7º, I), dado na caixa própria do gerador e que você pode retirar a qualquer momento.</>,
           ]}
         />
         <p>Não vendemos os seus dados. Se você permitir cookies de publicidade, parceiros como o Google poderão usá-los para exibir anúncios (veja o item 10).</p>
@@ -94,6 +96,7 @@ export default function PrivacidadePage() {
           itens={[
             <>Conta e progresso: enquanto a conta existir ou até você pedir a exclusão.</>,
             <>Comprovante do CadÚnico: apagado ao fim da análise (veja o item 4).</>,
+            <>Currículo: até você excluí-lo (botão &quot;Excluir meu currículo&quot; no gerador) ou, no máximo, 12 meses depois do último acesso, quando é apagado automaticamente.</>,
             <>Certificados: mantidos para que possam ser validados; você pode pedir a remoção.</>,
             <>Pedidos e pagamentos: pelo prazo exigido pela legislação fiscal e de defesa do consumidor.</>,
           ]}
