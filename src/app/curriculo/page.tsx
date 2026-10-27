@@ -73,7 +73,7 @@ export default async function CurriculoPage() {
       <main className="mx-auto w-full max-w-[1180px] flex-1 px-4 py-8 sm:px-6 sm:py-10">
         <header className="mb-8 max-w-[70ch]">
           <p className="font-data text-xs font-semibold uppercase tracking-[0.2em] text-accent-2">Gerador de currículo{precoCentavos === null ? " · grátis" : ""}</p>
-          <h1 className="mt-2 font-display text-3xl font-extrabold text-[#14213A] sm:text-4xl">Currículo pronto em 5 minutos.</h1>
+          <h1 className="mt-2 font-display text-3xl font-extrabold text-[#14213A] sm:text-4xl">Seu currículo pronto em alguns cliques.</h1>
           <p className="mt-3 text-[16px] leading-relaxed text-[#516278]">
             Responda algumas perguntas, veja o resultado na hora e baixe em PDF. Feito para quem busca o primeiro emprego ou já tem experiência.
           </p>

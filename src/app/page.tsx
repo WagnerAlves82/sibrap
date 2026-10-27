@@ -359,7 +359,7 @@ export default async function Home() {
           <Reveal variante="esquerda" className="max-w-[56ch]">
             <span className="font-data text-xs font-semibold uppercase tracking-[0.18em] text-accent-2">Gerador de currículo grátis</span>
             <h2 className="mt-3 font-display text-[1.7rem] font-extrabold text-[#14213A] sm:text-[2.2rem]">
-              Seu currículo pronto em 5 minutos.
+              Seu currículo pronto em alguns cliques.
             </h2>
             <p className="mt-3 text-[16px] leading-relaxed text-[#516278]">
               Responda algumas perguntas e baixe em PDF, com modelo profissional para o primeiro emprego ou para quem já tem experiência.
