@@ -38,8 +38,14 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     altura: 896,
   },
   "ingles-basico-atendimento-ao-publico": {
-    src: "/ingles-atendimento-card.webp",
-    alt: "Recepcionista cumprimentando uma turista estrangeira com mala no balcão da recepção",
+    src: "/card_curso_de_ingles.webp",
+    alt: "Curso online de Inglês Básico para Atendimento ao Público, grátis e com certificado",
+    largura: 1200,
+    altura: 896,
+  },
+  "libras-iniciante": {
+    src: "/libras-card.webp",
+    alt: "Duas pessoas conversando em Libras, a Língua Brasileira de Sinais",
     largura: 1200,
     altura: 896,
   },

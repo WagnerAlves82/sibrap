@@ -11,26 +11,82 @@ export type Bloco =
   | { tipo: "texto"; titulo?: string; paragrafos: string[] }
   | { tipo: "dica"; texto: string }
   | { tipo: "imagem"; src: string; alt: string; legenda?: string }
-  | { tipo: "frases"; titulo?: string; intro?: string; itens: Frase[]; repetir?: boolean }
-  | { tipo: "audio"; titulo: string; intro?: string; src: string; transcricao?: Frase[] }
-  | { tipo: "cards"; titulo?: string; intro?: string; itens: { frente: string; verso: string; icone?: string }[] }
-  | { tipo: "abas"; titulo?: string; intro?: string; abas: { titulo: string; itens: Frase[] }[] }
+  | {
+      tipo: "frases";
+      titulo?: string;
+      intro?: string;
+      itens: Frase[];
+      repetir?: boolean;
+    }
+  | {
+      tipo: "audio";
+      titulo: string;
+      intro?: string;
+      src: string;
+      transcricao?: Frase[];
+    }
+  | {
+      tipo: "cards";
+      titulo?: string;
+      intro?: string;
+      itens: { frente: string; verso: string; icone?: string }[];
+    }
+  | {
+      tipo: "abas";
+      titulo?: string;
+      intro?: string;
+      abas: { titulo: string; itens: Frase[] }[];
+    }
   | {
       tipo: "dialogos";
       titulo?: string;
       intro?: string;
       // escuta: o texto fica escondido até o aluno pedir (treino de listening)
       escuta?: boolean;
-      dialogos: { titulo: string; falas: { quem: string; en: string; pt: string }[] }[];
+      dialogos: {
+        titulo: string;
+        falas: { quem: string; en: string; pt: string }[];
+      }[];
     }
-  | { tipo: "email"; titulo?: string; intro?: string; assunto: string; linhas: Frase[] }
-  | { tipo: "escolha"; titulo?: string; contexto?: string; pergunta: string; opcoes: string[]; correta: number; explicacao: string }
-  | { tipo: "vf"; titulo?: string; intro?: string; itens: { texto: string; verdadeiro: boolean; explicacao: string }[] }
-  | { tipo: "ordenar"; titulo?: string; intro?: string; itens: Frase[] };
+  | {
+      tipo: "email";
+      titulo?: string;
+      intro?: string;
+      assunto: string;
+      linhas: Frase[];
+    }
+  | {
+      tipo: "escolha";
+      titulo?: string;
+      contexto?: string;
+      pergunta: string;
+      opcoes: string[];
+      correta: number;
+      explicacao: string;
+    }
+  | {
+      tipo: "vf";
+      titulo?: string;
+      intro?: string;
+      itens: { texto: string; verdadeiro: boolean; explicacao: string }[];
+    }
+  | { tipo: "ordenar"; titulo?: string; intro?: string; itens: Frase[] }
+  // vocabulário em Libras: cada palavra abre o vídeo do sinal no dicionário SpreadTheSign (Libras, pt-BR)
+  | {
+      tipo: "sinais";
+      titulo?: string;
+      intro?: string;
+      grupos: {
+        titulo: string;
+        itens: (string | { t: string; url: string })[];
+      }[];
+    };
 
-const ATIVOS = new Set(["frases", "cards", "escolha", "vf", "ordenar", "dialogos"]);
+const ATIVOS = new Set(["frases", "cards", "escolha", "vf", "ordenar", "dialogos", "sinais"]);
 
 const Placar = createContext<(id: string) => void>(() => {});
+// idioma da voz do navegador (en-US no inglês); null = curso sem voz (ex.: Libras)
+const Voz = createContext<string | null>("en-US");
 
 function useConcluir(id: string) {
   const marcar = useContext(Placar);
@@ -39,13 +95,13 @@ function useConcluir(id: string) {
 
 // voz do navegador em inglês (funciona no Chrome, Edge, Safari e na maioria dos celulares);
 // com várias falas, alterna duas vozes quando o aparelho tiver, para parecer uma conversa
-function falar(texto: string | string[]) {
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-  const vozes = window.speechSynthesis.getVoices().filter((v) => v.lang.startsWith("en"));
+function falar(texto: string | string[], idioma: string | null = "en-US") {
+  if (!idioma || typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  const vozes = window.speechSynthesis.getVoices().filter((v) => v.lang.startsWith(idioma.slice(0, 2)));
   window.speechSynthesis.cancel();
   (Array.isArray(texto) ? texto : [texto]).forEach((t, i) => {
     const u = new SpeechSynthesisUtterance(t);
-    u.lang = "en-US";
+    u.lang = idioma;
     u.rate = 0.9;
     const voz = vozes[vozes.length > 1 ? i % 2 : 0];
     if (voz) u.voice = voz;
@@ -54,17 +110,18 @@ function falar(texto: string | string[]) {
 }
 
 function BotaoOuvir({ texto }: { texto: string }) {
+  const idioma = useContext(Voz);
   // no servidor não há voz; no navegador, só mostra o botão se ele falar
   const tem = useSyncExternalStore(
     () => () => {},
     () => "speechSynthesis" in window,
-    () => false
+    () => false,
   );
-  if (!tem) return null;
+  if (!tem || !idioma) return null;
   return (
     <button
       type="button"
-      onClick={() => falar(texto)}
+      onClick={() => falar(texto, idioma)}
       aria-label={`Ouvir: ${texto}`}
       className="flex h-8 w-8 shrink-0 items-center justify-center border border-[#D7DEE6] bg-white text-[15px] text-brand hover:border-brand"
     >
@@ -87,7 +144,9 @@ function Texto({ b }: { b: Extract<Bloco, { tipo: "texto" }> }) {
   return (
     <Caixa titulo={b.titulo}>
       {b.paragrafos.map((p, i) => (
-        <p key={i} className="mb-3 text-[15.5px] leading-relaxed text-[#14213A]">{p}</p>
+        <p key={i} className="mb-3 text-[15.5px] leading-relaxed text-[#14213A]">
+          {p}
+        </p>
       ))}
     </Caixa>
   );
@@ -191,6 +250,7 @@ function Audio({ b }: { b: Extract<Bloco, { tipo: "audio" }> }) {
 
 function Cards({ b, id }: { b: Extract<Bloco, { tipo: "cards" }>; id: string }) {
   const concluir = useConcluir(id);
+  const idioma = useContext(Voz);
   const [virados, setVirados] = useState<Set<number>>(new Set());
   const [vistos, setVistos] = useState<Set<number>>(new Set());
   const virar = (i: number) => {
@@ -201,26 +261,27 @@ function Cards({ b, id }: { b: Extract<Bloco, { tipo: "cards" }>; id: string }) 
     const v = new Set(vistos).add(i);
     setVistos(v);
     if (v.size === b.itens.length) concluir();
-    if (!virados.has(i)) falar(b.itens[i].frente);
+    if (!virados.has(i)) falar(b.itens[i].frente, idioma);
   };
   return (
-    <Caixa titulo={b.titulo} intro={b.intro ?? "Toque nos cards para ver a tradução e ouvir a pronúncia."}>
+    <Caixa
+      titulo={b.titulo}
+      intro={b.intro ?? (idioma ? "Toque nos cards para ver a tradução e ouvir a pronúncia." : "Toque nos cards para ver a resposta.")}
+    >
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {b.itens.map((c, i) => {
           const v = virados.has(i);
           return (
-            <button
-              key={i}
-              type="button"
-              onClick={() => virar(i)}
-              aria-pressed={v}
-              className="group h-32 [perspective:800px]"
-            >
+            <button key={i} type="button" onClick={() => virar(i)} aria-pressed={v} className="group h-32 [perspective:800px]">
               <span
                 className={`relative block h-full w-full transition-transform duration-500 [transform-style:preserve-3d] motion-reduce:transition-none ${v ? "[transform:rotateY(180deg)]" : ""}`}
               >
                 <span className="absolute inset-0 flex flex-col items-center justify-center gap-1 border border-[#D7DEE6] bg-white p-3 [backface-visibility:hidden]">
-                  {c.icone && <span className="text-3xl" aria-hidden>{c.icone}</span>}
+                  {c.icone && (
+                    <span className="text-3xl" aria-hidden>
+                      {c.icone}
+                    </span>
+                  )}
                   <span className="text-center text-[15px] font-bold text-[#14213A]">{c.frente}</span>
                 </span>
                 <span className="absolute inset-0 flex flex-col items-center justify-center border border-brand bg-brand p-3 text-white [backface-visibility:hidden] [transform:rotateY(180deg)]">
@@ -271,6 +332,7 @@ function Abas({ b }: { b: Extract<Bloco, { tipo: "abas" }> }) {
 function Dialogos({ b, id }: { b: Extract<Bloco, { tipo: "dialogos" }>; id: string }) {
   const concluir = useConcluir(id);
   const [atual, setAtual] = useState(0);
+  const idioma = useContext(Voz);
   const [traducao, setTraducao] = useState(false);
   const [texto, setTexto] = useState(!b.escuta);
   const [lidos, setLidos] = useState<Set<number>>(new Set([0]));
@@ -307,16 +369,21 @@ function Dialogos({ b, id }: { b: Extract<Bloco, { tipo: "dialogos" }>; id: stri
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <p className="font-display text-[16px] font-extrabold text-[#14213A]">{d.titulo}</p>
           <div className="flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              onClick={() => {
-                falar(d.falas.map((f) => f.en));
-                interagiu();
-              }}
-              className="bg-brand px-3 py-1.5 text-[13px] font-bold text-white"
-            >
-              ▶ Ouvir o diálogo
-            </button>
+            {idioma && (
+              <button
+                type="button"
+                onClick={() => {
+                  falar(
+                    d.falas.map((f) => f.en),
+                    idioma,
+                  );
+                  interagiu();
+                }}
+                className="bg-brand px-3 py-1.5 text-[13px] font-bold text-white"
+              >
+                ▶ Ouvir o diálogo
+              </button>
+            )}
             {b.escuta && (
               <button
                 type="button"
@@ -375,12 +442,15 @@ function Email({ b }: { b: Extract<Bloco, { tipo: "email" }> }) {
   useEffect(() => {
     const el = caixa.current;
     if (!el) return;
-    const obs = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) {
-        setVisivel(true);
-        obs.disconnect();
-      }
-    }, { threshold: 0.4 });
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setVisivel(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.4 },
+    );
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
@@ -406,7 +476,11 @@ function Email({ b }: { b: Extract<Bloco, { tipo: "email" }> }) {
           {n < b.linhas.length && <li className="h-4 w-2 animate-pulse bg-brand" aria-hidden />}
         </ul>
         {n >= b.linhas.length && (
-          <button type="button" onClick={() => setN(0)} className="mb-3 ml-4 text-[13px] font-semibold text-brand underline underline-offset-4">
+          <button
+            type="button"
+            onClick={() => setN(0)}
+            className="mb-3 ml-4 text-[13px] font-semibold text-brand underline underline-offset-4"
+          >
             ↺ Ver de novo
           </button>
         )}
@@ -515,7 +589,8 @@ function VerdadeiroFalso({ b, id }: { b: Extract<Bloco, { tipo: "vf" }>; id: str
       </ul>
       {terminou && (
         <p className="mt-3 font-display text-[16px] font-extrabold text-[#14213A]">
-          Você acertou {acertos} de {b.itens.length}. {acertos === b.itens.length ? "Excelente! 🎉" : "Revise as explicações e siga em frente."}
+          Você acertou {acertos} de {b.itens.length}.{" "}
+          {acertos === b.itens.length ? "Excelente! 🎉" : "Revise as explicações e siga em frente."}
         </p>
       )}
     </Caixa>
@@ -542,7 +617,10 @@ function Ordenar({ b, id }: { b: Extract<Bloco, { tipo: "ordenar" }>; id: string
   const item = b.itens[i];
   const palavras = useMemo(() => item?.en.split(" ") ?? [], [item]);
   const ordem = useMemo(() => {
-    let o = embaralhar(palavras.map((_, k) => k), palavras.length * 7 + i + 3);
+    let o = embaralhar(
+      palavras.map((_, k) => k),
+      palavras.length * 7 + i + 3,
+    );
     if (o.every((v, k) => v === k) && o.length > 1) o = [...o.slice(1), o[0]];
     return o;
   }, [palavras, i]);
@@ -589,7 +667,7 @@ function Ordenar({ b, id }: { b: Extract<Bloco, { tipo: "ordenar" }>; id: string
               >
                 {palavras[k]}
               </button>
-            )
+            ),
           )}
         </div>
         {completa && (
@@ -630,7 +708,7 @@ function OrdenarOuConcluido({ b, id }: { b: Extract<Bloco, { tipo: "ordenar" }>;
       marcar(x);
       setFim(true);
     },
-    [marcar]
+    [marcar],
   );
   if (fim) return <Concluido b={b} />;
   return (
@@ -640,15 +718,74 @@ function OrdenarOuConcluido({ b, id }: { b: Extract<Bloco, { tipo: "ordenar" }>;
   );
 }
 
+function Sinais({ b, id }: { b: Extract<Bloco, { tipo: "sinais" }>; id: string }) {
+  const concluir = useConcluir(id);
+  const [vistos, setVistos] = useState<Set<string>>(new Set());
+  const total = b.grupos.reduce((s, g) => s + g.itens.length, 0);
+  const rotulo = (x: string | { t: string }) => (typeof x === "string" ? x : x.t);
+  const link = (x: string | { url: string }) =>
+    typeof x === "string" ? `https://www.spreadthesign.com/pt.br/search/?q=${encodeURIComponent(x.toLowerCase())}` : x.url;
+  const meta = Math.min(total, 6);
+  const tocar = (palavra: string) => setVistos((v) => new Set(v).add(palavra));
+  // conta no placar quando atinge a meta (mesmo com toques rápidos seguidos)
+  useEffect(() => {
+    if (vistos.size >= meta) concluir();
+  }, [vistos, meta, concluir]);
+  return (
+    <Caixa
+      titulo={b.titulo ?? "Veja os sinais"}
+      intro={
+        b.intro ??
+        "Toque em cada palavra para ver o sinal em vídeo (abre o dicionário SpreadTheSign em outra aba; se aparecer uma lista, escolha a palavra exata). Observe a mão, o local, o movimento e o rosto, e repita."
+      }
+    >
+      <div className="flex flex-col gap-3">
+        {b.grupos.map((g) => (
+          <div key={g.titulo} className="border border-[#D7DEE6] bg-white p-4">
+            <p className="font-data text-xs font-semibold uppercase tracking-wide text-[#516278]">{g.titulo}</p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {g.itens.map((x) => {
+                const p = rotulo(x);
+                return (
+                  <a
+                    key={p}
+                    href={link(x)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => tocar(p)}
+                    className={`border px-3 py-1.5 text-[15px] font-semibold ${vistos.has(p) ? "border-accent-2 bg-[#E6F4F1] text-accent-2" : "border-[#C4CEDA] bg-white text-[#14213A] hover:border-brand"}`}
+                  >
+                    {vistos.has(p) ? "✓ " : ""}
+                    {p}
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="mt-2 text-[13px] text-[#516278]">
+        {Math.min(vistos.size, meta)} de {meta} sinais vistos para concluir · Também vale consultar o{" "}
+        <a
+          href="https://www.ines.gov.br/dicionario-de-libras/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-brand underline underline-offset-4"
+        >
+          Dicionário de Libras do INES
+        </a>
+      </p>
+    </Caixa>
+  );
+}
+
 function Render({ b, id }: { b: Bloco; id: string }) {
   switch (b.tipo) {
     case "texto":
       return <Texto b={b} />;
     case "dica":
       return (
-        <p className="mt-6 border-l-4 border-accent bg-[#FBF5E4] px-4 py-3 text-[15px] leading-relaxed text-[#14213A]">
-          💡 {b.texto}
-        </p>
+        <p className="mt-6 border-l-4 border-accent bg-[#FBF5E4] px-4 py-3 text-[15px] leading-relaxed text-[#14213A]">💡 {b.texto}</p>
       );
     case "imagem":
       return (
@@ -676,35 +813,39 @@ function Render({ b, id }: { b: Bloco; id: string }) {
       return <VerdadeiroFalso b={b} id={id} />;
     case "ordenar":
       return <OrdenarOuConcluido b={b} id={id} />;
+    case "sinais":
+      return <Sinais b={b} id={id} />;
     default:
       return null;
   }
 }
 
-export function AulaInterativa({ blocos }: { blocos: Bloco[] }) {
+export function AulaInterativa({ blocos, idioma = "en-US" }: { blocos: Bloco[]; idioma?: string | null }) {
   const ativos = blocos.map((b, i) => (ATIVOS.has(b.tipo) ? `b${i}` : null)).filter(Boolean) as string[];
   const [feitos, setFeitos] = useState<Set<string>>(new Set());
   const marcar = useCallback((id: string) => setFeitos((f) => (f.has(id) ? f : new Set(f).add(id))), []);
   const total = ativos.length;
   const pct = total ? Math.round((feitos.size / total) * 100) : 0;
   return (
-    <Placar.Provider value={marcar}>
-      {total > 0 && (
-        <div className="sticky top-0 z-10 -mx-1 mb-2 border border-[#D7DEE6] bg-white/95 px-4 py-2.5 backdrop-blur">
-          <div className="flex items-center justify-between gap-3 text-[13px]">
-            <span className="font-semibold text-[#14213A]">
-              {feitos.size === total ? "🎉 Todas as atividades feitas!" : `Atividades da aula: ${feitos.size} de ${total}`}
-            </span>
-            <span className="font-data text-[#516278]">{pct}%</span>
+    <Voz.Provider value={idioma}>
+      <Placar.Provider value={marcar}>
+        {total > 0 && (
+          <div className="sticky top-0 z-10 -mx-1 mb-2 border border-[#D7DEE6] bg-white/95 px-4 py-2.5 backdrop-blur">
+            <div className="flex items-center justify-between gap-3 text-[13px]">
+              <span className="font-semibold text-[#14213A]">
+                {feitos.size === total ? "🎉 Todas as atividades feitas!" : `Atividades da aula: ${feitos.size} de ${total}`}
+              </span>
+              <span className="font-data text-[#516278]">{pct}%</span>
+            </div>
+            <div className="mt-1.5 h-1.5 bg-[#EEF2F6]">
+              <div className="h-full bg-accent-2 transition-all" style={{ width: `${pct}%` }} />
+            </div>
           </div>
-          <div className="mt-1.5 h-1.5 bg-[#EEF2F6]">
-            <div className="h-full bg-accent-2 transition-all" style={{ width: `${pct}%` }} />
-          </div>
-        </div>
-      )}
-      {blocos.map((b, i) => (
-        <Render key={i} b={b} id={`b${i}`} />
-      ))}
-    </Placar.Provider>
+        )}
+        {blocos.map((b, i) => (
+          <Render key={i} b={b} id={`b${i}`} />
+        ))}
+      </Placar.Provider>
+    </Voz.Provider>
   );
 }

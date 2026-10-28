@@ -119,7 +119,8 @@ export default async function AulaPage({
             proximaHref={proxima ? aulaHref(proxima.id) : null}
           >
             {Array.isArray(aula.conteudo) && aula.conteudo.length > 0 && (
-              <AulaInterativa blocos={aula.conteudo as unknown as Bloco[]} />
+              // voz do navegador só no curso de inglês (nos outros, como Libras, os botões de ouvir somem)
+              <AulaInterativa blocos={aula.conteudo as unknown as Bloco[]} idioma={slug.startsWith("ingles") ? "en-US" : null} />
             )}
 
             {aula.resumo && (
