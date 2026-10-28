@@ -159,15 +159,6 @@ export async function emitirCertificadoAction(
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: pesquisa } = await supabase
-    .from("pesquisas_satisfacao")
-    .select("id")
-    .eq("curso_id", cursoId)
-    .maybeSingle();
-  if (!pesquisa) {
-    return { erro: "Responda a pesquisa de satisfação antes de emitir o certificado." };
-  }
-
   const { data: codigo, error } = await supabase.rpc("emitir_certificado", {
     p_curso_id: cursoId,
     p_nome: nome,
@@ -227,12 +218,10 @@ export async function responderPesquisaAction(
   if (!Number.isInteger(recomendacao) || recomendacao < 0 || recomendacao > 10) {
     return { erro: "Escolha uma nota de 0 a 10 para a recomendação." };
   }
-  const comentario = String(formData.get("comentario") ?? "").trim().slice(0, 1000) || null;
-
   const supabase = await criarClienteSupabaseServer();
   const { error } = await supabase
     .from("pesquisas_satisfacao")
-    .insert({ curso_id: cursoId, ...notas, duracao, recomendacao, comentario });
+    .insert({ curso_id: cursoId, ...notas, duracao, recomendacao });
   // 23505 = já respondida (resposta duplicada); segue em frente
   if (error && error.code !== "23505") {
     return { erro: "Não deu pra enviar sua resposta agora. Tenta de novo." };

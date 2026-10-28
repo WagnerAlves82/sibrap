@@ -109,8 +109,9 @@ export default async function CertificadoAreaPage({
   const pagoOnline = (acessos ?? []).some((a) => a.produtos.slug === `certificado-${slug}`);
   const pago = pagoOnline || pagoImpresso;
   const elegivel = cadunicoAprovado || pago;
-  const pesquisaOk = Boolean(pesquisa);
-  const podeEmitir = aulasOk && provaOk && pesquisaOk && elegivel;
+  // pesquisa de satisfação: aparece ao terminar o curso, mas é opcional (não trava o certificado)
+  const pesquisaRespondida = Boolean(pesquisa);
+  const podeEmitir = aulasOk && provaOk && elegivel;
   const formatoEmissao: "online" | "impresso" = pagoImpresso ? "impresso" : "online";
   const precoOnline = produtoOnline
     ? (produtoOnline.preco_centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
@@ -150,8 +151,8 @@ export default async function CertificadoAreaPage({
           </div>
         ) : (
           <div className="mt-6 flex flex-col gap-5">
-            {aulasOk && provaOk && !pesquisaOk && <PesquisaSatisfacao cursoId={curso.id} cursoNome={curso.nome} />}
-            {aulasOk && provaOk && pesquisaOk && !elegivel && (
+            {aulasOk && provaOk && !pesquisaRespondida && <PesquisaSatisfacao cursoId={curso.id} cursoNome={curso.nome} />}
+            {aulasOk && provaOk && !elegivel && (
               <PopupParabens precoOnline={precoOnline} precoImpresso={precoImpresso} permiteCadunico={permiteCadunico} />
             )}
             {!podeEmitir && (
@@ -186,9 +187,6 @@ export default async function CertificadoAreaPage({
                       </Link>
                     </>
                   )}
-                </Item>
-                <Item ok={pesquisaOk}>
-                  Responder a pesquisa de satisfação (7 perguntas)
                 </Item>
                 <Item ok={elegivel}>
                   {cadunicoAprovado
@@ -277,7 +275,7 @@ export default async function CertificadoAreaPage({
                 </div>
               ) : (
                 <p className="mt-2 text-[14.5px] text-[#516278]">
-                  Disponível quando todos os requisitos acima estiverem cumpridos.
+                  Disponível quando os três requisitos acima estiverem cumpridos.
                 </p>
               )}
             </section>

@@ -16,7 +16,7 @@ const ESCALA = [
 const PERGUNTAS_1_A_5 = [
   { nome: "satisfacao", texto: "1. De modo geral, qual a sua satisfação com o curso?" },
   { nome: "clareza", texto: "2. As explicações das aulas foram claras e fáceis de entender?" },
-  { nome: "material", texto: "3. O que achou do material (textos, áudios, cards e diálogos)?" },
+  { nome: "material", texto: "3. O que achou do material do curso (textos, vídeos e atividades)?" },
   { nome: "exercicios", texto: "4. Os exercícios e atividades ajudaram você a fixar o conteúdo?" },
 ] as const;
 
@@ -52,13 +52,20 @@ export function PesquisaSatisfacao({ cursoId, cursoNome }: { cursoId: string; cu
   }, null);
   const mudar = (k: string) => (v: number) => setNotas((n) => ({ ...n, [k]: v }));
   const respondidas = Object.keys(notas).length;
+  const [pulou, setPulou] = useState(false);
+  if (pulou) return null;
 
   return (
     <section className="border-2 border-accent bg-white p-6">
-      <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent-2">Última etapa antes do certificado</p>
-      <h2 className="mt-1 font-display text-xl font-extrabold text-[#14213A]">Pesquisa de satisfação</h2>
+      <div className="flex items-start justify-between gap-3">
+        <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent-2">Opcional · 1 minuto</p>
+        <button type="button" onClick={() => setPulou(true)} className="text-[13px] font-semibold text-[#516278] underline underline-offset-4">
+          Agora não
+        </button>
+      </div>
+      <h2 className="mt-1 font-display text-xl font-extrabold text-[#14213A]">Como foi o curso para você?</h2>
       <p className="mt-1 text-[14.5px] leading-relaxed text-[#516278]">
-        Parabéns por concluir {cursoNome}! São 7 perguntas rápidas sobre o curso, o material e a duração. Leva 1 minuto.
+        Parabéns por concluir {cursoNome}! Dê notas em 7 perguntas rápidas, só com cliques. Seu certificado não depende disso.
       </p>
       <p className="mt-2 font-data text-[12.5px] text-[#93A0AF]">{respondidas} de 7 respondidas</p>
 
@@ -118,17 +125,6 @@ export function PesquisaSatisfacao({ cursoId, cursoNome }: { cursoId: string; cu
           </div>
         </fieldset>
 
-        <label className="flex flex-col gap-1.5 border-t border-[#EEF2F6] pt-4">
-          <span className="text-[15px] font-semibold text-[#14213A]">Quer deixar uma sugestão? (opcional)</span>
-          <textarea
-            name="comentario"
-            maxLength={1000}
-            rows={3}
-            placeholder="O que podemos melhorar? Que curso você gostaria de fazer agora?"
-            className="border border-[#D7DEE6] px-3 py-2 text-[15px] text-[#14213A] outline-none focus:border-brand"
-          />
-        </label>
-
         {estado?.erro && (
           <Alert variant="erro" claro>
             {estado.erro}
@@ -139,7 +135,7 @@ export function PesquisaSatisfacao({ cursoId, cursoNome }: { cursoId: string; cu
           disabled={enviando || respondidas < 7}
           className="bg-accent px-6 py-3 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105 disabled:opacity-50"
         >
-          {enviando ? "Enviando…" : respondidas < 7 ? `Responda as 7 perguntas (${respondidas}/7)` : "Enviar e liberar o certificado →"}
+          {enviando ? "Enviando…" : respondidas < 7 ? `Responda as 7 perguntas (${respondidas}/7)` : "Enviar minhas notas →"}
         </button>
       </form>
     </section>
