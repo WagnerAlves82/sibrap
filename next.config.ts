@@ -41,6 +41,12 @@ const nextConfig: NextConfig = {
           { key: "Content-Security-Policy", value: `${CSP_ESTRITO}; ${CSP_BASE}` },
         ],
       },
+      {
+        // áudios e ilustrações das aulas: o navegador guarda por 30 dias e não baixa de novo a cada aula
+        // (poupa a transferência da Vercel; arquivo novo deve ganhar nome novo)
+        source: "/cursos/:curso/:arquivo((?:.*)\\.(?:mp3|webp))",
+        headers: [{ key: "Cache-Control", value: "public, max-age=2592000, stale-while-revalidate=86400" }],
+      },
     ];
   },
   images: {
