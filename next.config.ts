@@ -50,6 +50,13 @@ const nextConfig: NextConfig = {
         source: "/cursos/:curso/:arquivo((?:.*)\\.(?:mp3|webp))",
         headers: [{ key: "Cache-Control", value: "public, max-age=2592000, stale-while-revalidate=86400" }],
       },
+      {
+        // imagens da raiz de /public (logo, selo ABED, fotos, capas): o navegador guarda por 7 dias em vez de
+        // baixar de novo a cada página (antes era max-age=0 e era o que mais gastava transferência na Vercel).
+        // Trocou o conteúdo de um arquivo? Dê um nome novo, ou espere até 7 dias para todos verem.
+        source: "/:arquivo([^/]+\\.(?:png|jpg|jpeg|webp|svg|gif|ico))",
+        headers: [{ key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=86400" }],
+      },
     ];
   },
   images: {
