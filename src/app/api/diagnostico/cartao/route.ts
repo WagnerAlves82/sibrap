@@ -8,7 +8,8 @@
 
 import crypto from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
-import { abacatePayAtivo, criarCheckoutCartao } from "@/lib/abacatepay";
+import { abacatePayAtivo, cartaoLiberado, criarCheckoutCartao } from "@/lib/abacatepay";
+import { chavePublicaCartao } from "@/lib/cartao-transparente";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 
 export const dynamic = "force-dynamic";
@@ -50,7 +51,14 @@ export async function POST(request: NextRequest) {
       returnUrl: `${siteUrl}/apostilas/${apostila.slug}`,
       completionUrl: `${siteUrl}/apostilas/${apostila.slug}`,
     });
-    return NextResponse.json({ ok: true, cartao: "liberado", produto: apostila.slug, checkout: checkout.id, host: new URL(checkout.url).host });
+    // o que o site enxerga para mostrar o cartão aos clientes (sem expor valores)
+    const noSite = {
+      ABACATEPAY_CARTAO: process.env.ABACATEPAY_CARTAO === "1",
+      ABACATEPAY_PUBLIC_KEY: !!process.env.ABACATEPAY_PUBLIC_KEY,
+      cartaoLiberado: cartaoLiberado(),
+      mostraCartao: !!chavePublicaCartao(),
+    };
+    return NextResponse.json({ ok: true, cartao: "liberado", produto: apostila.slug, checkout: checkout.id, host: new URL(checkout.url).host, noSite });
   } catch (e) {
     return NextResponse.json({ ok: false, cartao: "recusado ou indisponível", erro: e instanceof Error ? e.message : String(e) }, { status: 502 });
   }
