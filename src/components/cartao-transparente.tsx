@@ -227,7 +227,7 @@ export function CartaoTransparente({
         {/* a caixa do AbacatePay fica vazia para o React: o abacatepay.js substitui o conteúdo dela */}
         <div id={idAlvo} className="min-h-[120px]" />
         {!pronto && !erro && <p className="text-center text-[13px] font-normal text-[#93A0AF]">Carregando o formulário seguro…</p>}
-        <p className="text-[11.5px] font-normal text-[#93A0AF]">🔒 Os dados do cartão vão direto para o AbacatePay, com criptografia. O SIBRAP não vê nem guarda o número.</p>
+        <p className="text-[11.5px] font-normal text-[#93A0AF]">🔒 Os dados do cartão são criptografados. O SIBRAP não vê nem guarda o número.</p>
       </div>
 
       {max > 1 && (

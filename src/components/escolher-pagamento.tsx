@@ -116,7 +116,7 @@ export function EscolherPagamento({
                     {parcelas > 1 ? textoParcela(valorCentavos) : preco}
                   </span>
                 </button>
-                <p className="mt-1 text-center text-[12px] text-[#93A0AF]">🔒 Pagamento seguro pelo AbacatePay. Acesso liberado assim que for aprovado.</p>
+                <p className="mt-1 text-center text-[12px] text-[#93A0AF]">🔒 Pagamento seguro. Acesso liberado automaticamente após o pagamento.</p>
               </div>
             )}
 
