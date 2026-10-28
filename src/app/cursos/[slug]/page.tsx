@@ -45,7 +45,7 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
   },
   "libras-iniciante": {
     src: "/libras-card.webp",
-    alt: "Duas pessoas conversando em Libras, a Língua Brasileira de Sinais",
+    alt: "Mulher e homem conversando em Libras, a Língua Brasileira de Sinais, numa sala de aula iluminada",
     largura: 1200,
     altura: 896,
   },

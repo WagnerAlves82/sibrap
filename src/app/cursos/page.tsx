@@ -66,7 +66,8 @@ export default async function CursosPage() {
                 href={`/cursos/${curso.slug}`}
                 className="group flex h-full flex-col overflow-hidden border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)]"
               >
-                <div className="relative aspect-[16/10] w-full overflow-hidden bg-surface-2">
+                {/* 4:3: os banners com título (celular, inglês) aparecem inteiros; as fotos perdem só um pouco das laterais */}
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-2">
                   <Image
                     src={FOTOS_POR_CURSO[curso.slug] ?? FOTO_PADRAO}
                     alt=""
