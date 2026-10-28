@@ -1,9 +1,7 @@
 "use server";
 
-import { headers } from "next/headers";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { gerarPixParaPedido, type EstadoPix } from "@/lib/pix";
-import { gerarCheckoutCartaoParaPedido, type EstadoCheckoutCartao } from "@/lib/checkout-cartao";
 import { slugValido } from "@/lib/apostilas";
 
 type PedidoDaApostilaErro = { ok: false; erro: string };
@@ -16,7 +14,7 @@ type PedidoDaApostilaOk = {
 };
 
 /** Cria o pedido pendente (RPC) e devolve o essencial pra gerar a cobrança,
- * ou o erro já formatado — compartilhado pelos dois meios de pagamento. */
+ * ou o erro já formatado — usado pelo PIX (o cartão cria o pedido em cartao-actions.ts). */
 async function criarPedidoDaApostila(slug: string, combo = false): Promise<PedidoDaApostilaErro | PedidoDaApostilaOk> {
   if (!slugValido(slug)) return { ok: false, erro: "Apostila não encontrada." };
 
@@ -59,22 +57,5 @@ export async function criarPagamentoApostilaAction(slug: string, combo = false):
     valorCentavos: pedido.valor_centavos,
     email: user.email,
     nome: (user.user_metadata as { nome?: string } | undefined)?.nome,
-  });
-}
-
-export async function criarPagamentoCartaoApostilaAction(slug: string, combo = false): Promise<EstadoCheckoutCartao> {
-  const r = await criarPedidoDaApostila(slug, combo);
-  if (!r.ok) return { erro: r.erro };
-  const { supabase, user, produtoSlug, pedido } = r;
-
-  const origem = (await headers()).get("origin") ?? "https://www.sibrap.tec.br";
-  return gerarCheckoutCartaoParaPedido({
-    supabase,
-    pedidoId: pedido.pedido_id,
-    produtoSlug,
-    produtoNome: pedido.produto_nome,
-    valorCentavos: pedido.valor_centavos,
-    email: user.email,
-    voltarPara: `${origem}/minha-area/${combo ? "combos" : "apostilas"}/${slug}`,
   });
 }

@@ -2,6 +2,7 @@ import {
   PARCELAMENTO,
   descontoPercentual,
   formatarPreco,
+  maxParcelas,
   textoParcela,
 } from "@/lib/apostilas";
 import { SeloPromocao } from "@/components/selo-promocao";
@@ -38,7 +39,7 @@ export function PrecoApostila({
         {formatarPreco(centavos)}
       </p>
       <p className={`${grande ? "text-[14px]" : "text-[11.5px]"} text-[#516278]`}>
-        {PARCELAMENTO.ativo ? (
+        {PARCELAMENTO.ativo && maxParcelas(centavos) > 1 ? (
           <>
             ou <strong className="text-[#14213A]">{textoParcela(centavos)}</strong>
           </>

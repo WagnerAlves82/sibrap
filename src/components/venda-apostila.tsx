@@ -3,7 +3,7 @@ import Link from "next/link";
 import { IconeSolido, type NomeIconeSolido } from "@/components/icones-solidos";
 import { Reveal } from "@/components/reveal";
 import { SeloPromocao } from "@/components/selo-promocao";
-import { descontoPercentual, formatarPreco } from "@/lib/apostilas";
+import { descontoPercentual, formatarPreco, maxParcelas, textoParcela } from "@/lib/apostilas";
 
 export type DadosVenda = {
   cargo: string;
@@ -329,7 +329,9 @@ export function VendaApostila({ d }: { d: DadosVenda }) {
               ) : (
                 "Por "
               )}
-              <strong className="text-[1.6rem] text-white">{preco}</strong> no PIX, pagamento único e sem mensalidade.
+              <strong className="text-[1.6rem] text-white">{preco}</strong> no PIX
+              {maxParcelas(d.precoCentavos) > 1 ? ` ou ${textoParcela(d.precoCentavos)}` : ""}, pagamento único e sem
+              mensalidade.
               {porDia ? ` Até a prova${d.prova ? ` (${d.prova})` : ""}, isso dá cerca de ${porDia} por dia de estudo.` : ""} Se
               não for o que você esperava, você tem 7 dias para pedir o reembolso.
             </p>

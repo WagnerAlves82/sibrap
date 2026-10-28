@@ -7,6 +7,7 @@ import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { formatarHoras } from "@/lib/emissor";
 import { PagamentoCombo } from "./PagamentoCombo";
+import { dadosCartaoCompra } from "@/lib/cartao-transparente";
 
 const CURSOS_SLUGS = ["informatica-basica-ia", "atendimento-ao-cliente"] as const;
 
@@ -142,7 +143,10 @@ export default async function ComboCursosPage() {
                     ))}
                   </div>
                 ) : logado ? (
-                  <PagamentoCombo />
+                  <PagamentoCombo
+                    valorCentavos={produto.preco_centavos}
+                    cartao={dadosCartaoCompra("combo-informatica-atendimento", user)}
+                  />
                 ) : (
                   <Link
                     href={`/cadastro?next=${encodeURIComponent(ctaNext)}`}

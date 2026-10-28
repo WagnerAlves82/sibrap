@@ -51,10 +51,17 @@ export function imagemDeVitrine(a: Pick<ApostilaRow, "imagens" | "capa_path">): 
 // Parcelamento no cartão. Só aparece no site quando o pagamento por cartão
 // existir de fato (hoje a venda é só por PIX, à vista): anunciar parcelas
 // que o cliente não consegue usar seria propaganda enganosa.
-export const PARCELAMENTO = { ativo: false, parcelas: 5 } as const;
+// Cartão (AbacatePay): até 3x, com parcela mínima de R$ 10,00 (regra do AbacatePay).
+// R$ 35,90 → 3x de R$ 11,97; R$ 29,90 → 2x de R$ 14,95. Abaixo de R$ 20,00 só à vista.
+export const PARCELAMENTO = { ativo: true, parcelas: 3, minimoParcelaCentavos: 1000 } as const;
 
-export function textoParcela(centavos: number, parcelas = PARCELAMENTO.parcelas): string {
-  return `${parcelas}x de ${formatarPreco(Math.round(centavos / parcelas))}`;
+export function maxParcelas(centavos: number): number {
+  return Math.max(1, Math.min(PARCELAMENTO.parcelas, Math.floor(centavos / PARCELAMENTO.minimoParcelaCentavos)));
+}
+
+/** "3x de R$ 11,97" (arredonda a parcela para cima, para nunca prometer menos do que será cobrado). */
+export function textoParcela(centavos: number, parcelas = maxParcelas(centavos)): string {
+  return `${parcelas}x de ${formatarPreco(Math.ceil(centavos / parcelas))}`;
 }
 
 // Percentual só existe quando há um preço de referência real cadastrado

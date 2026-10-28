@@ -95,6 +95,47 @@ export async function criarCobrancaPix({
   });
 }
 
+export type ClienteCartao = { name: string; email: string; taxId: string; cellphone: string };
+export type CobrancaCartao = { id: string; status: string };
+
+/**
+ * Cartão transparente: o formulário seguro do AbacatePay (abacatepay.js) fica na nossa página
+ * e devolve um token `ctok_` de uso único (60 s). Aqui cobramos esse token. O `amount` tem que
+ * ser o mesmo usado no AbacatePay.create do navegador; parcela mínima de R$ 10,00.
+ */
+export async function criarCobrancaCartao({
+  valorCentavos,
+  token,
+  parcelas,
+  cliente,
+  pedidoId,
+}: {
+  valorCentavos: number;
+  token: string;
+  parcelas: number;
+  cliente: ClienteCartao;
+  pedidoId: string;
+}): Promise<CobrancaCartao> {
+  return chamar<CobrancaCartao>("/transparents/create", {
+    method: "POST",
+    body: JSON.stringify({
+      method: "CARD",
+      data: {
+        amount: valorCentavos,
+        token,
+        installmentCount: parcelas,
+        customer: {
+          name: textoAbacatePay(cliente.name).slice(0, 150),
+          email: cliente.email.slice(0, 150),
+          taxId: cliente.taxId,
+          cellphone: cliente.cellphone,
+        },
+        metadata: { pedidoId },
+      },
+    }),
+  });
+}
+
 function mapStatus(status: string): StatusPedido {
   if (status === "PAID" || status === "APPROVED") return "aprovado";
   if (["EXPIRED", "CANCELLED", "FAILED"].includes(status)) return "recusado";
@@ -121,7 +162,9 @@ export async function confirmarPagamentoAbacate(
 
   let statusRemoto: string;
   try {
-    statusRemoto = (await chamar<{ status: string }>(`/transparents/check?id=${encodeURIComponent(chargeId)}`)).status;
+    // cobrança de cartão (id "card_...") é consultada pelo /get; PIX pelo /check
+    const rota = chargeId.startsWith("card_") ? "get" : "check";
+    statusRemoto = (await chamar<{ status: string }>(`/transparents/${rota}?id=${encodeURIComponent(chargeId)}`)).status;
   } catch (e) {
     return { erro: e instanceof Error ? e.message : "Erro ao consultar cobrança" };
   }

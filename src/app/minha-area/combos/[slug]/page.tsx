@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
-import { cartaoLiberado } from "@/lib/abacatepay";
+import { chavePublicaCartao } from "@/lib/cartao-transparente";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { formatarPreco } from "@/lib/apostilas";
 import { comboPorSlug } from "@/lib/combos";
@@ -38,6 +38,7 @@ export default async function ComboAreaPage({ params }: { params: Promise<{ slug
   if (!tem && !produto.ativo) notFound();
 
   const preco = formatarPreco(produto.preco_centavos);
+  const chavePublica = chavePublicaCartao();
 
   // Videoaulas: só o servidor lê; a URL do vídeo só vai para a página quando a aula está liberada.
   const { data: aulas } = tem
@@ -90,7 +91,7 @@ export default async function ComboAreaPage({ params }: { params: Promise<{ slug
               <div className="mt-5">
                 <p className="font-data text-3xl font-semibold text-[#14213A]">{preco}</p>
                 <p className="mb-4 text-[13px] text-[#516278]">
-                  Apostila + videoaulas, pagamento único por PIX ou cartão de crédito. A liberação é automática assim que o
+                  Apostila + videoaulas, pagamento único no PIX ou em até 3x. A liberação é automática assim que o
                   pagamento for confirmado.
                 </p>
                 <ComprarApostila
@@ -98,7 +99,16 @@ export default async function ComboAreaPage({ params }: { params: Promise<{ slug
                   titulo={produto.nome}
                   preco={preco}
                   precoCentavos={produto.preco_centavos}
-                  cartaoAtivo={cartaoLiberado()}
+                  cartao={
+                    chavePublica && user?.email
+                      ? {
+                          chavePublica,
+                          produtoSlug: `combo-${slug}`,
+                          email: user.email,
+                          nome: (user.user_metadata as { nome?: string } | undefined)?.nome,
+                        }
+                      : null
+                  }
                   combo
                 />
               </div>

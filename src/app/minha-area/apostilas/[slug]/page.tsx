@@ -4,7 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
-import { cartaoLiberado, confirmarPagamentoAbacateCheckout } from "@/lib/abacatepay";
+import { confirmarPagamentoAbacateCheckout } from "@/lib/abacatepay";
+import { chavePublicaCartao } from "@/lib/cartao-transparente";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { formatarDataIso, formatarPreco, slugValido, urlCapa } from "@/lib/apostilas";
 import { ComprarApostila } from "./Comprar";
@@ -32,9 +33,10 @@ export default async function ApostilaAreaPage({
   const admin = criarClienteSupabaseAdmin();
   const { data: apostila } = await admin
     .from("apostilas")
-    .select("*, produtos(preco_centavos, ativo, inclui_simulado, cargo_id)")
+    .select("*, produtos(slug, preco_centavos, ativo, inclui_simulado, cargo_id)")
     .eq("slug", slug)
     .maybeSingle();
+  const chavePublica = chavePublicaCartao();
   if (!apostila?.produtos) notFound();
 
   const { data: acesso } = await supabase
@@ -196,7 +198,7 @@ export default async function ApostilaAreaPage({
               <div className="mt-5">
                 <p className="font-data text-3xl font-semibold text-[#14213A]">{preco}</p>
                 <p className="mb-4 text-[13px] text-[#516278]">
-                  Pagamento único, por PIX ou cartão de crédito. A liberação é
+                  Pagamento único no PIX ou em até 3x. A liberação é
                   automática assim que o pagamento for confirmado.
                 </p>
                 {aguardandoCartao && (
@@ -210,7 +212,16 @@ export default async function ApostilaAreaPage({
                   titulo={apostila.titulo}
                   preco={preco}
                   precoCentavos={apostila.produtos.preco_centavos}
-                  cartaoAtivo={cartaoLiberado()}
+                  cartao={
+                    chavePublica && user?.email
+                      ? {
+                          chavePublica,
+                          produtoSlug: apostila.produtos.slug,
+                          email: user.email,
+                          nome: (user.user_metadata as { nome?: string } | undefined)?.nome,
+                        }
+                      : null
+                  }
                 />
               </div>
             )}

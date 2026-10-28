@@ -8,6 +8,7 @@ import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { Reveal } from "@/components/reveal";
 import { AVISO_CURSO_LIVRE, EMISSOR, formatarHoras } from "@/lib/emissor";
 import { VISITAS_MINIMAS_PARA_EXIBIR, visitasDoCurso } from "@/lib/visitas";
+import { textoParcela } from "@/lib/apostilas";
 import { formatarReais, produtoDoCursoPago } from "@/lib/curso-pago";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -98,7 +99,7 @@ function perguntasFrequentes(
 ) {
   return [
     precoCurso
-      ? [`Quanto custa o curso de ${curso.nome}?`, `O curso custa ${precoCurso}, pagamento único no PIX, sem mensalidade. O valor dá acesso a todas as aulas, 100% online, e já inclui o certificado.`]
+      ? [`Quanto custa o curso de ${curso.nome}?`, `O curso custa ${precoCurso}, pagamento único no PIX ou em até 3x, sem mensalidade. O valor dá acesso a todas as aulas, 100% online, e já inclui o certificado.`]
       : [`O curso de ${curso.nome} é gratuito?`, `Sim. Todas as aulas do curso de ${curso.nome} são gratuitas e 100% online. Só o certificado é opcional e pago${preco ? ` (${preco})` : ""}.`],
     [`O curso de ${curso.nome} tem certificado?`, `Sim. Depois de concluir as aulas e ser aprovado na prova final (nota mínima de ${curso.nota_minima}%), você pode emitir o certificado de ${curso.carga_horaria_horas} horas, com QR Code para qualquer pessoa conferir a autenticidade${precoCurso ? ". O certificado online já está incluso no valor do curso" : ""}.`],
     [`Qual é a carga horária do curso de ${curso.nome}?`, `O curso tem ${curso.carga_horaria_horas} horas, divididas em ${modulos.length} módulos. Você estuda no seu ritmo, pelo celular ou pelo computador, e o progresso fica salvo.`],
@@ -234,7 +235,9 @@ export default async function CursoPublicoPage({ params }: Props) {
                 {logado ? "Ir para o curso" : precoCurso ? "Quero fazer o curso" : "Quero me inscrever grátis"} <span aria-hidden>→</span>
               </Link>
               <span className="text-[13px] text-[#516278]">
-                {precoCurso ? `Pagamento único de ${precoCurso} no PIX. Certificado incluso.` : "Sem mensalidade. Estude no seu ritmo."}
+                {precoCurso && pago
+                  ? `${precoCurso} ou ${textoParcela(pago.preco_centavos)}. Certificado incluso.`
+                  : "Sem mensalidade. Estude no seu ritmo."}
               </span>
             </div>
             <CompartilharWhatsApp

@@ -8,6 +8,7 @@ import { formatarHoras } from "@/lib/emissor";
 import { matricularAction } from "./actions";
 import { ComprarCurso } from "./ComprarCurso";
 import { formatarReais, produtoDoCursoPago } from "@/lib/curso-pago";
+import { dadosCartaoCompra } from "@/lib/cartao-transparente";
 
 export const metadata: Metadata = {
   title: "Meu curso",
@@ -50,6 +51,9 @@ export default async function AreaDoCursoPage({
   if (!matricula) {
     // curso pago: sem compra, mostra o pagamento (a matrícula é travada no banco até o pagamento ser aprovado)
     const produtoPago = await produtoDoCursoPago(supabase, curso.slug);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     return (
       <div className="flex min-h-screen flex-col bg-surface-2 font-body">
         <CabecalhoSite logado />
@@ -65,12 +69,17 @@ export default async function AreaDoCursoPage({
               <>
                 <p className="mt-3 text-[15px] leading-relaxed text-[#516278]">
                   Pagamento único de{" "}
-                  <strong className="text-[#14213A]">{formatarReais(produtoPago.preco_centavos)}</strong> no PIX, com
+                  <strong className="text-[#14213A]">{formatarReais(produtoPago.preco_centavos)}</strong> no PIX ou em até 3x, com
                   acesso a todas as aulas e o certificado online incluso. Assim que o pagamento cair, o curso é
                   liberado nesta página.
                 </p>
                 <div className="mt-6">
-                  <ComprarCurso slug={curso.slug} preco={formatarReais(produtoPago.preco_centavos)} />
+                  <ComprarCurso
+                    slug={curso.slug}
+                    preco={formatarReais(produtoPago.preco_centavos)}
+                    valorCentavos={produtoPago.preco_centavos}
+                    cartao={dadosCartaoCompra(`curso-${curso.slug}`, user)}
+                  />
                 </div>
               </>
             ) : (

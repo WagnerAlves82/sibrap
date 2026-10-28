@@ -1,35 +1,30 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { sendGAEvent } from "@next/third-parties/google";
 import { fbqTrack } from "@/components/meta-pixel";
 import { gadsCompra } from "@/lib/google-ads";
 import { PixCheckoutClaro } from "@/components/pix-checkout-claro";
-import { Alert } from "@/components/alert";
-import {
-  criarPagamentoApostilaAction,
-  criarPagamentoCartaoApostilaAction,
-} from "./actions";
+import { CartaoTransparente, type DadosCartaoCompra } from "@/components/cartao-transparente";
+import { criarPagamentoApostilaAction } from "./actions";
 
 export function ComprarApostila({
   slug,
   titulo,
   preco,
   precoCentavos,
-  cartaoAtivo = false,
+  cartao = null,
   combo = false,
 }: {
   slug: string;
   titulo: string;
   preco: string;
   precoCentavos: number;
-  cartaoAtivo?: boolean;
+  /** cartão sem sair do site (null = só PIX) */
+  cartao?: DadosCartaoCompra | null;
   combo?: boolean;
 }) {
   const router = useRouter();
-  const [carregandoCartao, setCarregandoCartao] = useState(false);
-  const [erroCartao, setErroCartao] = useState<string | null>(null);
 
   const item = {
     item_id: combo ? `combo-${slug}` : slug,
@@ -38,23 +33,17 @@ export function ComprarApostila({
     quantity: 1,
   };
 
-  async function pagarComCartao() {
-    sendGAEvent("event", "begin_checkout", {
+  function aprovado(pedidoId: string, pagamento: "pix" | "cartao") {
+    sendGAEvent("event", "purchase", {
+      transaction_id: pedidoId,
       currency: "BRL",
       value: precoCentavos / 100,
-      payment_type: "cartao",
+      payment_type: pagamento,
       items: [item],
     });
-    setCarregandoCartao(true);
-    setErroCartao(null);
-    const r = await criarPagamentoCartaoApostilaAction(slug, combo);
-    if ("erro" in r) {
-      setErroCartao(r.erro);
-      setCarregandoCartao(false);
-      return;
-    }
-    // Página hospedada pelo AbacatePay; a pessoa volta pra cá depois de pagar.
-    window.location.href = r.url;
+    fbqTrack("Purchase", { currency: "BRL", value: precoCentavos / 100 });
+    gadsCompra({ valor: precoCentavos / 100, pedidoId });
+    router.refresh();
   }
 
   return (
@@ -71,33 +60,17 @@ export function ComprarApostila({
           return criarPagamentoApostilaAction(slug, combo);
         }}
         rotuloBotao={`Pagar ${preco} com PIX`}
-        aoAprovar={(pedidoId) => {
-          sendGAEvent("event", "purchase", {
-            transaction_id: pedidoId,
-            currency: "BRL",
-            value: precoCentavos / 100,
-            items: [item],
-          });
-          fbqTrack("Purchase", { currency: "BRL", value: precoCentavos / 100 });
-          gadsCompra({ valor: precoCentavos / 100, pedidoId });
-          router.refresh();
-        }}
+        aoAprovar={(pedidoId) => aprovado(pedidoId, "pix")}
       />
-      {cartaoAtivo && (
-        <button
-          onClick={pagarComCartao}
-          disabled={carregandoCartao}
-          className="w-full rounded-lg border-[1.5px] border-brand px-5 py-3 text-[15px] font-bold text-brand transition-colors hover:bg-brand/5 disabled:opacity-60"
-        >
-          {carregandoCartao
-            ? "Abrindo pagamento..."
-            : `Pagar ${preco} no cartão`}
-        </button>
-      )}
-      {erroCartao && (
-        <Alert variant="erro" claro>
-          {erroCartao}
-        </Alert>
+      {cartao && (
+        <CartaoTransparente
+          produtoSlug={cartao.produtoSlug}
+          valorCentavos={precoCentavos}
+          chavePublica={cartao.chavePublica}
+          emailCliente={cartao.email}
+          nomeInicial={cartao.nome}
+          aoAprovar={(pedidoId) => aprovado(pedidoId, "cartao")}
+        />
       )}
     </div>
   );

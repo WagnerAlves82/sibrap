@@ -7,6 +7,7 @@ import { Alert } from "@/components/alert";
 import { FormComprovante, FormEmitir, PagamentoCertificado } from "./Formularios";
 import { PopupParabens } from "./PopupParabens";
 import { PesquisaSatisfacao } from "./PesquisaSatisfacao";
+import { dadosCartaoCompra } from "@/lib/cartao-transparente";
 
 export const metadata: Metadata = {
   title: "Certificado",
@@ -241,12 +242,17 @@ export default async function CertificadoAreaPage({
                       Certificado online (PDF)
                     </p>
                     <p className="mt-1 font-data text-3xl font-semibold text-[#14213A]">{precoOnline}</p>
-                    <p className="text-[13px] text-[#516278]">Pagamento único por PIX</p>
+                    <p className="text-[13px] text-[#516278]">PIX ou em até 2x</p>
                     <p className="mb-4 mt-2 text-[12.5px] leading-relaxed text-accent-2">
                       Assim que o pagamento for confirmado, seu certificado é liberado na hora e também enviado
                       automaticamente para o seu e-mail.
                     </p>
-                    <PagamentoCertificado cursoSlug={slug} formato="online" />
+                    <PagamentoCertificado
+                      cursoSlug={slug}
+                      formato="online"
+                      valorCentavos={produtoOnline?.preco_centavos ?? 2990}
+                      cartao={dadosCartaoCompra(`certificado-${slug}`, userData.user)}
+                    />
                   </div>
 
                   <div className="rounded-lg border border-[#D7DEE6] p-5">
@@ -254,12 +260,17 @@ export default async function CertificadoAreaPage({
                       Certificado impresso
                     </p>
                     <p className="mt-1 font-data text-3xl font-semibold text-[#14213A]">{precoImpresso}</p>
-                    <p className="text-[13px] text-[#516278]">Pagamento único por PIX</p>
+                    <p className="text-[13px] text-[#516278]">PIX ou em até 3x</p>
                     <p className="mb-4 mt-2 text-[12.5px] leading-relaxed text-[#516278]">
                       Enviado pelos Correios para o seu endereço, além da versão online. Prazo: 5 a 20 dias úteis
                       (varia conforme os Correios).
                     </p>
-                    <PagamentoCertificado cursoSlug={slug} formato="impresso" />
+                    <PagamentoCertificado
+                      cursoSlug={slug}
+                      formato="impresso"
+                      valorCentavos={produtoImpresso?.preco_centavos ?? 8990}
+                      cartao={dadosCartaoCompra(`certificado-impresso-${slug}`, userData.user)}
+                    />
                   </div>
                 </div>
               </section>
