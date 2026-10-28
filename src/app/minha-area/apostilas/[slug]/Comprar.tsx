@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import { sendGAEvent } from "@next/third-parties/google";
 import { fbqTrack } from "@/components/meta-pixel";
 import { gadsCompra } from "@/lib/google-ads";
-import { PixCheckoutClaro } from "@/components/pix-checkout-claro";
-import { CartaoTransparente, type DadosCartaoCompra } from "@/components/cartao-transparente";
+import { EscolherPagamento } from "@/components/escolher-pagamento";
+import type { DadosCartaoCompra } from "@/components/cartao-transparente";
 import { criarPagamentoApostilaAction } from "./actions";
 
 export function ComprarApostila({
@@ -47,31 +47,21 @@ export function ComprarApostila({
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <PixCheckoutClaro
-        criarPix={() => {
-          sendGAEvent("event", "begin_checkout", {
-            currency: "BRL",
-            value: precoCentavos / 100,
-            payment_type: "pix",
-            items: [item],
-          });
-          fbqTrack("InitiateCheckout", { currency: "BRL", value: precoCentavos / 100 });
-          return criarPagamentoApostilaAction(slug, combo);
-        }}
-        rotuloBotao={`Pagar ${preco} com PIX`}
-        aoAprovar={(pedidoId) => aprovado(pedidoId, "pix")}
-      />
-      {cartao && (
-        <CartaoTransparente
-          produtoSlug={cartao.produtoSlug}
-          valorCentavos={precoCentavos}
-          chavePublica={cartao.chavePublica}
-          emailCliente={cartao.email}
-          nomeInicial={cartao.nome}
-          aoAprovar={(pedidoId) => aprovado(pedidoId, "cartao")}
-        />
-      )}
-    </div>
+    <EscolherPagamento
+      valorCentavos={precoCentavos}
+      rotuloComprar={`Comprar por ${preco}`}
+      criarPix={() => {
+        sendGAEvent("event", "begin_checkout", {
+          currency: "BRL",
+          value: precoCentavos / 100,
+          payment_type: "pix",
+          items: [item],
+        });
+        fbqTrack("InitiateCheckout", { currency: "BRL", value: precoCentavos / 100 });
+        return criarPagamentoApostilaAction(slug, combo);
+      }}
+      cartao={cartao}
+      aoAprovar={aprovado}
+    />
   );
 }

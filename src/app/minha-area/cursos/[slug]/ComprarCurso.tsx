@@ -1,8 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { PixCheckoutClaro } from "@/components/pix-checkout-claro";
-import { PagamentoCartao, type DadosCartaoCompra } from "@/components/cartao-transparente";
+import { EscolherPagamento } from "@/components/escolher-pagamento";
+import type { DadosCartaoCompra } from "@/components/cartao-transparente";
 import { criarPagamentoCursoAction } from "./actions";
 
 // Compra do curso pago por PIX; ao aprovar, o banco matricula o aluno e a página recarrega já com as aulas.
@@ -19,14 +19,13 @@ export function ComprarCurso({
 }) {
   const router = useRouter();
   return (
-    <div className="flex flex-col gap-3">
-      <PixCheckoutClaro
-        rotuloBotao={`Pagar ${preco} com PIX`}
-        criarPix={() => criarPagamentoCursoAction(slug)}
-        aoAprovar={() => router.refresh()}
-        conversaoAds
-      />
-      <PagamentoCartao cartao={cartao} valorCentavos={valorCentavos} />
-    </div>
+    <EscolherPagamento
+      valorCentavos={valorCentavos}
+      rotuloComprar={`Comprar o curso por ${preco}`}
+      criarPix={() => criarPagamentoCursoAction(slug)}
+      conversaoAds
+      cartao={cartao}
+      aoAprovar={() => router.refresh()}
+    />
   );
 }

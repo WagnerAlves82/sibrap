@@ -17,11 +17,14 @@ export function PixCheckoutClaro({
   rotuloBotao,
   aoAprovar,
   conversaoAds = false,
+  iniciarAutomatico = false,
 }: {
   criarPix: () => Promise<EstadoPix>;
   rotuloBotao: string;
   aoAprovar: (pedidoId: string) => void;
   conversaoAds?: boolean;
+  /** gera o PIX assim que aparece (quando a pessoa já escolheu PIX no modal de pagamento) */
+  iniciarAutomatico?: boolean;
 }) {
   const [fase, setFase] = useState<Fase>("inicio");
   const [qrCode, setQrCode] = useState<string | null>(null);
@@ -35,6 +38,15 @@ export function PixCheckoutClaro({
       if (intervaloRef.current) clearInterval(intervaloRef.current);
     };
   }, []);
+
+  const iniciouRef = useRef(false);
+  useEffect(() => {
+    if (!iniciarAutomatico || iniciouRef.current) return;
+    iniciouRef.current = true;
+    queueMicrotask(() => void gerarPix());
+    // gerarPix só deve rodar uma vez, na montagem
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [iniciarAutomatico]);
 
   async function gerarPix() {
     setFase("gerando");

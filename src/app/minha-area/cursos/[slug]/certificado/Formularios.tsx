@@ -3,8 +3,8 @@
 import { startTransition, useActionState, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Alert } from "@/components/alert";
-import { PixCheckoutClaro } from "@/components/pix-checkout-claro";
-import { PagamentoCartao, type DadosCartaoCompra } from "@/components/cartao-transparente";
+import { EscolherPagamento } from "@/components/escolher-pagamento";
+import type { DadosCartaoCompra } from "@/components/cartao-transparente";
 import { CLASSE_INPUT } from "@/components/auth-shell";
 import { formatarCpf } from "@/lib/cpf";
 import {
@@ -108,15 +108,14 @@ export function PagamentoCertificado({
 }) {
   const router = useRouter();
   return (
-    <div className="flex flex-col gap-3">
-      <PixCheckoutClaro
-        rotuloBotao="Pagar com PIX"
-        criarPix={() => criarPagamentoCertificadoAction(cursoSlug, formato)}
-        aoAprovar={() => router.refresh()}
-        conversaoAds
-      />
-      <PagamentoCartao cartao={cartao} valorCentavos={valorCentavos} />
-    </div>
+    <EscolherPagamento
+      valorCentavos={valorCentavos}
+      rotuloComprar="Comprar certificado"
+      criarPix={() => criarPagamentoCertificadoAction(cursoSlug, formato)}
+      conversaoAds
+      cartao={cartao}
+      aoAprovar={() => router.refresh()}
+    />
   );
 }
 

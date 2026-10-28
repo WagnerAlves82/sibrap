@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { gadsCompra } from "@/lib/google-ads";
 import { Alert } from "@/components/alert";
 import { pagarComCartaoAction } from "@/app/minha-area/cartao-actions";
 import { verificarPagamentoPixAction } from "@/app/minha-area/premium/actions";
@@ -73,6 +71,8 @@ export function CartaoTransparente({
   emailCliente,
   nomeInicial = "",
   aoAprovar,
+  abertoInicial = false,
+  embutido = false,
 }: {
   produtoSlug: string;
   valorCentavos: number;
@@ -80,10 +80,14 @@ export function CartaoTransparente({
   emailCliente: string;
   nomeInicial?: string;
   aoAprovar: (pedidoId: string, valorCentavos: number) => void;
+  /** já abre o formulário (quando a pessoa escolheu cartão no modal de pagamento) */
+  abertoInicial?: boolean;
+  /** dentro do modal de pagamento: sem título nem moldura própria */
+  embutido?: boolean;
 }) {
   const idAlvo = `cartao-${useId().replace(/:/g, "")}`;
   const max = maxParcelas(valorCentavos);
-  const [aberto, setAberto] = useState(false);
+  const [aberto, setAberto] = useState(abertoInicial);
   const [pronto, setPronto] = useState(false);
   const [podePagar, setPodePagar] = useState(false);
   const [nome, setNome] = useState(nomeInicial);
@@ -198,8 +202,8 @@ export function CartaoTransparente({
   }
 
   return (
-    <form onSubmit={pagar} className="flex flex-col gap-3 border border-[#D7DEE6] bg-white p-4">
-      <p className="font-display text-[16px] font-extrabold text-[#14213A]">Pagar no cartão de crédito</p>
+    <form onSubmit={pagar} className={`flex flex-col gap-3 bg-white ${embutido ? "" : "border border-[#D7DEE6] p-4"}`}>
+      {!embutido && <p className="font-display text-[16px] font-extrabold text-[#14213A]">Pagar no cartão de crédito</p>}
       {/* o nome do comprador vem do cadastro; só pergunta se a conta não tiver nome */}
       {nomeInicial.trim().length < 3 && (
         <label className="flex flex-col gap-1 text-[13px] font-semibold text-[#516278]">
@@ -265,21 +269,3 @@ export function CartaoTransparente({
   );
 }
 
-/** Cartão para certificados, cursos e Premium: ao aprovar, registra a venda no Google Ads e recarrega a página. */
-export function PagamentoCartao({ cartao, valorCentavos }: { cartao: DadosCartaoCompra | null | undefined; valorCentavos: number }) {
-  const router = useRouter();
-  if (!cartao) return null;
-  return (
-    <CartaoTransparente
-      produtoSlug={cartao.produtoSlug}
-      valorCentavos={valorCentavos}
-      chavePublica={cartao.chavePublica}
-      emailCliente={cartao.email}
-      nomeInicial={cartao.nome}
-      aoAprovar={(pedidoId, valor) => {
-        gadsCompra({ valor: valor / 100, pedidoId });
-        router.refresh();
-      }}
-    />
-  );
-}

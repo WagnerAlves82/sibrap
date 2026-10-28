@@ -382,10 +382,13 @@ export default async function CursoPublicoPage({ params }: Props) {
                 <p className="mt-2 font-data text-3xl font-semibold text-[#14213A]">
                   {precoCurso ?? preco ?? "—"}
                 </p>
+                {(pago ?? produto) && (
+                  <p className="text-[13.5px] text-[#516278]">ou {textoParcela((pago ?? produto)!.preco_centavos)}</p>
+                )}
                 <p className="mt-3 text-[14.5px] leading-relaxed text-[#516278]">
                   {precoCurso
-                    ? "Pagamento único por PIX, direto na página, sem mensalidade. Acesso a todas as aulas e certificado online incluso."
-                    : "Pagamento único por PIX, direto na página. O valor é só do certificado — o curso continua gratuito."}
+                    ? "Pagamento único no PIX ou no cartão, direto na página, sem mensalidade. Acesso a todas as aulas e certificado online incluso."
+                    : "Pagamento único no PIX ou no cartão, direto na página. O valor é só do certificado — o curso continua gratuito."}
                 </p>
               </div>
             </Reveal>

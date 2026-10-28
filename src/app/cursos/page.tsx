@@ -1,3 +1,4 @@
+import { textoParcela } from "@/lib/apostilas";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -38,7 +39,10 @@ export default async function CursosPage() {
     supabase.from("produtos").select("slug, preco_centavos").like("slug", "curso-%").eq("ativo", true),
   ]);
   const precoDoCurso = new Map(
-    (pagos ?? []).map((p) => [p.slug.slice("curso-".length), (p.preco_centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })])
+    (pagos ?? []).map((p) => [
+      p.slug.slice("curso-".length),
+      `${(p.preco_centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} ou ${textoParcela(p.preco_centavos)}`,
+    ])
   );
 
   return (
@@ -80,7 +84,7 @@ export default async function CursosPage() {
                   <span className="font-data text-xs font-semibold text-accent-2">
                     {curso.carga_horaria_horas}h ·{" "}
                     {precoDoCurso.get(curso.slug) ? (
-                      <span className="text-[#14213A]">{precoDoCurso.get(curso.slug)} com certificado</span>
+                      <span className="text-[#14213A]">{precoDoCurso.get(curso.slug)}, com certificado</span>
                     ) : (
                       "Grátis"
                     )}
