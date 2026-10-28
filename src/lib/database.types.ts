@@ -419,6 +419,7 @@ export type Database = {
         Row: {
           atividade: string | null
           carga_min: number
+          conteudo: Json | null
           curso_id: string
           descricao: string | null
           duracao_video_min: number | null
@@ -433,6 +434,7 @@ export type Database = {
         Insert: {
           atividade?: string | null
           carga_min?: number
+          conteudo?: Json | null
           curso_id: string
           descricao?: string | null
           duracao_video_min?: number | null
@@ -447,6 +449,7 @@ export type Database = {
         Update: {
           atividade?: string | null
           carga_min?: number
+          conteudo?: Json | null
           curso_id?: string
           descricao?: string | null
           duracao_video_min?: number | null
@@ -1230,6 +1233,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      pesquisas_satisfacao: {
+        Row: {
+          aplicacao: number
+          clareza: number
+          comentario: string | null
+          criado_em: string
+          curso_id: string
+          duracao: string
+          exercicios: number
+          id: string
+          material: number
+          recomendacao: number
+          satisfacao: number
+          user_id: string
+        }
+        Insert: {
+          aplicacao: number
+          clareza: number
+          comentario?: string | null
+          criado_em?: string
+          curso_id: string
+          duracao: string
+          exercicios: number
+          id?: string
+          material: number
+          recomendacao: number
+          satisfacao: number
+          user_id?: string
+        }
+        Update: {
+          aplicacao?: number
+          clareza?: number
+          comentario?: string | null
+          criado_em?: string
+          curso_id?: string
+          duracao?: string
+          exercicios?: number
+          id?: string
+          material?: number
+          recomendacao?: number
+          satisfacao?: number
+          user_id?: string
+        }
+        Relationships: []
       }
       pedidos: {
         Row: {

@@ -159,6 +159,15 @@ export async function emitirCertificadoAction(
     data: { user },
   } = await supabase.auth.getUser();
 
+  const { data: pesquisa } = await supabase
+    .from("pesquisas_satisfacao")
+    .select("id")
+    .eq("curso_id", cursoId)
+    .maybeSingle();
+  if (!pesquisa) {
+    return { erro: "Responda a pesquisa de satisfação antes de emitir o certificado." };
+  }
+
   const { data: codigo, error } = await supabase.rpc("emitir_certificado", {
     p_curso_id: cursoId,
     p_nome: nome,
@@ -192,4 +201,42 @@ export async function emitirCertificadoAction(
   }
 
   redirect(`/certificado/${codigo}`);
+}
+
+export type EstadoPesquisa = { erro?: string; ok?: boolean } | null;
+
+const NOTAS_1_A_5 = ["satisfacao", "clareza", "material", "exercicios", "aplicacao"] as const;
+
+export async function responderPesquisaAction(
+  _anterior: EstadoPesquisa,
+  formData: FormData
+): Promise<EstadoPesquisa> {
+  const cursoId = String(formData.get("curso_id") ?? "");
+  const notas = Object.fromEntries(NOTAS_1_A_5.map((k) => [k, Number(formData.get(k))])) as Record<
+    (typeof NOTAS_1_A_5)[number],
+    number
+  >;
+  if (NOTAS_1_A_5.some((k) => !Number.isInteger(notas[k]) || notas[k] < 1 || notas[k] > 5)) {
+    return { erro: "Responda todas as perguntas para continuar." };
+  }
+  const duracao = String(formData.get("duracao") ?? "");
+  if (!["curta", "adequada", "longa"].includes(duracao)) {
+    return { erro: "Diga o que achou da duração do curso." };
+  }
+  const recomendacao = Number(formData.get("recomendacao"));
+  if (!Number.isInteger(recomendacao) || recomendacao < 0 || recomendacao > 10) {
+    return { erro: "Escolha uma nota de 0 a 10 para a recomendação." };
+  }
+  const comentario = String(formData.get("comentario") ?? "").trim().slice(0, 1000) || null;
+
+  const supabase = await criarClienteSupabaseServer();
+  const { error } = await supabase
+    .from("pesquisas_satisfacao")
+    .insert({ curso_id: cursoId, ...notas, duracao, recomendacao, comentario });
+  // 23505 = já respondida (resposta duplicada); segue em frente
+  if (error && error.code !== "23505") {
+    return { erro: "Não deu pra enviar sua resposta agora. Tenta de novo." };
+  }
+  revalidatePath("/minha-area/cursos", "layout");
+  return { ok: true };
 }

@@ -37,6 +37,12 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     largura: 1200,
     altura: 896,
   },
+  "ingles-basico-atendimento-ao-publico": {
+    src: "/ingles-atendimento-card.webp",
+    alt: "Recepcionista cumprimentando uma turista estrangeira com mala no balcão da recepção",
+    largura: 1200,
+    altura: 896,
+  },
 };
 
 async function carregarCurso(slug: string) {

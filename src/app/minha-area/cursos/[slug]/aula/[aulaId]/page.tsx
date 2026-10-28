@@ -10,6 +10,7 @@ import { MiniQuiz, type QuestaoMini } from "./MiniQuiz";
 import { BlocoAnuncio, ScriptAdsense } from "@/components/adsense";
 import { blocoAdsense, clienteAdsense } from "@/lib/adsense";
 import { produtoDoCursoPago } from "@/lib/curso-pago";
+import { AulaInterativa, type Bloco } from "@/components/aula-interativa";
 
 export const metadata: Metadata = {
   title: "Aula",
@@ -47,7 +48,7 @@ export default async function AulaPage({
     supabase.from("matriculas").select("curso_id").eq("curso_id", curso.id).maybeSingle(),
     supabase
       .from("modulos")
-      .select("titulo, ordem, aulas(id, titulo, ordem, youtube_id, carga_min, objetivo, resumo, atividade)")
+      .select("titulo, ordem, aulas(id, titulo, ordem, youtube_id, carga_min, objetivo, resumo, atividade, conteudo)")
       .eq("curso_id", curso.id)
       .order("ordem")
       .order("ordem", { referencedTable: "aulas" }),
@@ -117,8 +118,12 @@ export default async function AulaPage({
             concluidaInicial={concluidas.has(aula.id)}
             proximaHref={proxima ? aulaHref(proxima.id) : null}
           >
+            {Array.isArray(aula.conteudo) && aula.conteudo.length > 0 && (
+              <AulaInterativa blocos={aula.conteudo as unknown as Bloco[]} />
+            )}
+
             {aula.resumo && (
-              <Secao titulo="Resumo da aula">
+              <Secao titulo={Array.isArray(aula.conteudo) && aula.conteudo.length > 0 ? "Revisão rápida" : "Resumo da aula"}>
                 <TextoSimples texto={aula.resumo} />
               </Secao>
             )}

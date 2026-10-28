@@ -6,6 +6,7 @@ import { CabecalhoSite } from "@/components/site-chrome";
 import { Alert } from "@/components/alert";
 import { FormComprovante, FormEmitir, PagamentoCertificado } from "./Formularios";
 import { PopupParabens } from "./PopupParabens";
+import { PesquisaSatisfacao } from "./PesquisaSatisfacao";
 
 export const metadata: Metadata = {
   title: "Certificado",
@@ -53,6 +54,7 @@ export default async function CertificadoAreaPage({
     { data: acessos },
     { data: produtoOnline },
     { data: produtoImpresso },
+    { data: pesquisa },
   ] = await Promise.all([
     supabase.auth.getUser(),
     supabase.from("matriculas").select("curso_id").eq("curso_id", curso.id).maybeSingle(),
@@ -86,6 +88,7 @@ export default async function CertificadoAreaPage({
       .eq("slug", `certificado-impresso-${slug}`)
       .eq("ativo", true)
       .maybeSingle(),
+    supabase.from("pesquisas_satisfacao").select("id").eq("curso_id", curso.id).maybeSingle(),
   ]);
 
   if (!matricula) redirect(cursoHref);
@@ -106,7 +109,8 @@ export default async function CertificadoAreaPage({
   const pagoOnline = (acessos ?? []).some((a) => a.produtos.slug === `certificado-${slug}`);
   const pago = pagoOnline || pagoImpresso;
   const elegivel = cadunicoAprovado || pago;
-  const podeEmitir = aulasOk && provaOk && elegivel;
+  const pesquisaOk = Boolean(pesquisa);
+  const podeEmitir = aulasOk && provaOk && pesquisaOk && elegivel;
   const formatoEmissao: "online" | "impresso" = pagoImpresso ? "impresso" : "online";
   const precoOnline = produtoOnline
     ? (produtoOnline.preco_centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
@@ -146,7 +150,8 @@ export default async function CertificadoAreaPage({
           </div>
         ) : (
           <div className="mt-6 flex flex-col gap-5">
-            {aulasOk && provaOk && !elegivel && (
+            {aulasOk && provaOk && !pesquisaOk && <PesquisaSatisfacao cursoId={curso.id} cursoNome={curso.nome} />}
+            {aulasOk && provaOk && pesquisaOk && !elegivel && (
               <PopupParabens precoOnline={precoOnline} precoImpresso={precoImpresso} permiteCadunico={permiteCadunico} />
             )}
             {!podeEmitir && (
@@ -181,6 +186,9 @@ export default async function CertificadoAreaPage({
                       </Link>
                     </>
                   )}
+                </Item>
+                <Item ok={pesquisaOk}>
+                  Responder a pesquisa de satisfação (7 perguntas)
                 </Item>
                 <Item ok={elegivel}>
                   {cadunicoAprovado
@@ -269,7 +277,7 @@ export default async function CertificadoAreaPage({
                 </div>
               ) : (
                 <p className="mt-2 text-[14.5px] text-[#516278]">
-                  Disponível quando os três requisitos acima estiverem cumpridos.
+                  Disponível quando todos os requisitos acima estiverem cumpridos.
                 </p>
               )}
             </section>
