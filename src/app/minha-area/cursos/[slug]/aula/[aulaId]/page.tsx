@@ -7,9 +7,6 @@ import { TextoSimples } from "@/components/texto-simples";
 import { formatarHoras } from "@/lib/emissor";
 import { PlayerAula } from "./PlayerAula";
 import { MiniQuiz, type QuestaoMini } from "./MiniQuiz";
-import { BlocoAnuncio, ScriptAdsense } from "@/components/adsense";
-import { blocoAdsense, clienteAdsense } from "@/lib/adsense";
-import { produtoDoCursoPago } from "@/lib/curso-pago";
 import { AulaInterativa, type Bloco } from "@/components/aula-interativa";
 
 export const metadata: Metadata = {
@@ -41,8 +38,7 @@ export default async function AulaPage({
     .eq("slug", slug)
     .maybeSingle();
   if (!curso) notFound();
-  // publicidade só nas aulas dos cursos gratuitos (quem pagou o curso não vê anúncio)
-  const adsense = (await produtoDoCursoPago(supabase, slug)) ? null : clienteAdsense();
+  // sem publicidade nas aulas (AVA): decisão do Wagner em 29/10/2026, o aluno estuda sem distração
 
   const [{ data: matricula }, { data: modulos }, { data: progresso }] = await Promise.all([
     supabase.from("matriculas").select("curso_id").eq("curso_id", curso.id).maybeSingle(),
@@ -129,7 +125,6 @@ export default async function AulaPage({
               </Secao>
             )}
 
-            <BlocoAnuncio cliente={adsense} slot={blocoAdsense("AULA")} />
 
             {(aula.atividade || (materiais?.length ?? 0) > 0) && (
               <Secao titulo="Pratique">
@@ -161,7 +156,6 @@ export default async function AulaPage({
               </Secao>
             )}
           </PlayerAula>
-          <ScriptAdsense cliente={adsense} />
         </article>
 
         <aside className="lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto">
