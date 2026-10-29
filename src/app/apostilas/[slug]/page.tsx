@@ -135,7 +135,8 @@ export default async function ApostilaPage({ params }: Props) {
     image: galeria.length ? galeria.map((g) => g.url) : capa ? [capa] : undefined,
     brand: { "@type": "Brand", name: "SIBRAP" },
     manufacturer: { "@type": "Organization", name: EMISSOR.nome, url: siteUrl },
-    audience: { "@type": "Audience", audienceType: `Candidatos ao cargo de ${apostila.cargo} (${apostila.orgao})` },
+    // Listagens do comerciante (Google) só aceitam PeopleAudience aqui; "Audience" gerava aviso no Search Console
+    audience: { "@type": "PeopleAudience", audienceType: `Candidatos ao cargo de ${apostila.cargo} (${apostila.orgao})` },
     additionalProperty: [
       { "@type": "PropertyValue", name: "Órgão", value: apostila.orgao },
       { "@type": "PropertyValue", name: "Cargo", value: apostila.cargo },
