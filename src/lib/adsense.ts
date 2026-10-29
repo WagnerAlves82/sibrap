@@ -5,7 +5,7 @@
 //    verificação em todo o site e o script de anúncios só nas páginas liberadas;
 //  * ADSENSE_SLOT_NOTICIA_MEIO, ADSENSE_SLOT_NOTICIA_FIM, ADSENSE_SLOT_AULA e ADSENSE_SLOT_CURRICULO = ids dos blocos
 //    criados no painel do AdSense (opcionais: sem o id, aquele bloco não aparece).
-// Anúncios só nas Notícias e nas aulas dos cursos gratuitos; nunca no curso pago, na loja ou no pagamento.
+// Anúncios só nas Notícias e no Currículo; nunca nas aulas (AVA), na home, na loja ou no pagamento (Wagner, 29/10/2026).
 
 export function clienteAdsense(): string | null {
   const pub = process.env.ADSENSE_PUB_ID?.trim();
