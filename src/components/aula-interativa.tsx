@@ -117,12 +117,31 @@ export type Bloco =
       certo: { titulo: string; itens?: string[]; texto?: string };
     }
   // caça ao erro: o aluno toca nos trechos problemáticos de um texto; cada erro tem a explicação
-  | { tipo: "caca"; titulo?: string; intro?: string; trechos: { t: string; erro?: string }[] };
+  | { tipo: "caca"; titulo?: string; intro?: string; trechos: { t: string; erro?: string }[] }
+  // cards de lei: fechados mostram artigo e nome; abertos mostram o texto, a pena, a aplicação na portaria e o link oficial
+  | {
+      tipo: "leis";
+      titulo?: string;
+      intro?: string;
+      itens: { lei: string; artigo: string; nome: string; texto: string; pena?: string; portaria: string; url: string }[];
+    }
+  // calendário de escala: o aluno marca os dias de plantão do mês e confere; inicio = dia da semana do dia 1 (0 = domingo)
+  | {
+      tipo: "calendario";
+      titulo?: string;
+      intro?: string;
+      mes: string;
+      inicio: number;
+      dias: number;
+      plantoes: number[];
+      feriados?: { dia: number; nome: string }[];
+      explicacao?: string;
+    };
 
 // qualquer bloco pode ter "voz" própria (ex.: "en-US" para a pronúncia do alfabeto da OTAN num curso em português)
 type ComVoz = { voz?: string | null };
 
-const ATIVOS = new Set(["frases", "cards", "escolha", "vf", "ordenar", "dialogos", "sinais", "checklist", "fluxo", "simulador", "triagem", "associar", "caca"]);
+const ATIVOS = new Set(["frases", "cards", "escolha", "vf", "ordenar", "dialogos", "sinais", "checklist", "fluxo", "simulador", "triagem", "associar", "caca", "leis", "calendario"]);
 
 const Placar = createContext<(id: string) => void>(() => {});
 // idioma da voz do navegador (en-US no inglês); null = curso sem voz (ex.: Libras)
@@ -1232,6 +1251,133 @@ function Caca({ b, id }: { b: Extract<Bloco, { tipo: "caca" }>; id: string }) {
   );
 }
 
+function Leis({ b, id }: { b: Extract<Bloco, { tipo: "leis" }>; id: string }) {
+  const concluir = useConcluir(id);
+  const [abertos, setAbertos] = useState<Set<number>>(new Set());
+  const [atual, setAtual] = useState<number | null>(null);
+  useEffect(() => {
+    if (abertos.size === b.itens.length) concluir();
+  }, [abertos, b.itens.length, concluir]);
+  const abrir = (i: number) => {
+    setAtual((a) => (a === i ? null : i));
+    setAbertos((a) => new Set(a).add(i));
+  };
+  return (
+    <Caixa titulo={b.titulo ?? "O que diz a lei"} intro={b.intro ?? "Toque em cada card para abrir o artigo."}>
+      <div className="flex flex-col gap-2">
+        {b.itens.map((l, i) => (
+          <div key={i} className={`border-2 bg-white ${atual === i ? "border-brand" : "border-[#D7DEE6]"}`}>
+            <button type="button" onClick={() => abrir(i)} className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-[#F6F9FC]">
+              <span className="shrink-0 bg-brand px-2 py-1 font-data text-[13px] font-bold text-white">{l.artigo}</span>
+              <span className="flex-1">
+                <span className="block text-[16.5px] font-bold text-[#14213A]">{l.nome}</span>
+                <span className="block font-data text-[12.5px] uppercase tracking-wide text-[#516278]">{l.lei}</span>
+              </span>
+              <span aria-hidden className="text-[18px] text-[#516278]">
+                {abertos.has(i) && atual !== i ? "✓" : atual === i ? "−" : "+"}
+              </span>
+            </button>
+            {atual === i && (
+              <div className="border-t border-[#EEF2F6] px-4 py-3">
+                <p className="border-l-4 border-brand bg-[#F6F9FC] px-3 py-2 text-[15.5px] italic leading-relaxed text-[#14213A]">{l.texto}</p>
+                {l.pena && (
+                  <p className="mt-2 text-[15px] text-[#33465E]">
+                    <strong>Pena:</strong> {l.pena}
+                  </p>
+                )}
+                <p className="mt-2 text-[16px] leading-relaxed text-[#14213A]">
+                  <strong>Na portaria:</strong> {l.portaria}
+                </p>
+                <a href={l.url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-[15px] font-semibold text-brand underline underline-offset-4">
+                  Ler a lei completa no site do Planalto ↗
+                </a>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      <p className="mt-2 font-data text-[13.5px] text-[#516278]">
+        {abertos.size === b.itens.length ? "✓ Todos os artigos lidos" : `${abertos.size} de ${b.itens.length} artigos abertos`}
+      </p>
+    </Caixa>
+  );
+}
+
+function Calendario({ b, id }: { b: Extract<Bloco, { tipo: "calendario" }>; id: string }) {
+  const concluir = useConcluir(id);
+  const [marcados, setMarcados] = useState<Set<number>>(new Set());
+  const [conferido, setConferido] = useState(false);
+  const certos = useMemo(() => new Set(b.plantoes), [b.plantoes]);
+  const acertou = conferido && marcados.size === certos.size && [...marcados].every((d) => certos.has(d));
+  useEffect(() => {
+    if (acertou) concluir();
+  }, [acertou, concluir]);
+  const feriado = (d: number) => b.feriados?.find((f) => f.dia === d);
+  const tocar = (d: number) => {
+    setConferido(false);
+    setMarcados((m) => {
+      const n = new Set(m);
+      if (n.has(d)) n.delete(d);
+      else n.add(d);
+      return n;
+    });
+  };
+  const celulas: (number | null)[] = [...Array(b.inicio).fill(null), ...Array.from({ length: b.dias }, (_, i) => i + 1)];
+  const erros = conferido ? [...marcados].filter((d) => !certos.has(d)).length + b.plantoes.filter((d) => !marcados.has(d)).length : 0;
+  return (
+    <Caixa titulo={b.titulo ?? "Monte a escala"} intro={b.intro}>
+      <div className="border-2 border-brand bg-white">
+        <p className="bg-brand px-4 py-2 text-center font-display text-[16px] font-extrabold text-white">{b.mes}</p>
+        <div className="grid grid-cols-7 gap-px bg-[#EEF2F6] p-px">
+          {["D", "S", "T", "Q", "Q", "S", "S"].map((d, i) => (
+            <span key={i} className="bg-[#F6F9FC] py-1 text-center font-data text-[12.5px] font-semibold text-[#516278]">
+              {d}
+            </span>
+          ))}
+          {celulas.map((d, i) => {
+            if (d === null) return <span key={i} className="bg-white" />;
+            const m = marcados.has(d);
+            const cor = conferido
+              ? m && certos.has(d)
+                ? "bg-accent-2 text-white"
+                : m
+                  ? "bg-[#C0392B] text-white"
+                  : certos.has(d)
+                    ? "bg-[#FBEAEA] text-[#C0392B] outline outline-2 -outline-offset-2 outline-[#C0392B]"
+                    : "bg-white text-[#14213A]"
+              : m
+                ? "bg-brand text-white"
+                : "bg-white text-[#14213A] hover:bg-[#EEF3F8]";
+            const f = feriado(d);
+            return (
+              <button key={i} type="button" onClick={() => tocar(d)} title={f?.nome} className={`relative h-11 text-[16px] font-semibold ${cor}`}>
+                {d}
+                {f && <span aria-label={f.nome} className="absolute right-1 top-0.5 text-[10px]">★</span>}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      {b.feriados && b.feriados.length > 0 && (
+        <p className="mt-1.5 font-data text-[13px] text-[#516278]">★ {b.feriados.map((f) => `${f.dia}: ${f.nome}`).join(" · ")}</p>
+      )}
+      <div className="mt-2 flex flex-wrap items-center gap-3">
+        <button type="button" onClick={() => setConferido(true)} className="bg-accent px-4 py-2 text-[15.5px] font-bold text-accent-ink">
+          Conferir escala
+        </button>
+        <span className="font-data text-[13.5px] text-[#516278]">{marcados.size} dias marcados</span>
+      </div>
+      {conferido && (
+        <p className={`mt-2 text-[16px] leading-relaxed ${acertou ? "text-accent-2" : "text-[#C0392B]"}`}>
+          {acertou
+            ? `✓ Escala certa: ${b.plantoes.length} plantões no mês. ${b.explicacao ?? ""}`
+            : `✗ ${erros} ${erros === 1 ? "dia errado" : "dias errados"}. Em vermelho: marcado sem ser plantão; com contorno: plantão que faltou marcar.`}
+        </p>
+      )}
+    </Caixa>
+  );
+}
+
 function Render({ b, id }: { b: Bloco; id: string }) {
   switch (b.tipo) {
     case "texto":
@@ -1284,6 +1430,10 @@ function Render({ b, id }: { b: Bloco; id: string }) {
       return <Comparar b={b} />;
     case "caca":
       return <Caca b={b} id={id} />;
+    case "leis":
+      return <Leis b={b} id={id} />;
+    case "calendario":
+      return <Calendario b={b} id={id} />;
     default:
       return null;
   }
