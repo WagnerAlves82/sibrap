@@ -81,7 +81,6 @@ export default async function MinhaAreaPage() {
     return (doCurso.filter((a) => feitas.has(a.id)).length / doCurso.length) * 100;
   };
   const meusCursos = (cursos ?? []).filter((c) => matriculados.has(c.id));
-  const outrosCursos = (cursos ?? []).filter((c) => !matriculados.has(c.id));
 
   const cartao = "rounded-xl border border-[#D7DEE6] bg-white p-6";
   const botao =
@@ -163,29 +162,6 @@ export default async function MinhaAreaPage() {
                   </Reveal>
                 );
               })}
-            </div>
-          </section>
-        )}
-
-        {outrosCursos.length > 0 && (
-          <section className="mt-8">
-            <h2 className="mb-3 font-display text-xl font-extrabold text-[#14213A]">
-              Cursos gratuitos
-            </h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {outrosCursos.map((curso) => (
-                <div key={curso.id} className={cartao}>
-                  <p className="font-data text-xs font-semibold text-accent-2">
-                    {curso.carga_horaria_horas}h · com certificado
-                  </p>
-                  <p className="mt-1 font-display text-lg font-extrabold text-[#14213A]">
-                    {curso.nome}
-                  </p>
-                  <Link href={`/cursos/${curso.slug}`} className={`mt-4 ${botao}`}>
-                    Conhecer o curso
-                  </Link>
-                </div>
-              ))}
             </div>
           </section>
         )}
