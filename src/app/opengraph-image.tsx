@@ -27,7 +27,7 @@ async function carregarFonteGoogle(
 export default async function Image() {
   const titulo = "Curso gratuito de Informática Básica com IA";
   const subtitulo =
-    "40 horas em videoaulas, com certificado e QR Code de validação. Apostilas para concursos a partir de R$ 29,90.";
+    "60 horas de aulas interativas, com certificado e QR Code de validação. Apostilas para concursos a partir de R$ 29,90.";
   const eyebrow = "CURSO LIVRE";
   const destaque = "Grátis · 100% online";
   const dominio = "sibrap.tec.br";

@@ -136,7 +136,7 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
       { titulo: "Do zero ao uso no trabalho", texto: "Computador, pastas, internet, e-mail, gov.br, Word, Excel e PowerPoint, passo a passo." },
       { titulo: "Inteligência artificial", texto: "Como usar o Copilot e outras IAs para escrever, resumir e organizar, com segurança." },
       { titulo: "Segurança digital", texto: "Senhas, golpes e cuidados para não cair em armadilhas na internet." },
-      { titulo: "Certificado do seu jeito", texto: "Escolha 20, 30 ou 40 horas, com QR Code, e aumente depois pagando a diferença." },
+      { titulo: "Certificado do seu jeito", texto: "Escolha 20, 40 ou 60 horas, com QR Code, e aumente depois pagando a diferença." },
     ],
     destaques: [
       "Simuladores de Word e Excel: formatação, fórmulas e orçamento",
@@ -145,7 +145,7 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
       "Prompts prontos para usar a IA no trabalho",
     ],
     faq: [
-      ["Posso escolher a carga horária do certificado?", "Sim. O curso completo é aberto a todos e, na hora de emitir, você escolhe o certificado de 20, 30 ou 40 horas. Dá para aumentar depois, pagando só a diferença."],
+      ["Posso escolher a carga horária do certificado?", "Sim. O curso completo é aberto a todos e, na hora de emitir, você escolhe o certificado de 20, 40 ou 60 horas. Dá para aumentar depois, pagando só a diferença."],
     ],
   },
   "conserto-e-manutencao-de-celulares": {
