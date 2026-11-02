@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState, useTransition } from "react";
+import { useActionState, useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { CLASSE_INPUT, CLASSE_BOTAO_PRIMARIO } from "@/components/auth-shell";
 import { CampoSenha } from "@/components/campo-senha";
@@ -21,9 +21,30 @@ export function FormLogin({
   );
   const [reenviando, iniciarReenvio] = useTransition();
   const [reenviado, setReenviado] = useState(false);
+  const form = useRef<HTMLFormElement>(null);
+
+  // Login aceito: oferece salvar a senha no aparelho (Chrome/Android pela
+  // Credential Management API; Safari e outros pelo próprio formulário) e abre a área.
+  useEffect(() => {
+    const destino = estado?.destino;
+    if (!destino) return;
+    const abrir = () => window.location.assign(destino);
+    const dados = form.current ? new FormData(form.current) : null;
+    const email = String(dados?.get("email") ?? "");
+    const senha = String(dados?.get("senha") ?? "");
+    const PC = (window as unknown as { PasswordCredential?: new (d: { id: string; password: string }) => Credential })
+      .PasswordCredential;
+    if (PC && email && senha && navigator.credentials?.store) {
+      navigator.credentials.store(new PC({ id: email, password: senha })).catch(() => undefined).finally(abrir);
+    } else {
+      abrir();
+    }
+  }, [estado?.destino]);
+
+  const entrando = pending || Boolean(estado?.destino);
 
   return (
-    <form action={action} className="flex flex-col gap-3">
+    <form ref={form} action={action} className="flex flex-col gap-3">
       {emailConfirmado && (
         <p role="status" className="rounded-lg border border-[#BFE0D8] bg-[#EAF6F3] px-3 py-2 text-sm text-[#0E5A4D]">
           E-mail confirmado! Agora é só entrar com o seu e-mail e a senha que você criou.
@@ -43,7 +64,7 @@ export function FormLogin({
         type="email"
         name="email"
         placeholder="E-mail"
-        autoComplete="email"
+        autoComplete="username"
         required
         autoFocus
         defaultValue={estado?.email}
@@ -56,8 +77,8 @@ export function FormLogin({
       <Link href="/esqueci-senha" className="self-end text-[13px] font-semibold text-brand underline underline-offset-4">
         Esqueci minha senha
       </Link>
-      <button type="submit" disabled={pending} className={`mt-1 ${CLASSE_BOTAO_PRIMARIO}`}>
-        {pending ? "Entrando..." : "Entrar"}
+      <button type="submit" disabled={entrando} className={`mt-1 ${CLASSE_BOTAO_PRIMARIO}`}>
+        {entrando ? "Entrando..." : "Entrar"}
       </button>
       {estado?.erro && (
         <p role="alert" className="text-sm text-[#B3261E]">

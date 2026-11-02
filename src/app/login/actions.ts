@@ -5,7 +5,9 @@ import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { caminhoSeguro } from "@/lib/auth-redirect";
 import { dentroDoLimite, hash, identificarCliente, MSG_MUITAS_TENTATIVAS } from "@/lib/limite";
 
-export type EstadoLogin = { erro: string; email?: string; emailNaoConfirmado?: boolean } | null;
+// destino: login aceito — o formulário guarda a senha no aparelho (se o navegador
+// deixar) e só depois abre a página, por isso não há redirect aqui
+export type EstadoLogin = { erro?: string; email?: string; emailNaoConfirmado?: boolean; destino?: string } | null;
 
 export async function entrar(
   _estadoAnterior: EstadoLogin,
@@ -43,7 +45,7 @@ export async function entrar(
     return { erro: "E-mail ou senha incorretos.", email };
   }
 
-  redirect(next);
+  return { destino: next, email };
 }
 
 export async function sairDaConta() {
