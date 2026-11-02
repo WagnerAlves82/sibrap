@@ -42,7 +42,7 @@ export function MiniQuiz({ questoes }: { questoes: QuestaoMini[] }) {
         const r = respostas[q.questao_id];
         return (
           <div key={q.questao_id} className="rounded-xl border border-[#D7DEE6] bg-white p-5">
-            <p className="text-[15.5px] font-semibold leading-relaxed text-[#14213A]">
+            <p className="text-[17px] font-semibold leading-relaxed text-[#14213A]">
               <span className="mr-2 font-data text-xs text-[#93A0AF]">{q.ordem}.</span>
               {q.enunciado}
             </p>
@@ -58,7 +58,7 @@ export function MiniQuiz({ questoes }: { questoes: QuestaoMini[] }) {
                     aria-checked={r?.marcada === alt.letra}
                     disabled={!!r || carregando === q.questao_id}
                     onClick={() => responder(q, alt.letra)}
-                    className={`rounded-lg border px-4 py-2.5 text-left text-[14.5px] transition-colors ${
+                    className={`rounded-lg border px-4 py-2.5 text-left text-[16px] transition-colors ${
                       correta
                         ? "border-accent-2 bg-[#EAF6F2] text-[#0B5A4D]"
                         : errada
@@ -68,14 +68,14 @@ export function MiniQuiz({ questoes }: { questoes: QuestaoMini[] }) {
                             : "border-[#D7DEE6] text-[#516278] hover:border-[#93A0AF]"
                     }`}
                   >
-                    <strong className="mr-1">{alt.letra})</strong> {alt.texto}
+                    {q.alternativas.length > 2 && <strong className="mr-1">{alt.letra})</strong>} {alt.texto}
                     {correta && " ✓"}
                   </button>
                 );
               })}
             </div>
             {r && (
-              <p className={`mt-3 text-[13.5px] leading-relaxed ${r.correta ? "text-[#0B5A4D]" : "text-[#8A1F1F]"}`}>
+              <p className={`mt-3 text-[15px] leading-relaxed ${r.correta ? "text-[#0B5A4D]" : "text-[#8A1F1F]"}`}>
                 <strong>{r.correta ? "Isso mesmo! " : "Quase! "}</strong>
                 {r.comentario}
               </p>

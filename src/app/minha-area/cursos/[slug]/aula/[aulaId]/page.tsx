@@ -88,7 +88,7 @@ export default async function AulaPage({
               {aula.modulo} · Aula {indice + 1} de {lista.length}
             </p>
             {anterior && (
-              <Link href={aulaHref(anterior.id)} className="text-[13px] font-semibold text-brand underline underline-offset-4">
+              <Link href={aulaHref(anterior.id)} className="text-[14px] font-semibold text-brand underline underline-offset-4">
                 ← Aula anterior
               </Link>
             )}
@@ -102,7 +102,7 @@ export default async function AulaPage({
               <p className="font-data text-xs font-semibold uppercase tracking-wide text-[#93A0AF]">
                 O que você vai aprender
               </p>
-              <p className="mt-1 text-[15.5px] leading-relaxed text-[#14213A]">{aula.objetivo}</p>
+              <p className="mt-1 text-[17px] leading-relaxed text-[#14213A]">{aula.objetivo}</p>
             </div>
           )}
 
@@ -138,7 +138,7 @@ export default async function AulaPage({
                             href={m.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 text-[14.5px] font-semibold text-brand underline underline-offset-4"
+                            className="inline-flex items-center gap-2 text-[16px] font-semibold text-brand underline underline-offset-4"
                           >
                             <span aria-hidden>↓</span> {m.titulo}
                           </a>
@@ -160,7 +160,7 @@ export default async function AulaPage({
 
         <aside className="lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto">
           <div className="rounded-xl border border-[#D7DEE6] bg-white">
-            <p className="border-b border-[#E7EDF3] px-4 py-3 font-display text-[15px] font-extrabold text-[#14213A]">
+            <p className="border-b border-[#E7EDF3] px-4 py-3 font-display text-[16.5px] font-extrabold text-[#14213A]">
               Todas as aulas · {[...concluidas].filter((id) => lista.some((a) => a.id === id)).length}/{lista.length}
             </p>
             {(modulos ?? []).map((m) => (
@@ -186,7 +186,7 @@ export default async function AulaPage({
                         >
                           {icone}
                         </span>
-                        <span className="flex-1 text-[13.5px] leading-snug">{a.titulo}</span>
+                        <span className="flex-1 text-[15px] leading-snug">{a.titulo}</span>
                         <span className="font-data text-[11px] text-[#93A0AF]">
                           {formatarHoras(a.carga_min)}
                         </span>
@@ -209,7 +209,7 @@ export default async function AulaPage({
                 </ul>
               </div>
             ))}
-            <Link href={cursoHref} className="block border-t border-[#E7EDF3] px-4 py-3 text-[13.5px] font-bold text-brand">
+            <Link href={cursoHref} className="block border-t border-[#E7EDF3] px-4 py-3 text-[15px] font-bold text-brand">
               ← Voltar ao painel do curso
             </Link>
           </div>

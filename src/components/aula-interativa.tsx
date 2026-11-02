@@ -95,9 +95,22 @@ export type Bloco =
       campos: { rotulo: string; tipo: "texto" | "opcao"; opcoes?: string[]; correto?: string; placeholder?: string }[];
       acao: string;
       sucesso: string;
-    };
+    }
+  // jogo rápido "Libera ou barra?": situações em sequência, resposta em um toque e pontuação no fim
+  | {
+      tipo: "triagem";
+      titulo?: string;
+      intro?: string;
+      opcoes: [string, string];
+      casos: { situacao: string; certa: 0 | 1; explicacao: string }[];
+    }
+  // ligar os pares: toca num item da esquerda e depois no par da direita
+  | { tipo: "associar"; titulo?: string; intro?: string; pares: { a: string; b: string }[] };
 
-const ATIVOS = new Set(["frases", "cards", "escolha", "vf", "ordenar", "dialogos", "sinais", "checklist", "fluxo", "simulador"]);
+// qualquer bloco pode ter "voz" própria (ex.: "en-US" para a pronúncia do alfabeto da OTAN num curso em português)
+type ComVoz = { voz?: string | null };
+
+const ATIVOS = new Set(["frases", "cards", "escolha", "vf", "ordenar", "dialogos", "sinais", "checklist", "fluxo", "simulador", "triagem", "associar"]);
 
 const Placar = createContext<(id: string) => void>(() => {});
 // idioma da voz do navegador (en-US no inglês); null = curso sem voz (ex.: Libras)
@@ -138,7 +151,7 @@ function BotaoOuvir({ texto }: { texto: string }) {
       type="button"
       onClick={() => falar(texto, idioma)}
       aria-label={`Ouvir: ${texto}`}
-      className="flex h-8 w-8 shrink-0 items-center justify-center border border-[#D7DEE6] bg-white text-[15px] text-brand hover:border-brand"
+      className="flex h-8 w-8 shrink-0 items-center justify-center border border-[#D7DEE6] bg-white text-[16.5px] text-brand hover:border-brand"
     >
       🔊
     </button>
@@ -149,7 +162,7 @@ function Caixa({ titulo, intro, children }: { titulo?: string; intro?: string; c
   return (
     <section className="mt-8">
       {titulo && <h2 className="font-display text-xl font-extrabold text-[#14213A]">{titulo}</h2>}
-      {intro && <p className="mt-1 text-[15px] leading-relaxed text-[#516278]">{intro}</p>}
+      {intro && <p className="mt-1 text-[16.5px] leading-relaxed text-[#516278]">{intro}</p>}
       <div className="mt-3">{children}</div>
     </section>
   );
@@ -159,7 +172,7 @@ function Texto({ b }: { b: Extract<Bloco, { tipo: "texto" }> }) {
   return (
     <Caixa titulo={b.titulo}>
       {b.paragrafos.map((p, i) => (
-        <p key={i} className="mb-3 text-[15.5px] leading-relaxed text-[#14213A]">
+        <p key={i} className="mb-3 text-[17px] leading-relaxed text-[#14213A]">
           {p}
         </p>
       ))}
@@ -180,7 +193,7 @@ function Frases({ b, id }: { b: Extract<Bloco, { tipo: "frases" }>; id: string }
   return (
     <Caixa titulo={b.titulo ?? (b.repetir ? "Speak up: ouça e repita" : "Frases úteis")} intro={b.intro}>
       {b.repetir && (
-        <p className="mb-3 text-[13.5px] text-[#516278]">
+        <p className="mb-3 text-[15px] text-[#516278]">
           Toque em 🔊, repita a frase em voz alta e marque ✓. Não precisa acertar de primeira!
         </p>
       )}
@@ -189,8 +202,8 @@ function Frases({ b, id }: { b: Extract<Bloco, { tipo: "frases" }>; id: string }
           <li key={i} className="flex items-center gap-3 border-t border-[#EEF2F6] px-4 py-3 first:border-t-0">
             <BotaoOuvir texto={f.en} />
             <div className="min-w-0 flex-1">
-              <p className="text-[15.5px] font-semibold text-[#14213A]">{f.en}</p>
-              <p className="text-[13.5px] text-[#516278]">{f.pt}</p>
+              <p className="text-[17px] font-semibold text-[#14213A]">{f.en}</p>
+              <p className="text-[15px] text-[#516278]">{f.pt}</p>
             </div>
             {b.repetir ? (
               <button
@@ -198,7 +211,7 @@ function Frases({ b, id }: { b: Extract<Bloco, { tipo: "frases" }>; id: string }
                 onClick={() => marcar(i)}
                 aria-pressed={feitas.has(i)}
                 aria-label="Marcar como repetida"
-                className={`h-8 w-8 shrink-0 border text-[14px] font-bold ${feitas.has(i) ? "border-accent-2 bg-accent-2 text-white" : "border-[#C4CEDA] bg-white text-[#C4CEDA]"}`}
+                className={`h-8 w-8 shrink-0 border text-[15.5px] font-bold ${feitas.has(i) ? "border-accent-2 bg-accent-2 text-white" : "border-[#C4CEDA] bg-white text-[#C4CEDA]"}`}
               >
                 ✓
               </button>
@@ -222,7 +235,7 @@ function MarcarLido({ id }: { id: string }) {
         concluir();
       }}
       disabled={ok}
-      className="mt-2 text-[13.5px] font-semibold text-brand underline underline-offset-4 disabled:text-accent-2 disabled:no-underline"
+      className="mt-2 text-[15px] font-semibold text-brand underline underline-offset-4 disabled:text-accent-2 disabled:no-underline"
     >
       {ok ? "✓ Estudado" : "Já estudei estas frases"}
     </button>
@@ -242,7 +255,7 @@ function Audio({ b }: { b: Extract<Bloco, { tipo: "audio" }> }) {
             <button
               type="button"
               onClick={() => setVer(!ver)}
-              className="mt-3 text-[13.5px] font-semibold text-brand underline underline-offset-4"
+              className="mt-3 text-[15px] font-semibold text-brand underline underline-offset-4"
             >
               {ver ? "Esconder a transcrição" : "Ver a transcrição com tradução"}
             </button>
@@ -250,8 +263,8 @@ function Audio({ b }: { b: Extract<Bloco, { tipo: "audio" }> }) {
               <ul className="mt-3 flex flex-col gap-2">
                 {b.transcricao.map((f, i) => (
                   <li key={i} className="border-l-2 border-accent pl-3">
-                    <p className="text-[15px] font-semibold text-[#14213A]">{f.en}</p>
-                    <p className="text-[13.5px] text-[#516278]">{f.pt}</p>
+                    <p className="text-[16.5px] font-semibold text-[#14213A]">{f.en}</p>
+                    <p className="text-[15px] text-[#516278]">{f.pt}</p>
                   </li>
                 ))}
               </ul>
@@ -297,10 +310,10 @@ function Cards({ b, id }: { b: Extract<Bloco, { tipo: "cards" }>; id: string }) 
                       {c.icone}
                     </span>
                   )}
-                  <span className="text-center text-[15px] font-bold text-[#14213A]">{c.frente}</span>
+                  <span className="text-center text-[16.5px] font-bold text-[#14213A]">{c.frente}</span>
                 </span>
                 <span className="absolute inset-0 flex flex-col items-center justify-center border border-brand bg-brand p-3 text-white [backface-visibility:hidden] [transform:rotateY(180deg)]">
-                  <span className="text-center text-[14.5px] font-semibold leading-snug">{c.verso}</span>
+                  <span className="text-center text-[16px] font-semibold leading-snug">{c.verso}</span>
                 </span>
               </span>
             </button>
@@ -323,7 +336,7 @@ function Abas({ b }: { b: Extract<Bloco, { tipo: "abas" }> }) {
             role="tab"
             aria-selected={i === atual}
             onClick={() => setAtual(i)}
-            className={`border px-3 py-2 text-[13.5px] font-semibold ${i === atual ? "border-brand bg-brand text-white" : "border-[#D7DEE6] bg-white text-[#14213A] hover:border-brand"}`}
+            className={`border px-3 py-2 text-[15px] font-semibold ${i === atual ? "border-brand bg-brand text-white" : "border-[#D7DEE6] bg-white text-[#14213A] hover:border-brand"}`}
           >
             {a.titulo}
           </button>
@@ -334,8 +347,8 @@ function Abas({ b }: { b: Extract<Bloco, { tipo: "abas" }> }) {
           <li key={`${atual}-${i}`} className="flex items-center gap-3 border-t border-[#EEF2F6] px-4 py-2.5 first:border-t-0">
             <BotaoOuvir texto={f.en} />
             <div className="min-w-0 flex-1">
-              <p className="text-[15px] font-semibold text-[#14213A]">{f.en}</p>
-              <p className="text-[13.5px] text-[#516278]">{f.pt}</p>
+              <p className="text-[16.5px] font-semibold text-[#14213A]">{f.en}</p>
+              <p className="text-[15px] text-[#516278]">{f.pt}</p>
             </div>
           </li>
         ))}
@@ -372,7 +385,7 @@ function Dialogos({ b, id }: { b: Extract<Bloco, { tipo: "dialogos" }>; id: stri
               key={i}
               type="button"
               onClick={() => abrir(i)}
-              className={`border px-3 py-2 text-[13.5px] font-semibold ${i === atual ? "border-brand bg-brand text-white" : "border-[#D7DEE6] bg-white text-[#14213A] hover:border-brand"}`}
+              className={`border px-3 py-2 text-[15px] font-semibold ${i === atual ? "border-brand bg-brand text-white" : "border-[#D7DEE6] bg-white text-[#14213A] hover:border-brand"}`}
             >
               {lidos.has(i) && i !== atual ? "✓ " : ""}
               {x.titulo}
@@ -382,7 +395,7 @@ function Dialogos({ b, id }: { b: Extract<Bloco, { tipo: "dialogos" }>; id: stri
       )}
       <div className="border border-[#D7DEE6] bg-white p-4">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-          <p className="font-display text-[16px] font-extrabold text-[#14213A]">{d.titulo}</p>
+          <p className="font-display text-[17.5px] font-extrabold text-[#14213A]">{d.titulo}</p>
           <div className="flex flex-wrap items-center gap-3">
             {idioma && (
               <button
@@ -394,7 +407,7 @@ function Dialogos({ b, id }: { b: Extract<Bloco, { tipo: "dialogos" }>; id: stri
                   );
                   interagiu();
                 }}
-                className="bg-brand px-3 py-1.5 text-[13px] font-bold text-white"
+                className="bg-brand px-3 py-1.5 text-[14px] font-bold text-white"
               >
                 ▶ Ouvir o diálogo
               </button>
@@ -406,7 +419,7 @@ function Dialogos({ b, id }: { b: Extract<Bloco, { tipo: "dialogos" }>; id: stri
                   setTexto(!texto);
                   interagiu();
                 }}
-                className="text-[13px] font-semibold text-brand underline underline-offset-4"
+                className="text-[14px] font-semibold text-brand underline underline-offset-4"
               >
                 {texto ? "Esconder o texto" : "Mostrar o texto"}
               </button>
@@ -418,7 +431,7 @@ function Dialogos({ b, id }: { b: Extract<Bloco, { tipo: "dialogos" }>; id: stri
                   setTraducao(!traducao);
                   interagiu();
                 }}
-                className="text-[13px] font-semibold text-brand underline underline-offset-4"
+                className="text-[14px] font-semibold text-brand underline underline-offset-4"
               >
                 {traducao ? "Esconder tradução" : "Mostrar tradução"}
               </button>
@@ -426,7 +439,7 @@ function Dialogos({ b, id }: { b: Extract<Bloco, { tipo: "dialogos" }>; id: stri
           </div>
         </div>
         {!texto && (
-          <p className="mb-3 bg-[#F6F9FC] px-3 py-2 text-[13.5px] text-[#516278]">
+          <p className="mb-3 bg-[#F6F9FC] px-3 py-2 text-[15px] text-[#516278]">
             🎧 Ouça primeiro sem ler. Tente entender as palavras-chave e só depois mostre o texto.
           </p>
         )}
@@ -435,10 +448,10 @@ function Dialogos({ b, id }: { b: Extract<Bloco, { tipo: "dialogos" }>; id: stri
             <li key={i} className="flex items-start gap-3">
               <BotaoOuvir texto={f.en} />
               <div className="min-w-0 flex-1">
-                <p className="text-[15px] text-[#14213A]">
+                <p className="text-[16.5px] text-[#14213A]">
                   <strong className="font-bold">{f.quem}:</strong> {texto ? f.en : "• • •"}
                 </p>
-                {texto && traducao && <p className="text-[13.5px] text-[#516278]">{f.pt}</p>}
+                {texto && traducao && <p className="text-[15px] text-[#516278]">{f.pt}</p>}
               </div>
             </li>
           ))}
@@ -479,13 +492,13 @@ function Email({ b }: { b: Extract<Bloco, { tipo: "email" }> }) {
       <div ref={caixa} className="border border-[#D7DEE6] bg-white">
         <div className="flex items-center gap-2 border-b border-[#D7DEE6] bg-[#F6F9FC] px-4 py-2.5">
           <span aria-hidden>✉️</span>
-          <p className="text-[14px] font-semibold text-[#14213A]">Subject: {b.assunto}</p>
+          <p className="text-[15.5px] font-semibold text-[#14213A]">Subject: {b.assunto}</p>
         </div>
         <ul className="flex min-h-[120px] flex-col gap-2 px-4 py-4">
           {b.linhas.slice(0, n).map((f, i) => (
             <li key={i} className="animate-[rise-in_.5s_ease-out] motion-reduce:animate-none">
-              <p className="text-[15px] text-[#14213A]">{f.en}</p>
-              <p className="text-[12.5px] text-accent-2">{f.pt}</p>
+              <p className="text-[16.5px] text-[#14213A]">{f.en}</p>
+              <p className="text-[13.5px] text-accent-2">{f.pt}</p>
             </li>
           ))}
           {n < b.linhas.length && <li className="h-4 w-2 animate-pulse bg-brand" aria-hidden />}
@@ -494,7 +507,7 @@ function Email({ b }: { b: Extract<Bloco, { tipo: "email" }> }) {
           <button
             type="button"
             onClick={() => setN(0)}
-            className="mb-3 ml-4 text-[13px] font-semibold text-brand underline underline-offset-4"
+            className="mb-3 ml-4 text-[14px] font-semibold text-brand underline underline-offset-4"
           >
             ↺ Ver de novo
           </button>
@@ -511,8 +524,8 @@ function Escolha({ b, id }: { b: Extract<Bloco, { tipo: "escolha" }>; id: string
   return (
     <Caixa titulo={b.titulo ?? "Agora é com você"}>
       <div className="border-2 border-accent bg-white p-5">
-        {b.contexto && <p className="mb-2 text-[14.5px] leading-relaxed text-[#516278]">{b.contexto}</p>}
-        <p className="text-[15.5px] font-semibold text-[#14213A]">{b.pergunta}</p>
+        {b.contexto && <p className="mb-2 text-[16px] leading-relaxed text-[#516278]">{b.contexto}</p>}
+        <p className="text-[17px] font-semibold text-[#14213A]">{b.pergunta}</p>
         <div className="mt-3 flex flex-col gap-2">
           {b.opcoes.map((o, i) => {
             const marcada = resp === i;
@@ -533,7 +546,7 @@ function Escolha({ b, id }: { b: Extract<Bloco, { tipo: "escolha" }>; id: string
                   setResp(i);
                   if (i === b.correta) concluir();
                 }}
-                className={`border px-4 py-2.5 text-left text-[15px] text-[#14213A] ${cor}`}
+                className={`border px-4 py-2.5 text-left text-[16.5px] text-[#14213A] ${cor}`}
               >
                 {o}
               </button>
@@ -541,7 +554,7 @@ function Escolha({ b, id }: { b: Extract<Bloco, { tipo: "escolha" }>; id: string
           })}
         </div>
         {resp !== null && (
-          <p className={`mt-3 text-[14.5px] ${certo ? "text-accent-2" : "text-[#C0392B]"}`}>
+          <p className={`mt-3 text-[16px] ${certo ? "text-accent-2" : "text-[#C0392B]"}`}>
             <strong>{certo ? "Isso mesmo! " : "Ainda não. Tente outra opção. "}</strong>
             {certo && b.explicacao}
           </p>
@@ -570,7 +583,7 @@ function VerdadeiroFalso({ b, id }: { b: Extract<Bloco, { tipo: "vf" }>; id: str
           const respondida = i in resp;
           return (
             <li key={i} className="border border-[#D7DEE6] bg-white p-4">
-              <p className="text-[15px] text-[#14213A]">{it.texto}</p>
+              <p className="text-[16.5px] text-[#14213A]">{it.texto}</p>
               <div className="mt-2 flex gap-2">
                 {[true, false].map((v) => (
                   <button
@@ -578,7 +591,7 @@ function VerdadeiroFalso({ b, id }: { b: Extract<Bloco, { tipo: "vf" }>; id: str
                     type="button"
                     disabled={respondida}
                     onClick={() => responder(i, v)}
-                    className={`border px-4 py-1.5 text-[13.5px] font-bold ${
+                    className={`border px-4 py-1.5 text-[15px] font-bold ${
                       !respondida
                         ? "border-[#D7DEE6] text-[#14213A] hover:border-brand"
                         : v === it.verdadeiro
@@ -593,7 +606,7 @@ function VerdadeiroFalso({ b, id }: { b: Extract<Bloco, { tipo: "vf" }>; id: str
                 ))}
               </div>
               {respondida && (
-                <p className={`mt-2 text-[13.5px] ${r === it.verdadeiro ? "text-accent-2" : "text-[#C0392B]"}`}>
+                <p className={`mt-2 text-[15px] ${r === it.verdadeiro ? "text-accent-2" : "text-[#C0392B]"}`}>
                   {r === it.verdadeiro ? "✓ Acertou. " : "✗ Não foi dessa vez. "}
                   {it.explicacao}
                 </p>
@@ -603,7 +616,7 @@ function VerdadeiroFalso({ b, id }: { b: Extract<Bloco, { tipo: "vf" }>; id: str
         })}
       </ul>
       {terminou && (
-        <p className="mt-3 font-display text-[16px] font-extrabold text-[#14213A]">
+        <p className="mt-3 font-display text-[17.5px] font-extrabold text-[#14213A]">
           Você acertou {acertos} de {b.itens.length}.{" "}
           {acertos === b.itens.length ? "Excelente! 🎉" : "Revise as explicações e siga em frente."}
         </p>
@@ -658,14 +671,14 @@ function Ordenar({ b, id }: { b: Extract<Bloco, { tipo: "ordenar" }>; id: string
         <p className="font-data text-xs font-semibold uppercase tracking-wide text-[#93A0AF]">
           Frase {i + 1} de {b.itens.length}
         </p>
-        <p className="mt-1 text-[15px] text-[#516278]">“{item.pt}”</p>
+        <p className="mt-1 text-[16.5px] text-[#516278]">“{item.pt}”</p>
         <div className="mt-3 flex min-h-[46px] flex-wrap gap-1.5 border-b-2 border-[#D7DEE6] pb-2">
           {montada.map((k, n) => (
             <button
               key={n}
               type="button"
               onClick={() => !certa && setMontada(montada.filter((_, x) => x !== n))}
-              className="border border-brand bg-brand px-2.5 py-1.5 text-[15px] font-semibold text-white"
+              className="border border-brand bg-brand px-2.5 py-1.5 text-[16.5px] font-semibold text-white"
             >
               {palavras[k]}
             </button>
@@ -678,7 +691,7 @@ function Ordenar({ b, id }: { b: Extract<Bloco, { tipo: "ordenar" }>; id: string
                 key={k}
                 type="button"
                 onClick={() => setMontada([...montada, k])}
-                className="border border-[#C4CEDA] bg-white px-2.5 py-1.5 text-[15px] font-semibold text-[#14213A] hover:border-brand"
+                className="border border-[#C4CEDA] bg-white px-2.5 py-1.5 text-[16.5px] font-semibold text-[#14213A] hover:border-brand"
               >
                 {palavras[k]}
               </button>
@@ -687,13 +700,13 @@ function Ordenar({ b, id }: { b: Extract<Bloco, { tipo: "ordenar" }>; id: string
         </div>
         {completa && (
           <div className="mt-3 flex flex-wrap items-center gap-3">
-            <p className={`text-[14.5px] font-semibold ${certa ? "text-accent-2" : "text-[#C0392B]"}`}>
+            <p className={`text-[16px] font-semibold ${certa ? "text-accent-2" : "text-[#C0392B]"}`}>
               {certa ? "✓ Perfeito!" : "Quase! Toque nas palavras de cima para desfazer e tente de novo."}
             </p>
             {certa && (
               <>
                 <BotaoOuvir texto={item.en} />
-                <button type="button" onClick={proxima} className="bg-accent px-4 py-2 text-[14px] font-bold text-accent-ink">
+                <button type="button" onClick={proxima} className="bg-accent px-4 py-2 text-[15.5px] font-bold text-accent-ink">
                   {i + 1 < b.itens.length ? "Próxima frase →" : "Concluir"}
                 </button>
               </>
@@ -708,7 +721,7 @@ function Ordenar({ b, id }: { b: Extract<Bloco, { tipo: "ordenar" }>; id: string
 function Concluido({ b }: { b: Extract<Bloco, { tipo: "ordenar" }> }) {
   return (
     <Caixa titulo={b.titulo ?? "Monte a frase"}>
-      <p className="border border-accent-2 bg-[#E6F4F1] p-4 text-[15px] font-semibold text-accent-2">
+      <p className="border border-accent-2 bg-[#E6F4F1] p-4 text-[16.5px] font-semibold text-accent-2">
         ✓ Você montou as {b.itens.length} frases. Muito bem!
       </p>
     </Caixa>
@@ -768,7 +781,7 @@ function Sinais({ b, id }: { b: Extract<Bloco, { tipo: "sinais" }>; id: string }
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => tocar(p)}
-                    className={`border px-3 py-1.5 text-[15px] font-semibold ${vistos.has(p) ? "border-accent-2 bg-[#E6F4F1] text-accent-2" : "border-[#C4CEDA] bg-white text-[#14213A] hover:border-brand"}`}
+                    className={`border px-3 py-1.5 text-[16.5px] font-semibold ${vistos.has(p) ? "border-accent-2 bg-[#E6F4F1] text-accent-2" : "border-[#C4CEDA] bg-white text-[#14213A] hover:border-brand"}`}
                   >
                     {vistos.has(p) ? "✓ " : ""}
                     {p}
@@ -779,7 +792,7 @@ function Sinais({ b, id }: { b: Extract<Bloco, { tipo: "sinais" }>; id: string }
           </div>
         ))}
       </div>
-      <p className="mt-2 text-[13px] text-[#516278]">
+      <p className="mt-2 text-[14px] text-[#516278]">
         {Math.min(vistos.size, meta)} de {meta} sinais vistos para concluir · Também vale consultar o{" "}
         <a
           href="https://www.ines.gov.br/dicionario-de-libras/"
@@ -819,12 +832,12 @@ function Checklist({ b, id }: { b: Extract<Bloco, { tipo: "checklist" }>; id: st
               >
                 ✓
               </span>
-              <span className={`text-[15px] ${feitos.has(i) ? "text-[#93A0AF] line-through" : "text-[#14213A]"}`}>{t}</span>
+              <span className={`text-[16.5px] ${feitos.has(i) ? "text-[#93A0AF] line-through" : "text-[#14213A]"}`}>{t}</span>
             </button>
           </li>
         ))}
       </ul>
-      <p className="mt-2 font-data text-[12.5px] text-[#516278]">
+      <p className="mt-2 font-data text-[13.5px] text-[#516278]">
         {feitos.size} de {b.itens.length} itens
       </p>
     </Caixa>
@@ -848,24 +861,24 @@ function Fluxo({ b, id }: { b: Extract<Bloco, { tipo: "fluxo" }>; id: string }) 
               </span>
             )}
             <div className="flex gap-3 border border-[#D7DEE6] border-l-4 border-l-brand bg-white px-4 py-3 motion-safe:animate-[rise-in_.4s_ease-out]">
-              <span className="font-data text-[13px] font-bold text-brand">{i + 1}</span>
+              <span className="font-data text-[14px] font-bold text-brand">{i + 1}</span>
               <div>
-                <p className="text-[15px] font-bold text-[#14213A]">
+                <p className="text-[16.5px] font-bold text-[#14213A]">
                   {e.icone ? `${e.icone} ` : ""}
                   {e.titulo}
                 </p>
-                <p className="mt-0.5 text-[14.5px] leading-relaxed text-[#516278]">{e.texto}</p>
+                <p className="mt-0.5 text-[16px] leading-relaxed text-[#516278]">{e.texto}</p>
               </div>
             </div>
           </li>
         ))}
       </ol>
       {visiveis < b.etapas.length ? (
-        <button type="button" onClick={() => setVisiveis((v) => v + 1)} className="mt-3 bg-brand px-4 py-2 text-[14px] font-bold text-white">
+        <button type="button" onClick={() => setVisiveis((v) => v + 1)} className="mt-3 bg-brand px-4 py-2 text-[15.5px] font-bold text-white">
           Próxima etapa ({visiveis + 1} de {b.etapas.length}) ↓
         </button>
       ) : (
-        <p className="mt-3 text-[13.5px] font-semibold text-accent-2">✓ Você viu o processo completo.</p>
+        <p className="mt-3 text-[15px] font-semibold text-accent-2">✓ Você viu o processo completo.</p>
       )}
     </Caixa>
   );
@@ -889,7 +902,7 @@ function Simulador({ b, id }: { b: Extract<Bloco, { tipo: "simulador" }>; id: st
   };
   return (
     <Caixa titulo={b.titulo ?? "Simulador"} intro={b.intro}>
-      <p className="mb-2 border-l-4 border-accent bg-[#FBF5E4] px-4 py-3 text-[14.5px] leading-relaxed text-[#14213A]">
+      <p className="mb-2 border-l-4 border-accent bg-[#FBF5E4] px-4 py-3 text-[16px] leading-relaxed text-[#14213A]">
         <strong>Cenário:</strong> {b.cenario}
       </p>
       <div className="border border-[#14213A] bg-[#F6F9FC]">
@@ -899,14 +912,14 @@ function Simulador({ b, id }: { b: Extract<Bloco, { tipo: "simulador" }>; id: st
         </div>
         <div className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2">
           {b.campos.map((c, i) => (
-            <label key={i} className="flex flex-col gap-1 text-[12.5px] font-semibold uppercase tracking-wide text-[#516278]">
+            <label key={i} className="flex flex-col gap-1 text-[13.5px] font-semibold uppercase tracking-wide text-[#516278]">
               {c.rotulo}
               {c.tipo === "opcao" ? (
                 <select
                   disabled={ok}
                   value={valores[i]}
                   onChange={(e) => setValores((v) => v.map((x, k) => (k === i ? e.target.value : x)))}
-                  className="border border-[#C4CEDA] bg-white px-2 py-2 text-[14.5px] font-normal normal-case tracking-normal text-[#14213A]"
+                  className="border border-[#C4CEDA] bg-white px-2 py-2 text-[16px] font-normal normal-case tracking-normal text-[#14213A]"
                 >
                   <option value="">Selecione…</option>
                   {c.opcoes?.map((o) => (
@@ -919,7 +932,7 @@ function Simulador({ b, id }: { b: Extract<Bloco, { tipo: "simulador" }>; id: st
                   value={valores[i]}
                   placeholder={c.placeholder}
                   onChange={(e) => setValores((v) => v.map((x, k) => (k === i ? e.target.value : x)))}
-                  className="border border-[#C4CEDA] bg-white px-2 py-2 text-[14.5px] font-normal normal-case tracking-normal text-[#14213A]"
+                  className="border border-[#C4CEDA] bg-white px-2 py-2 text-[16px] font-normal normal-case tracking-normal text-[#14213A]"
                 />
               )}
             </label>
@@ -927,17 +940,173 @@ function Simulador({ b, id }: { b: Extract<Bloco, { tipo: "simulador" }>; id: st
         </div>
         <div className="border-t border-[#D7DEE6] px-4 py-3">
           {ok ? (
-            <p className="text-[14.5px] font-semibold text-accent-2">✓ {b.sucesso}</p>
+            <p className="text-[16px] font-semibold text-accent-2">✓ {b.sucesso}</p>
           ) : (
             <>
-              <button type="button" onClick={confirmar} className="bg-accent-2 px-4 py-2 text-[14px] font-bold text-white">
+              <button type="button" onClick={confirmar} className="bg-accent-2 px-4 py-2 text-[15.5px] font-bold text-white">
                 {b.acao}
               </button>
-              {erro && <p className="mt-2 text-[13.5px] text-[#C0392B]">{erro}</p>}
+              {erro && <p className="mt-2 text-[15px] text-[#C0392B]">{erro}</p>}
             </>
           )}
         </div>
       </div>
+    </Caixa>
+  );
+}
+
+function Triagem({ b, id }: { b: Extract<Bloco, { tipo: "triagem" }>; id: string }) {
+  const concluir = useConcluir(id);
+  const [i, setI] = useState(0);
+  const [resposta, setResposta] = useState<0 | 1 | null>(null);
+  const [acertos, setAcertos] = useState(0);
+  const fim = i >= b.casos.length;
+  useEffect(() => {
+    if (fim) concluir();
+  }, [fim, concluir]);
+  const caso = b.casos[i];
+  const responder = (r: 0 | 1) => {
+    if (resposta !== null) return;
+    setResposta(r);
+    if (r === caso.certa) setAcertos((a) => a + 1);
+  };
+  const estrelas = Math.round((acertos / b.casos.length) * 3);
+  return (
+    <Caixa titulo={b.titulo ?? "Desafio rápido"} intro={b.intro}>
+      <div className="border-2 border-brand bg-white">
+        <div className="flex items-center justify-between bg-brand px-4 py-2 font-data text-[13.5px] text-white">
+          <span>{fim ? "Resultado" : `Situação ${i + 1} de ${b.casos.length}`}</span>
+          <span>⭐ {acertos} {acertos === 1 ? "acerto" : "acertos"}</span>
+        </div>
+        {fim ? (
+          <div className="px-5 py-6 text-center">
+            <p className="text-[34px] leading-none" aria-label={`${estrelas} de 3 estrelas`}>
+              {"★".repeat(estrelas)}
+              <span className="text-[#D7DEE6]">{"★".repeat(3 - estrelas)}</span>
+            </p>
+            <p className="mt-2 font-display text-[19px] font-extrabold text-[#14213A]">
+              {acertos} de {b.casos.length}{" "}
+              {acertos === b.casos.length
+                ? "— perfeito, nenhum golpe passou!"
+                : acertos >= b.casos.length * 0.7
+                  ? "— muito bem!"
+                  : "— revise as explicações e tente de novo"}
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setI(0);
+                setAcertos(0);
+                setResposta(null);
+              }}
+              className="mt-3 text-[15px] font-semibold text-brand underline underline-offset-4"
+            >
+              ↺ Jogar de novo
+            </button>
+          </div>
+        ) : (
+          <div className="p-5">
+            <p className="text-[17px] leading-relaxed text-[#14213A]">{caso.situacao}</p>
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              {b.opcoes.map((o, k) => {
+                const marcada = resposta === k;
+                const cor =
+                  resposta === null
+                    ? k === 0
+                      ? "border-accent-2 text-accent-2 hover:bg-[#E6F4F1]"
+                      : "border-[#C0392B] text-[#C0392B] hover:bg-[#FBEAEA]"
+                    : k === caso.certa
+                      ? "border-accent-2 bg-accent-2 text-white"
+                      : marcada
+                        ? "border-[#C0392B] bg-[#FBEAEA] text-[#C0392B]"
+                        : "border-[#EEF2F6] text-[#93A0AF]";
+                return (
+                  <button key={k} type="button" onClick={() => responder(k as 0 | 1)} className={`border-2 px-3 py-3 text-[16.5px] font-bold ${cor}`}>
+                    {o}
+                  </button>
+                );
+              })}
+            </div>
+            {resposta !== null && (
+              <div className="mt-3">
+                <p className={`text-[16px] leading-relaxed ${resposta === caso.certa ? "text-accent-2" : "text-[#C0392B]"}`}>
+                  <strong>{resposta === caso.certa ? "✓ Isso! " : "✗ Cuidado! "}</strong>
+                  {caso.explicacao}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setI((x) => x + 1);
+                    setResposta(null);
+                  }}
+                  className="mt-3 bg-accent px-4 py-2 text-[15.5px] font-bold text-accent-ink"
+                >
+                  {i + 1 < b.casos.length ? "Próxima situação →" : "Ver resultado"}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </Caixa>
+  );
+}
+
+function Associar({ b, id }: { b: Extract<Bloco, { tipo: "associar" }>; id: string }) {
+  const concluir = useConcluir(id);
+  const direita = useMemo(() => embaralhar(b.pares.map((_, k) => k), b.pares.length * 5 + 1), [b.pares]);
+  const [escolhida, setEscolhida] = useState<number | null>(null);
+  const [ligados, setLigados] = useState<Set<number>>(new Set());
+  const [errado, setErrado] = useState<number | null>(null);
+  useEffect(() => {
+    if (ligados.size === b.pares.length) concluir();
+  }, [ligados, b.pares.length, concluir]);
+  const tocarDireita = (k: number) => {
+    if (escolhida === null || ligados.has(k)) return;
+    if (k === escolhida) {
+      setLigados((l) => new Set(l).add(k));
+      setEscolhida(null);
+      setErrado(null);
+    } else setErrado(k);
+  };
+  const base = "w-full border-2 px-3 py-2.5 text-left text-[15.5px] transition-colors";
+  return (
+    <Caixa titulo={b.titulo ?? "Ligue os pares"} intro={b.intro ?? "Toque num item da esquerda e depois no par certo da direita."}>
+      <div className="grid grid-cols-2 gap-2">
+        <div className="flex flex-col gap-2">
+          {b.pares.map((p, k) => (
+            <button
+              key={k}
+              type="button"
+              disabled={ligados.has(k)}
+              onClick={() => {
+                setEscolhida(k);
+                setErrado(null);
+              }}
+              className={`${base} font-semibold ${ligados.has(k) ? "border-accent-2 bg-[#E6F4F1] text-accent-2" : escolhida === k ? "border-brand bg-brand text-white" : "border-[#D7DEE6] bg-white text-[#14213A] hover:border-brand"}`}
+            >
+              {ligados.has(k) ? "✓ " : ""}
+              {p.a}
+            </button>
+          ))}
+        </div>
+        <div className="flex flex-col gap-2">
+          {direita.map((k) => (
+            <button
+              key={k}
+              type="button"
+              disabled={ligados.has(k)}
+              onClick={() => tocarDireita(k)}
+              className={`${base} ${ligados.has(k) ? "border-accent-2 bg-[#E6F4F1] text-accent-2" : errado === k ? "border-[#C0392B] bg-[#FBEAEA] text-[#C0392B]" : "border-[#D7DEE6] bg-white text-[#14213A] hover:border-brand"}`}
+            >
+              {b.pares[k].b}
+            </button>
+          ))}
+        </div>
+      </div>
+      <p className="mt-2 font-data text-[13.5px] text-[#516278]">
+        {ligados.size === b.pares.length ? "✓ Todos os pares ligados!" : `${ligados.size} de ${b.pares.length} pares`}
+      </p>
     </Caixa>
   );
 }
@@ -948,14 +1117,14 @@ function Render({ b, id }: { b: Bloco; id: string }) {
       return <Texto b={b} />;
     case "dica":
       return (
-        <p className="mt-6 border-l-4 border-accent bg-[#FBF5E4] px-4 py-3 text-[15px] leading-relaxed text-[#14213A]">💡 {b.texto}</p>
+        <p className="mt-6 border-l-4 border-accent bg-[#FBF5E4] px-4 py-3 text-[16.5px] leading-relaxed text-[#14213A]">💡 {b.texto}</p>
       );
     case "imagem":
       return (
         <figure className="mt-6">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={b.src} alt={b.alt} loading="lazy" className="mx-auto max-h-[300px] w-auto border border-[#D7DEE6] bg-white" />
-          {b.legenda && <figcaption className="mt-1 text-center text-[13px] text-[#516278]">{b.legenda}</figcaption>}
+          {b.legenda && <figcaption className="mt-1 text-center text-[14px] text-[#516278]">{b.legenda}</figcaption>}
         </figure>
       );
     case "frases":
@@ -984,6 +1153,10 @@ function Render({ b, id }: { b: Bloco; id: string }) {
       return <Fluxo b={b} id={id} />;
     case "simulador":
       return <Simulador b={b} id={id} />;
+    case "triagem":
+      return <Triagem b={b} id={id} />;
+    case "associar":
+      return <Associar b={b} id={id} />;
     default:
       return null;
   }
@@ -1000,7 +1173,7 @@ export function AulaInterativa({ blocos, idioma = "en-US" }: { blocos: Bloco[]; 
       <Placar.Provider value={marcar}>
         {total > 0 && (
           <div className="sticky top-0 z-10 -mx-1 mb-2 border border-[#D7DEE6] bg-white/95 px-4 py-2.5 backdrop-blur">
-            <div className="flex items-center justify-between gap-3 text-[13px]">
+            <div className="flex items-center justify-between gap-3 text-[14px]">
               <span className="font-semibold text-[#14213A]">
                 {feitos.size === total ? "🎉 Todas as atividades feitas!" : `Atividades da aula: ${feitos.size} de ${total}`}
               </span>
@@ -1012,7 +1185,13 @@ export function AulaInterativa({ blocos, idioma = "en-US" }: { blocos: Bloco[]; 
           </div>
         )}
         {blocos.map((b, i) => (
-          <Render key={i} b={b} id={`b${i}`} />
+          (b as ComVoz).voz !== undefined ? (
+            <Voz.Provider key={i} value={(b as ComVoz).voz ?? null}>
+              <Render b={b} id={`b${i}`} />
+            </Voz.Provider>
+          ) : (
+            <Render key={i} b={b} id={`b${i}`} />
+          )
         ))}
       </Placar.Provider>
     </Voz.Provider>

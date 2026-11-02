@@ -151,7 +151,7 @@ export function PlayerAula({
         </div>
       ) : (
         // aula só em texto: nada de "vídeo" falso (os alunos achavam que precisavam assistir algo para avançar)
-        <p className="border-l-4 border-accent bg-white px-4 py-3 text-[14.5px] leading-relaxed text-[#33465E]">
+        <p className="border-l-4 border-accent bg-white px-4 py-3 text-[16px] leading-relaxed text-[#33465E]">
           <strong className="text-[#14213A]">Aula em texto.</strong> Leia o resumo, faça a atividade e, no fim da página, toque em
           &quot;Li a aula, marcar como concluída&quot; para liberar a próxima.
         </p>
@@ -177,7 +177,7 @@ export function PlayerAula({
                 ultimaTentativaRef.current = 0;
                 concluir();
               }}
-              className="self-start rounded-lg bg-accent px-5 py-2.5 text-[14px] font-bold text-accent-ink transition-colors hover:brightness-105"
+              className="self-start rounded-lg bg-accent px-5 py-2.5 text-[15.5px] font-bold text-accent-ink transition-colors hover:brightness-105"
             >
               Li a aula, marcar como concluída
             </button>
@@ -187,7 +187,7 @@ export function PlayerAula({
         {proximaHref && concluida && (
           <Link
             href={proximaHref}
-            className="inline-flex w-fit items-center gap-2 rounded-lg bg-accent px-6 py-3 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"
+            className="inline-flex w-fit items-center gap-2 rounded-lg bg-accent px-6 py-3 text-[16.5px] font-bold text-accent-ink transition-colors hover:brightness-105"
           >
             Próxima aula <span aria-hidden>→</span>
           </Link>

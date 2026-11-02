@@ -41,7 +41,7 @@ function interpretar(texto: string): Bloco[] {
 
 export function TextoSimples({ texto, className = "" }: { texto: string; className?: string }) {
   return (
-    <div className={`flex flex-col gap-3 text-[15.5px] leading-relaxed text-[#3A4A63] ${className}`}>
+    <div className={`flex flex-col gap-3 text-[17px] leading-relaxed text-[#3A4A63] ${className}`}>
       {interpretar(texto).map((b, i) =>
         b.tipo === "p" ? (
           <p key={i}>{inline(b.texto)}</p>
