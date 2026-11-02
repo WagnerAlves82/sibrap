@@ -107,12 +107,22 @@ export type Bloco =
   // ligar os pares: toca num item da esquerda e depois no par da direita
   | { tipo: "associar"; titulo?: string; intro?: string; pares: { a: string; b: string }[] }
   // tabela comparativa; células "sim"/"não" viram ✓ verde e ✕ vermelho; "legenda" vai embaixo
-  | { tipo: "tabela"; titulo?: string; intro?: string; colunas: string[]; linhas: string[][]; legenda?: string };
+  | { tipo: "tabela"; titulo?: string; intro?: string; colunas: string[]; linhas: string[][]; legenda?: string }
+  // certo × errado lado a lado (postura, modelos de texto); "texto" mostra um documento, "itens" uma lista
+  | {
+      tipo: "comparar";
+      titulo?: string;
+      intro?: string;
+      errado: { titulo: string; itens?: string[]; texto?: string };
+      certo: { titulo: string; itens?: string[]; texto?: string };
+    }
+  // caça ao erro: o aluno toca nos trechos problemáticos de um texto; cada erro tem a explicação
+  | { tipo: "caca"; titulo?: string; intro?: string; trechos: { t: string; erro?: string }[] };
 
 // qualquer bloco pode ter "voz" própria (ex.: "en-US" para a pronúncia do alfabeto da OTAN num curso em português)
 type ComVoz = { voz?: string | null };
 
-const ATIVOS = new Set(["frases", "cards", "escolha", "vf", "ordenar", "dialogos", "sinais", "checklist", "fluxo", "simulador", "triagem", "associar"]);
+const ATIVOS = new Set(["frases", "cards", "escolha", "vf", "ordenar", "dialogos", "sinais", "checklist", "fluxo", "simulador", "triagem", "associar", "caca"]);
 
 const Placar = createContext<(id: string) => void>(() => {});
 // idioma da voz do navegador (en-US no inglês); null = curso sem voz (ex.: Libras)
@@ -1150,6 +1160,78 @@ function Tabela({ b }: { b: Extract<Bloco, { tipo: "tabela" }> }) {
   );
 }
 
+function Comparar({ b }: { b: Extract<Bloco, { tipo: "comparar" }> }) {
+  const lado = (l: { titulo: string; itens?: string[]; texto?: string }, certo: boolean) => (
+    <div className={`border-2 bg-white ${certo ? "border-accent-2" : "border-[#C0392B]"}`}>
+      <p className={`px-4 py-2 text-[15.5px] font-bold text-white ${certo ? "bg-accent-2" : "bg-[#C0392B]"}`}>
+        {certo ? "✓ " : "✕ "}
+        {l.titulo}
+      </p>
+      {l.texto && <p className="whitespace-pre-line px-4 py-3 font-data text-[14.5px] leading-relaxed text-[#14213A]">{l.texto}</p>}
+      {l.itens && (
+        <ul className="flex flex-col gap-1.5 px-4 py-3">
+          {l.itens.map((t, i) => (
+            <li key={i} className="flex gap-2 text-[16px] leading-relaxed text-[#14213A]">
+              <span aria-hidden className={certo ? "text-accent-2" : "text-[#C0392B]"}>
+                {certo ? "✓" : "✕"}
+              </span>
+              {t}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+  return (
+    <Caixa titulo={b.titulo ?? "Certo × errado"} intro={b.intro}>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {lado(b.errado, false)}
+        {lado(b.certo, true)}
+      </div>
+    </Caixa>
+  );
+}
+
+function Caca({ b, id }: { b: Extract<Bloco, { tipo: "caca" }>; id: string }) {
+  const concluir = useConcluir(id);
+  const totalErros = b.trechos.filter((t) => t.erro).length;
+  const [achados, setAchados] = useState<Set<number>>(new Set());
+  const [ultimo, setUltimo] = useState<{ i: number; certo: boolean } | null>(null);
+  useEffect(() => {
+    if (achados.size === totalErros) concluir();
+  }, [achados, totalErros, concluir]);
+  const tocar = (i: number) => {
+    const t = b.trechos[i];
+    if (t.erro) setAchados((a) => new Set(a).add(i));
+    setUltimo({ i, certo: !!t.erro });
+  };
+  const fim = achados.size === totalErros;
+  return (
+    <Caixa titulo={b.titulo ?? "Caça ao erro"} intro={b.intro ?? "Toque nos trechos que estão errados."}>
+      <div className="border border-[#D7DEE6] bg-[#FFFDF6] px-4 py-4 font-data text-[15px] leading-[2] text-[#14213A]">
+        {b.trechos.map((t, i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => tocar(i)}
+            className={`mr-1 inline px-0.5 text-left ${achados.has(i) ? "bg-[#FBEAEA] text-[#C0392B] line-through decoration-2" : "hover:bg-[#EEF3F8]"}`}
+          >
+            {t.t}
+          </button>
+        ))}
+      </div>
+      <p className="mt-2 font-data text-[13.5px] text-[#516278]">
+        {fim ? `✓ Você achou os ${totalErros} erros!` : `${achados.size} de ${totalErros} erros encontrados`}
+      </p>
+      {ultimo && (
+        <p className={`mt-1 text-[16px] leading-relaxed ${ultimo.certo ? "text-accent-2" : "text-[#516278]"}`}>
+          {ultimo.certo ? `✓ Achou: ${b.trechos[ultimo.i].erro}` : "Esse trecho está adequado. Procure opiniões, suposições, gírias ou falta de informação."}
+        </p>
+      )}
+    </Caixa>
+  );
+}
+
 function Render({ b, id }: { b: Bloco; id: string }) {
   switch (b.tipo) {
     case "texto":
@@ -1198,6 +1280,10 @@ function Render({ b, id }: { b: Bloco; id: string }) {
       return <Associar b={b} id={id} />;
     case "tabela":
       return <Tabela b={b} />;
+    case "comparar":
+      return <Comparar b={b} />;
+    case "caca":
+      return <Caca b={b} id={id} />;
     default:
       return null;
   }
