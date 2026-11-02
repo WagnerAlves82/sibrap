@@ -110,7 +110,7 @@ function perguntasFrequentes(
     precoCurso
       ? [`Quanto custa o curso de ${curso.nome}?`, `O curso custa ${precoCurso}, pagamento único no PIX ou em até 3x, sem mensalidade. O valor dá acesso a todas as aulas, 100% online, e já inclui o certificado.`]
       : [`O curso de ${curso.nome} é gratuito?`, `Sim. Todas as aulas do curso de ${curso.nome} são gratuitas e 100% online. Só o certificado é opcional e pago, e você escolhe se quer emiti-lo ao terminar o curso.`],
-    [`O curso de ${curso.nome} tem certificado?`, `Sim. Depois de concluir as aulas e ser aprovado na prova final (nota mínima de ${curso.nota_minima}%), você pode emitir o certificado de ${horasCertificado}, com QR Code para qualquer pessoa conferir a autenticidade${precoCurso ? ". O certificado online já está incluso no valor do curso" : ""}.`],
+    [`O curso de ${curso.nome} tem certificado?`, `Sim. Depois de concluir as aulas e ser aprovado na prova final (nota mínima de ${curso.nota_minima}%), você pode emitir o certificado de ${horasCertificado}${precoCurso ? ", com QR Code para qualquer pessoa conferir a autenticidade. O certificado online já está incluso no valor do curso" : ". O sistema cobra uma pequena taxa pela emissão, e a autenticidade pode ser conferida no site pelo QR Code"}.`],
     [`Qual é a carga horária do curso de ${curso.nome}?`, `O curso tem ${curso.carga_horaria_horas} horas, divididas em ${modulos.length} módulos. Você estuda no seu ritmo, pelo celular ou pelo computador, e o progresso fica salvo.`],
     [`O que se aprende no curso de ${curso.nome}?`, `Os módulos são: ${modulos.join("; ")}.`],
     ["Preciso de experiência ou de algum curso antes?", "Não. O curso é livre e não tem pré-requisito: basta saber ler e ter acesso à internet."],
