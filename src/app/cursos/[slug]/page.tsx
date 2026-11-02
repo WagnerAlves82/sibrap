@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { Reveal } from "@/components/reveal";
-import { AVISO_CURSO_LIVRE, EMISSOR, formatarHoras } from "@/lib/emissor";
+import { AVISO_CURSO_LIVRE, EMISSOR } from "@/lib/emissor";
 import { VISITAS_MINIMAS_PARA_EXIBIR, visitasDoCurso } from "@/lib/visitas";
 import { textoParcela } from "@/lib/apostilas";
 import { formatarReais, produtoDoCursoPago } from "@/lib/curso-pago";
@@ -374,7 +374,6 @@ export default async function CursoPublicoPage({ params }: Props) {
           </Reveal>
           <div className="mt-8 flex max-w-3xl flex-col gap-3">
             {modulos?.map((modulo, i) => {
-              const minutos = modulo.aulas.reduce((s, a) => s + a.carga_min, 0);
               return (
                 <Reveal key={modulo.id} delay={Math.min(i, 4) * 60}>
                   <details className="group border border-[#D7DEE6] bg-white">
@@ -384,7 +383,7 @@ export default async function CursoPublicoPage({ params }: Props) {
                           {modulo.titulo}
                         </span>
                         <span className="text-[13px] text-[#516278]">
-                          {modulo.aulas.length} aulas · {formatarHoras(minutos)}
+                          {modulo.aulas.length} aulas
                         </span>
                       </span>
                       <span aria-hidden className="text-accent transition-transform group-open:rotate-90">

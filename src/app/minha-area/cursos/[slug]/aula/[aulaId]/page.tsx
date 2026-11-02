@@ -4,7 +4,6 @@ import { notFound, redirect } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite } from "@/components/site-chrome";
 import { TextoSimples } from "@/components/texto-simples";
-import { formatarHoras } from "@/lib/emissor";
 import { PlayerAula } from "./PlayerAula";
 import { MiniQuiz, type QuestaoMini } from "./MiniQuiz";
 import type { ItemLista } from "./BarraAula";
@@ -203,9 +202,6 @@ export default async function AulaPage({
                           {icone}
                         </span>
                         <span className="flex-1 text-[15px] leading-snug">{a.titulo}</span>
-                        <span className="font-data text-[11px] text-[#93A0AF]">
-                          {formatarHoras(a.carga_min)}
-                        </span>
                       </>
                     );
                     return (

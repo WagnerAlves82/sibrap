@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import QRCode from "qrcode";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
-import { AVISO_CURSO_LIVRE, EMISSOR, formatarHoras } from "@/lib/emissor";
+import { AVISO_CURSO_LIVRE, EMISSOR } from "@/lib/emissor";
 import { SeloAbed } from "@/components/selo-abed";
 import { BotaoImprimir } from "./BotaoImprimir";
 
@@ -285,9 +285,6 @@ export default async function CertificadoPage({
                       <span>
                         {i + 1}. {m.titulo}
                       </span>
-                      <span style={{ fontFamily: "var(--font-plex-mono), monospace", whiteSpace: "nowrap" }}>
-                        {formatarHoras(m.aulas.reduce((s, a) => s + a.carga_min, 0))}
-                      </span>
                     </div>
                     {m.aulas.map((a, j) => (
                       <div
@@ -303,9 +300,6 @@ export default async function CertificadoPage({
                         }}
                       >
                         <span>{a.titulo}</span>
-                        <span style={{ fontFamily: "var(--font-plex-mono), monospace", whiteSpace: "nowrap", color: "#555555" }}>
-                          {formatarHoras(a.carga_min)}
-                        </span>
                       </div>
                     ))}
                   </div>

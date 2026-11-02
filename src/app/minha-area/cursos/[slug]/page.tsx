@@ -207,9 +207,6 @@ export default async function AreaDoCursoPage({
                           {feita ? "✓" : disponivel ? "▶" : "🔒"}
                         </span>
                         <span className="flex-1 text-[15px] text-[#14213A]">{aula.titulo}</span>
-                        <span className="font-data text-xs text-[#93A0AF]">
-                          {formatarHoras(aula.carga_min)}
-                        </span>
                       </>
                     );
                     return (
