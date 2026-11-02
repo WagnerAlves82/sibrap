@@ -174,14 +174,15 @@ export default async function MinhaAreaPage() {
           {temPremium ? (
             <div className={`${cartao} border-2 border-accent`}>
               <p className="font-display text-lg font-extrabold text-[#14213A]">
-                Você já é Premium 🎉
+                Banco de questões Transpetro
               </p>
               <p className="mt-2 text-[14.5px] leading-relaxed text-[#516278]">
-                Seu acesso ao simulado completo está liberado. A apostila em PDF e as
-                vídeo-aulas chegam em breve por e-mail.
+                Seu acesso está liberado: escolha o cargo e quantas questões quer responder.
+                O seu progresso fica salvo. A apostila em PDF e as vídeo-aulas chegam em
+                breve por e-mail.
               </p>
               <Link href="/minha-area/simulado" className={`mt-4 ${botao}`}>
-                Fazer simulado completo
+                Abrir banco de questões
               </Link>
             </div>
           ) : (
