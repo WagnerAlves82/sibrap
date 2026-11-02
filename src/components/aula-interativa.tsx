@@ -136,12 +136,16 @@ export type Bloco =
       plantoes: number[];
       feriados?: { dia: number; nome: string }[];
       explicacao?: string;
-    };
+    }
+  // ditado: ouve a frase (normal ou devagar) e escreve o que ouviu; a correção mostra palavra por palavra
+  | { tipo: "ditado"; titulo?: string; intro?: string; itens: Frase[] }
+  // fala: ouve, fala no microfone e o reconhecimento de voz do navegador confere a pronúncia
+  | { tipo: "fala"; titulo?: string; intro?: string; itens: Frase[] };
 
 // qualquer bloco pode ter "voz" própria (ex.: "en-US" para a pronúncia do alfabeto da OTAN num curso em português)
 type ComVoz = { voz?: string | null };
 
-const ATIVOS = new Set(["frases", "cards", "escolha", "vf", "ordenar", "dialogos", "sinais", "checklist", "fluxo", "simulador", "triagem", "associar", "caca", "leis", "calendario"]);
+const ATIVOS = new Set(["frases", "cards", "escolha", "vf", "ordenar", "dialogos", "sinais", "checklist", "fluxo", "simulador", "triagem", "associar", "caca", "leis", "calendario", "ditado", "fala"]);
 
 const Placar = createContext<(id: string) => void>(() => {});
 // idioma da voz do navegador (en-US no inglês); null = curso sem voz (ex.: Libras)
@@ -154,14 +158,14 @@ function useConcluir(id: string) {
 
 // voz do navegador em inglês (funciona no Chrome, Edge, Safari e na maioria dos celulares);
 // com várias falas, alterna duas vozes quando o aparelho tiver, para parecer uma conversa
-function falar(texto: string | string[], idioma: string | null = "en-US") {
+function falar(texto: string | string[], idioma: string | null = "en-US", velocidade = 0.9) {
   if (!idioma || typeof window === "undefined" || !("speechSynthesis" in window)) return;
   const vozes = window.speechSynthesis.getVoices().filter((v) => v.lang.startsWith(idioma.slice(0, 2)));
   window.speechSynthesis.cancel();
   (Array.isArray(texto) ? texto : [texto]).forEach((t, i) => {
     const u = new SpeechSynthesisUtterance(t);
     u.lang = idioma;
-    u.rate = 0.9;
+    u.rate = velocidade;
     const voz = vozes[vozes.length > 1 ? i % 2 : 0];
     if (voz) u.voice = voz;
     window.speechSynthesis.speak(u);
@@ -1378,6 +1382,219 @@ function Calendario({ b, id }: { b: Extract<Bloco, { tipo: "calendario" }>; id: 
   );
 }
 
+// compara frases ignorando maiúsculas, pontuação e apóstrofos diferentes; devolve as palavras da resposta certa
+// marcadas como acertadas ou não
+function palavras(t: string) {
+  return t
+    .toLowerCase()
+    .replace(/[’‘`]/g, "'")
+    .replace(/[^a-z0-9' ]+/g, " ")
+    .split(/\s+/)
+    .filter(Boolean);
+}
+function comparar(certa: string, dita: string) {
+  const alvo = palavras(certa);
+  const resto = [...palavras(dita)];
+  const marcadas = alvo.map((w) => {
+    const i = resto.indexOf(w);
+    if (i >= 0) resto.splice(i, 1);
+    return { w, ok: i >= 0 };
+  });
+  const acertos = marcadas.filter((m) => m.ok).length;
+  return { marcadas, pct: alvo.length ? Math.round((acertos / alvo.length) * 100) : 0 };
+}
+
+function BotoesOuvir({ texto }: { texto: string }) {
+  const idioma = useContext(Voz);
+  return (
+    <span className="flex gap-1.5">
+      <button type="button" onClick={() => falar(texto, idioma)} className="border-2 border-brand bg-white px-3 py-1.5 text-[14.5px] font-bold text-brand hover:bg-[#EEF3F8]">
+        🔊 Ouvir
+      </button>
+      <button type="button" onClick={() => falar(texto, idioma, 0.55)} className="border-2 border-[#D7DEE6] bg-white px-3 py-1.5 text-[14.5px] font-semibold text-[#516278] hover:border-brand">
+        🐢 Devagar
+      </button>
+    </span>
+  );
+}
+
+function Ditado({ b, id }: { b: Extract<Bloco, { tipo: "ditado" }>; id: string }) {
+  const concluir = useConcluir(id);
+  const [textos, setTextos] = useState<string[]>(() => b.itens.map(() => ""));
+  const [conferidos, setConferidos] = useState<(ReturnType<typeof comparar> | null)[]>(() => b.itens.map(() => null));
+  useEffect(() => {
+    if (conferidos.every(Boolean)) concluir();
+  }, [conferidos, concluir]);
+  return (
+    <Caixa titulo={b.titulo ?? "Ditado: ouça e escreva"} intro={b.intro ?? "Toque em Ouvir (ou Devagar), escreva o que entendeu em inglês e confira."}>
+      <ol className="flex flex-col gap-3">
+        {b.itens.map((f, i) => {
+          const r = conferidos[i];
+          return (
+            <li key={i} className="border border-[#D7DEE6] bg-white p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="font-data text-[13px] font-semibold text-[#516278]">Frase {i + 1}</span>
+                <BotoesOuvir texto={f.en} />
+              </div>
+              <div className="mt-3 flex gap-2">
+                <input
+                  value={textos[i]}
+                  onChange={(e) => setTextos((t) => t.map((x, k) => (k === i ? e.target.value : x)))}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && textos[i].trim()) setConferidos((c) => c.map((x, k) => (k === i ? comparar(f.en, textos[i]) : x)));
+                  }}
+                  placeholder="Escreva o que ouviu"
+                  autoCapitalize="off"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  className="min-w-0 flex-1 border-2 border-[#D7DEE6] px-3 py-2 text-[16px] text-[#14213A] outline-none focus:border-brand"
+                />
+                <button
+                  type="button"
+                  disabled={!textos[i].trim()}
+                  onClick={() => setConferidos((c) => c.map((x, k) => (k === i ? comparar(f.en, textos[i]) : x)))}
+                  className="bg-accent px-4 py-2 text-[15px] font-bold text-accent-ink disabled:opacity-50"
+                >
+                  Conferir
+                </button>
+              </div>
+              {r && (
+                <div className="mt-3">
+                  <p className="flex flex-wrap gap-x-1.5 text-[16.5px] font-semibold">
+                    {r.marcadas.map((m, k) => (
+                      <span key={k} className={m.ok ? "text-accent-2" : "text-[#C0392B] underline decoration-2"}>
+                        {m.w}
+                      </span>
+                    ))}
+                  </p>
+                  <p className={`mt-1 text-[15px] ${r.pct === 100 ? "text-accent-2" : "text-[#516278]"}`}>
+                    {r.pct === 100 ? "✓ Perfeito!" : `${r.pct}% das palavras. As sublinhadas faltaram ou estão diferentes.`} <span className="text-[#516278]">({f.pt})</span>
+                  </p>
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    </Caixa>
+  );
+}
+
+type Reconhecedor = {
+  lang: string;
+  interimResults: boolean;
+  maxAlternatives: number;
+  onresult: (e: { results: { 0: { transcript: string } }[] }) => void;
+  onerror: (e: { error: string }) => void;
+  onend: () => void;
+  start: () => void;
+};
+
+function Fala({ b, id }: { b: Extract<Bloco, { tipo: "fala" }>; id: string }) {
+  const concluir = useConcluir(id);
+  const idioma = useContext(Voz) ?? "en-US";
+  const suporta = useSyncExternalStore(
+    () => () => {},
+    // sem a API ou com o microfone bloqueado pela política do site, vira "ouça e repita em voz alta"
+    () =>
+      ("SpeechRecognition" in window || "webkitSpeechRecognition" in window) &&
+      ((document as unknown as { featurePolicy?: { allowsFeature(f: string): boolean } }).featurePolicy?.allowsFeature("microphone") ?? true),
+    () => true,
+  );
+  const [ouvindo, setOuvindo] = useState<number | null>(null);
+  const [resultados, setResultados] = useState<({ dito: string; pct: number; marcadas: { w: string; ok: boolean }[] } | null)[]>(() => b.itens.map(() => null));
+  const [feitos, setFeitos] = useState<Set<number>>(new Set());
+  const [erro, setErro] = useState<string | null>(null);
+  useEffect(() => {
+    if (feitos.size === b.itens.length) concluir();
+  }, [feitos, b.itens.length, concluir]);
+
+  const gravar = (i: number) => {
+    const w = window as unknown as { SpeechRecognition?: new () => Reconhecedor; webkitSpeechRecognition?: new () => Reconhecedor };
+    const Classe = w.SpeechRecognition ?? w.webkitSpeechRecognition;
+    if (!Classe) return;
+    const rec = new Classe();
+    rec.lang = idioma;
+    rec.interimResults = false;
+    rec.maxAlternatives = 1;
+    setErro(null);
+    setOuvindo(i);
+    rec.onresult = (e) => {
+      const dito = e.results[0][0].transcript;
+      const r = comparar(b.itens[i].en, dito);
+      setResultados((rs) => rs.map((x, k) => (k === i ? { dito, ...r } : x)));
+      setFeitos((f) => new Set(f).add(i));
+    };
+    rec.onerror = (e) =>
+      setErro(e.error === "not-allowed" ? "Libere o microfone para o site nas permissões do navegador." : "Não deu para ouvir. Fale perto do microfone e tente de novo.");
+    rec.onend = () => setOuvindo(null);
+    rec.start();
+  };
+
+  return (
+    <Caixa
+      titulo={b.titulo ?? "Fale em inglês"}
+      intro={b.intro ?? "Ouça, toque no microfone e repita a frase. O navegador confere o que entendeu da sua pronúncia (o áudio é processado pelo serviço de voz do próprio navegador e não fica guardado no SIBRAP)."}
+    >
+      {!suporta && (
+        <p className="mb-3 border-l-4 border-accent bg-[#FBF5E4] px-3 py-2 text-[14.5px] text-[#33465E]">
+          Ouça cada frase, repita em voz alta (de preferência mais de uma vez) e marque como feito.
+        </p>
+      )}
+      <ol className="flex flex-col gap-3">
+        {b.itens.map((f, i) => {
+          const r = resultados[i];
+          return (
+            <li key={i} className="border border-[#D7DEE6] bg-white p-4">
+              <p className="text-[18px] font-bold text-[#14213A]">{f.en}</p>
+              <p className="text-[14.5px] text-[#516278]">{f.pt}</p>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <BotoesOuvir texto={f.en} />
+                {suporta ? (
+                  <button
+                    type="button"
+                    onClick={() => gravar(i)}
+                    disabled={ouvindo !== null}
+                    className={`px-4 py-1.5 text-[15px] font-bold ${ouvindo === i ? "animate-pulse bg-[#C0392B] text-white" : "bg-accent text-accent-ink"} disabled:opacity-70`}
+                  >
+                    {ouvindo === i ? "🎙️ Ouvindo… fale agora" : "🎤 Falar"}
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setFeitos((s) => new Set(s).add(i))}
+                    className={`px-4 py-1.5 text-[15px] font-bold ${feitos.has(i) ? "bg-accent-2 text-white" : "bg-accent text-accent-ink"}`}
+                  >
+                    {feitos.has(i) ? "✓ Feito" : "Repeti em voz alta"}
+                  </button>
+                )}
+              </div>
+              {r && (
+                <div className="mt-3">
+                  <p className="text-[14.5px] text-[#516278]">
+                    Entendi: <em className="text-[#14213A]">“{r.dito}”</em>
+                  </p>
+                  <p className="mt-1 flex flex-wrap gap-x-1.5 text-[16px] font-semibold">
+                    {r.marcadas.map((m, k) => (
+                      <span key={k} className={m.ok ? "text-accent-2" : "text-[#C0392B] underline decoration-2"}>
+                        {m.w}
+                      </span>
+                    ))}
+                  </p>
+                  <p className={`mt-1 text-[15px] font-semibold ${r.pct >= 80 ? "text-accent-2" : r.pct >= 50 ? "text-[#B7791F]" : "text-[#C0392B]"}`}>
+                    {r.pct >= 80 ? `✓ Muito bem! ${r.pct}%` : r.pct >= 50 ? `Quase: ${r.pct}%. Ouça devagar e tente de novo.` : `${r.pct}%. Ouça a frase devagar e repita.`}
+                  </p>
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+      {erro && <p className="mt-2 text-[14.5px] text-[#C0392B]">{erro}</p>}
+    </Caixa>
+  );
+}
+
 function Render({ b, id }: { b: Bloco; id: string }) {
   switch (b.tipo) {
     case "texto":
@@ -1432,6 +1649,10 @@ function Render({ b, id }: { b: Bloco; id: string }) {
       return <Caca b={b} id={id} />;
     case "leis":
       return <Leis b={b} id={id} />;
+    case "ditado":
+      return <Ditado b={b} id={id} />;
+    case "fala":
+      return <Fala b={b} id={id} />;
     case "calendario":
       return <Calendario b={b} id={id} />;
     default:
