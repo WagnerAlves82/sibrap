@@ -80,9 +80,24 @@ export type Bloco =
         titulo: string;
         itens: (string | { t: string; url: string })[];
       }[];
+    }
+  // rotina para marcar item a item (ex.: abertura do turno na guarita)
+  | { tipo: "checklist"; titulo?: string; intro?: string; itens: string[] }
+  // passo a passo revelado etapa por etapa (fluxograma vertical)
+  | { tipo: "fluxo"; titulo?: string; intro?: string; etapas: { titulo: string; texto: string; icone?: string }[] }
+  // tela de sistema simulada (não é print de software real): o aluno preenche a partir do cenário e confirma
+  | {
+      tipo: "simulador";
+      titulo?: string;
+      intro?: string;
+      sistema: string;
+      cenario: string;
+      campos: { rotulo: string; tipo: "texto" | "opcao"; opcoes?: string[]; correto?: string; placeholder?: string }[];
+      acao: string;
+      sucesso: string;
     };
 
-const ATIVOS = new Set(["frases", "cards", "escolha", "vf", "ordenar", "dialogos", "sinais"]);
+const ATIVOS = new Set(["frases", "cards", "escolha", "vf", "ordenar", "dialogos", "sinais", "checklist", "fluxo", "simulador"]);
 
 const Placar = createContext<(id: string) => void>(() => {});
 // idioma da voz do navegador (en-US no inglês); null = curso sem voz (ex.: Libras)
@@ -779,6 +794,154 @@ function Sinais({ b, id }: { b: Extract<Bloco, { tipo: "sinais" }>; id: string }
   );
 }
 
+function Checklist({ b, id }: { b: Extract<Bloco, { tipo: "checklist" }>; id: string }) {
+  const concluir = useConcluir(id);
+  const [feitos, setFeitos] = useState<Set<number>>(new Set());
+  const marcar = (i: number) =>
+    setFeitos((f) => {
+      const n = new Set(f);
+      if (n.has(i)) n.delete(i);
+      else n.add(i);
+      return n;
+    });
+  useEffect(() => {
+    if (feitos.size === b.itens.length) concluir();
+  }, [feitos, b.itens.length, concluir]);
+  return (
+    <Caixa titulo={b.titulo ?? "Checklist"} intro={b.intro ?? "Marque cada item, como se estivesse no seu turno."}>
+      <ul className="border border-[#D7DEE6] bg-white">
+        {b.itens.map((t, i) => (
+          <li key={i} className="border-t border-[#EEF2F6] first:border-t-0">
+            <button type="button" onClick={() => marcar(i)} aria-pressed={feitos.has(i)} className="flex w-full items-start gap-3 px-4 py-3 text-left">
+              <span
+                aria-hidden
+                className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center border text-[12px] font-bold ${feitos.has(i) ? "border-accent-2 bg-accent-2 text-white" : "border-[#C4CEDA] bg-white text-transparent"}`}
+              >
+                ✓
+              </span>
+              <span className={`text-[15px] ${feitos.has(i) ? "text-[#93A0AF] line-through" : "text-[#14213A]"}`}>{t}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-2 font-data text-[12.5px] text-[#516278]">
+        {feitos.size} de {b.itens.length} itens
+      </p>
+    </Caixa>
+  );
+}
+
+function Fluxo({ b, id }: { b: Extract<Bloco, { tipo: "fluxo" }>; id: string }) {
+  const concluir = useConcluir(id);
+  const [visiveis, setVisiveis] = useState(1);
+  useEffect(() => {
+    if (visiveis >= b.etapas.length) concluir();
+  }, [visiveis, b.etapas.length, concluir]);
+  return (
+    <Caixa titulo={b.titulo ?? "Passo a passo"} intro={b.intro}>
+      <ol className="flex flex-col">
+        {b.etapas.slice(0, visiveis).map((e, i) => (
+          <li key={i} className="flex flex-col items-stretch">
+            {i > 0 && (
+              <span aria-hidden className="mx-auto py-1 text-[18px] leading-none text-accent">
+                ↓
+              </span>
+            )}
+            <div className="flex gap-3 border border-[#D7DEE6] border-l-4 border-l-brand bg-white px-4 py-3 motion-safe:animate-[rise-in_.4s_ease-out]">
+              <span className="font-data text-[13px] font-bold text-brand">{i + 1}</span>
+              <div>
+                <p className="text-[15px] font-bold text-[#14213A]">
+                  {e.icone ? `${e.icone} ` : ""}
+                  {e.titulo}
+                </p>
+                <p className="mt-0.5 text-[14.5px] leading-relaxed text-[#516278]">{e.texto}</p>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ol>
+      {visiveis < b.etapas.length ? (
+        <button type="button" onClick={() => setVisiveis((v) => v + 1)} className="mt-3 bg-brand px-4 py-2 text-[14px] font-bold text-white">
+          Próxima etapa ({visiveis + 1} de {b.etapas.length}) ↓
+        </button>
+      ) : (
+        <p className="mt-3 text-[13.5px] font-semibold text-accent-2">✓ Você viu o processo completo.</p>
+      )}
+    </Caixa>
+  );
+}
+
+function Simulador({ b, id }: { b: Extract<Bloco, { tipo: "simulador" }>; id: string }) {
+  const concluir = useConcluir(id);
+  const [valores, setValores] = useState<string[]>(() => b.campos.map(() => ""));
+  const [erro, setErro] = useState<string | null>(null);
+  const [ok, setOk] = useState(false);
+  const confirmar = () => {
+    for (const [i, c] of b.campos.entries()) {
+      const v = valores[i].trim();
+      if (!v) return setErro(`Preencha o campo "${c.rotulo}".`);
+      if (c.tipo === "opcao" && c.correto && v !== c.correto) return setErro(`Confira "${c.rotulo}": releia o cenário com atenção.`);
+      if (c.tipo === "texto" && c.correto && v.toLowerCase() !== c.correto.toLowerCase()) return setErro(`Confira "${c.rotulo}": o dado não bate com o cenário.`);
+    }
+    setErro(null);
+    setOk(true);
+    concluir();
+  };
+  return (
+    <Caixa titulo={b.titulo ?? "Simulador"} intro={b.intro}>
+      <p className="mb-2 border-l-4 border-accent bg-[#FBF5E4] px-4 py-3 text-[14.5px] leading-relaxed text-[#14213A]">
+        <strong>Cenário:</strong> {b.cenario}
+      </p>
+      <div className="border border-[#14213A] bg-[#F6F9FC]">
+        <div className="flex items-center justify-between bg-[#14213A] px-3 py-2 font-data text-[12px] text-white">
+          <span>🖥️ {b.sistema}</span>
+          <span className="text-[#93A0AF]">simulação · dados fictícios</span>
+        </div>
+        <div className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2">
+          {b.campos.map((c, i) => (
+            <label key={i} className="flex flex-col gap-1 text-[12.5px] font-semibold uppercase tracking-wide text-[#516278]">
+              {c.rotulo}
+              {c.tipo === "opcao" ? (
+                <select
+                  disabled={ok}
+                  value={valores[i]}
+                  onChange={(e) => setValores((v) => v.map((x, k) => (k === i ? e.target.value : x)))}
+                  className="border border-[#C4CEDA] bg-white px-2 py-2 text-[14.5px] font-normal normal-case tracking-normal text-[#14213A]"
+                >
+                  <option value="">Selecione…</option>
+                  {c.opcoes?.map((o) => (
+                    <option key={o}>{o}</option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  disabled={ok}
+                  value={valores[i]}
+                  placeholder={c.placeholder}
+                  onChange={(e) => setValores((v) => v.map((x, k) => (k === i ? e.target.value : x)))}
+                  className="border border-[#C4CEDA] bg-white px-2 py-2 text-[14.5px] font-normal normal-case tracking-normal text-[#14213A]"
+                />
+              )}
+            </label>
+          ))}
+        </div>
+        <div className="border-t border-[#D7DEE6] px-4 py-3">
+          {ok ? (
+            <p className="text-[14.5px] font-semibold text-accent-2">✓ {b.sucesso}</p>
+          ) : (
+            <>
+              <button type="button" onClick={confirmar} className="bg-accent-2 px-4 py-2 text-[14px] font-bold text-white">
+                {b.acao}
+              </button>
+              {erro && <p className="mt-2 text-[13.5px] text-[#C0392B]">{erro}</p>}
+            </>
+          )}
+        </div>
+      </div>
+    </Caixa>
+  );
+}
+
 function Render({ b, id }: { b: Bloco; id: string }) {
   switch (b.tipo) {
     case "texto":
@@ -815,6 +978,12 @@ function Render({ b, id }: { b: Bloco; id: string }) {
       return <OrdenarOuConcluido b={b} id={id} />;
     case "sinais":
       return <Sinais b={b} id={id} />;
+    case "checklist":
+      return <Checklist b={b} id={id} />;
+    case "fluxo":
+      return <Fluxo b={b} id={id} />;
+    case "simulador":
+      return <Simulador b={b} id={id} />;
     default:
       return null;
   }
