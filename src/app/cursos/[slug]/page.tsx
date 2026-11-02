@@ -51,6 +51,12 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     largura: 997,
     altura: 746,
   },
+  camareira: {
+    src: "/cursos/camareira/hero.webp",
+    alt: "Camareira de hotel arrumando a cama de um quarto claro e aconchegante, com carrinho de governança na porta",
+    largura: 1376,
+    altura: 768,
+  },
   "agente-de-portaria": {
     src: "/agp.webp",
     alt: "Agentes de portaria trabalhando na guarita, com rádios HT, livro de ocorrências e monitores das câmeras",

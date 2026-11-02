@@ -20,6 +20,7 @@ const FOTOS_POR_CURSO: Record<string, string> = {
   "libras-iniciante": "/libras-card.webp",
   "agente-de-portaria": "/agp.webp",
   "atendente-de-call-center": "/cursos/call-center/card.webp",
+  camareira: "/cursos/camareira/card.webp",
 };
 
 export const metadata: Metadata = {

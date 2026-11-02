@@ -36,6 +36,32 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
       ["Este curso me forma vigilante?", "Não. Vigilante é outra profissão, com curso de formação em escola autorizada e registro na Polícia Federal. Este curso prepara para portaria e controle de acesso."],
     ],
   },
+  camareira: {
+    paraQuem: [
+      "Quem quer a primeira vaga em hotel, pousada, resort ou motel",
+      "Quem já faz faxina e quer entrar na hotelaria com carteira assinada",
+      "Camareiras que querem crescer para supervisora ou governanta",
+      "Donos e equipes de pousadas e casas de temporada",
+    ],
+    ganhos: [
+      { titulo: "O padrão dos hotéis", texto: "Sequência de arrumação, cama com canto de envelope e banheiro impecável, do jeito que a governança cobra." },
+      { titulo: "Pronta para o teste prático", texto: "Você chega à seleção sabendo arrumar, limpar, repor e inspecionar o quarto sem esquecer nada." },
+      { titulo: "Segurança e saúde", texto: "Produtos sem misturas perigosas, EPI, ergonomia e o que fazer com sangue, seringas e objetos achados." },
+      { titulo: "Certificado do seu jeito", texto: "Escolha 20, 40 ou 60 horas, com QR Code, e aumente depois pagando a diferença." },
+    ],
+    ondeTrabalhar: ["Hotéis e redes hoteleiras", "Pousadas", "Resorts", "Hotéis-fazenda", "Motéis", "Hostels", "Apart-hotéis e flats", "Navios de cruzeiro", "Casas de temporada", "Hospitais e clínicas (hotelaria hospitalar)"],
+    destaques: [
+      "Infográfico da profissão e relatório de governança com as siglas dos quartos",
+      "Simuladores de ordem de manutenção, minibar, achados e perdidos e liberação de quarto",
+      "Desafios “entrar ou não entrar?” e “trocar ou manter o enxoval?”",
+      "Caça ao erro na arrumação, no banheiro e no relatório de inspeção",
+      "Cards de lei com link para o Planalto: Lei Geral do Turismo, ECA, Código Civil e NRs",
+    ],
+    faq: [
+      ["Posso escolher a carga horária do certificado?", "Sim. Você estuda o curso completo e, na hora de emitir, escolhe o certificado de 20, 40 ou 60 horas. Dá para aumentar depois, pagando só a diferença."],
+      ["Preciso ter experiência?", "Não. O curso parte do zero e prepara para o teste prático das seleções: arrumar a cama, limpar o banheiro e inspecionar o quarto no padrão."],
+    ],
+  },
   "atendente-de-call-center": {
     paraQuem: [
       "Quem busca o primeiro emprego com carteira assinada",
