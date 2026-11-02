@@ -53,7 +53,7 @@ export function CabecalhoSite({ logado, next, semLinks, semBusca }: { logado: bo
               <Link href="/apostilas" className={itemNav}>
                 Apostilas
               </Link>
-              <Link href="/noticias" className={`${logado ? "hidden sm:inline" : ""} ${itemNav}`}>
+              <Link href="/noticias" className={`${logado ? "hidden sm:inline" : "hidden min-[420px]:inline"} ${itemNav}`}>
                 Notícias
               </Link>
               <Link href="/cursos" className={`hidden md:inline ${itemNav}`}>

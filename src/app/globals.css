@@ -172,3 +172,10 @@ html { scroll-behavior: smooth; }
 @keyframes leitor-destaque { 0% { background: #fff1b8; } 100% { background: transparent; } }
 .leitor-conteudo .secao-destaque { animation: leitor-destaque 3.2s ease-out 1; border-radius: 6px; }
 @media (prefers-reduced-motion: reduce) { .leitor-conteudo .secao-destaque { animation: none; background: #fff1b8; } }
+
+/* rede de segurança no celular: nada passa da largura da tela (senão o botão fixo do WhatsApp
+   e as barras fixas ficam fora da área visível). clip não cria rolagem, então o sticky continua funcionando */
+html,
+body {
+  overflow-x: clip;
+}
