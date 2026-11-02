@@ -72,9 +72,18 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
       { titulo: "Atendimento que fideliza", texto: "Técnicas para entender o cliente, resolver o problema e fazê-lo voltar." },
       { titulo: "Calma nas reclamações", texto: "Como conduzir clientes irritados sem levar para o lado pessoal." },
       { titulo: "Todos os canais", texto: "Presencial, telefone, WhatsApp e redes sociais, cada um com a sua etiqueta." },
-      { titulo: "Certificado com QR Code", texto: "Comprovação que o recrutador confere na hora." },
+      { titulo: "Certificado do seu jeito", texto: "Escolha 20, 30 ou 40 horas, com QR Code, e aumente depois pagando a diferença." },
     ],
     ondeTrabalhar: ["Lojas e supermercados", "Recepções", "Call centers", "Clínicas", "Bancos e lotéricas", "Hotéis e restaurantes"],
+    destaques: [
+      "Simuladores de agendamento por telefone e de troca no balcão",
+      "Desafios “ajuda ou atrapalha?” com frases reais de atendimento",
+      "Caça ao erro numa mensagem de desculpas",
+      "Roteiros prontos: ligação, reclamação e entrevista (método STAR)",
+    ],
+    faq: [
+      ["Posso escolher a carga horária do certificado?", "Sim. O curso completo é aberto a todos e você escolhe o certificado de 20 h (R$ 29,90), 30 h (R$ 34,90) ou 40 h (R$ 39,90). Dá para aumentar depois, pagando só a diferença."],
+    ],
   },
   "estoque-logistica-controle-de-mercadorias": {
     paraQuem: [
@@ -102,7 +111,16 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
       { titulo: "Do zero ao uso no trabalho", texto: "Computador, pastas, internet, e-mail, gov.br, Word, Excel e PowerPoint, passo a passo." },
       { titulo: "Inteligência artificial", texto: "Como usar o Copilot e outras IAs para escrever, resumir e organizar, com segurança." },
       { titulo: "Segurança digital", texto: "Senhas, golpes e cuidados para não cair em armadilhas na internet." },
-      { titulo: "Certificado com QR Code", texto: "Informática no currículo, com comprovação que o recrutador confere." },
+      { titulo: "Certificado do seu jeito", texto: "Escolha 20, 30 ou 40 horas, com QR Code, e aumente depois pagando a diferença." },
+    ],
+    destaques: [
+      "Simuladores de Word e Excel: formatação, fórmulas e orçamento",
+      "Desafios “golpe ou verdadeiro?” e “site oficial ou falso?”",
+      "Caça ao erro num currículo",
+      "Prompts prontos para usar a IA no trabalho",
+    ],
+    faq: [
+      ["Posso escolher a carga horária do certificado?", "Sim. O curso completo é aberto a todos e você escolhe o certificado de 20 h (R$ 29,90), 30 h (R$ 34,90) ou 40 h (R$ 39,90). Dá para aumentar depois, pagando só a diferença."],
     ],
   },
   "conserto-e-manutencao-de-celulares": {
@@ -129,10 +147,16 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
     ganhos: [
       { titulo: "Inglês para usar amanhã", texto: "Frases prontas para receber, orientar, vender e resolver problemas com estrangeiros." },
       { titulo: "Ouça e repita", texto: "Áudio de cada frase e diálogos de atendimento para treinar a pronúncia." },
-      { titulo: "Sem decoreba", texto: "Atividades interativas em cada aula, no celular ou no computador." },
+      { titulo: "Fale e seja corrigido", texto: "Ditados e exercícios de fala com o microfone: o navegador confere sua pronúncia." },
       { titulo: "Certificado com QR Code", texto: "Inglês para atendimento comprovado no currículo." },
     ],
     ondeTrabalhar: ["Hotéis e pousadas", "Restaurantes e bares", "Lojas", "Aeroportos e rodoviárias", "Agências de turismo", "Eventos"],
+    destaques: [
+      "Áudio em cada frase, com opção de ouvir devagar",
+      "Ditados: ouça e escreva, com correção palavra por palavra",
+      "Fale em inglês: o navegador confere a sua pronúncia",
+      "Diálogos de atendimento e jogos de ordenar frases",
+    ],
   },
   "libras-iniciante": {
     paraQuem: [
