@@ -36,6 +36,31 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
       ["Este curso me forma vigilante?", "Não. Vigilante é outra profissão, com curso de formação em escola autorizada e registro na Polícia Federal. Este curso prepara para portaria e controle de acesso."],
     ],
   },
+  "atendente-de-call-center": {
+    paraQuem: [
+      "Quem busca o primeiro emprego com carteira assinada",
+      "Quem vai participar de processo seletivo em central de atendimento",
+      "Atendentes que querem crescer para retenção, qualidade ou supervisão",
+      "Quem atende clientes por telefone, chat ou WhatsApp em qualquer empresa",
+    ],
+    ganhos: [
+      { titulo: "Porta de entrada no mercado", texto: "Centrais de atendimento contratam o ano todo e treinam quem chega com boa base." },
+      { titulo: "Pronto para a simulação", texto: "Abertura, sondagem, registro, reclamação e encerramento treinados na prática." },
+      { titulo: "Vendas e metas sem mistério", texto: "Venda consultiva, objeções e os indicadores TMA, FCR e NPS explicados." },
+      { titulo: "Certificado do seu jeito", texto: "Escolha 20, 30 ou 40 horas, com QR Code, e aumente depois pagando a diferença." },
+    ],
+    ondeTrabalhar: ["Bancos e financeiras", "Operadoras de telefonia e internet", "Varejo e e-commerce", "Planos de saúde e clínicas", "Seguradoras", "Escolas e cursos", "Empresas de tecnologia", "Centrais de atendimento terceirizadas"],
+    destaques: [
+      "Simulador de CRM para registrar atendimentos",
+      "Desafios “ativo ou receptivo?”, “resolvo ou escalo?” e “boa resposta à objeção?”",
+      "Caça ao erro numa transcrição de atendimento",
+      "Cards com as regras do SAC, o Código de Defesa do Consumidor, a LGPD e a NR-17",
+    ],
+    faq: [
+      ["Posso escolher a carga horária do certificado?", "Sim. O curso completo é aberto a todos e, na hora de emitir, você escolhe o certificado de 20, 30 ou 40 horas. Dá para aumentar depois, pagando só a diferença."],
+      ["Preciso ter experiência?", "Não. O curso parte do zero e prepara para as etapas mais comuns dos processos seletivos: teste de digitação e português, dinâmica e simulação de atendimento."],
+    ],
+  },
   "auxiliar-administrativo": {
     paraQuem: [
       "Quem busca o primeiro emprego em escritório",

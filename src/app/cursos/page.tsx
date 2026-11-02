@@ -19,6 +19,7 @@ const FOTOS_POR_CURSO: Record<string, string> = {
   "ingles-basico-atendimento-ao-publico": "/card_curso_de_ingles.webp",
   "libras-iniciante": "/libras-card.webp",
   "agente-de-portaria": "/agp.webp",
+  "atendente-de-call-center": "/cursos/call-center/card.webp",
 };
 
 export const metadata: Metadata = {

@@ -45,6 +45,12 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     largura: 1200,
     altura: 896,
   },
+  "atendente-de-call-center": {
+    src: "/cursos/call-center/card.webp",
+    alt: "Atendente de call center sorrindo com headset em frente ao computador na central de atendimento",
+    largura: 997,
+    altura: 746,
+  },
   "agente-de-portaria": {
     src: "/agp.webp",
     alt: "Agentes de portaria trabalhando na guarita, com rádios HT, livro de ocorrências e monitores das câmeras",
