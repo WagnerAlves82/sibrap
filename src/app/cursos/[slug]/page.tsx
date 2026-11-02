@@ -10,6 +10,7 @@ import { AVISO_CURSO_LIVRE, EMISSOR, formatarHoras } from "@/lib/emissor";
 import { VISITAS_MINIMAS_PARA_EXIBIR, visitasDoCurso } from "@/lib/visitas";
 import { textoParcela } from "@/lib/apostilas";
 import { formatarReais, produtoDoCursoPago } from "@/lib/curso-pago";
+import { PAGINA_CURSO } from "@/lib/cursos-pagina";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -43,6 +44,12 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     alt: "Curso online de Inglês Básico para Atendimento ao Público, grátis e com certificado",
     largura: 1200,
     altura: 896,
+  },
+  "agente-de-portaria": {
+    src: "/agp.webp",
+    alt: "Agentes de portaria trabalhando na guarita, com rádios HT, livro de ocorrências e monitores das câmeras",
+    largura: 1376,
+    altura: 768,
   },
   "libras-iniciante": {
     src: "/libras-card.webp",
@@ -92,20 +99,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 // Perguntas frequentes da página do curso (visíveis na página e marcadas como FAQPage para buscadores e IAs)
 function perguntasFrequentes(
-  curso: { nome: string; carga_horaria_horas: number; nota_minima: number },
+  curso: { slug: string; nome: string; carga_horaria_horas: number; nota_minima: number },
   preco: string | null,
   modulos: string[],
-  precoCurso: string | null
+  precoCurso: string | null,
+  cargas: number[]
 ) {
+  const horasCertificado = cargas.length > 1 ? `${cargas.slice(0, -1).join(", ")} ou ${cargas[cargas.length - 1]} horas (você escolhe)` : `${curso.carga_horaria_horas} horas`;
   return [
     precoCurso
       ? [`Quanto custa o curso de ${curso.nome}?`, `O curso custa ${precoCurso}, pagamento único no PIX ou em até 3x, sem mensalidade. O valor dá acesso a todas as aulas, 100% online, e já inclui o certificado.`]
       : [`O curso de ${curso.nome} é gratuito?`, `Sim. Todas as aulas do curso de ${curso.nome} são gratuitas e 100% online. Só o certificado é opcional e pago${preco ? ` (${preco})` : ""}.`],
-    [`O curso de ${curso.nome} tem certificado?`, `Sim. Depois de concluir as aulas e ser aprovado na prova final (nota mínima de ${curso.nota_minima}%), você pode emitir o certificado de ${curso.carga_horaria_horas} horas, com QR Code para qualquer pessoa conferir a autenticidade${precoCurso ? ". O certificado online já está incluso no valor do curso" : ""}.`],
+    [`O curso de ${curso.nome} tem certificado?`, `Sim. Depois de concluir as aulas e ser aprovado na prova final (nota mínima de ${curso.nota_minima}%), você pode emitir o certificado de ${horasCertificado}, com QR Code para qualquer pessoa conferir a autenticidade${precoCurso ? ". O certificado online já está incluso no valor do curso" : ""}.`],
     [`Qual é a carga horária do curso de ${curso.nome}?`, `O curso tem ${curso.carga_horaria_horas} horas, divididas em ${modulos.length} módulos. Você estuda no seu ritmo, pelo celular ou pelo computador, e o progresso fica salvo.`],
     [`O que se aprende no curso de ${curso.nome}?`, `Os módulos são: ${modulos.join("; ")}.`],
     ["Preciso de experiência ou de algum curso antes?", "Não. O curso é livre e não tem pré-requisito: basta saber ler e ter acesso à internet."],
-  ] as const;
+    ...(PAGINA_CURSO[curso.slug]?.faq ?? []),
+  ] as [string, string][];
 }
 
 export default async function CursoPublicoPage({ params }: Props) {
@@ -157,7 +167,10 @@ export default async function CursoPublicoPage({ params }: Props) {
   const aulasComVideo = modulos?.reduce((s, m) => s + m.aulas.filter((a) => a.youtube_id).length, 0) ?? 0;
   const temVideo = totalAulas > 0 && aulasComVideo === totalAulas;
   const nomesModulos = (modulos ?? []).map((m) => m.titulo);
-  const faq = perguntasFrequentes(curso, preco, nomesModulos, precoCurso);
+  const cargas = faixas.length > 1 ? faixas.map((f) => f.certificado_horas!) : [curso.carga_horaria_horas];
+  const faq = perguntasFrequentes(curso, preco, nomesModulos, precoCurso, cargas);
+  const pagina = PAGINA_CURSO[curso.slug];
+  const textoCarga = cargas.length > 1 ? `de ${cargas[0]} a ${cargas[cargas.length - 1]}h (você escolhe)` : `de ${curso.carga_horaria_horas}h`;
   const urlCurso = `${SITE}/cursos/${curso.slug}`;
 
   const jsonLd = [
@@ -285,7 +298,40 @@ export default async function CursoPublicoPage({ params }: Props) {
         </div>
       </section>
 
-      <section className="py-16">
+      {pagina && (
+        <section className="py-16">
+          <div className="mx-auto grid max-w-[1180px] gap-12 px-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+            <Reveal>
+              <h2 className="font-display text-3xl font-extrabold text-[#14213A]">Para quem é</h2>
+              <ul className="mt-6 flex flex-col gap-3">
+                {pagina.paraQuem.map((p) => (
+                  <li key={p} className="flex items-start gap-3 text-[16px] leading-relaxed text-[#14213A]">
+                    <span aria-hidden className="mt-1 text-accent-2">✓</span>
+                    {p}
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+            <div>
+              <Reveal>
+                <h2 className="font-display text-3xl font-extrabold text-[#14213A]">O que você ganha</h2>
+              </Reveal>
+              <div className="mt-6 grid grid-cols-1 gap-px border border-[#D7DEE6] bg-[#D7DEE6] sm:grid-cols-2">
+                {pagina.ganhos.map((g, i) => (
+                  <Reveal key={g.titulo} delay={i * 80}>
+                    <div className="h-full bg-white p-5">
+                      <p className="font-display text-[17px] font-extrabold text-[#14213A]">{g.titulo}</p>
+                      <p className="mt-1.5 text-[14.5px] leading-relaxed text-[#516278]">{g.texto}</p>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section className={pagina ? "bg-surface-2 py-16" : "py-16"}>
         <div className="mx-auto max-w-[1180px] px-6">
           <Reveal>
             <h2 className="font-display text-3xl font-extrabold text-[#14213A]">
@@ -298,7 +344,7 @@ export default async function CursoPublicoPage({ params }: Props) {
                 ? ["Assista às aulas", "Vídeo-aulas curtas e práticas, no celular ou no computador. Seu progresso fica salvo."]
                 : ["Estude as aulas", `Aulas curtas e práticas, com exemplos e atividades${aulasComVideo > 0 ? " e vídeos de apoio" : ""}, no celular ou no computador. Seu progresso fica salvo.`],
               ["Faça a prova final", `Prova com questões de múltipla escolha. Nota mínima: ${curso.nota_minima}%. Pode refazer.`],
-              ["Receba o certificado", `Certificado de ${curso.carga_horaria_horas}h com QR Code que qualquer pessoa pode conferir.`],
+              ["Receba o certificado", `Certificado ${textoCarga} com QR Code que qualquer pessoa pode conferir.`],
             ].map(([titulo, texto], i) => (
               <Reveal key={titulo} delay={i * 120}>
                 <li className="h-full border border-[#D7DEE6] bg-white p-6">
@@ -312,7 +358,7 @@ export default async function CursoPublicoPage({ params }: Props) {
         </div>
       </section>
 
-      <section className="bg-surface-2 py-16">
+      <section className={pagina ? "py-16" : "bg-surface-2 py-16"}>
         <div className="mx-auto max-w-[1180px] px-6">
           <Reveal>
             <h2 className="font-display text-3xl font-extrabold text-[#14213A]">
@@ -353,6 +399,37 @@ export default async function CursoPublicoPage({ params }: Props) {
           </div>
         </div>
       </section>
+
+      {pagina && (pagina.destaques || pagina.ondeTrabalhar) && (
+        <section className="bg-surface-2 py-16">
+          <div className="mx-auto grid max-w-[1180px] gap-12 px-6 lg:grid-cols-2">
+            {pagina.destaques && (
+              <Reveal>
+                <h2 className="font-display text-3xl font-extrabold text-[#14213A]">Aulas que não são só leitura</h2>
+                <ul className="mt-6 flex flex-col gap-3">
+                  {pagina.destaques.map((d) => (
+                    <li key={d} className="flex items-start gap-3 border-l-4 border-accent bg-white px-4 py-3 text-[15.5px] leading-relaxed text-[#14213A]">
+                      {d}
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+            )}
+            {pagina.ondeTrabalhar && (
+              <Reveal delay={120}>
+                <h2 className="font-display text-3xl font-extrabold text-[#14213A]">Onde você pode trabalhar</h2>
+                <ul className="mt-6 flex flex-wrap gap-2">
+                  {pagina.ondeTrabalhar.map((o) => (
+                    <li key={o} className="border border-[#D7DEE6] bg-white px-3 py-2 text-[14.5px] font-semibold text-[#14213A]">
+                      {o}
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+            )}
+          </div>
+        </section>
+      )}
 
       <section className="py-16">
         <div className="mx-auto max-w-[1180px] px-6">

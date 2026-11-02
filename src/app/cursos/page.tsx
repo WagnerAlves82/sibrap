@@ -18,6 +18,7 @@ const FOTOS_POR_CURSO: Record<string, string> = {
   "conserto-e-manutencao-de-celulares": "/conserto-celulares-curso.webp",
   "ingles-basico-atendimento-ao-publico": "/card_curso_de_ingles.webp",
   "libras-iniciante": "/libras-card.webp",
+  "agente-de-portaria": "/agp.webp",
 };
 
 export const metadata: Metadata = {
