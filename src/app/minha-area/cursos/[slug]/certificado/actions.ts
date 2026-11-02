@@ -83,7 +83,8 @@ export async function enviarComprovanteAction(
 
 export async function criarPagamentoCertificadoAction(
   cursoSlug: string,
-  formato: "online" | "impresso" = "online"
+  formato: "online" | "impresso" = "online",
+  produtoEscolhido?: string
 ): Promise<EstadoPix> {
   const supabase = await criarClienteSupabaseServer();
   const {
@@ -93,7 +94,13 @@ export async function criarPagamentoCertificadoAction(
     return { erro: "Você precisa estar logado com um e-mail válido." };
   }
 
-  const produtoSlug = formato === "impresso" ? `certificado-impresso-${cursoSlug}` : `certificado-${cursoSlug}`;
+  // carga horária escolhida (ou upgrade): só aceita produtos de certificado deste curso
+  const produtoSlug =
+    produtoEscolhido && produtoEscolhido.startsWith(`certificado-${cursoSlug}-`) && /^[a-z0-9-]{3,100}$/.test(produtoEscolhido)
+      ? produtoEscolhido
+      : formato === "impresso"
+        ? `certificado-impresso-${cursoSlug}`
+        : `certificado-${cursoSlug}`;
   const { data: pedidoRows, error } = await supabase.rpc("criar_pedido_por_slug", {
     p_slug: produtoSlug,
   });

@@ -100,22 +100,72 @@ export function PagamentoCertificado({
   formato = "online",
   cartao = null,
   valorCentavos,
+  produtoSlug,
+  rotulo = "Comprar certificado",
 }: {
   cursoSlug: string;
   formato?: "online" | "impresso";
   cartao?: DadosCartaoCompra | null;
   valorCentavos: number;
+  produtoSlug?: string;
+  rotulo?: string;
 }) {
   const router = useRouter();
   return (
     <EscolherPagamento
       valorCentavos={valorCentavos}
-      rotuloComprar="Comprar certificado"
-      criarPix={() => criarPagamentoCertificadoAction(cursoSlug, formato)}
+      rotuloComprar={rotulo}
+      criarPix={() => criarPagamentoCertificadoAction(cursoSlug, formato, produtoSlug)}
       conversaoAds
       cartao={cartao}
       aoAprovar={() => router.refresh()}
     />
+  );
+}
+
+export type OpcaoCarga = {
+  slug: string;
+  horas: number;
+  precoCentavos: number;
+  rotulo: string;
+  detalhe?: string;
+  cartao: DadosCartaoCompra | null;
+};
+
+// Escolha da carga horária do certificado (ou do upgrade) antes de pagar; o curso é o mesmo para todos.
+export function EscolherCarga({ cursoSlug, opcoes, rotuloComprar }: { cursoSlug: string; opcoes: OpcaoCarga[]; rotuloComprar: string }) {
+  const [escolhida, setEscolhida] = useState(opcoes[opcoes.length - 1]?.slug);
+  const opcao = opcoes.find((o) => o.slug === escolhida) ?? opcoes[0];
+  if (!opcao) return null;
+  return (
+    <div className="flex flex-col gap-3">
+      <fieldset className="flex flex-col gap-2">
+        <legend className="mb-1 text-[13.5px] font-semibold text-[#14213A]">Carga horária no certificado</legend>
+        {opcoes.map((o) => (
+          <label
+            key={o.slug}
+            className={`flex cursor-pointer items-center gap-3 border-2 px-4 py-3 ${o.slug === opcao.slug ? "border-brand bg-[#F6F9FC]" : "border-[#D7DEE6] bg-white hover:border-brand"}`}
+          >
+            <input type="radio" name="carga" value={o.slug} checked={o.slug === opcao.slug} onChange={() => setEscolhida(o.slug)} className="accent-brand" />
+            <span className="flex-1">
+              <span className="block text-[15.5px] font-bold text-[#14213A]">{o.rotulo}</span>
+              {o.detalhe && <span className="block text-[12.5px] text-[#516278]">{o.detalhe}</span>}
+            </span>
+            <span className="font-data text-[16px] font-semibold text-[#14213A]">
+              {(o.precoCentavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+            </span>
+          </label>
+        ))}
+      </fieldset>
+      <PagamentoCertificado
+        key={opcao.slug}
+        cursoSlug={cursoSlug}
+        produtoSlug={opcao.slug}
+        valorCentavos={opcao.precoCentavos}
+        cartao={opcao.cartao}
+        rotulo={rotuloComprar}
+      />
+    </div>
   );
 }
 

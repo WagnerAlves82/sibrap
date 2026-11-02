@@ -113,25 +113,32 @@ export default async function CursoPublicoPage({ params }: Props) {
   const { supabase, curso } = await carregarCurso(slug);
   if (!curso) notFound();
 
-  const [{ data: modulos }, { data: produto }, { data: userData }, visitas, pago] = await Promise.all([
+  const [{ data: modulos }, { data: certificados }, { data: userData }, visitas, pago] = await Promise.all([
     supabase
       .from("modulos")
       .select("id, titulo, ordem, aulas(id, titulo, ordem, carga_min, youtube_id)")
       .eq("curso_id", curso.id)
       .order("ordem")
       .order("ordem", { referencedTable: "aulas" }),
-    // preço do certificado online (cada curso tem também o impresso e, se for pago, o produto do curso)
+    // certificados online à venda (um só, ou um por carga horária); o impresso e os upgrades ficam de fora
     supabase
       .from("produtos")
-      .select("preco_centavos")
-      .eq("slug", `certificado-${curso.slug}`)
-      .eq("ativo", true)
-      .maybeSingle(),
+      .select("slug, preco_centavos, certificado_horas")
+      .eq("curso_id", curso.id)
+      .like("slug", `certificado-${curso.slug}%`)
+      .is("certificado_requer_horas", null)
+      .eq("ativo", true),
     supabase.auth.getUser(),
     visitasDoCurso(supabase, curso.slug),
     produtoDoCursoPago(supabase, curso.slug),
   ]);
   const precoCurso = pago ? formatarReais(pago.preco_centavos) : null;
+  // com várias cargas horárias, mostra o menor preço ("a partir de") e as opções
+  const faixas = (certificados ?? []).filter((c) => c.certificado_horas).sort((a, b) => a.certificado_horas! - b.certificado_horas!);
+  const produto =
+    faixas.length > 1
+      ? [...faixas].sort((a, b) => a.preco_centavos - b.preco_centavos)[0]
+      : (certificados ?? []).find((c) => c.slug === `certificado-${curso.slug}`) ?? null;
   // o contador fica invisível até o curso passar de 1.000 visitas
   const mostrarVisitas = visitas >= VISITAS_MINIMAS_PARA_EXIBIR;
 
@@ -379,7 +386,10 @@ export default async function CursoPublicoPage({ params }: Props) {
                 <p className="font-data text-xs font-semibold uppercase tracking-wide text-[#516278]">
                   {precoCurso ? "Curso + certificado online" : curso.permite_isencao_cadunico ? "Demais participantes" : "Certificado"}
                 </p>
-                <p className="mt-2 font-data text-3xl font-semibold text-[#14213A]">
+                {!precoCurso && faixas.length > 1 && (
+                  <p className="mt-2 text-[13.5px] font-semibold text-[#516278]">a partir de</p>
+                )}
+                <p className={`${!precoCurso && faixas.length > 1 ? "" : "mt-2 "}font-data text-3xl font-semibold text-[#14213A]`}>
                   {precoCurso ?? preco ?? "—"}
                 </p>
                 {(pago ?? produto) && (
@@ -390,6 +400,16 @@ export default async function CursoPublicoPage({ params }: Props) {
                     ? "Pagamento único no PIX ou no cartão, direto na página, sem mensalidade. Acesso a todas as aulas e certificado online incluso."
                     : "Pagamento único no PIX ou no cartão, direto na página. O valor é só do certificado — o curso continua gratuito."}
                 </p>
+                {!precoCurso && faixas.length > 1 && (
+                  <ul className="mt-3 flex flex-col gap-1 border-t border-[#EEF2F6] pt-3 font-data text-[14px] text-[#14213A]">
+                    {faixas.map((f) => (
+                      <li key={f.slug} className="flex justify-between">
+                        <span>Certificado de {f.certificado_horas} horas</span>
+                        <strong>{formatarReais(f.preco_centavos)}</strong>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </Reveal>
           </div>

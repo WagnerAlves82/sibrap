@@ -4,7 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite } from "@/components/site-chrome";
 import { Alert } from "@/components/alert";
-import { FormComprovante, FormEmitir, PagamentoCertificado } from "./Formularios";
+import { EscolherCarga, FormComprovante, FormEmitir, PagamentoCertificado, type OpcaoCarga } from "./Formularios";
 import { PopupParabens } from "./PopupParabens";
 import { PesquisaSatisfacao } from "./PesquisaSatisfacao";
 import { dadosCartaoCompra } from "@/lib/cartao-transparente";
@@ -56,10 +56,11 @@ export default async function CertificadoAreaPage({
     { data: produtoOnline },
     { data: produtoImpresso },
     { data: pesquisa },
+    { data: produtosCarga },
   ] = await Promise.all([
     supabase.auth.getUser(),
     supabase.from("matriculas").select("curso_id").eq("curso_id", curso.id).maybeSingle(),
-    supabase.from("certificados").select("codigo").eq("curso_id", curso.id).maybeSingle(),
+    supabase.from("certificados").select("codigo, carga_horaria_horas, forma").eq("curso_id", curso.id).maybeSingle(),
     supabase.from("aulas").select("id").eq("curso_id", curso.id),
     supabase.from("progresso_aulas").select("aula_id, concluida_em"),
     supabase
@@ -90,6 +91,14 @@ export default async function CertificadoAreaPage({
       .eq("ativo", true)
       .maybeSingle(),
     supabase.from("pesquisas_satisfacao").select("id").eq("curso_id", curso.id).maybeSingle(),
+    // certificados por carga horária (20 h, 30 h…) e upgrades; vazio nos cursos de carga única
+    supabase
+      .from("produtos")
+      .select("slug, preco_centavos, certificado_horas, certificado_requer_horas")
+      .eq("curso_id", curso.id)
+      .like("slug", `certificado-${slug}-%`)
+      .not("certificado_horas", "is", null)
+      .eq("ativo", true),
   ]);
 
   if (!matricula) redirect(cursoHref);
@@ -107,7 +116,7 @@ export default async function CertificadoAreaPage({
   const permiteCadunico = curso.permite_isencao_cadunico;
   const cadunicoAprovado = permiteCadunico && comprovante?.status === "aprovado";
   const pagoImpresso = (acessos ?? []).some((a) => a.produtos.slug === `certificado-impresso-${slug}`);
-  const pagoOnline = (acessos ?? []).some((a) => a.produtos.slug === `certificado-${slug}`);
+  const pagoOnline = (acessos ?? []).some((a) => a.produtos.slug.startsWith(`certificado-${slug}`));
   const pago = pagoOnline || pagoImpresso;
   const elegivel = cadunicoAprovado || pago;
   // pesquisa de satisfação: aparece ao terminar o curso, mas é opcional (não trava o certificado)
@@ -120,6 +129,39 @@ export default async function CertificadoAreaPage({
   const precoImpresso = produtoImpresso
     ? (produtoImpresso.preco_centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
     : "R$ 89,90";
+  // cargas à venda: a carga completa é o produto "certificado-<curso>"; as menores e os upgrades têm sufixo
+  const reais = (c: number) => (c / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  const porCarga = (produtosCarga ?? []).filter((p) => !p.certificado_requer_horas);
+  const temCargas = porCarga.length > 0 && !!produtoOnline;
+  const opcoesCarga: OpcaoCarga[] = temCargas
+    ? [
+        ...porCarga.map((p) => ({ slug: p.slug, horas: p.certificado_horas!, precoCentavos: p.preco_centavos })),
+        { slug: `certificado-${slug}`, horas: curso.carga_horaria_horas, precoCentavos: produtoOnline!.preco_centavos },
+      ]
+        .sort((a, b) => a.horas - b.horas)
+        .map((o) => ({
+          ...o,
+          rotulo: `Certificado de ${o.horas} horas`,
+          detalhe: o.horas === curso.carga_horaria_horas ? "Carga horária completa do curso" : undefined,
+          cartao: dadosCartaoCompra(o.slug, userData.user),
+        }))
+    : [];
+  const horasEmitidas = certificado?.carga_horaria_horas ?? 0;
+  const opcoesUpgrade: OpcaoCarga[] =
+    certificado?.forma === "pago"
+      ? (produtosCarga ?? [])
+          .filter((p) => p.certificado_requer_horas === horasEmitidas && p.certificado_horas! > horasEmitidas)
+          .sort((a, b) => a.certificado_horas! - b.certificado_horas!)
+          .map((p) => ({
+            slug: p.slug,
+            horas: p.certificado_horas!,
+            precoCentavos: p.preco_centavos,
+            rotulo: `De ${horasEmitidas} para ${p.certificado_horas} horas`,
+            detalhe: "Você paga só a diferença; o código e o QR Code continuam os mesmos",
+            cartao: dadosCartaoCompra(p.slug, userData.user),
+          }))
+      : [];
+  const precoAPartir = temCargas ? `a partir de ${reais(Math.min(...opcoesCarga.map((o) => o.precoCentavos)))}` : null;
   const nome = (userData.user?.user_metadata as { nome?: string } | undefined)?.nome ?? "";
 
   return (
@@ -149,12 +191,23 @@ export default async function CertificadoAreaPage({
             >
               Ver meu certificado →
             </Link>
+            {opcoesUpgrade.length > 0 && (
+              <div className="mt-6 border-t border-[#EEF2F6] pt-5">
+                <p className="font-display text-lg font-extrabold text-[#14213A]">
+                  Seu certificado tem {horasEmitidas} horas. Quer aumentar?
+                </p>
+                <p className="mb-4 mt-1 text-[14px] text-[#516278]">
+                  Você já estudou o curso completo. Pague só a diferença e o certificado é atualizado na hora.
+                </p>
+                <EscolherCarga cursoSlug={slug} opcoes={opcoesUpgrade} rotuloComprar="Aumentar carga horária" />
+              </div>
+            )}
           </div>
         ) : (
           <div className="mt-6 flex flex-col gap-5">
             {aulasOk && provaOk && !pesquisaRespondida && <PesquisaSatisfacao cursoId={curso.id} cursoNome={curso.nome} />}
             {aulasOk && provaOk && !elegivel && (
-              <PopupParabens precoOnline={precoOnline} precoImpresso={precoImpresso} permiteCadunico={permiteCadunico} />
+              <PopupParabens precoOnline={precoAPartir ?? precoOnline} precoImpresso={precoImpresso} permiteCadunico={permiteCadunico} />
             )}
             {!podeEmitir && (
               <Alert variant="info" claro>
@@ -241,18 +294,30 @@ export default async function CertificadoAreaPage({
                     <p className="font-data text-xs font-semibold uppercase tracking-wide text-[#516278]">
                       Certificado online (PDF)
                     </p>
-                    <p className="mt-1 font-data text-3xl font-semibold text-[#14213A]">{precoOnline}</p>
-                    <p className="text-[13px] text-[#516278]">PIX ou em até 2x</p>
-                    <p className="mb-4 mt-2 text-[12.5px] leading-relaxed text-accent-2">
-                      Assim que o pagamento for confirmado, seu certificado é liberado na hora e também enviado
-                      automaticamente para o seu e-mail.
-                    </p>
-                    <PagamentoCertificado
-                      cursoSlug={slug}
-                      formato="online"
-                      valorCentavos={produtoOnline?.preco_centavos ?? 2990}
-                      cartao={dadosCartaoCompra(`certificado-${slug}`, userData.user)}
-                    />
+                    {temCargas ? (
+                      <>
+                        <p className="mb-4 mt-2 text-[12.5px] leading-relaxed text-accent-2">
+                          O curso é o mesmo para todos; você escolhe só a carga horária que sai no certificado. Dá
+                          para aumentar depois, pagando a diferença.
+                        </p>
+                        <EscolherCarga cursoSlug={slug} opcoes={opcoesCarga} rotuloComprar="Comprar certificado" />
+                      </>
+                    ) : (
+                      <>
+                        <p className="mt-1 font-data text-3xl font-semibold text-[#14213A]">{precoOnline}</p>
+                        <p className="text-[13px] text-[#516278]">PIX ou em até 2x</p>
+                        <p className="mb-4 mt-2 text-[12.5px] leading-relaxed text-accent-2">
+                          Assim que o pagamento for confirmado, seu certificado é liberado na hora e também enviado
+                          automaticamente para o seu e-mail.
+                        </p>
+                        <PagamentoCertificado
+                          cursoSlug={slug}
+                          formato="online"
+                          valorCentavos={produtoOnline?.preco_centavos ?? 2990}
+                          cartao={dadosCartaoCompra(`certificado-${slug}`, userData.user)}
+                        />
+                      </>
+                    )}
                   </div>
 
                   <div className="rounded-lg border border-[#D7DEE6] p-5">

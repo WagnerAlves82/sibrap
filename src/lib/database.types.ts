@@ -1501,6 +1501,8 @@ export type Database = {
           apostila_storage_path: string | null
           ativo: boolean
           cargo_id: string | null
+          certificado_horas: number | null
+          certificado_requer_horas: number | null
           concurso_id: string | null
           criado_em: string
           curso_id: string | null
@@ -1517,6 +1519,8 @@ export type Database = {
           apostila_storage_path?: string | null
           ativo?: boolean
           cargo_id?: string | null
+          certificado_horas?: number | null
+          certificado_requer_horas?: number | null
           concurso_id?: string | null
           criado_em?: string
           curso_id?: string | null
@@ -1533,6 +1537,8 @@ export type Database = {
           apostila_storage_path?: string | null
           ativo?: boolean
           cargo_id?: string | null
+          certificado_horas?: number | null
+          certificado_requer_horas?: number | null
           concurso_id?: string | null
           criado_em?: string
           curso_id?: string | null
