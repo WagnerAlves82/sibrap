@@ -105,7 +105,9 @@ export type Bloco =
       casos: { situacao: string; certa: 0 | 1; explicacao: string }[];
     }
   // ligar os pares: toca num item da esquerda e depois no par da direita
-  | { tipo: "associar"; titulo?: string; intro?: string; pares: { a: string; b: string }[] };
+  | { tipo: "associar"; titulo?: string; intro?: string; pares: { a: string; b: string }[] }
+  // tabela comparativa; células "sim"/"não" viram ✓ verde e ✕ vermelho; "legenda" vai embaixo
+  | { tipo: "tabela"; titulo?: string; intro?: string; colunas: string[]; linhas: string[][]; legenda?: string };
 
 // qualquer bloco pode ter "voz" própria (ex.: "en-US" para a pronúncia do alfabeto da OTAN num curso em português)
 type ComVoz = { voz?: string | null };
@@ -1111,6 +1113,43 @@ function Associar({ b, id }: { b: Extract<Bloco, { tipo: "associar" }>; id: stri
   );
 }
 
+function Tabela({ b }: { b: Extract<Bloco, { tipo: "tabela" }> }) {
+  const celula = (v: string) => {
+    if (v === "sim") return <span className="font-bold text-accent-2" aria-label="sim">✓</span>;
+    if (v === "não") return <span className="font-bold text-[#C0392B]" aria-label="não">✕</span>;
+    return v;
+  };
+  return (
+    <Caixa titulo={b.titulo} intro={b.intro}>
+      <div className="overflow-x-auto border border-[#D7DEE6] bg-white">
+        <table className="w-full min-w-[520px] border-collapse text-left text-[15.5px]">
+          <thead>
+            <tr className="bg-brand text-white">
+              {b.colunas.map((c) => (
+                <th key={c} className="px-3 py-2.5 font-semibold">
+                  {c}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {b.linhas.map((l, i) => (
+              <tr key={i} className={i % 2 ? "bg-[#F6F9FC]" : "bg-white"}>
+                {l.map((v, k) => (
+                  <td key={k} className={`border-t border-[#EEF2F6] px-3 py-2.5 align-top ${k === 0 ? "font-semibold text-[#14213A]" : "text-[#33465E]"} ${v === "sim" || v === "não" ? "text-center text-[18px]" : ""}`}>
+                    {celula(v)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {b.legenda && <p className="mt-2 text-[14px] leading-relaxed text-[#516278]">{b.legenda}</p>}
+    </Caixa>
+  );
+}
+
 function Render({ b, id }: { b: Bloco; id: string }) {
   switch (b.tipo) {
     case "texto":
@@ -1157,6 +1196,8 @@ function Render({ b, id }: { b: Bloco; id: string }) {
       return <Triagem b={b} id={id} />;
     case "associar":
       return <Associar b={b} id={id} />;
+    case "tabela":
+      return <Tabela b={b} />;
     default:
       return null;
   }
