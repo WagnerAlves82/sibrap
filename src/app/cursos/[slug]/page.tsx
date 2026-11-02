@@ -109,7 +109,7 @@ function perguntasFrequentes(
   return [
     precoCurso
       ? [`Quanto custa o curso de ${curso.nome}?`, `O curso custa ${precoCurso}, pagamento único no PIX ou em até 3x, sem mensalidade. O valor dá acesso a todas as aulas, 100% online, e já inclui o certificado.`]
-      : [`O curso de ${curso.nome} é gratuito?`, `Sim. Todas as aulas do curso de ${curso.nome} são gratuitas e 100% online. Só o certificado é opcional e pago${preco ? ` (${preco})` : ""}.`],
+      : [`O curso de ${curso.nome} é gratuito?`, `Sim. Todas as aulas do curso de ${curso.nome} são gratuitas e 100% online. Só o certificado é opcional e pago, e você escolhe se quer emiti-lo ao terminar o curso.`],
     [`O curso de ${curso.nome} tem certificado?`, `Sim. Depois de concluir as aulas e ser aprovado na prova final (nota mínima de ${curso.nota_minima}%), você pode emitir o certificado de ${horasCertificado}, com QR Code para qualquer pessoa conferir a autenticidade${precoCurso ? ". O certificado online já está incluso no valor do curso" : ""}.`],
     [`Qual é a carga horária do curso de ${curso.nome}?`, `O curso tem ${curso.carga_horaria_horas} horas, divididas em ${modulos.length} módulos. Você estuda no seu ritmo, pelo celular ou pelo computador, e o progresso fica salvo.`],
     [`O que se aprende no curso de ${curso.nome}?`, `Os módulos são: ${modulos.join("; ")}.`],
@@ -228,9 +228,10 @@ export default async function CursoPublicoPage({ params }: Props) {
       <CabecalhoSite logado={logado} />
 
       <section className="overflow-hidden border-b border-[#D7DEE6] bg-surface-2">
-        <div className="mx-auto grid max-w-[1180px] items-center gap-10 px-6 py-16 lg:grid-cols-[minmax(0,1fr)_400px]">
-          <div>
-          <div className="entrar entrar-cima">
+        <div className="mx-auto grid max-w-[1180px] items-center gap-10 px-6 py-16 lg:grid-cols-[minmax(0,1fr)_480px]">
+          {/* no celular o wrapper some (contents) e a ordem vira: texto, foto, números */}
+          <div className="contents lg:block">
+          <div className="entrar entrar-cima order-1">
             <span className="inline-flex items-center gap-2 border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-brand">
               <span className="h-1.5 w-1.5 bg-accent-2" />
               Curso livre · 100% online · {precoCurso ?? "Gratuito"}
@@ -267,12 +268,12 @@ export default async function CursoPublicoPage({ params }: Props) {
             />
           </div>
 
-          <div className="entrar entrar-cima mt-12" style={{ animationDelay: "150ms" }}>
+          <div className="entrar entrar-cima order-3 lg:mt-12" style={{ animationDelay: "150ms" }}>
             <dl className="grid max-w-3xl grid-cols-2 gap-px overflow-hidden border border-[#D7DEE6] bg-[#D7DEE6] sm:grid-cols-4">
               {[
                 [`${curso.carga_horaria_horas}h`, "carga horária"],
                 [String(modulos?.length ?? 0), "módulos"],
-                [String(totalAulas), temVideo ? "aulas em vídeo" : aulasComVideo > 0 ? `aulas (${aulasComVideo} com vídeo)` : "aulas"],
+                [String(totalAulas), temVideo ? "aulas em vídeo" : "aulas"],
                 ["QR Code", "certificado validável"],
               ].map(([valor, rotulo]) => (
                 <div key={rotulo} className="bg-white px-5 py-4">
@@ -284,15 +285,15 @@ export default async function CursoPublicoPage({ params }: Props) {
           </div>
           </div>
 
-          <div className="entrar entrar-direita" style={{ animationDelay: "250ms" }}>
+          <div className="entrar entrar-direita order-2" style={{ animationDelay: "250ms" }}>
             <Image
               src={(FOTOS_HERO_POR_CURSO[curso.slug] ?? FOTO_HERO_PADRAO).src}
               alt={(FOTOS_HERO_POR_CURSO[curso.slug] ?? FOTO_HERO_PADRAO).alt}
               width={FOTOS_HERO_POR_CURSO[curso.slug]?.largura ?? 1122}
               height={FOTOS_HERO_POR_CURSO[curso.slug]?.altura ?? 1402}
-              sizes="(min-width: 1024px) 400px, 80vw"
+              sizes="(min-width: 1024px) 480px, 90vw"
               priority
-              className={`flutuar mx-auto h-auto w-full lg:max-w-none ${FOTOS_HERO_POR_CURSO[curso.slug]?.largura ? "max-w-[480px] " : "max-w-[320px]"}`}
+              className={`flutuar mx-auto h-auto w-full lg:max-w-none ${FOTOS_HERO_POR_CURSO[curso.slug]?.largura ? "max-w-[560px] " : "max-w-[360px]"}`}
             />
           </div>
         </div>
@@ -443,6 +444,7 @@ export default async function CursoPublicoPage({ params }: Props) {
               conclusão das aulas e da aprovação na prova final.
             </p>
           </Reveal>
+          {precoCurso && (
           <div className={`mt-8 grid max-w-3xl grid-cols-1 gap-6 ${curso.permite_isencao_cadunico ? "md:grid-cols-2" : ""}`}>
             {curso.permite_isencao_cadunico && (
               <Reveal>
@@ -490,6 +492,7 @@ export default async function CursoPublicoPage({ params }: Props) {
               </div>
             </Reveal>
           </div>
+          )}
           <p className="mt-6 max-w-[70ch] text-[12.5px] leading-relaxed text-[#93A0AF]">
             {AVISO_CURSO_LIVRE}
           </p>

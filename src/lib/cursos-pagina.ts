@@ -32,7 +32,7 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
       "Caça ao erro no livro de ocorrências",
     ],
     faq: [
-      ["Posso escolher a carga horária do certificado?", "Sim. Você estuda o curso completo e escolhe o certificado de 20 h (R$ 29,90), 40 h (R$ 34,90) ou 60 h (R$ 39,90). Dá para aumentar depois, pagando só a diferença."],
+      ["Posso escolher a carga horária do certificado?", "Sim. Você estuda o curso completo e, na hora de emitir, escolhe o certificado de 20, 40 ou 60 horas. Dá para aumentar depois, pagando só a diferença."],
       ["Este curso me forma vigilante?", "Não. Vigilante é outra profissão, com curso de formação em escola autorizada e registro na Polícia Federal. Este curso prepara para portaria e controle de acesso."],
     ],
   },
@@ -57,7 +57,7 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
       "Tabelas práticas: fluxo de caixa, conciliação, férias e pronomes de tratamento",
     ],
     faq: [
-      ["Posso escolher a carga horária do certificado?", "Sim. O curso completo é aberto a todos e você escolhe o certificado de 20 h (R$ 29,90), 30 h (R$ 34,90) ou 40 h (R$ 39,90). Dá para aumentar depois, pagando só a diferença."],
+      ["Posso escolher a carga horária do certificado?", "Sim. O curso completo é aberto a todos e, na hora de emitir, você escolhe o certificado de 20, 30 ou 40 horas. Dá para aumentar depois, pagando só a diferença."],
       ["O curso ajuda em concurso público?", "Ajuda na parte de noções de administração: redação oficial, arquivologia, atendimento, ética, LGPD e departamento pessoal, temas comuns nos editais de auxiliar e assistente administrativo."],
     ],
   },
@@ -82,7 +82,7 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
       "Roteiros prontos: ligação, reclamação e entrevista (método STAR)",
     ],
     faq: [
-      ["Posso escolher a carga horária do certificado?", "Sim. O curso completo é aberto a todos e você escolhe o certificado de 20 h (R$ 29,90), 30 h (R$ 34,90) ou 40 h (R$ 39,90). Dá para aumentar depois, pagando só a diferença."],
+      ["Posso escolher a carga horária do certificado?", "Sim. O curso completo é aberto a todos e, na hora de emitir, você escolhe o certificado de 20, 30 ou 40 horas. Dá para aumentar depois, pagando só a diferença."],
     ],
   },
   "estoque-logistica-controle-de-mercadorias": {
@@ -120,7 +120,7 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
       "Prompts prontos para usar a IA no trabalho",
     ],
     faq: [
-      ["Posso escolher a carga horária do certificado?", "Sim. O curso completo é aberto a todos e você escolhe o certificado de 20 h (R$ 29,90), 30 h (R$ 34,90) ou 40 h (R$ 39,90). Dá para aumentar depois, pagando só a diferença."],
+      ["Posso escolher a carga horária do certificado?", "Sim. O curso completo é aberto a todos e, na hora de emitir, você escolhe o certificado de 20, 30 ou 40 horas. Dá para aumentar depois, pagando só a diferença."],
     ],
   },
   "conserto-e-manutencao-de-celulares": {
