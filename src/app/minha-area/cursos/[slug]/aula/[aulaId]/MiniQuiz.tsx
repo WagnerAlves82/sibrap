@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { conferirMiniquizAction, type ResultadoMiniquiz } from "./actions";
+import { useInformarQuiz } from "./BarraAula";
 
 type Alternativa = { letra: string; texto: string };
 export type QuestaoMini = {
@@ -13,8 +14,8 @@ export type QuestaoMini = {
 
 type Resposta = ResultadoMiniquiz & { marcada: string };
 
-// Exercício de fixação: resposta e explicação na hora, sem nota e sem
-// bloquear nada. Serve para o aluno perceber o que ficou.
+// Exercício de fixação: resposta e explicação na hora, sem nota. Responder todas as questões
+// (certo ou errado) libera o "Concluir aula" da barra do rodapé.
 export function MiniQuiz({ questoes }: { questoes: QuestaoMini[] }) {
   const [respostas, setRespostas] = useState<Record<string, Resposta>>({});
   const [carregando, setCarregando] = useState<string | null>(null);
@@ -35,6 +36,10 @@ export function MiniQuiz({ questoes }: { questoes: QuestaoMini[] }) {
 
   const respondidas = Object.keys(respostas).length;
   const acertos = Object.values(respostas).filter((r) => r.correta).length;
+  const informar = useInformarQuiz();
+  useEffect(() => {
+    informar?.(respondidas);
+  }, [respondidas, informar]);
 
   return (
     <div className="flex flex-col gap-5">
@@ -90,7 +95,7 @@ export function MiniQuiz({ questoes }: { questoes: QuestaoMini[] }) {
       )}
       {respondidas === questoes.length && (
         <p className="font-data text-sm text-[#516278]">
-          Você acertou {acertos} de {questoes.length}.
+          Você acertou {acertos} de {questoes.length}. Agora toque em <strong>Concluir aula</strong>, na barra de baixo.
         </p>
       )}
     </div>

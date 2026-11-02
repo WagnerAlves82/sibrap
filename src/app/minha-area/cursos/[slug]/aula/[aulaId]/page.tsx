@@ -7,6 +7,7 @@ import { TextoSimples } from "@/components/texto-simples";
 import { formatarHoras } from "@/lib/emissor";
 import { PlayerAula } from "./PlayerAula";
 import { MiniQuiz, type QuestaoMini } from "./MiniQuiz";
+import type { ItemLista } from "./BarraAula";
 import { AulaInterativa, type Bloco } from "@/components/aula-interativa";
 
 export const metadata: Metadata = {
@@ -77,11 +78,18 @@ export default async function AulaPage({
   const anterior = lista[indice - 1];
   const proxima = lista[indice + 1] ?? null;
   const aulaHref = (id: string) => `${cursoHref}/aula/${id}`;
+  // mesma regra do menu lateral: liberada se já feita, se é a atual, sem ordem obrigatória ou com a anterior feita
+  const itensBarra: ItemLista[] = lista.map((a, i) => {
+    const feita = concluidas.has(a.id);
+    const liberada = feita || a.id === aula.id || !curso.ordem_obrigatoria || i === 0 || concluidas.has(lista[i - 1].id);
+    return { id: a.id, titulo: a.titulo, modulo: a.modulo, href: liberada ? aulaHref(a.id) : null, feita, atual: a.id === aula.id };
+  });
+  const feitas = lista.filter((a) => concluidas.has(a.id)).length;
 
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
       <CabecalhoSite logado />
-      <main className="mx-auto grid w-full max-w-[1180px] flex-1 grid-cols-1 gap-8 px-6 py-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <main className="mx-auto grid w-full max-w-[1180px] flex-1 grid-cols-1 gap-8 px-6 pt-8 pb-28 lg:grid-cols-[minmax(0,1fr)_320px]">
         <article className="min-w-0">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent-2">
@@ -113,6 +121,12 @@ export default async function AulaPage({
             titulo={aula.titulo}
             concluidaInicial={concluidas.has(aula.id)}
             proximaHref={proxima ? aulaHref(proxima.id) : null}
+            anteriorHref={anterior ? aulaHref(anterior.id) : null}
+            provaHref={`${cursoHref}/prova`}
+            certificadoHref={`${cursoHref}/certificado`}
+            lista={itensBarra}
+            feitasInicial={feitas}
+            totalQuiz={questoes.length}
           >
             {Array.isArray(aula.conteudo) && aula.conteudo.length > 0 && (
               // voz do navegador só no curso de inglês (nos outros, como Libras, os botões de ouvir somem)
@@ -151,9 +165,11 @@ export default async function AulaPage({
             )}
 
             {questoes.length > 0 && (
-              <Secao titulo="Fixe o que aprendeu">
-                <MiniQuiz key={aula.id} questoes={questoes} />
-              </Secao>
+              <div id="fixe-o-que-aprendeu" className="scroll-mt-6">
+                <Secao titulo="Fixe o que aprendeu">
+                  <MiniQuiz key={aula.id} questoes={questoes} />
+                </Secao>
+              </div>
             )}
           </PlayerAula>
         </article>

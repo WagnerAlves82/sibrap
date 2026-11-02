@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Alert } from "@/components/alert";
 import { concluirAulaAction } from "./actions";
+import { BarraAula, QuizAula, type ItemLista } from "./BarraAula";
 
 type YTPlayer = {
   getCurrentTime(): number;
@@ -53,6 +54,12 @@ export function PlayerAula({
   titulo,
   concluidaInicial,
   proximaHref,
+  anteriorHref,
+  provaHref,
+  certificadoHref,
+  lista,
+  feitasInicial,
+  totalQuiz,
   children,
 }: {
   aulaId: string;
@@ -60,6 +67,12 @@ export function PlayerAula({
   titulo: string;
   concluidaInicial: boolean;
   proximaHref: string | null;
+  anteriorHref: string | null;
+  provaHref: string;
+  certificadoHref: string;
+  lista: ItemLista[];
+  feitasInicial: number;
+  totalQuiz: number;
   children?: React.ReactNode;
 }) {
   const router = useRouter();
@@ -71,6 +84,14 @@ export function PlayerAula({
   const emAndamentoRef = useRef(false);
   const ultimaTentativaRef = useRef(0);
   const concluidaRef = useRef(concluidaInicial);
+  const [concluindo, setConcluindo] = useState(false);
+  // "Concluir" só depois de responder todas as questões do "Fixe o que aprendeu" (aula já concluída não trava)
+  const [respondidas, setRespondidas] = useState(0);
+  const quizOk = concluidaInicial || totalQuiz === 0 || respondidas >= totalQuiz;
+  const quizOkRef = useRef(quizOk);
+  useEffect(() => {
+    quizOkRef.current = quizOk;
+  }, [quizOk]);
 
   const concluir = useCallback(async () => {
     if (concluidaRef.current || emAndamentoRef.current) return;
@@ -78,8 +99,10 @@ export function PlayerAula({
     if (Date.now() - ultimaTentativaRef.current < 15000) return;
     ultimaTentativaRef.current = Date.now();
     emAndamentoRef.current = true;
+    setConcluindo(true);
     const r = await concluirAulaAction(aulaId);
     emAndamentoRef.current = false;
+    setConcluindo(false);
     if ("ok" in r) {
       concluidaRef.current = true;
       setConcluida(true);
@@ -103,7 +126,7 @@ export function PlayerAula({
         playerVars: { rel: 0, modestbranding: 1, playsinline: 1, autoplay: 1 },
         events: {
           onStateChange: (e) => {
-            if (e.data === 0) concluir();
+            if (e.data === 0 && quizOkRef.current) concluir();
           },
         },
       });
@@ -111,7 +134,7 @@ export function PlayerAula({
         const p = playerRef.current;
         if (!p || concluidaRef.current) return;
         const duracao = p.getDuration();
-        if (duracao > 0 && p.getCurrentTime() / duracao >= 0.9) concluir();
+        if (duracao > 0 && p.getCurrentTime() / duracao >= 0.9 && quizOkRef.current) concluir();
       }, 3000);
     });
 
@@ -152,47 +175,49 @@ export function PlayerAula({
       ) : (
         // aula só em texto: nada de "vídeo" falso (os alunos achavam que precisavam assistir algo para avançar)
         <p className="border-l-4 border-accent bg-white px-4 py-3 text-[16px] leading-relaxed text-[#33465E]">
-          <strong className="text-[#14213A]">Aula em texto.</strong> Leia o resumo, faça a atividade e, no fim da página, toque em
-          &quot;Li a aula, marcar como concluída&quot; para liberar a próxima.
+          <strong className="text-[#14213A]">Como avançar:</strong> estude a aula, responda o &quot;Fixe o que aprendeu&quot; no fim
+          da página e toque em <strong>Concluir aula</strong>, na barra de baixo.
         </p>
       )}
 
-      {children}
+      <QuizAula.Provider value={setRespondidas}>{children}</QuizAula.Provider>
 
       <div className="mt-8 flex flex-col gap-3 border-t border-[#D7DEE6] pt-6">
         {concluida ? (
           <Alert variant="sucesso" claro className="text-sm">
-            Aula concluída! Seu progresso foi salvo.
-          </Alert>
-        ) : (
-          <>
-            {aviso && (
-              <Alert variant="info" claro className="text-sm">
-                {aviso}.
-              </Alert>
+            Aula concluída! Seu progresso foi salvo.{" "}
+            {proximaHref ? (
+              <Link href={proximaHref} className="font-bold underline underline-offset-4">
+                Ir para a próxima aula →
+              </Link>
+            ) : (
+              <Link href={provaHref} className="font-bold underline underline-offset-4">
+                Fazer a prova final →
+              </Link>
             )}
-            <button
-              type="button"
-              onClick={() => {
-                ultimaTentativaRef.current = 0;
-                concluir();
-              }}
-              className="self-start rounded-lg bg-accent px-5 py-2.5 text-[15.5px] font-bold text-accent-ink transition-colors hover:brightness-105"
-            >
-              Li a aula, marcar como concluída
-            </button>
-          </>
-        )}
-
-        {proximaHref && concluida && (
-          <Link
-            href={proximaHref}
-            className="inline-flex w-fit items-center gap-2 rounded-lg bg-accent px-6 py-3 text-[16.5px] font-bold text-accent-ink transition-colors hover:brightness-105"
-          >
-            Próxima aula <span aria-hidden>→</span>
-          </Link>
-        )}
+          </Alert>
+        ) : aviso ? (
+          <Alert variant="info" claro className="text-sm">
+            {aviso}.
+          </Alert>
+        ) : null}
       </div>
+
+      <BarraAula
+        lista={lista}
+        anteriorHref={anteriorHref}
+        proximaHref={proximaHref}
+        provaHref={provaHref}
+        certificadoHref={certificadoHref}
+        feitas={feitasInicial + (concluida && !concluidaInicial ? 1 : 0)}
+        concluida={concluida}
+        quizOk={quizOk}
+        concluindo={concluindo}
+        onConcluir={() => {
+          ultimaTentativaRef.current = 0;
+          concluir();
+        }}
+      />
     </div>
   );
 }
