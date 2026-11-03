@@ -7,7 +7,6 @@ import { CarrosselHome } from "@/components/carrossel-home";
 import { VitrineApostilas } from "@/components/vitrine-apostilas";
 import { VitrinePosts } from "@/components/vitrine-posts";
 import { IconeSolido, type NomeIconeSolido } from "@/components/icones-solidos";
-import { SeloAbed } from "@/components/selo-abed";
 import { Reveal } from "@/components/reveal";
 import { COMBOS } from "@/lib/combos";
 import { diasAte, formatarDataIso, formatarPreco, listarApostilasPublicadas } from "@/lib/apostilas";
@@ -28,14 +27,15 @@ export default async function Home() {
     listarApostilasPublicadas(supabase),
     listarPostsVitrine(supabase),
     supabase.from("produtos").select("ativo").eq("slug", "simulado-gratis").maybeSingle(),
-    supabase.from("cursos").select("slug, nome, carga_horaria_horas").in("slug", CURSOS_MAIS_VENDIDOS),
+    supabase.from("cursos").select("slug, nome, carga_horaria_horas").in("slug", CURSOS_MAIS_VENDIDOS.map((c) => c.slug)),
     supabase.from("produtos").select("slug, preco_centavos").like("slug", "curso-%").eq("ativo", true),
   ]);
   // vitrine de cursos: os mais vendidos, na ordem da lista
   const precoCurso = new Map((cursosPagos ?? []).map((p) => [p.slug.slice("curso-".length), p.preco_centavos]));
-  const vitrineCursos = CURSOS_MAIS_VENDIDOS.map((slug) => (cursosHome ?? []).find((c) => c.slug === slug)).filter(
-    (c): c is NonNullable<typeof c> => !!c
-  );
+  const vitrineCursos = CURSOS_MAIS_VENDIDOS.flatMap(({ slug, chamada }) => {
+    const curso = (cursosHome ?? []).find((c) => c.slug === slug);
+    return curso ? [{ ...curso, chamada }] : [];
+  });
   // Isca gratuita do Transpetro desativada por ora (ver handle_new_user()
   // no banco e src/app/minha-area/page.tsx) — mesmo campo produtos.ativo
   // controla os dois lugares, reativar é só voltar ele a true.
@@ -342,11 +342,14 @@ export default async function Home() {
                       <span className="font-data text-[11px] font-semibold text-accent-2 sm:text-xs">
                         {curso.carga_horaria_horas}h · {preco ? formatarPreco(preco) : "Grátis"}
                       </span>
-                      <p className="mt-1 line-clamp-3 flex-1 font-display text-[14.5px] font-bold leading-snug text-[#14213A] sm:text-[17px]">
+                      <p className="mt-1 font-display text-[14.5px] font-bold leading-snug text-[#14213A] sm:text-[17px]">
                         {curso.nome}
                       </p>
-                      <span aria-hidden className="mt-3 flex justify-end text-accent transition-transform group-hover:translate-x-1">
-                        →
+                      <p className="mt-1.5 line-clamp-4 flex-1 text-[12.5px] leading-snug text-[#516278] sm:line-clamp-3 sm:text-[14.5px] sm:leading-relaxed">
+                        {curso.chamada}
+                      </p>
+                      <span className="mt-3 inline-flex items-center gap-1.5 self-end text-[13px] font-bold text-brand transition-transform group-hover:translate-x-1 sm:text-[14px]">
+                        Saiba mais <span aria-hidden className="text-accent">→</span>
                       </span>
                     </div>
                   </Link>
@@ -365,7 +368,6 @@ export default async function Home() {
               <Link href="/cursos" className="text-sm font-semibold text-brand underline underline-offset-4">
                 Ver todos os cursos
               </Link>
-              <SeloAbed altura={60} />
             </div>
           </Reveal>
         </div>
@@ -481,14 +483,14 @@ export default async function Home() {
   );
 }
 
-// Cursos mais vendidos (pedidos aprovados em 02/11/2026), na ordem da vitrine da home
-const CURSOS_MAIS_VENDIDOS = [
-  "auxiliar-administrativo",
-  "informatica-basica-ia",
-  "atendimento-ao-cliente",
-  "ingles-basico-atendimento-ao-publico",
-  "estoque-logistica-controle-de-mercadorias",
-  "conserto-e-manutencao-de-celulares",
+// Cursos mais vendidos (pedidos aprovados em 02/11/2026), na ordem da vitrine da home, com a chamada do card
+const CURSOS_MAIS_VENDIDOS: { slug: string; chamada: string }[] = [
+  { slug: "auxiliar-administrativo", chamada: "Documentos, planilhas e rotina de escritório para a sua primeira vaga." },
+  { slug: "informatica-basica-ia", chamada: "Word, Excel, internet e IA no dia a dia, do zero ao currículo." },
+  { slug: "atendimento-ao-cliente", chamada: "Encante clientes e resolva reclamações sem perder a calma." },
+  { slug: "ingles-basico-atendimento-ao-publico", chamada: "Frases prontas para atender turistas em lojas, hotéis e recepções." },
+  { slug: "estoque-logistica-controle-de-mercadorias", chamada: "Recebimento, inventário e expedição como nas empresas de verdade." },
+  { slug: "conserto-e-manutencao-de-celulares", chamada: "Diagnóstico e troca de peças para ganhar renda com consertos." },
 ];
 
 const RECURSOS_SIMULADO: [NomeIconeSolido, string, string][] = [
