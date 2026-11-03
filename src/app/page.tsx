@@ -300,8 +300,8 @@ export default async function Home() {
 
       {/* Comece de graça */}
       <section id="cursos-gratuitos" className="scroll-mt-14 overflow-hidden bg-surface-2 py-14 sm:py-16">
-        <div className="mx-auto grid max-w-[1180px] items-center gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <Reveal variante="esquerda" className="max-w-[60ch]">
+        <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
+          <Reveal>
             <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-brand">
               <span className="h-1.5 w-1.5 rounded-full bg-accent-2" />
               Cursos para o mercado de trabalho
@@ -320,29 +320,34 @@ export default async function Home() {
                 </li>
               </ul>
             )}
-            <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-3">
+            <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
               {vitrineCursos.map((curso) => {
                 const preco = precoCurso.get(curso.slug);
                 return (
                   <Link
                     key={curso.slug}
                     href={`/cursos/${curso.slug}`}
-                    className="group flex flex-col overflow-hidden border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_16px_36px_-22px_rgba(11,42,74,0.35)]"
+                    className="group flex h-full flex-col overflow-hidden border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_16px_36px_-22px_rgba(11,42,74,0.35)]"
                   >
                     <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-2">
                       <Image
                         src={FOTOS_POR_CURSO[curso.slug] ?? FOTO_CURSO_PADRAO}
                         alt=""
                         fill
-                        sizes="(min-width: 1024px) 260px, 50vw"
+                        sizes="(min-width: 1024px) 380px, 50vw"
                         className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
                       />
                     </div>
-                    <div className="flex flex-1 flex-col p-3.5">
-                      <span className="font-data text-[11px] font-semibold text-accent-2">
+                    <div className="flex flex-1 flex-col p-3.5 sm:p-5">
+                      <span className="font-data text-[11px] font-semibold text-accent-2 sm:text-xs">
                         {curso.carga_horaria_horas}h · {preco ? formatarPreco(preco) : "Grátis"}
                       </span>
-                      <p className="mt-1 font-display text-[14.5px] font-bold leading-snug text-[#14213A]">{curso.nome}</p>
+                      <p className="mt-1 line-clamp-3 flex-1 font-display text-[14.5px] font-bold leading-snug text-[#14213A] sm:text-[17px]">
+                        {curso.nome}
+                      </p>
+                      <span aria-hidden className="mt-3 flex justify-end text-accent transition-transform group-hover:translate-x-1">
+                        →
+                      </span>
                     </div>
                   </Link>
                 );
@@ -362,16 +367,6 @@ export default async function Home() {
               </Link>
               <SeloAbed altura={60} />
             </div>
-          </Reveal>
-          <Reveal variante="direita" delay={200}>
-            <Image
-              src="/alunos.webp"
-              alt="Alunos aprendendo juntos com os aplicativos do Office e o Copilot"
-              width={1122}
-              height={1402}
-              sizes="(min-width: 1024px) 320px, 60vw"
-              className="flutuar mx-auto h-auto w-full max-w-[240px] lg:max-w-none"
-            />
           </Reveal>
         </div>
       </section>
