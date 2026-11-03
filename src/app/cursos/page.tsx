@@ -12,6 +12,21 @@ export const metadata: Metadata = {
   alternates: { canonical: "/cursos" },
   description:
     "Cursos livres do SIBRAP, 100% online, com certificado e QR Code de validação: cursos gratuitos e cursos profissionalizantes com pagamento único no PIX.",
+  // prévia do link no WhatsApp/Facebook (a imagem é opengraph-image.jpg desta pasta)
+  openGraph: {
+    title: "Cursos online grátis com certificado | SIBRAP",
+    description:
+      "Agente de Portaria, Call Center, Camareira, Auxiliar Administrativo, Informática com IA e mais. 100% online, com certificado e QR Code de validação.",
+    url: "/cursos",
+    siteName: "SIBRAP",
+    locale: "pt_BR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Cursos online grátis com certificado | SIBRAP",
+    description: "Agente de Portaria, Call Center, Camareira, Auxiliar Administrativo, Informática com IA e mais.",
+  },
 };
 
 export default async function CursosPage() {
