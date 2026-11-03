@@ -302,9 +302,9 @@ export default async function Home() {
       <section id="cursos-gratuitos" className="scroll-mt-14 overflow-hidden bg-surface-2 py-14 sm:py-16">
         <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
           <Reveal>
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-brand">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent-2" />
-              Cursos para o mercado de trabalho
+            <span className="inline-flex items-center gap-2.5 border border-[#D7DEE6] bg-white px-4 py-2 font-data text-[15px] font-semibold text-brand sm:gap-3 sm:px-6 sm:py-3 sm:text-2xl">
+              <span className="h-2.5 w-2.5 rounded-full bg-accent-2 sm:h-3 sm:w-3" />
+              Cursos livres para o mercado de trabalho
             </span>
             <h2 className="mt-3.5 font-display text-[1.7rem] font-extrabold text-[#14213A] sm:text-[2.2rem]">
               Comece gratuitamente. Aprenda no seu ritmo.
