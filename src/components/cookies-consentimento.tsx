@@ -15,6 +15,7 @@ function atualizarConsentimento(aceito: boolean) {
     ad_personalization: valor,
     analytics_storage: valor,
   });
+  (window as unknown as { oaiq?: Gtag }).oaiq?.("consent", aceito);
 }
 
 function gravar(valor: "aceito" | "recusado") {

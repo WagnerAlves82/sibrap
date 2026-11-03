@@ -10,13 +10,14 @@ const ABACATEPAY_CARTAO =
   "https://abacatepay.com https://*.abacatepay.com https://*.rinne.com.br https://*.evervault.com https://*.evervault.app";
 const CSP_ESTRITO = [
   "default-src 'self'",
+  // Pixel do ChatGPT Ads (OpenAI): script em bzrcdn.openai.com, eventos em bzr.openai.com
   // AdSense (Notícias e aulas dos cursos gratuitos): *.googlesyndication.com, *.doubleclick.net,
   // *.adtrafficquality.google e *.gstatic.com, além dos domínios do Google Ads que já existiam
-  `script-src 'self' 'unsafe-inline' https://www.youtube.com https://s.ytimg.com https://www.googletagmanager.com https://connect.facebook.net https://www.googleadservices.com https://googleads.g.doubleclick.net https://*.googlesyndication.com https://*.adtrafficquality.google https://www.google.com https://*.gstatic.com ${ABACATEPAY_CARTAO}`,
+  `script-src 'self' 'unsafe-inline' https://www.youtube.com https://s.ytimg.com https://www.googletagmanager.com https://connect.facebook.net https://www.googleadservices.com https://googleads.g.doubleclick.net https://*.googlesyndication.com https://*.adtrafficquality.google https://www.google.com https://*.gstatic.com https://bzrcdn.openai.com ${ABACATEPAY_CARTAO}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://bdansoccbklggqqnxexn.supabase.co https://i.ytimg.com https://www.googletagmanager.com https://www.facebook.com https://www.google.com https://www.google.com.br https://*.googlesyndication.com https://*.doubleclick.net https://*.google-analytics.com https://*.adtrafficquality.google https://*.gstatic.com",
   "font-src 'self'",
-  `connect-src 'self' https://api.abacatepay.com ${ABACATEPAY_CARTAO} https://bdansoccbklggqqnxexn.supabase.co https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://www.facebook.com https://connect.facebook.net https://*.googlesyndication.com https://*.doubleclick.net https://www.google.com https://www.google.com.br https://*.adtrafficquality.google`,
+  `connect-src 'self' https://api.abacatepay.com ${ABACATEPAY_CARTAO} https://bdansoccbklggqqnxexn.supabase.co https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://www.facebook.com https://connect.facebook.net https://*.googlesyndication.com https://*.doubleclick.net https://www.google.com https://www.google.com.br https://*.adtrafficquality.google https://bzr.openai.com`,
   `frame-src ${ABACATEPAY_CARTAO} https://www.youtube-nocookie.com https://www.youtube.com https://td.doubleclick.net https://www.googletagmanager.com https://*.googlesyndication.com https://*.doubleclick.net https://www.google.com https://*.adtrafficquality.google`,
   "media-src 'self'",
 ].join("; ");

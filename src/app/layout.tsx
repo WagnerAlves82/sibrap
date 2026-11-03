@@ -125,6 +125,13 @@ try{if(localStorage.getItem('sibrap_cookies')!=='aceito'){fbq('consent','revoke'
 fbq('init', '733506279098670');
 fbq('track', 'PageView');`}
         </Script>
+        {/* Pixel do ChatGPT Ads (OpenAI): como o Meta, só mede depois que o visitante aceita os cookies */}
+        <Script id="openai-pixel" strategy="beforeInteractive">
+          {`!function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}(window,document,"script","https://bzrcdn.openai.com/sdk/oaiq.min.js");
+var ok=false;try{ok=localStorage.getItem('sibrap_cookies')==='aceito'}catch(e){}
+oaiq("consent",ok);
+oaiq("init",{pixelId:"1JMhzWQcs1S6KtpCGWSfuy",debug:true});`}
+        </Script>
         {children}
         <AvisoCookies />
         <BotaoWhatsApp />

@@ -4,7 +4,7 @@
 export const GOOGLE_ADS_ID = "AW-369139107";
 const COMPRA_APOSTILA = `${GOOGLE_ADS_ID}/MafuCL_HhZ8dEKO7grAB`;
 
-type JanelaGtag = Window & { gtag?: (...args: unknown[]) => void };
+type JanelaGtag = Window & { gtag?: (...args: unknown[]) => void; oaiq?: (...args: unknown[]) => void };
 
 // Pedidos cuja conversão já saiu deste navegador (a tela do PIX e o
 // rastreador da área do aluno podem ver a mesma compra).
@@ -19,9 +19,11 @@ export function compraJaRegistrada(pedidoId: string): boolean {
 }
 
 export function gadsCompra({ valor, pedidoId }: { valor: number; pedidoId: string }) {
-  const gtag = (window as JanelaGtag).gtag;
-  if (!gtag || compraJaRegistrada(pedidoId)) return;
-  gtag("event", "conversion", {
+  const { gtag, oaiq } = window as JanelaGtag;
+  if ((!gtag && !oaiq) || compraJaRegistrada(pedidoId)) return;
+  // ChatGPT Ads (OpenAI): event_id evita contar a mesma venda duas vezes
+  oaiq?.("measure", "order_created", { type: "contents", amount: valor, currency: "BRL" }, { event_id: pedidoId });
+  gtag?.("event", "conversion", {
     send_to: COMPRA_APOSTILA,
     value: valor,
     currency: "BRL",
