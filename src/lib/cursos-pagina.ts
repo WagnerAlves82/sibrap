@@ -7,10 +7,13 @@ export type PaginaCurso = {
   ondeTrabalhar?: string[];
   destaques?: string[];
   faq?: [string, string][];
+  /** ID do vídeo de apresentação no YouTube (até 90 s), exibido logo abaixo do topo da página */
+  video?: string;
 };
 
 export const PAGINA_CURSO: Record<string, PaginaCurso> = {
   "agente-de-portaria": {
+    video: "fc2JnU9UlV4",
     paraQuem: [
       "Quem quer a primeira vaga em portaria, controle de acesso ou recepção",
       "Porteiros que querem se atualizar com tecnologia e legislação",

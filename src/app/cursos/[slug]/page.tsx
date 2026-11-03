@@ -311,6 +311,27 @@ export default async function CursoPublicoPage({ params }: Props) {
         </div>
       </section>
 
+      {pagina?.video && (
+        <section className="border-b border-[#D7DEE6] bg-white py-16">
+          <div className="mx-auto max-w-[960px] px-6">
+            <Reveal>
+              <h2 className="font-display text-3xl font-extrabold text-[#14213A]">Conheça o curso em 90 segundos</h2>
+              <p className="mt-3 text-[16px] text-[#516278]">Objetivos, como você aprende, o conteúdo e o certificado.</p>
+              <div className="mt-6 aspect-video w-full border border-[#D7DEE6] bg-[#0b2a4a]">
+                <iframe
+                  className="h-full w-full"
+                  src={`https://www.youtube-nocookie.com/embed/${pagina.video}?rel=0`}
+                  title={`Apresentação do curso ${curso.nome}`}
+                  loading="lazy"
+                  allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                  allowFullScreen
+                />
+              </div>
+            </Reveal>
+          </div>
+        </section>
+      )}
+
       {pagina && (
         <section className="py-16">
           <div className="mx-auto grid max-w-[1180px] gap-12 px-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
