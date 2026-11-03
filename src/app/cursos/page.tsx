@@ -5,23 +5,7 @@ import Link from "next/link";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { Reveal } from "@/components/reveal";
-
-// Foto de capa por curso (slug -> arquivo em /public). Enquanto só há uma
-// foto oficial, os dois cursos usam a mesma; troque aqui quando tiver fotos
-// específicas de cada curso.
-const FOTO_PADRAO = "/alunos.webp";
-const FOTOS_POR_CURSO: Record<string, string> = {
-  "informatica-basica-ia": "/informatica-basica-foto.jpg",
-  "atendimento-ao-cliente": "/atendimento-cliente-foto.jpg",
-  "auxiliar-administrativo": "/auxiliar-administrativo-foto.jpg",
-  "estoque-logistica-controle-de-mercadorias": "/estoque-logistica-foto.jpg",
-  "conserto-e-manutencao-de-celulares": "/conserto-celulares-curso.webp",
-  "ingles-basico-atendimento-ao-publico": "/card_curso_de_ingles.webp",
-  "libras-iniciante": "/libras-card.webp",
-  "agente-de-portaria": "/agp.webp",
-  "atendente-de-call-center": "/cursos/call-center/card.webp",
-  camareira: "/cursos/camareira/card.webp",
-};
+import { FOTO_CURSO_PADRAO, FOTOS_POR_CURSO } from "@/lib/cursos-fotos";
 
 export const metadata: Metadata = {
   title: "Cursos online com certificado",
@@ -76,7 +60,7 @@ export default async function CursosPage() {
                 {/* 4:3: os banners com título (celular, inglês) aparecem inteiros; as fotos perdem só um pouco das laterais */}
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-2">
                   <Image
-                    src={FOTOS_POR_CURSO[curso.slug] ?? FOTO_PADRAO}
+                    src={FOTOS_POR_CURSO[curso.slug] ?? FOTO_CURSO_PADRAO}
                     alt=""
                     fill
                     sizes="(min-width: 768px) 560px, 100vw"

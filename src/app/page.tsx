@@ -13,6 +13,7 @@ import { COMBOS } from "@/lib/combos";
 import { diasAte, formatarDataIso, formatarPreco, listarApostilasPublicadas } from "@/lib/apostilas";
 import { listarPostsVitrine } from "@/lib/blog";
 import { SLIDES_HOME } from "@/lib/home-slides";
+import { FOTO_CURSO_PADRAO, FOTOS_POR_CURSO } from "@/lib/cursos-fotos";
 import { EMAIL_CONTATO, EMISSOR, RAZAO_SOCIAL, WHATSAPP_NUMERO } from "@/lib/emissor";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
@@ -23,11 +24,18 @@ export default async function Home() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [apostilas, posts, { data: iscaTranspetro }] = await Promise.all([
+  const [apostilas, posts, { data: iscaTranspetro }, { data: cursosHome }, { data: cursosPagos }] = await Promise.all([
     listarApostilasPublicadas(supabase),
     listarPostsVitrine(supabase),
     supabase.from("produtos").select("ativo").eq("slug", "simulado-gratis").maybeSingle(),
+    supabase.from("cursos").select("slug, nome, carga_horaria_horas").in("slug", CURSOS_MAIS_VENDIDOS),
+    supabase.from("produtos").select("slug, preco_centavos").like("slug", "curso-%").eq("ativo", true),
   ]);
+  // vitrine de cursos: os mais vendidos, na ordem da lista
+  const precoCurso = new Map((cursosPagos ?? []).map((p) => [p.slug.slice("curso-".length), p.preco_centavos]));
+  const vitrineCursos = CURSOS_MAIS_VENDIDOS.map((slug) => (cursosHome ?? []).find((c) => c.slug === slug)).filter(
+    (c): c is NonNullable<typeof c> => !!c
+  );
   // Isca gratuita do Transpetro desativada por ora (ver handle_new_user()
   // no banco e src/app/minha-area/page.tsx) — mesmo campo produtos.ativo
   // controla os dois lugares, reativar é só voltar ele a true.
@@ -312,18 +320,33 @@ export default async function Home() {
                 </li>
               </ul>
             )}
-            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {CURSOS_HOME.map((curso) => (
-                <Link
-                  key={curso.slug}
-                  href={`/cursos/${curso.slug}`}
-                  className="rounded-lg border border-[#D7DEE6] bg-white p-4 transition-colors hover:border-brand"
-                >
-                  <p className="font-display text-[15px] font-bold text-[#14213A]">{curso.nome}</p>
-                  <p className="mt-1 text-[13px] leading-relaxed text-[#516278]">{curso.resumo}</p>
-                  <p className="mt-1 text-[12px] text-[#516278]">Certificado disponível após a conclusão.</p>
-                </Link>
-              ))}
+            <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-3">
+              {vitrineCursos.map((curso) => {
+                const preco = precoCurso.get(curso.slug);
+                return (
+                  <Link
+                    key={curso.slug}
+                    href={`/cursos/${curso.slug}`}
+                    className="group flex flex-col overflow-hidden border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_16px_36px_-22px_rgba(11,42,74,0.35)]"
+                  >
+                    <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-2">
+                      <Image
+                        src={FOTOS_POR_CURSO[curso.slug] ?? FOTO_CURSO_PADRAO}
+                        alt=""
+                        fill
+                        sizes="(min-width: 1024px) 260px, 50vw"
+                        className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </div>
+                    <div className="flex flex-1 flex-col p-3.5">
+                      <span className="font-data text-[11px] font-semibold text-accent-2">
+                        {curso.carga_horaria_horas}h · {preco ? formatarPreco(preco) : "Grátis"}
+                      </span>
+                      <p className="mt-1 font-display text-[14.5px] font-bold leading-snug text-[#14213A]">{curso.nome}</p>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
             <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-4">
               {iscaTranspetroAtiva && (
@@ -335,7 +358,7 @@ export default async function Home() {
                 </Link>
               )}
               <Link href="/cursos" className="text-sm font-semibold text-brand underline underline-offset-4">
-                Ver todos os cursos gratuitos
+                Ver todos os cursos
               </Link>
               <SeloAbed altura={60} />
             </div>
@@ -463,17 +486,14 @@ export default async function Home() {
   );
 }
 
-const CURSOS_HOME: { slug: string; nome: string; resumo: string }[] = [
-  {
-    slug: "informatica-basica-ia",
-    nome: "Informática Básica com IA",
-    resumo: "Computador, internet, pacote Office e Inteligência Artificial (Copilot) no dia a dia.",
-  },
-  {
-    slug: "atendimento-ao-cliente",
-    nome: "Atendimento ao Cliente",
-    resumo: "Comunicação, escuta ativa e como lidar com reclamações e clientes difíceis.",
-  },
+// Cursos mais vendidos (pedidos aprovados em 02/11/2026), na ordem da vitrine da home
+const CURSOS_MAIS_VENDIDOS = [
+  "auxiliar-administrativo",
+  "informatica-basica-ia",
+  "atendimento-ao-cliente",
+  "ingles-basico-atendimento-ao-publico",
+  "estoque-logistica-controle-de-mercadorias",
+  "conserto-e-manutencao-de-celulares",
 ];
 
 const RECURSOS_SIMULADO: [NomeIconeSolido, string, string][] = [
