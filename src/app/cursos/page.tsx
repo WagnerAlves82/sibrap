@@ -2,10 +2,14 @@ import { textoParcela } from "@/lib/apostilas";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { criarClienteSupabaseServer } from "@/lib/supabase-server";
+import { criarClienteSupabasePublico } from "@/lib/supabase-publico";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { Reveal } from "@/components/reveal";
 import { FOTO_CURSO_PADRAO, FOTOS_POR_CURSO } from "@/lib/cursos-fotos";
+
+// Página igual para todos os visitantes: a Vercel guarda em cache e refaz no máximo a cada 10 min
+// (gasta CPU só nessa hora, não a cada visita). Nada de cookies aqui — ver src/lib/supabase-publico.ts.
+export const revalidate = 600;
 
 export const metadata: Metadata = {
   title: "Cursos online com certificado",
@@ -30,10 +34,7 @@ export const metadata: Metadata = {
 };
 
 export default async function CursosPage() {
-  const supabase = await criarClienteSupabaseServer();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const supabase = criarClienteSupabasePublico();
 
   const [{ data: cursos }, { data: pagos }] = await Promise.all([
     supabase.from("cursos").select("slug, nome, subtitulo, descricao, carga_horaria_horas").order("criado_em"),
@@ -49,7 +50,7 @@ export default async function CursosPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
-      <CabecalhoSite logado={!!user} />
+      <CabecalhoSite />
 
       <main className="mx-auto w-full max-w-[1180px] flex-1 px-6 py-14">
         <Reveal>

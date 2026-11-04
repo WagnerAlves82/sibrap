@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { criarClienteSupabaseServer } from "@/lib/supabase-server";
+import { criarClienteSupabasePublico } from "@/lib/supabase-publico";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { Reveal } from "@/components/reveal";
 import { AVISO_CURSO_LIVRE, EMISSOR } from "@/lib/emissor";
@@ -11,6 +11,15 @@ import { VISITAS_MINIMAS_PARA_EXIBIR, visitasDoCurso } from "@/lib/visitas";
 import { textoParcela } from "@/lib/apostilas";
 import { formatarReais, produtoDoCursoPago } from "@/lib/curso-pago";
 import { PAGINA_CURSO } from "@/lib/cursos-pagina";
+
+// Página igual para todos os visitantes: a Vercel guarda em cache e refaz no máximo a cada 10 min
+// (gasta CPU só nessa hora, não a cada visita). Nada de cookies aqui — ver src/lib/supabase-publico.ts.
+export const revalidate = 600;
+
+// gera cada página na primeira visita e depois serve do cache
+export async function generateStaticParams() {
+  return [];
+}
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -72,7 +81,7 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
 };
 
 async function carregarCurso(slug: string) {
-  const supabase = await criarClienteSupabaseServer();
+  const supabase = criarClienteSupabasePublico();
   const { data: curso } = await supabase
     .from("cursos")
     .select("id, slug, nome, subtitulo, descricao, carga_horaria_horas, nota_minima, permite_isencao_cadunico")
@@ -135,7 +144,7 @@ export default async function CursoPublicoPage({ params }: Props) {
   const { supabase, curso } = await carregarCurso(slug);
   if (!curso) notFound();
 
-  const [{ data: modulos }, { data: certificados }, { data: userData }, visitas, pago] = await Promise.all([
+  const [{ data: modulos }, { data: certificados }, visitas, pago] = await Promise.all([
     supabase
       .from("modulos")
       .select("id, titulo, ordem, aulas(id, titulo, ordem, carga_min, youtube_id)")
@@ -150,7 +159,6 @@ export default async function CursoPublicoPage({ params }: Props) {
       .like("slug", `certificado-${curso.slug}%`)
       .is("certificado_requer_horas", null)
       .eq("ativo", true),
-    supabase.auth.getUser(),
     visitasDoCurso(supabase, curso.slug),
     produtoDoCursoPago(supabase, curso.slug),
   ]);
@@ -164,7 +172,7 @@ export default async function CursoPublicoPage({ params }: Props) {
   // o contador fica invisível até o curso passar de 1.000 visitas
   const mostrarVisitas = visitas >= VISITAS_MINIMAS_PARA_EXIBIR;
 
-  const logado = !!userData.user;
+  const logado = false; // página em cache, igual para todos: quem já está no curso entra pelo "Minha Área"
   const areaHref = `/minha-area/cursos/${curso.slug}`;
   const ctaHref = logado ? areaHref : `/cadastro?next=${encodeURIComponent(areaHref)}`;
   const preco = produto
@@ -237,7 +245,7 @@ export default async function CursoPublicoPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <CabecalhoSite logado={logado} />
+      <CabecalhoSite />
 
       <section className="overflow-hidden border-b border-[#D7DEE6] bg-surface-2">
         <div className="mx-auto grid max-w-[1180px] items-center gap-10 px-6 py-16 lg:grid-cols-[minmax(0,1fr)_480px]">

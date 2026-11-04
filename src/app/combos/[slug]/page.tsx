@@ -3,19 +3,28 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { criarClienteSupabaseServer } from "@/lib/supabase-server";
+import { criarClienteSupabasePublico } from "@/lib/supabase-publico";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { IconeSolido } from "@/components/icones-solidos";
 import { Reveal } from "@/components/reveal";
 import { diasAte, formatarDataIso, formatarPreco } from "@/lib/apostilas";
 import { comboPorSlug } from "@/lib/combos";
 
+// Página igual para todos os visitantes: a Vercel guarda em cache e refaz no máximo a cada 10 min
+// (gasta CPU só nessa hora, não a cada visita). Nada de cookies aqui — ver src/lib/supabase-publico.ts.
+export const revalidate = 600;
+
+// gera cada página na primeira visita e depois serve do cache
+export async function generateStaticParams() {
+  return [];
+}
+
 type Props = { params: Promise<{ slug: string }> };
 
 async function carregar(slug: string) {
   const combo = comboPorSlug(slug);
   if (!combo) return null;
-  const supabase = await criarClienteSupabaseServer();
+  const supabase = criarClienteSupabasePublico();
   const [{ data: apostila }, { data: produto }] = await Promise.all([
     supabase.from("apostilas").select("*").eq("slug", slug).eq("status", "publicada").maybeSingle(),
     supabase.from("produtos").select("id, preco_centavos").eq("slug", `combo-${slug}`).eq("ativo", true).maybeSingle(),
@@ -51,12 +60,9 @@ export default async function ComboPage({ params }: Props) {
   if (!d) notFound();
   const { combo, supabase, apostila, produto } = d;
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
   const areaHref = `/minha-area/combos/${slug}`;
-  const ctaHref = user ? areaHref : `/cadastro?next=${encodeURIComponent(areaHref)}`;
+  const ctaHref = `/cadastro?next=${encodeURIComponent(areaHref)}`;
   const preco = produto?.preco_centavos ?? combo.precoPadraoCentavos;
   const prova = formatarDataIso(apostila.data_prova);
   const dias = diasAte(apostila.data_prova);
@@ -104,7 +110,7 @@ export default async function ComboPage({ params }: Props) {
   return (
     <div className="flex min-h-screen flex-col overflow-x-clip bg-white pb-16 font-body md:pb-0">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <CabecalhoSite logado={!!user} next={areaHref} />
+      <CabecalhoSite next={areaHref} />
 
       <main className="flex-1 bg-[#F6F8FB] py-10 sm:py-14">
         <div className="mx-auto grid max-w-[1080px] gap-8 px-4 sm:px-6 md:grid-cols-2 md:items-center md:gap-10 lg:gap-14">
@@ -171,7 +177,7 @@ export default async function ComboPage({ params }: Props) {
                 <span>✓ 7 dias de garantia</span>
                 <span>✓ Simulado on-line incluído</span>
               </p>
-              {!user && (
+              {(
                 <p className="mt-2 text-[12.5px] text-[#516278]">Você cria a conta em menos de um minuto e paga na sequência.</p>
               )}
             </div>

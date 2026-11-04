@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { criarClienteSupabaseServer } from "@/lib/supabase-server";
+import { criarClienteSupabasePublico } from "@/lib/supabase-publico";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { VitrinePosts } from "@/components/vitrine-posts";
 import { listarPostsVitrine } from "@/lib/blog";
@@ -15,16 +15,12 @@ export const metadata: Metadata = {
 
 export default async function NoticiasPage({ searchParams }: { searchParams: Promise<{ uf?: string }> }) {
   const { uf } = await searchParams;
-  const supabase = await criarClienteSupabaseServer();
-  const [posts, apostilas, { data: userData }] = await Promise.all([
-    listarPostsVitrine(supabase),
-    listarApostilasPublicadas(supabase),
-    supabase.auth.getUser(),
-  ]);
+  const supabase = criarClienteSupabasePublico();
+  const [posts, apostilas] = await Promise.all([listarPostsVitrine(supabase), listarApostilasPublicadas(supabase)]);
 
   return (
     <div className="flex min-h-screen flex-col bg-white font-body">
-      <CabecalhoSite logado={!!userData.user} />
+      <CabecalhoSite />
       <main className="flex-1 bg-white py-12 sm:py-14">
         <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
           <h1 className="font-display text-[2rem] font-extrabold text-[#14213A] sm:text-[2.6rem]">

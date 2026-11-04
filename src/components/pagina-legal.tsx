@@ -1,5 +1,4 @@
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
-import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 
 export async function PaginaLegal({
   titulo,
@@ -10,14 +9,9 @@ export async function PaginaLegal({
   atualizadoEm: string;
   children: React.ReactNode;
 }) {
-  const supabase = await criarClienteSupabaseServer();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
-      <CabecalhoSite logado={!!user} />
+      <CabecalhoSite />
       <main className="mx-auto w-full max-w-[760px] flex-1 px-6 py-12">
         <h1 className="font-display text-3xl font-extrabold text-[#14213A] sm:text-4xl">{titulo}</h1>
         <p className="mt-2 text-[13px] text-[#93A0AF]">Última atualização: {atualizadoEm}</p>

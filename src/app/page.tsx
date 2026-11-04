@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { criarClienteSupabaseServer } from "@/lib/supabase-server";
+import { criarClienteSupabasePublico } from "@/lib/supabase-publico";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { CarrosselHome } from "@/components/carrossel-home";
 import { VitrineApostilas } from "@/components/vitrine-apostilas";
@@ -15,13 +15,14 @@ import { SLIDES_HOME } from "@/lib/home-slides";
 import { FOTO_CURSO_PADRAO, FOTOS_POR_CURSO } from "@/lib/cursos-fotos";
 import { EMAIL_CONTATO, EMISSOR, RAZAO_SOCIAL, WHATSAPP_NUMERO } from "@/lib/emissor";
 
+// Página igual para todos os visitantes: a Vercel guarda em cache e refaz no máximo a cada 10 min
+// (gasta CPU só nessa hora, não a cada visita). Nada de cookies aqui — ver src/lib/supabase-publico.ts.
+export const revalidate = 600;
+
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default async function Home() {
-  const supabase = await criarClienteSupabaseServer();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const supabase = criarClienteSupabasePublico();
 
   const [apostilas, posts, { data: iscaTranspetro }, { data: cursosHome }, { data: cursosPagos }] = await Promise.all([
     listarApostilasPublicadas(supabase),
@@ -104,7 +105,7 @@ export default async function Home() {
         </div>
       )}
 
-      <CabecalhoSite logado={!!user} semLinks />
+      <CabecalhoSite semLinks />
 
       <MenuAncora />
 

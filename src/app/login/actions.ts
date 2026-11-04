@@ -1,8 +1,10 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { caminhoSeguro } from "@/lib/auth-redirect";
+import { COOKIE_LOGADO, OPCOES_COOKIE_LOGADO } from "@/lib/marca-logado";
 import { dentroDoLimite, hash, identificarCliente, MSG_MUITAS_TENTATIVAS } from "@/lib/limite";
 
 // destino: login aceito — o formulário guarda a senha no aparelho (se o navegador
@@ -45,12 +47,14 @@ export async function entrar(
     return { erro: "E-mail ou senha incorretos.", email };
   }
 
+  (await cookies()).set(COOKIE_LOGADO, "1", OPCOES_COOKIE_LOGADO);
   return { destino: next, email };
 }
 
 export async function sairDaConta() {
   const supabase = await criarClienteSupabaseServer();
   await supabase.auth.signOut();
+  (await cookies()).delete(COOKIE_LOGADO);
   redirect("/login");
 }
 

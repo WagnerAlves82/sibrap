@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { criarClienteSupabaseServer } from "@/lib/supabase-server";
+import { criarClienteSupabasePublico } from "@/lib/supabase-publico";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { listarApostilasPublicadas } from "@/lib/apostilas";
 import { bancasDasApostilas } from "@/lib/bancas";
+
+// Página igual para todos os visitantes: a Vercel guarda em cache e refaz no máximo a cada 10 min
+// (gasta CPU só nessa hora, não a cada visita). Nada de cookies aqui — ver src/lib/supabase-publico.ts.
+export const revalidate = 600;
 
 export const metadata: Metadata = {
   title: "Apostilas por banca organizadora",
@@ -12,13 +16,13 @@ export const metadata: Metadata = {
 };
 
 export default async function BancasPage() {
-  const supabase = await criarClienteSupabaseServer();
-  const [apostilas, { data: userData }] = await Promise.all([listarApostilasPublicadas(supabase), supabase.auth.getUser()]);
+  const supabase = criarClienteSupabasePublico();
+  const apostilas = await listarApostilasPublicadas(supabase);
   const bancas = bancasDasApostilas(apostilas);
 
   return (
     <div className="flex min-h-screen flex-col bg-white font-body">
-      <CabecalhoSite logado={!!userData.user} />
+      <CabecalhoSite />
       <main className="flex-1 bg-[#F6F8FB] py-10 sm:py-12">
         <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
           <h1 className="font-display text-[1.8rem] font-extrabold text-[#14213A] sm:text-[2.4rem]">Apostilas por banca</h1>

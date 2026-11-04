@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { AuthShell } from "@/components/auth-shell";
+import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { caminhoSeguro, veioDeCurso } from "@/lib/auth-redirect";
 import { FormCadastro } from "./FormCadastro";
 
@@ -13,6 +15,12 @@ export default async function CadastroPage({
   const { next: nextParam, utm_source } = await searchParams;
   const next = caminhoSeguro(nextParam, "");
   const paraCurso = veioDeCurso(next);
+
+  // já logado (ex.: veio do botão de uma página em cache): segue direto para o destino
+  const {
+    data: { user },
+  } = await (await criarClienteSupabaseServer()).auth.getUser();
+  if (user) redirect(next || "/minha-area");
 
   return (
     <AuthShell

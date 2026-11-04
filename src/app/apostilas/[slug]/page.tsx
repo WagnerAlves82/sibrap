@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { criarClienteSupabaseServer } from "@/lib/supabase-server";
+import { criarClienteSupabasePublico } from "@/lib/supabase-publico";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { EMISSOR } from "@/lib/emissor";
 import {
@@ -20,10 +20,19 @@ import { listarPostsVitrine, postsDaApostila } from "@/lib/blog";
 import { CardPost } from "@/components/card-post";
 import { slugDaBanca } from "@/lib/bancas";
 
+// Página igual para todos os visitantes: a Vercel guarda em cache e refaz no máximo a cada 10 min
+// (gasta CPU só nessa hora, não a cada visita). Nada de cookies aqui — ver src/lib/supabase-publico.ts.
+export const revalidate = 600;
+
+// gera cada página na primeira visita e depois serve do cache
+export async function generateStaticParams() {
+  return [];
+}
+
 type Props = { params: Promise<{ slug: string }> };
 
 async function carregar(slug: string) {
-  const supabase = await criarClienteSupabaseServer();
+  const supabase = criarClienteSupabasePublico();
   if (!slugValido(slug)) return { supabase, apostila: null };
   const { data } = await supabase
     .from("apostilas")
@@ -67,26 +76,15 @@ export default async function ApostilaPage({ params }: Props) {
   const { supabase, apostila } = await carregar(slug);
   if (!apostila) notFound();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  let jaTem = false;
-  if (user) {
-    const { data: acesso } = await supabase
-      .from("acessos")
-      .select("id")
-      .eq("produto_id", apostila.produto_id)
-      .maybeSingle();
-    jaTem = !!acesso;
-  }
+  // quem já comprou vai pelo "Minha Área" do cabeçalho; aqui o botão é o mesmo para todos (página em cache)
+  const jaTem = false;
 
   const [todasApostilas, todosPosts] = await Promise.all([listarApostilasPublicadas(supabase), listarPostsVitrine(supabase)]);
   const atual = todasApostilas.find((a) => a.slug === apostila.slug);
   const noticias = atual ? postsDaApostila(atual, todosPosts, 3) : [];
 
   const areaHref = `/minha-area/apostilas/${apostila.slug}`;
-  const ctaHref = user ? areaHref : `/cadastro?next=${encodeURIComponent(areaHref)}`;
+  const ctaHref = `/cadastro?next=${encodeURIComponent(areaHref)}`;
   const capa = urlCapa(apostila.capa_path);
   const prova = formatarDataIso(apostila.data_prova);
   const dias = diasAte(apostila.data_prova);
@@ -204,7 +202,7 @@ export default async function ApostilaPage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
-      <CabecalhoSite logado={!!user} next={areaHref} />
+      <CabecalhoSite next={areaHref} />
 
       <main className="flex-1 bg-[#F6F8FB] py-10 sm:py-14">
         <div className="mx-auto grid max-w-[1080px] gap-8 px-4 sm:px-6 md:grid-cols-2 md:gap-10 lg:gap-14">
@@ -304,7 +302,7 @@ export default async function ApostilaPage({ params }: Props) {
                 <span>✓ 7 dias de garantia</span>
                 <span>✓ Simulado online incluído</span>
               </p>
-              {!user && (
+              {(
                 <p className="mt-2 text-[12.5px] text-[#516278]">
                   Você cria a conta em menos de um minuto e paga na sequência.
                 </p>

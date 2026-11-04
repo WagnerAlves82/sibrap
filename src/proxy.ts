@@ -9,6 +9,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
 import { sessaoAdminValida } from "@/lib/admin-sessao";
+import { COOKIE_LOGADO, OPCOES_COOKIE_LOGADO } from "@/lib/marca-logado";
 
 // páginas do admin que não exigem sessão (login, recuperação, "não fui eu")
 const ADMIN_PUBLICO = /^\/admin\/(login|recuperar|revogar)(\/|$)/;
@@ -49,7 +50,14 @@ export async function proxy(request: NextRequest) {
   if (!user && request.nextUrl.pathname.startsWith("/minha-area")) {
     const login = new URL("/login", request.url);
     login.searchParams.set("next", request.nextUrl.pathname);
-    return NextResponse.redirect(login);
+    const redirecionar = NextResponse.redirect(login);
+    redirecionar.cookies.delete(COOKIE_LOGADO);
+    return redirecionar;
+  }
+
+  // sinal para o cabeçalho das páginas em cache (ver src/lib/marca-logado.ts)
+  if (user && request.cookies.get(COOKIE_LOGADO)?.value !== "1") {
+    response.cookies.set(COOKIE_LOGADO, "1", OPCOES_COOKIE_LOGADO);
   }
 
   if (request.nextUrl.pathname.startsWith("/admin") && !ADMIN_PUBLICO.test(request.nextUrl.pathname)) {

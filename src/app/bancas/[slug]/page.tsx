@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { criarClienteSupabaseServer } from "@/lib/supabase-server";
+import { criarClienteSupabasePublico } from "@/lib/supabase-publico";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { VitrineApostilas } from "@/components/vitrine-apostilas";
 import { CardPost } from "@/components/card-post";
@@ -9,10 +9,19 @@ import { formatarDataIso, listarApostilasPublicadas } from "@/lib/apostilas";
 import { listarPostsVitrine } from "@/lib/blog";
 import { bancasDasApostilas, slugDaBanca } from "@/lib/bancas";
 
+// Página igual para todos os visitantes: a Vercel guarda em cache e refaz no máximo a cada 10 min
+// (gasta CPU só nessa hora, não a cada visita). Nada de cookies aqui — ver src/lib/supabase-publico.ts.
+export const revalidate = 600;
+
+// gera cada página na primeira visita e depois serve do cache
+export async function generateStaticParams() {
+  return [];
+}
+
 type Props = { params: Promise<{ slug: string }> };
 
 async function carregar(slug: string) {
-  const supabase = await criarClienteSupabaseServer();
+  const supabase = criarClienteSupabasePublico();
   const apostilas = await listarApostilasPublicadas(supabase);
   const banca = bancasDasApostilas(apostilas).find((b) => b.slug === slug);
   if (!banca) return null;
@@ -42,9 +51,6 @@ export default async function BancaPage({ params }: Props) {
   if (!d) notFound();
   const { supabase, banca, apostilas } = d;
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
   const nomeBanca = banca.nome.toLowerCase();
   const posts = (await listarPostsVitrine(supabase))
@@ -57,7 +63,7 @@ export default async function BancaPage({ params }: Props) {
 
   return (
     <div className="flex min-h-screen flex-col bg-white font-body">
-      <CabecalhoSite logado={!!user} />
+      <CabecalhoSite />
       <main className="flex-1 bg-[#F6F8FB] py-10 sm:py-12">
         <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
           <nav aria-label="Você está em" className="mb-3 text-[13px] text-[#516278]">

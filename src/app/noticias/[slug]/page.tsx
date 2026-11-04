@@ -2,7 +2,7 @@ import { NotaCertame } from "@/components/concurso-ou-processo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { criarClienteSupabaseServer } from "@/lib/supabase-server";
+import { criarClienteSupabasePublico } from "@/lib/supabase-publico";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { BlocoNoticias } from "@/components/noticias-lateral";
 import { listarApostilasPublicadas } from "@/lib/apostilas";
@@ -23,12 +23,21 @@ import {
   capaDoPost,
 } from "@/lib/blog";
 
+// Página igual para todos os visitantes: a Vercel guarda em cache e refaz no máximo a cada 10 min
+// (gasta CPU só nessa hora, não a cada visita). Nada de cookies aqui — ver src/lib/supabase-publico.ts.
+export const revalidate = 600;
+
+// gera cada página na primeira visita e depois serve do cache
+export async function generateStaticParams() {
+  return [];
+}
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
 
 type Props = { params: Promise<{ slug: string }> };
 
 async function carregar(slug: string) {
-  const supabase = await criarClienteSupabaseServer();
+  const supabase = criarClienteSupabasePublico();
   if (!slugValidoPost(slug)) return { supabase, post: null };
   const { data } = await supabase
     .from("posts")
@@ -78,9 +87,6 @@ export default async function PostPage({ params }: Props) {
   const { supabase, post } = await carregar(slug);
   if (!post) notFound();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
   const capa = capaDoPost(post);
   const data = formatarDataLonga(post.publicado_em ?? post.criado_em);
@@ -173,7 +179,7 @@ export default async function PostPage({ params }: Props) {
     <div className="flex min-h-screen flex-col bg-white font-body">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
-      <CabecalhoSite logado={!!user} />
+      <CabecalhoSite />
 
       <main className="flex-1 bg-white py-10 sm:py-14">
         <div className="mx-auto grid max-w-[1180px] gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_340px]">

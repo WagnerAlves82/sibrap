@@ -2,10 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { SeloAbed } from "@/components/selo-abed";
 import { sairDaConta } from "@/app/login/actions";
+import { AcessoConta } from "@/components/acesso-conta";
 import { BotaoPreferenciasCookies } from "@/components/cookies-consentimento";
 import { EMISSOR } from "@/lib/emissor";
 
-export function CabecalhoSite({ logado, next, semLinks, semBusca }: { logado: boolean; next?: string; semLinks?: boolean; semBusca?: boolean }) {
+export function CabecalhoSite({ logado, next, semLinks, semBusca }: { logado?: boolean; next?: string; semLinks?: boolean; semBusca?: boolean }) {
   const itemNav = "px-1.5 py-2 sm:px-2 text-[#33465E] transition-colors hover:text-brand";
   return (
     <header className="border-b-[3px] border-accent bg-white">
@@ -67,18 +68,24 @@ export function CabecalhoSite({ logado, next, semLinks, semBusca }: { logado: bo
               </Link>
             </>
           )}
-          <Link
-            href={logado ? "/minha-area" : next ? `/login?next=${encodeURIComponent(next)}` : "/login"}
-            className="ml-1 rounded-md bg-brand px-3 py-2 sm:px-4 text-white transition-colors hover:brightness-125"
-          >
-            {logado ? "Minha Área" : "Entrar"}
-          </Link>
-          {logado && (
-            <form action={sairDaConta}>
-              <button type="submit" className="px-1.5 py-2 sm:px-2 text-[#516278] underline-offset-4 hover:text-brand hover:underline">
-                Sair
-              </button>
-            </form>
+          {logado === undefined ? (
+            <AcessoConta next={next} />
+          ) : (
+            <>
+            <Link
+              href={logado ? "/minha-area" : next ? `/login?next=${encodeURIComponent(next)}` : "/login"}
+              className="ml-1 rounded-md bg-brand px-3 py-2 sm:px-4 text-white transition-colors hover:brightness-125"
+            >
+              {logado ? "Minha Área" : "Entrar"}
+            </Link>
+            {logado && (
+              <form action={sairDaConta}>
+                <button type="submit" className="px-1.5 py-2 sm:px-2 text-[#516278] underline-offset-4 hover:text-brand hover:underline">
+                  Sair
+                </button>
+              </form>
+            )}
+            </>
           )}
         </nav>
       </div>
