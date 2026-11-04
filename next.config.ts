@@ -61,9 +61,13 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
-    // Imagens servidas direto, sem o otimizador da Vercel: a cota do plano acabou em 27/10/2026
-    // (/_next/image respondia 402 e as imagens novas apareciam quebradas).
-    unoptimized: true,
+    // Sem o otimizador da Vercel (a cota do plano acabou em 27/10/2026 e /_next/image respondia 402).
+    // Loader próprio: imagens do Supabase saem reduzidas por /img/<largura>/... com cache de 1 ano
+    // na Vercel (ver src/lib/carregador-imagem.ts). Larguras do srcset limitadas às da rota /img.
+    loader: "custom",
+    loaderFile: "./src/lib/carregador-imagem.ts",
+    deviceSizes: [640, 828, 1080, 1280, 1920],
+    imageSizes: [64, 128, 256, 384],
     remotePatterns: [
       {
         protocol: "https",
