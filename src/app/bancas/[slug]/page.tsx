@@ -9,9 +9,9 @@ import { formatarDataIso, listarApostilasPublicadas } from "@/lib/apostilas";
 import { listarPostsVitrine } from "@/lib/blog";
 import { bancasDasApostilas, slugDaBanca } from "@/lib/bancas";
 
-// Página igual para todos os visitantes: a Vercel guarda em cache e refaz no máximo a cada 10 min
+// Página igual para todos os visitantes: a Vercel guarda em cache e refaz no máximo a cada 1 h
 // (gasta CPU só nessa hora, não a cada visita). Nada de cookies aqui — ver src/lib/supabase-publico.ts.
-export const revalidate = 600;
+export const revalidate = 3600;
 
 // gera cada página na primeira visita e depois serve do cache
 export async function generateStaticParams() {

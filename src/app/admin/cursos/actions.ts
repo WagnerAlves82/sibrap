@@ -59,5 +59,8 @@ export async function salvarAulaAction(
   if (error) return { erro: error.message };
 
   revalidatePath("/admin/cursos");
+  // páginas públicas em cache (ISR): mostram a mudança na hora
+  revalidatePath("/cursos", "layout");
+  revalidatePath("/");
   return { ok: true };
 }

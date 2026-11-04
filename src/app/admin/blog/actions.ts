@@ -32,6 +32,7 @@ const opcional = (fd: FormData, campo: string) => texto(fd, campo) || null;
 
 function revalidarBlog(slug?: string) {
   revalidatePath("/noticias");
+  revalidatePath("/"); // a home mostra as últimas notícias (página em cache)
   if (slug) revalidatePath(`/noticias/${slug}`);
   revalidatePath("/admin/blog");
 }

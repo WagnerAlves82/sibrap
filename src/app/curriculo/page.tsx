@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { criarClienteSupabaseServer } from "@/lib/supabase-server";
+import { criarClienteSupabasePublico } from "@/lib/supabase-publico";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { BlocoAnuncio, ScriptAdsense } from "@/components/adsense";
 import { blocoAdsense, clienteAdsense } from "@/lib/adsense";
 import { VISITAS_MINIMAS_PARA_EXIBIR } from "@/lib/visitas";
 import { LIMITE_GRATIS, precoDownload } from "@/lib/curriculo/servidor";
-import { Gerador, type CurriculoSalvo } from "./Gerador";
+import { Gerador } from "./Gerador";
+
+// Página igual para todos, em cache por 1 h (o gerador busca a conta do aluno no navegador).
+export const revalidate = 3600;
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
 const titulo = "Gerador de currículo grátis: modelo pronto em PDF";
@@ -29,20 +32,7 @@ const PERGUNTAS: [string, string][] = [
 ];
 
 export default async function CurriculoPage() {
-  const supabase = await criarClienteSupabaseServer();
-  const [{ data: userData }, { data: total }] = await Promise.all([supabase.auth.getUser(), supabase.rpc("total_curriculos_gerados")]);
-  const user = userData.user;
-
-  let salvo: CurriculoSalvo = null;
-  if (user) {
-    const { data } = await supabase
-      .from("curriculos")
-      .select("id, perfil, modelo, dados")
-      .order("atualizado_em", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-    salvo = data;
-  }
+  const { data: total } = await criarClienteSupabasePublico().rpc("total_curriculos_gerados");
 
   const gerados = Number(total ?? 0);
   // a partir de 1.000 currículos gerados, cada download é pago (o preço aparece já no topo)
@@ -69,7 +59,7 @@ export default async function CurriculoPage() {
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
-      <CabecalhoSite logado={!!user} next="/curriculo" />
+      <CabecalhoSite next="/curriculo" />
       <main className="mx-auto w-full max-w-[1180px] flex-1 px-4 py-8 sm:px-6 sm:py-10">
         <header className="mb-8 max-w-[70ch]">
           <p className="font-data text-xs font-semibold uppercase tracking-[0.2em] text-accent-2">Gerador de currículo{precoCentavos === null ? " · grátis" : ""}</p>
@@ -90,7 +80,7 @@ export default async function CurriculoPage() {
         </header>
 
         <Suspense fallback={<div className="min-h-[60vh]" />}>
-          <Gerador logado={!!user} emailConta={user?.email ?? null} salvo={salvo} precoCentavos={precoCentavos} />
+          <Gerador precoCentavos={precoCentavos} />
         </Suspense>
 
         <BlocoAnuncio cliente={adsense} slot={blocoAdsense("CURRICULO")} className="mt-12" />

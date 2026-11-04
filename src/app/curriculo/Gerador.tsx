@@ -54,12 +54,28 @@ function lerRascunho(salvo: CurriculoSalvo, baixar: boolean): Rascunho {
 const semInscricao = () => () => {};
 
 type Props = { logado: boolean; emailConta: string | null; salvo: CurriculoSalvo; precoCentavos: number | null };
+type Conta = Omit<Props, "precoCentavos">;
+const SEM_CONTA: Conta = { logado: false, emailConta: null, salvo: null };
 
-export function Gerador(props: Props) {
+export function Gerador({ precoCentavos }: { precoCentavos: number | null }) {
   // o rascunho mora no localStorage: o formulário só é montado no navegador
   const noNavegador = useSyncExternalStore(semInscricao, () => true, () => false);
-  if (!noNavegador) return <div className="min-h-[60vh]" />;
-  return <GeradorNoNavegador {...props} />;
+  // a página fica em cache (igual para todos): quem está logado e o currículo salvo vêm daqui
+  const [conta, setConta] = useState<Conta | null>(null);
+  useEffect(() => {
+    let vivo = true;
+    fetch("/api/curriculo/conta", { cache: "no-store" })
+      .then((r) => (r.ok ? (r.json() as Promise<Conta>) : SEM_CONTA))
+      .catch(() => SEM_CONTA)
+      .then((c) => {
+        if (vivo) setConta(c);
+      });
+    return () => {
+      vivo = false;
+    };
+  }, []);
+  if (!noNavegador || !conta) return <div className="min-h-[60vh]" />;
+  return <GeradorNoNavegador {...conta} precoCentavos={precoCentavos} />;
 }
 
 function GeradorNoNavegador({ logado, emailConta, salvo, precoCentavos }: Props) {

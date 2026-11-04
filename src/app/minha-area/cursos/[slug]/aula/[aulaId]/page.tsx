@@ -44,7 +44,9 @@ export default async function AulaPage({
     supabase.from("matriculas").select("curso_id").eq("curso_id", curso.id).maybeSingle(),
     supabase
       .from("modulos")
-      .select("titulo, ordem, aulas(id, titulo, ordem, youtube_id, carga_min, objetivo, resumo, atividade, conteudo)")
+      // só o necessário para a lista lateral: carregar o conteúdo de TODAS as aulas a cada
+      // clique gastava a CPU da Vercel à toa (o conteúdo da aula aberta vem logo abaixo)
+      .select("titulo, ordem, aulas(id, titulo, ordem)")
       .eq("curso_id", curso.id)
       .order("ordem")
       .order("ordem", { referencedTable: "aulas" }),
@@ -54,12 +56,20 @@ export default async function AulaPage({
 
   const lista = (modulos ?? []).flatMap((m) => m.aulas.map((a) => ({ ...a, modulo: m.titulo })));
   const indice = lista.findIndex((a) => a.id === aulaId);
-  const aula = lista[indice];
-  if (!aula) redirect(cursoHref);
+  const itemAula = lista[indice];
+  if (!itemAula) redirect(cursoHref);
 
-  // a regra de ordem também é conferida no banco; aqui só evita mostrar tela vazia
-  const { error: erroAbrir } = await supabase.rpc("abrir_aula", { p_aula_id: aula.id });
-  if (erroAbrir) redirect(cursoHref);
+  // a regra de ordem também é conferida no banco (abrir_aula); aqui só evita mostrar tela vazia
+  const [{ data: detalhe }, { error: erroAbrir }] = await Promise.all([
+    supabase
+      .from("aulas")
+      .select("youtube_id, carga_min, objetivo, resumo, atividade, conteudo")
+      .eq("id", itemAula.id)
+      .maybeSingle(),
+    supabase.rpc("abrir_aula", { p_aula_id: itemAula.id }),
+  ]);
+  if (erroAbrir || !detalhe) redirect(cursoHref);
+  const aula = { ...itemAula, ...detalhe };
 
   const concluidas = new Set(
     (progresso ?? []).filter((p) => p.concluida_em).map((p) => p.aula_id)

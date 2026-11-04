@@ -4,9 +4,9 @@ import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { VitrineApostilas } from "@/components/vitrine-apostilas";
 import { listarApostilasPublicadas } from "@/lib/apostilas";
 
-// Página igual para todos os visitantes: a Vercel guarda em cache e refaz no máximo a cada 10 min
+// Página igual para todos os visitantes: a Vercel guarda em cache e refaz no máximo a cada 1 h
 // (gasta CPU só nessa hora, não a cada visita). Nada de cookies aqui — ver src/lib/supabase-publico.ts.
-export const revalidate = 600;
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Apostilas para concursos públicos",
