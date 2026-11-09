@@ -1,8 +1,13 @@
 // src/lib/black-friday.ts
 //
-// Liga/desliga o visual de Black Friday no site inteiro (faixa do topo, selo no preço,
-// slide da home). Para encerrar: false aqui + desativar o cupom no banco
-// (update cupons set ativo = false where codigo = 'voupassar').
+// Visual de Black Friday no site inteiro (faixa do topo, tarja dos cards, selo no preço,
+// slide da home). Desliga sozinho depois do último dia (horário de Brasília); o cupom
+// no banco tem a mesma data em cupons.valido_ate. As páginas em cache atualizam em até 1 h.
 
-export const BLACK_FRIDAY = true;
+export const ULTIMO_DIA_BLACK_FRIDAY = "2026-11-16";
 export const CUPOM_BLACK_FRIDAY = "VOUPASSAR";
+
+export function blackFridayAtiva(): boolean {
+  const hoje = new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+  return hoje <= ULTIMO_DIA_BLACK_FRIDAY;
+}

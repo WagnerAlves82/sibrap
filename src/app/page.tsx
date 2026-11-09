@@ -1,4 +1,4 @@
-import { BLACK_FRIDAY, CUPOM_BLACK_FRIDAY } from "@/lib/black-friday";
+import { blackFridayAtiva, CUPOM_BLACK_FRIDAY } from "@/lib/black-friday";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -87,6 +87,8 @@ export default async function Home() {
     ],
   };
 
+  const BLACK_FRIDAY = blackFridayAtiva();
+
   return (
     <div className="flex flex-1 flex-col bg-white font-body">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizacao) }} />
@@ -117,7 +119,7 @@ export default async function Home() {
 
       <MenuAncora />
 
-      <CarrosselHome precoTexto={`A partir de ${formatarPreco(preco)}`} />
+      <CarrosselHome precoTexto={`A partir de ${formatarPreco(preco)}`} blackFriday={BLACK_FRIDAY} />
 
       {/* Vitrine de apostilas */}
       <section id="apostilas" className="scroll-mt-14 bg-[#F6F8FB] py-14 sm:py-16">

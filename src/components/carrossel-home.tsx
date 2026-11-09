@@ -6,10 +6,16 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "
 
 type SlideHero = { id: "blackfriday" | "redacao" | "metodo" | "apostila" | "simulado"; rotulo: string };
 
-const SLIDES: SlideHero[] = [
+// Durante a Black Friday: Black Friday, Redação e Simulado (Método e Apostilas saem até o fim da promoção).
+// Depois: Método, Redação, Apostilas e Simulado.
+const SLIDES_BLACK_FRIDAY: SlideHero[] = [
   { id: "blackfriday", rotulo: "Black Friday" },
   { id: "redacao", rotulo: "Treino de Redação" },
+  { id: "simulado", rotulo: "Simulados on-line" },
+];
+const SLIDES_NORMAIS: SlideHero[] = [
   { id: "metodo", rotulo: "Método SIBRAP" },
+  { id: "redacao", rotulo: "Treino de Redação" },
   { id: "apostila", rotulo: "Apostilas" },
   { id: "simulado", rotulo: "Simulados on-line" },
 ];
@@ -34,7 +40,8 @@ function assinarMovimento(aviso: () => void) {
 // simulado on-line, só com imagens reais do produto (mockups das apostilas e
 // a tela do simulado). Todos os slides ocupam a mesma célula da grade: a
 // altura é a do maior.
-export function CarrosselHome({ precoTexto }: { precoTexto: string }) {
+export function CarrosselHome({ precoTexto, blackFriday = false }: { precoTexto: string; blackFriday?: boolean }) {
+  const SLIDES = blackFriday ? SLIDES_BLACK_FRIDAY : SLIDES_NORMAIS;
   const [atual, setAtual] = useState(0);
   const [pausado, setPausado] = useState(false);
   const reduzido = useSyncExternalStore(

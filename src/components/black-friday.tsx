@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { BLACK_FRIDAY, CUPOM_BLACK_FRIDAY } from "@/lib/black-friday";
+import { blackFridayAtiva, CUPOM_BLACK_FRIDAY } from "@/lib/black-friday";
 
 /** Faixa preta fina no topo de todas as páginas durante a Black Friday. */
 export function FaixaBlackFriday() {
-  if (!BLACK_FRIDAY) return null;
+  if (!blackFridayAtiva()) return null;
   return (
     <Link href="/apostilas" className="block bg-[#0D0D0D] text-white transition-colors hover:bg-black">
       <span className="mx-auto flex max-w-[1180px] items-center justify-center gap-2 px-4 py-1.5 text-center text-[12.5px] sm:gap-3">
@@ -22,7 +22,7 @@ export function FaixaBlackFriday() {
 
 /** Selo preto junto ao preço da apostila. */
 export function SeloBlackFriday({ grande = false }: { grande?: boolean }) {
-  if (!BLACK_FRIDAY) return null;
+  if (!blackFridayAtiva()) return null;
   return (
     <p className={`mt-2 inline-flex items-center gap-1.5 bg-[#0D0D0D] px-2 py-1 font-data font-bold uppercase text-white ${grande ? "text-[12px]" : "text-[10px]"}`}>
       <span className="text-accent">Black Friday</span>
@@ -34,7 +34,7 @@ export function SeloBlackFriday({ grande = false }: { grande?: boolean }) {
 
 /** Tarja preta na base da imagem do card de apostila. */
 export function FaixaCardBlackFriday() {
-  if (!BLACK_FRIDAY) return null;
+  if (!blackFridayAtiva()) return null;
   return (
     <span className="absolute inset-x-0 bottom-0 z-10 flex items-center justify-center gap-1.5 whitespace-nowrap bg-[#0D0D0D]/90 px-2 py-1 font-data text-[10px] font-bold uppercase text-white sm:text-[11px]">
       <span className="text-accent">Black Friday</span>
