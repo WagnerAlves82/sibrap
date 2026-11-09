@@ -377,14 +377,14 @@ function BlackFriday({ prioridade }: { prioridade: boolean }) {
           </span>
           <span className="px-4 py-2 font-data text-2xl font-extrabold tracking-[0.12em] text-white md:text-3xl">VOUPASSAR</span>
         </div>
-        <p className="mt-2 font-data text-[13px] text-[#CFCFCF]">6,18% de desconto · só vale se você digitar o cupom</p>
+        <p className="mt-2 font-data text-[13px] text-[#CFCFCF]">Digite o cupom no pagamento e veja o desconto</p>
         <div className="mt-5 flex flex-wrap items-center gap-3">
           <BotaoPrincipal href="/apostilas">Escolher minha apostila</BotaoPrincipal>
         </div>
       </div>
       <div aria-hidden className="relative flex items-end justify-center justify-self-center xl:-mr-10">
         <span className="absolute -top-2 right-2 z-30 rotate-[8deg] bg-accent px-3 py-1.5 font-display text-lg font-extrabold text-black shadow-[0_8px_20px_rgba(0,0,0,0.5)] md:text-2xl">
-          −6,18%
+          Black Friday
         </span>
         <Image
           src="/hero-mockup-itajai.webp"
