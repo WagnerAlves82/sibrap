@@ -35,7 +35,7 @@ export default async function MinhaAreaPage() {
   const { data: minhasApostilas } = idsProdutos.length
     ? await criarClienteSupabaseAdmin()
         .from("apostilas")
-        .select("slug, titulo, uf, cidade, data_prova")
+        .select("slug, titulo, uf, cidade, data_prova, tem_redacao")
         .in("produto_id", idsProdutos)
         .order("data_prova")
     : { data: [] };
@@ -126,6 +126,19 @@ export default async function MinhaAreaPage() {
               ))}
             </div>
           </section>
+        )}
+
+        {minhasApostilas?.some((a) => a.tem_redacao) && (
+          <Link
+            href="/minha-area/redacao"
+            className="mt-6 flex flex-wrap items-center justify-between gap-3 border-l-[4px] border-accent bg-brand px-6 py-5 text-white"
+          >
+            <span>
+              <span className="block font-display text-lg font-extrabold">Treino de Redação com correção</span>
+              <span className="block text-[14px] text-white/80">Dicas enquanto você escreve e nota pela grade da banca.</span>
+            </span>
+            <span className="bg-accent px-4 py-2 text-[14px] font-bold text-accent-ink">Escrever agora →</span>
+          </Link>
         )}
 
         {meusCursos.length > 0 && (

@@ -267,6 +267,8 @@ export type Database = {
           salario: string | null
           selos: string[]
           simulados: number | null
+          tem_redacao: boolean
+          redacao_nota_max: number | null
           slug: string
           status: string
           titulo: string
@@ -298,6 +300,8 @@ export type Database = {
           salario?: string | null
           selos?: string[]
           simulados?: number | null
+          tem_redacao?: boolean
+          redacao_nota_max?: number | null
           slug: string
           status?: string
           titulo: string
@@ -329,6 +333,8 @@ export type Database = {
           salario?: string | null
           selos?: string[]
           simulados?: number | null
+          tem_redacao?: boolean
+          redacao_nota_max?: number | null
           slug?: string
           status?: string
           titulo?: string
@@ -1625,6 +1631,65 @@ export type Database = {
           },
         ]
       }
+      redacoes: {
+        Row: {
+          apostila_id: string | null
+          atualizado_em: string
+          avaliacao: Json | null
+          corrigida_em: string | null
+          criado_em: string
+          id: string
+          modo: string
+          nota: number | null
+          nota_max: number | null
+          status: string
+          sugestoes_usadas: number
+          tema: string
+          texto: string
+          user_id: string
+        }
+        Insert: {
+          apostila_id?: string | null
+          atualizado_em?: string
+          avaliacao?: Json | null
+          corrigida_em?: string | null
+          criado_em?: string
+          id?: string
+          modo?: string
+          nota?: number | null
+          nota_max?: number | null
+          status?: string
+          sugestoes_usadas?: number
+          tema: string
+          texto?: string
+          user_id: string
+        }
+        Update: {
+          apostila_id?: string | null
+          atualizado_em?: string
+          avaliacao?: Json | null
+          corrigida_em?: string | null
+          criado_em?: string
+          id?: string
+          modo?: string
+          nota?: number | null
+          nota_max?: number | null
+          status?: string
+          sugestoes_usadas?: number
+          tema?: string
+          texto?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "redacoes_apostila_id_fkey"
+            columns: ["apostila_id"]
+            isOneToOne: false
+            referencedRelation: "apostilas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       questoes: {
         Row: {
           alternativas: Json
@@ -2039,6 +2104,7 @@ export type Database = {
         Args: { p_order_id: string; p_payment_id?: string; p_pedido_id: string }
         Returns: undefined
       }
+      saldo_redacao: { Args: { p_user: string }; Returns: number | null }
       registrar_tentativa: {
         Args: { p_chave: string; p_janela_segundos: number; p_limite: number }
         Returns: boolean
