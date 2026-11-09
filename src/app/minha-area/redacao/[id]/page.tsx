@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite } from "@/components/site-chrome";
-import { saldoRedacao } from "@/lib/redacao-dados";
+import { CONTATO_ADMIN, saldoRedacao } from "@/lib/redacao-dados";
 import { bancaDa } from "@/lib/redacao-bancas";
 import type { Avaliacao } from "@/lib/redacao";
 import { EditorRedacao } from "./EditorRedacao";
@@ -43,6 +43,17 @@ export default async function RedacaoEditorPage({ params }: { params: Promise<{ 
             banca={banca.nome}
             avaliacao={r.avaliacao as unknown as Avaliacao}
           />
+        ) : saldo === null ? (
+          <section className="mt-6 max-w-[640px] border border-l-[4px] border-[#D7DEE6] border-l-accent bg-white p-6">
+            <p className="font-display text-lg font-extrabold text-[#14213A]">Módulo indisponível</p>
+            <p className="mt-2 text-[14.5px] text-[#33465E]">
+              O bônus de redação vale até a data da prova do concurso da sua apostila, e esse prazo terminou.
+            </p>
+            <p className="mt-2 text-[14.5px] text-[#33465E]">
+              Dúvidas? Fale com o admin:{" "}
+              <a href={`mailto:${CONTATO_ADMIN}`} className="font-bold text-brand underline">{CONTATO_ADMIN}</a>
+            </p>
+          </section>
         ) : (
           <EditorRedacao
             id={r.id}
@@ -52,7 +63,7 @@ export default async function RedacaoEditorPage({ params }: { params: Promise<{ 
             criadoEm={r.criado_em}
             banca={{ nome: banca.nome, linhasMin: banca.linhasMin, linhasMax: banca.linhasMax }}
             concurso={r.apostilas ? `${r.apostilas.titulo} (${r.apostilas.uf})` : ""}
-            saldo={saldo ?? 0}
+            saldo={saldo}
             analisesUsadas={r.sugestoes_usadas}
           />
         )}

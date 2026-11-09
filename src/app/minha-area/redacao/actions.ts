@@ -7,7 +7,7 @@ import type { Json } from "@/lib/database.types";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { dentroDoLimite, MSG_MUITAS_TENTATIVAS } from "@/lib/limite";
-import { apostilasComRedacao, saldoRedacao } from "@/lib/redacao-dados";
+import { apostilasComRedacao, MSG_INDISPONIVEL, saldoRedacao } from "@/lib/redacao-dados";
 import { gerarPixParaPedido, type EstadoPix } from "@/lib/pix";
 import { corrigir, sugerir, type Avaliacao, type Sugestao } from "@/lib/redacao";
 import {
@@ -49,9 +49,10 @@ export async function criarRedacaoAction(formData: FormData) {
   const modo = formData.get("modo") === "simulado" ? "simulado" : "treino";
   const tema = (temaLivre || temaLista).slice(0, 300);
 
-  const minhas = await apostilasComRedacao(user.id);
+  const minhas = (await apostilasComRedacao(user.id)).filter((a) => a.vigente);
   const apostila = minhas.find((a) => a.id === apostilaId) ?? minhas[0];
-  if (!apostila || tema.length < 8) redirect("/minha-area/redacao?erro=tema");
+  if (!apostila) redirect("/minha-area/redacao?erro=indisponivel");
+  if (tema.length < 8) redirect("/minha-area/redacao?erro=tema");
 
   if (!(await dentroDoLimite(`redacao-nova:${user.id}`, 15, 3600))) redirect("/minha-area/redacao?erro=limite");
 
@@ -69,7 +70,7 @@ export async function reescreverAction(id: string) {
   const { user } = await usuario();
   if (!user) return;
   const atual = await redacaoDoAluno(id, user.id);
-  if (!atual) return;
+  if (!atual || (await saldoRedacao(user.id)) === null) return;
   const { data: completa } = await criarClienteSupabaseAdmin()
     .from("redacoes")
     .select("apostila_id, nota_max")
@@ -127,7 +128,7 @@ export async function sugerirAction(id: string, texto: string, ignoradas: string
   if (r.sugestoes_usadas >= MAX_SUGESTOES_POR_REDACAO) {
     return { erro: "Você usou todas as análises ao vivo desta redação. Envie para a correção final." };
   }
-  if ((await saldoRedacao(user.id)) === null) return { erro: "Treino disponível para quem tem apostila com redação." };
+  if ((await saldoRedacao(user.id)) === null) return { erro: MSG_INDISPONIVEL };
   if (!(await dentroDoLimite(`redacao-sug:${user.id}`, 40, 3600))) return { erro: MSG_MUITAS_TENTATIVAS };
 
   const limpo = texto.slice(0, MAX_CARACTERES);
@@ -169,7 +170,7 @@ export async function corrigirAction(id: string, texto: string): Promise<Respost
     return { erro: `Escreva pelo menos ${MIN_LINHAS_CORRECAO} linhas antes de enviar para a correção.` };
   }
   const saldo = await saldoRedacao(user.id);
-  if (saldo === null) return { erro: "Treino disponível para quem tem apostila com redação." };
+  if (saldo === null) return { erro: MSG_INDISPONIVEL };
   if (saldo <= 0) return { erro: "Suas correções acabaram. Adquira o pacote +5 correções para continuar." };
   if (!(await dentroDoLimite(`redacao-corr:${user.id}`, 8, 3600))) return { erro: MSG_MUITAS_TENTATIVAS };
 

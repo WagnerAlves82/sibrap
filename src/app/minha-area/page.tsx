@@ -128,7 +128,9 @@ export default async function MinhaAreaPage() {
           </section>
         )}
 
-        {minhasApostilas?.some((a) => a.tem_redacao) && (
+        {minhasApostilas?.some(
+          (a) => a.tem_redacao && (!a.data_prova || a.data_prova >= new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" }))
+        ) && (
           <Link
             href="/minha-area/redacao"
             className="mt-6 flex flex-wrap items-center justify-between gap-3 border-l-[4px] border-accent bg-brand px-6 py-5 text-white"

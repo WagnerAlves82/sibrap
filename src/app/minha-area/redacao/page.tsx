@@ -4,7 +4,8 @@ import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { Alert } from "@/components/alert";
 import { dadosCartaoCompra } from "@/lib/cartao-transparente";
-import { apostilasComRedacao, saldoRedacao } from "@/lib/redacao-dados";
+import { apostilasComRedacao, CONTATO_ADMIN, saldoRedacao } from "@/lib/redacao-dados";
+import { formatarDataIso } from "@/lib/apostilas";
 import { BANCAS } from "@/lib/redacao-bancas";
 import { criarRedacaoAction, excluirRascunhoAction } from "./actions";
 import { CompraExtra } from "./CompraExtra";
@@ -16,6 +17,7 @@ const ERROS: Record<string, string> = {
   tema: "Escolha um tema da lista ou escreva o seu (mínimo de 8 letras).",
   limite: "Muitas redações novas em pouco tempo. Aguarde alguns minutos.",
   criar: "Não deu pra criar a redação agora. Tente de novo.",
+  indisponivel: "O bônus de redação terminou na data da prova do seu concurso.",
 };
 
 export default async function RedacaoPage({ searchParams }: { searchParams: Promise<{ erro?: string }> }) {
@@ -51,7 +53,19 @@ export default async function RedacaoPage({ searchParams }: { searchParams: Prom
           <Alert variant="erro" claro className="mt-5 text-sm">{ERROS[erro]}</Alert>
         )}
 
-        {saldo === null ? (
+        {saldo === null && apostilas.length > 0 ? (
+          <section className={`${cartao} mt-8 border-l-[4px] border-l-accent`}>
+            <p className="font-display text-lg font-extrabold text-[#14213A]">Módulo indisponível</p>
+            <p className="mt-2 text-[14.5px] text-[#33465E]">
+              O bônus de redação vale até a data da prova do concurso da sua apostila, e esse prazo terminou. Suas redações
+              corrigidas continuam abaixo.
+            </p>
+            <p className="mt-2 text-[14.5px] text-[#33465E]">
+              Dúvidas? Fale com o admin:{" "}
+              <a href={`mailto:${CONTATO_ADMIN}`} className="font-bold text-brand underline">{CONTATO_ADMIN}</a>
+            </p>
+          </section>
+        ) : saldo === null ? (
           <section className={`${cartao} mt-8`}>
             <p className="font-display text-lg font-extrabold text-[#14213A]">Bônus de quem tem apostila com redação</p>
             <p className="mt-2 text-[14.5px] text-[#33465E]">
@@ -68,9 +82,9 @@ export default async function RedacaoPage({ searchParams }: { searchParams: Prom
                 <h2 className="font-display text-xl font-extrabold text-[#14213A]">Nova redação</h2>
                 <NovaRedacao
                   acao={criarRedacaoAction}
-                  apostilas={apostilas.map((a) => ({
+                  apostilas={apostilas.filter((a) => a.vigente).map((a) => ({
                     id: a.id,
-                    titulo: `${a.titulo} (${a.uf})`,
+                    titulo: `${a.titulo} (${a.uf})${a.data_prova ? ` · até ${formatarDataIso(a.data_prova)}` : ""}`,
                     temas: BANCAS[a.slug]?.temas ?? [],
                     banca: BANCAS[a.slug]?.nome ?? "",
                   }))}
@@ -89,41 +103,43 @@ export default async function RedacaoPage({ searchParams }: { searchParams: Prom
               </div>
             </section>
 
-            <section className="mt-8">
-              <h2 className="mb-3 font-display text-xl font-extrabold text-[#14213A]">Minhas redações</h2>
-              {!redacoes?.length ? (
-                <p className="text-[14.5px] text-[#516278]">Nenhuma ainda. Comece pela primeira acima.</p>
-              ) : (
-                <ul className="divide-y divide-[#D7DEE6] border border-[#D7DEE6] bg-white">
-                  {redacoes.map((r) => (
-                    <li key={r.id} className="flex items-center gap-4 px-5 py-4">
-                      <Link href={`/minha-area/redacao/${r.id}`} className="min-w-0 flex-1">
-                        <p className="truncate font-bold text-[#14213A]">{r.tema}</p>
-                        <p className="text-[12.5px] text-[#516278]">
-                          {r.modo === "simulado" ? "Simulado" : "Treino"} ·{" "}
-                          {new Date(r.atualizado_em).toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" })}
-                        </p>
-                      </Link>
-                      {r.status === "corrigida" ? (
-                        <span className="font-data text-lg font-extrabold text-accent-2">
-                          {String(r.nota).replace(".", ",")}/{r.nota_max}
-                        </span>
-                      ) : (
-                        <>
-                          <span className="text-[12.5px] font-bold text-[#8A5A00]">Rascunho</span>
-                          <form action={excluirRascunhoAction.bind(null, r.id)}>
-                            <button className="text-[12.5px] text-[#8B97A8] hover:text-[#B42318]" aria-label="Excluir rascunho">
-                              Excluir
-                            </button>
-                          </form>
-                        </>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </section>
           </>
+        )}
+        {(saldo !== null || (redacoes?.length ?? 0) > 0) && (
+          <section className="mt-8">
+            <h2 className="mb-3 font-display text-xl font-extrabold text-[#14213A]">Minhas redações</h2>
+            {!redacoes?.length ? (
+              <p className="text-[14.5px] text-[#516278]">Nenhuma ainda. Comece pela primeira acima.</p>
+            ) : (
+              <ul className="divide-y divide-[#D7DEE6] border border-[#D7DEE6] bg-white">
+                {redacoes.map((r) => (
+                  <li key={r.id} className="flex items-center gap-4 px-5 py-4">
+                    <Link href={`/minha-area/redacao/${r.id}`} className="min-w-0 flex-1">
+                      <p className="truncate font-bold text-[#14213A]">{r.tema}</p>
+                      <p className="text-[12.5px] text-[#516278]">
+                        {r.modo === "simulado" ? "Simulado" : "Treino"} ·{" "}
+                        {new Date(r.atualizado_em).toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" })}
+                      </p>
+                    </Link>
+                    {r.status === "corrigida" ? (
+                      <span className="font-data text-lg font-extrabold text-accent-2">
+                        {String(r.nota).replace(".", ",")}/{r.nota_max}
+                      </span>
+                    ) : (
+                      <>
+                        <span className="text-[12.5px] font-bold text-[#8A5A00]">Rascunho</span>
+                        <form action={excluirRascunhoAction.bind(null, r.id)}>
+                          <button className="text-[12.5px] text-[#8B97A8] hover:text-[#B42318]" aria-label="Excluir rascunho">
+                            Excluir
+                          </button>
+                        </form>
+                      </>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
         )}
       </main>
       <RodapeSite />
