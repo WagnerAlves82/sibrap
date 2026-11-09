@@ -21,11 +21,14 @@ import {
   resumoAutomatico,
   slugValidoPost,
   capaDoPost,
+  COLUNAS_LISTA,
+  comConteudoCurto,
 } from "@/lib/blog";
 
-// Página igual para todos os visitantes: a Vercel guarda em cache e refaz no máximo a cada 1 h
-// (gasta CPU só nessa hora, não a cada visita). Nada de cookies aqui — ver src/lib/supabase-publico.ts.
-export const revalidate = 3600;
+// Página igual para todos os visitantes: a Vercel guarda em cache e refaz no máximo a cada 24 h
+// (cada regeneração custa CPU na Vercel e consultas no Supabase; o admin revalida ao salvar).
+// Nada de cookies aqui — ver src/lib/supabase-publico.ts.
+export const revalidate = 86400;
 
 // gera cada página na primeira visita e depois serve do cache
 export async function generateStaticParams() {
@@ -95,23 +98,23 @@ export default async function PostPage({ params }: Props) {
 
   const { data: recentesData } = await supabase
     .from("posts")
-    .select("*")
+    .select(COLUNAS_LISTA)
     .eq("status", "publicada")
     .neq("id", post.id)
     .order("publicado_em", { ascending: false })
     .limit(6);
-  const recentes = recentesData ?? [];
+  const recentes = (recentesData ?? []).map(comConteudoCurto);
   const { data: doEstadoData } = post.uf
     ? await supabase
         .from("posts")
-        .select("*")
+        .select(COLUNAS_LISTA)
         .eq("status", "publicada")
         .eq("uf", post.uf)
         .neq("id", post.id)
         .order("publicado_em", { ascending: false })
         .limit(12)
     : { data: null };
-  const doEstado = (doEstadoData ?? []).slice(0, 5);
+  const doEstado = (doEstadoData ?? []).slice(0, 5).map(comConteudoCurto);
   // carrossel do meio: as mais importantes do mesmo estado (esfera + destaque + ajuste manual), depois as mais novas
   const carrossel = [...(doEstadoData ?? [])]
     .sort((a, b) => pontuacaoDivulgacao(b) - pontuacaoDivulgacao(a))

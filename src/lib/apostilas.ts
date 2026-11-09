@@ -30,6 +30,12 @@ export const UFS = [
 export const BUCKET_CAPAS = "apostilas-capas";
 export const BUCKET_PDFS = "apostilas-pagas";
 
+// Vídeo de apresentação (id do YouTube) mostrado na página da apostila, quando houver.
+// O vídeo é servido pelo YouTube (youtube-nocookie): não gasta cota da Vercel nem do Supabase.
+export const VIDEO_APOSTILA: Record<string, string> = {
+  "pmsp-soldado": "hPhgIvhmSO0",
+};
+
 export function urlCapa(path: string | null | undefined): string | null {
   if (!path) return null;
   const base = process.env.NEXT_PUBLIC_SUPABASE_URL;

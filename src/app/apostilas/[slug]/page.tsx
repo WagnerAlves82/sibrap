@@ -15,7 +15,7 @@ import { GaleriaApostila, type ImagemGaleria } from "@/components/galeria-aposti
 import { PrecoApostila } from "@/components/preco-apostila";
 import { CompartilharWhatsApp } from "@/components/compartilhar-whatsapp";
 import { VendaApostila, perguntasVenda, type DadosVenda } from "@/components/venda-apostila";
-import { formatarPreco, listarApostilasPublicadas } from "@/lib/apostilas";
+import { formatarPreco, listarApostilasPublicadas, VIDEO_APOSTILA } from "@/lib/apostilas";
 import { listarPostsVitrine, postsDaApostila } from "@/lib/blog";
 import { CardPost } from "@/components/card-post";
 import { slugDaBanca } from "@/lib/bancas";
@@ -339,6 +339,24 @@ export default async function ApostilaPage({ params }: Props) {
           </div>
         </div>
       </main>
+      {VIDEO_APOSTILA[apostila.slug] && (
+        <section className="border-t border-[#D7DEE6] bg-white py-12 sm:py-14">
+          <div className="mx-auto max-w-[960px] px-4 sm:px-6">
+            <h2 className="font-display text-2xl font-extrabold text-[#14213A] sm:text-3xl">Conheça a apostila em vídeo</h2>
+            <p className="mt-2 text-[16px] text-[#516278]">O conteúdo, o simulado online e como estudar até a prova.</p>
+            <div className="mt-6 aspect-video w-full border border-[#D7DEE6] bg-[#0b2a4a]">
+              <iframe
+                className="h-full w-full"
+                src={`https://www.youtube-nocookie.com/embed/${VIDEO_APOSTILA[apostila.slug]}?rel=0`}
+                title={`Apresentação da ${alt.toLowerCase()}`}
+                loading="lazy"
+                allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </section>
+      )}
       <VendaApostila d={venda} />
       {noticias.length > 0 && (
         <section className="border-t border-[#D7DEE6] bg-[#F6F8FB] py-12 sm:py-14">

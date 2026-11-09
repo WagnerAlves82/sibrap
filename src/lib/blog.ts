@@ -212,13 +212,24 @@ export async function listarPostsPublicados(
   return data ?? [];
 }
 
+// Colunas das listas (vitrine, lateral, carrossel): tudo menos o texto completo (`conteudo`).
+// Trazer `*` de todas as notícias a cada regeneração de página era o maior gasto de egress do Supabase (11/2026).
+// (texto literal numa linha só: o cliente do Supabase deduz o tipo das linhas a partir dele)
+export const COLUNAS_LISTA = "id,slug,titulo,resumo,capa_path,categoria,regiao,uf,autor,destaque,status,publicado_em,criado_em,atualizado_em,edital_url,apostilas_slugs,certame_tipo,edital_numero,retificacoes,esfera,importancia,facebook_postado_em,facebook_post_id,capa_url,capa_credito,hashtags,palavras_chave,seo_titulo,seo_descricao";
+
+/** Monta um `conteudo` curto (resumo, SEO e hashtags) para quem usa o texto só para resumir, buscar ou casar apostilas. */
+export function comConteudoCurto<T extends Omit<PostRow, "conteudo">>(p: T): T & { conteudo: string } {
+  const partes = [p.resumo, p.seo_descricao, p.edital_numero, ...(p.palavras_chave ?? []), ...(p.hashtags ?? [])];
+  return { ...p, conteudo: partes.filter(Boolean).join(" ") };
+}
+
 /**
- * Lista para vitrines e busca: todas as notícias publicadas, mas com o texto cortado
- * (só o suficiente para o resumo do cartão), para não mandar o conteúdo inteiro ao navegador.
+ * Lista para vitrines e busca: todas as notícias publicadas, sem o texto completo
+ * (o cartão usa o resumo), para não baixar o conteúdo inteiro do banco nem mandá-lo ao navegador.
  */
 export async function listarPostsVitrine(supabase: SupabaseClient<Database>): Promise<PostVitrine[]> {
-  const { data } = await supabase.from("posts").select("*").eq("status", "publicada").order("publicado_em", { ascending: false });
-  return (data ?? []).map((p) => ({ ...p, conteudo: (p.conteudo ?? "").slice(0, 700) }));
+  const { data } = await supabase.from("posts").select(COLUNAS_LISTA).eq("status", "publicada").order("publicado_em", { ascending: false });
+  return (data ?? []).map(comConteudoCurto);
 }
 
 function normalizar(t: string): string {
