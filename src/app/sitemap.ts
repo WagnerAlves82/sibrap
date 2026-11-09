@@ -8,23 +8,23 @@ export const revalidate = 3600;
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
 
+// Datas reais de alteração: marcar tudo como "alterado agora" a cada leitura faz o Google ignorar o lastmod.
+// Páginas institucionais usam uma data fixa (atualize ao mudar o texto delas).
+const FIXAS = new Date("2026-11-09");
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // /cadastro e llms*.txt ficam fora: não são páginas para o índice do Google (os robôs de IA acham o llms.txt pelo robots.txt)
   const paginas: MetadataRoute.Sitemap = [
-    { url: siteUrl, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
-    { url: `${siteUrl}/apostilas`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.95 },
-    ...Object.keys(COMBOS).map((slug) => ({ url: `${siteUrl}/combos/${slug}`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.9 })),
-    { url: `${siteUrl}/llms.txt`, lastModified: new Date(), changeFrequency: "daily", priority: 0.3 },
-    { url: `${siteUrl}/llms-full.txt`, lastModified: new Date(), changeFrequency: "daily", priority: 0.3 },
-    { url: `${siteUrl}/bancas`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 },
-    { url: `${siteUrl}/noticias`, lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
-    { url: `${siteUrl}/cursos`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
-    { url: `${siteUrl}/curriculo`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
-    { url: `${siteUrl}/cadastro`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${siteUrl}/termos`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.2 },
-    { url: `${siteUrl}/privacidade`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.2 },
-    { url: `${siteUrl}/sobre`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
-    { url: `${siteUrl}/contato`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
+    { url: `${siteUrl}/termos`, lastModified: FIXAS, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${siteUrl}/privacidade`, lastModified: FIXAS, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${siteUrl}/sobre`, lastModified: FIXAS, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${siteUrl}/contato`, lastModified: FIXAS, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${siteUrl}/curriculo`, lastModified: FIXAS, changeFrequency: "monthly", priority: 0.85 },
+    ...Object.keys(COMBOS).map((slug) => ({ url: `${siteUrl}/combos/${slug}`, lastModified: FIXAS, changeFrequency: "weekly" as const, priority: 0.9 })),
   ];
+  // páginas de listagem: data da notícia/apostila mais recente
+  let ultimaNoticia = FIXAS;
+  let ultimaApostila = FIXAS;
 
   try {
     const { data: cursos } = await criarClienteSupabaseAdmin()
@@ -34,7 +34,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const curso of cursos ?? []) {
       paginas.push({
         url: `${siteUrl}/cursos/${curso.slug}`,
-        lastModified: new Date(),
+        lastModified: FIXAS,
         changeFrequency: "weekly",
         priority: 0.9,
       });
@@ -50,9 +50,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const slugBanca = slugDaBanca(a.banca);
       if (bancasVistas.has(slugBanca)) continue;
       bancasVistas.add(slugBanca);
-      paginas.push({ url: `${siteUrl}/bancas/${slugBanca}`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 });
+      paginas.push({ url: `${siteUrl}/bancas/${slugBanca}`, lastModified: FIXAS, changeFrequency: "weekly", priority: 0.6 });
     }
     for (const a of apostilas ?? []) {
+      if (new Date(a.atualizado_em) > ultimaApostila) ultimaApostila = new Date(a.atualizado_em);
       paginas.push({
         url: `${siteUrl}/apostilas/${a.slug}`,
         lastModified: new Date(a.atualizado_em),
@@ -65,6 +66,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .select("slug, atualizado_em")
       .eq("status", "publicada");
     for (const p of posts ?? []) {
+      if (new Date(p.atualizado_em) > ultimaNoticia) ultimaNoticia = new Date(p.atualizado_em);
       paginas.push({
         url: `${siteUrl}/noticias/${p.slug}`,
         lastModified: new Date(p.atualizado_em),
@@ -76,5 +78,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // sem a chave de serviço (ex.: build local): fica só com as páginas fixas
   }
 
+  const recente = ultimaNoticia > ultimaApostila ? ultimaNoticia : ultimaApostila;
+  paginas.unshift(
+    { url: siteUrl, lastModified: recente, changeFrequency: "daily", priority: 1 },
+    { url: `${siteUrl}/apostilas`, lastModified: ultimaApostila, changeFrequency: "weekly", priority: 0.95 },
+    { url: `${siteUrl}/noticias`, lastModified: ultimaNoticia, changeFrequency: "daily", priority: 0.8 },
+    { url: `${siteUrl}/cursos`, lastModified: FIXAS, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${siteUrl}/bancas`, lastModified: ultimaApostila, changeFrequency: "weekly", priority: 0.6 },
+  );
   return paginas;
 }
