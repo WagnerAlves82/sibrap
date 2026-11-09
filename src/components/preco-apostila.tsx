@@ -6,6 +6,7 @@ import {
   textoParcela,
 } from "@/lib/apostilas";
 import { SeloPromocao } from "@/components/selo-promocao";
+import { SeloBlackFriday } from "@/components/black-friday";
 
 // Bloco de preço. Mostra o "de" riscado e o selo de percentual somente
 // quando há preço de referência cadastrado para aquela apostila; mostra
@@ -47,6 +48,7 @@ export function PrecoApostila({
           "à vista no PIX"
         )}
       </p>
+      {grande && <SeloBlackFriday grande />}
     </div>
   );
 }

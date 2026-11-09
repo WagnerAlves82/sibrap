@@ -8,6 +8,7 @@ import {
   type ApostilaVitrine,
 } from "@/lib/apostilas";
 import { PrecoApostila } from "@/components/preco-apostila";
+import { FaixaCardBlackFriday } from "@/components/black-friday";
 
 // Card da vitrine: livro em 3D (mockup) ou capa plana, órgão, cargo, data
 // da prova e preço. Serve à home (3 por linha no desktop, 2 no celular) e
@@ -68,6 +69,7 @@ export function CardApostila({ apostila }: { apostila: ApostilaVitrine }) {
             {apostila.orgao}
           </div>
         )}
+        <FaixaCardBlackFriday />
         {(badgeProva || badgeDestaque) && (
           <div className="absolute inset-x-2 top-2 hidden items-start justify-between gap-2 sm:flex">
             {badgeProva ?? <span />}

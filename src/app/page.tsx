@@ -1,3 +1,4 @@
+import { BLACK_FRIDAY, CUPOM_BLACK_FRIDAY } from "@/lib/black-friday";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -90,7 +91,7 @@ export default async function Home() {
     <div className="flex flex-1 flex-col bg-white font-body">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizacao) }} />
       {proxima && (
-        <div className="bg-brand-deep text-[#C9D6E6]">
+        <div className={BLACK_FRIDAY ? "bg-[#0D0D0D] text-[#D9D9D9]" : "bg-brand-deep text-[#C9D6E6]"}>
           <div className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-2 text-[12.5px] sm:px-6">
             <span>
               <span className="mr-2 rounded bg-accent px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide text-accent-ink">
@@ -100,12 +101,19 @@ export default async function Home() {
               <span className="mx-1.5 opacity-40">·</span>
               {proxima.dias === 0 ? "é hoje" : proxima.dias === 1 ? "falta 1 dia" : `faltam ${proxima.dias} dias`}
             </span>
-            <span className="hidden sm:inline">Apostilas em PDF a partir de {formatarPreco(preco)}</span>
+            {BLACK_FRIDAY ? (
+              <Link href="/apostilas" className="hidden sm:inline">
+                <span className="mr-2 bg-accent px-1.5 py-0.5 font-data text-[10.5px] font-bold uppercase tracking-[0.14em] text-black">Black Friday</span>
+                Cupom <strong className="font-data tracking-wider text-accent">{CUPOM_BLACK_FRIDAY}</strong> em todas as apostilas →
+              </Link>
+            ) : (
+              <span className="hidden sm:inline">Apostilas em PDF a partir de {formatarPreco(preco)}</span>
+            )}
           </div>
         </div>
       )}
 
-      <CabecalhoSite semLinks />
+      <CabecalhoSite semLinks semFaixaBlackFriday />
 
       <MenuAncora />
 
