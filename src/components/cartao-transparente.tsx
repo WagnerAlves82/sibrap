@@ -60,7 +60,7 @@ const mascaraCelular = (v: string) =>
     .replace(/(\d{5})(\d{1,4})$/, "$1-$2");
 
 /** O que a página (servidor) passa para habilitar o cartão; null = só PIX. */
-export type DadosCartaoCompra = { chavePublica: string; produtoSlug: string; email: string; nome?: string };
+export type DadosCartaoCompra = { chavePublica: string; produtoSlug: string; email: string; nome?: string; cupom?: string };
 
 const campo = "w-full border border-[#D7DEE6] bg-white px-3 py-2.5 text-[15px] text-[#14213A] outline-none focus:border-brand";
 
@@ -73,6 +73,7 @@ export function CartaoTransparente({
   aoAprovar,
   abertoInicial = false,
   embutido = false,
+  cupom,
 }: {
   produtoSlug: string;
   valorCentavos: number;
@@ -84,6 +85,8 @@ export function CartaoTransparente({
   abertoInicial?: boolean;
   /** dentro do modal de pagamento: sem título nem moldura própria */
   embutido?: boolean;
+  /** cupom de desconto já conferido (o banco recalcula o preço) */
+  cupom?: string;
 }) {
   const idAlvo = `cartao-${useId().replace(/:/g, "")}`;
   const max = maxParcelas(valorCentavos);
@@ -146,7 +149,7 @@ export function CartaoTransparente({
       setErro(err instanceof Error && err.message ? err.message : "Confira os dados do cartão.");
       return;
     }
-    const r = await pagarComCartaoAction(produtoSlug, { token, parcelas, nome, cpf, celular });
+    const r = await pagarComCartaoAction(produtoSlug, { token, parcelas, nome, cpf, celular }, cupom);
     if ("erro" in r) {
       setFase("form");
       setErro(r.erro);

@@ -136,6 +136,7 @@ export function EscolherPagamento({
             {forma === "cartao" && (
               <CartaoTransparente
                 produtoSlug={cartao.produtoSlug}
+                cupom={cartao.cupom}
                 valorCentavos={valorCentavos}
                 chavePublica={cartao.chavePublica}
                 emailCliente={cartao.email}

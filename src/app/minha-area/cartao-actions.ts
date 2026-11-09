@@ -5,7 +5,7 @@ import { pagarPedidoComCartao, type DadosCartao, type EstadoCartao } from "@/lib
 
 // Pagamento no cartão de qualquer produto (apostila, combo, certificado, curso, Premium).
 // O pedido é criado pela mesma RPC do PIX: ela confere login, produto ativo e preço no banco.
-export async function pagarComCartaoAction(produtoSlug: string, dados: DadosCartao): Promise<EstadoCartao> {
+export async function pagarComCartaoAction(produtoSlug: string, dados: DadosCartao, cupom?: string): Promise<EstadoCartao> {
   if (!/^[a-z0-9-]{3,100}$/.test(produtoSlug)) return { erro: "Produto não encontrado." };
 
   const supabase = await criarClienteSupabaseServer();
@@ -14,7 +14,10 @@ export async function pagarComCartaoAction(produtoSlug: string, dados: DadosCart
   } = await supabase.auth.getUser();
   if (!user || !user.email) return { erro: "Você precisa estar logado com um e-mail válido." };
 
-  const { data: pedidoRows, error } = await supabase.rpc("criar_pedido_por_slug", { p_slug: produtoSlug });
+  const { data: pedidoRows, error } = await supabase.rpc("criar_pedido_por_slug", {
+    p_slug: produtoSlug,
+    ...(cupom?.trim() ? { p_cupom: cupom.trim().slice(0, 40) } : {}),
+  });
   if (error || !pedidoRows?.[0]) {
     return { erro: error?.message ?? "Não deu pra criar o pedido agora. Tenta de novo." };
   }

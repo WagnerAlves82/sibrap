@@ -4,9 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
-type SlideHero = { id: "metodo" | "apostila" | "simulado"; rotulo: string };
+type SlideHero = { id: "blackfriday" | "redacao" | "metodo" | "apostila" | "simulado"; rotulo: string };
 
 const SLIDES: SlideHero[] = [
+  { id: "blackfriday", rotulo: "Black Friday" },
+  { id: "redacao", rotulo: "Treino de Redação" },
   { id: "metodo", rotulo: "Método SIBRAP" },
   { id: "apostila", rotulo: "Apostilas" },
   { id: "simulado", rotulo: "Simulados on-line" },
@@ -14,6 +16,10 @@ const SLIDES: SlideHero[] = [
 
 const INTERVALO_MS = 7000;
 const FUNDO = "linear-gradient(135deg, #2e3192 0%, #1f5fb0 55%, #0b7cc4 100%)";
+const FUNDOS: Partial<Record<SlideHero["id"], string>> = {
+  blackfriday: "radial-gradient(ellipse at 75% 40%, #2a2208 0%, #0d0d0d 55%, #000 100%)",
+  redacao: "linear-gradient(135deg, #071b33 0%, #0b2a4a 60%, #0e4a6b 100%)",
+};
 
 // Leitura do navegador sem quebrar a hidratação: no servidor (e na
 // primeira renderização) vale o valor do terceiro argumento.
@@ -136,7 +142,7 @@ function Slide({
       className={`relative col-start-1 row-start-1 flex flex-col overflow-hidden transition-opacity duration-700 md:flex-row md:items-center ${
         ativo ? "z-10 opacity-100" : "z-0 opacity-0"
       }`}
-      style={{ background: FUNDO }}
+      style={{ background: FUNDOS[slide.id] ?? FUNDO }}
     >
       {/* Halo luminoso atrás da imagem do produto (longe do texto) */}
       <span
@@ -148,6 +154,8 @@ function Slide({
         }}
       />
       <div className="relative mx-auto grid w-full max-w-[1180px] items-center 2xl:max-w-[1480px] gap-6 px-6 pb-14 pt-8 md:grid-cols-[0.9fr_1.1fr] md:gap-8 md:py-12">
+        {slide.id === "blackfriday" && <BlackFriday prioridade={indice === 0} />}
+        {slide.id === "redacao" && <Redacao />}
         {slide.id === "metodo" && <Metodo prioridade={indice === 0} />}
         {slide.id === "apostila" && <Apostila precoTexto={precoTexto} />}
         {slide.id === "simulado" && <Simulado />}
@@ -344,6 +352,113 @@ function Simulado() {
             sizes="(min-width: 1024px) 470px, (min-width: 768px) 400px, 300px"
             className="h-[190px] w-full object-cover object-top md:h-[380px] lg:h-[460px] xl:h-[540px] 2xl:h-[660px]"
           />
+        </div>
+      </div>
+    </>
+  );
+}
+
+function BlackFriday({ prioridade }: { prioridade: boolean }) {
+  return (
+    <>
+      <div className="max-w-[620px]">
+        <p className="mb-3 inline-flex bg-accent px-2 py-1 font-data text-[11.5px] font-bold uppercase tracking-[0.18em] text-black">
+          Black Friday SIBRAP
+        </p>
+        <Titulo>
+          Desconto em <span className="text-accent">todas as apostilas</span>
+        </Titulo>
+        <p className="mt-3 text-[15px] text-[#CFCFCF] md:text-base">
+          Use o cupom na hora de pagar, no PIX ou no cartão, e garanta seu material com preço de Black Friday.
+        </p>
+        <div className="mt-5 inline-flex items-stretch border-2 border-dashed border-accent">
+          <span className="flex items-center bg-accent px-3 font-data text-[12px] font-bold uppercase tracking-wide text-black">
+            Cupom
+          </span>
+          <span className="px-4 py-2 font-data text-2xl font-extrabold tracking-[0.12em] text-white md:text-3xl">VOUPASSAR</span>
+        </div>
+        <p className="mt-2 font-data text-[13px] text-[#CFCFCF]">6,18% de desconto · só vale se você digitar o cupom</p>
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          <BotaoPrincipal href="/apostilas">Escolher minha apostila</BotaoPrincipal>
+        </div>
+      </div>
+      <div aria-hidden className="relative flex items-end justify-center justify-self-center xl:-mr-10">
+        <span className="absolute -top-2 right-2 z-30 rotate-[8deg] bg-accent px-3 py-1.5 font-display text-lg font-extrabold text-black shadow-[0_8px_20px_rgba(0,0,0,0.5)] md:text-2xl">
+          −6,18%
+        </span>
+        <Image
+          src="/hero-mockup-itajai.webp"
+          alt=""
+          width={668}
+          height={1000}
+          priority={prioridade}
+          sizes="(min-width: 1024px) 200px, (min-width: 768px) 125px, 110px"
+          className="relative z-10 -mr-5 h-auto w-[110px] -rotate-[4deg] drop-shadow-[0_14px_30px_rgba(227,169,43,0.35)] md:-mr-6 md:w-[130px] lg:-mr-8 lg:w-[175px] xl:-mr-10 xl:w-[240px] 2xl:-mr-14 2xl:w-[320px]"
+        />
+        <Image
+          src="/hero-mockup-curitiba.webp"
+          alt=""
+          width={558}
+          height={1000}
+          priority={prioridade}
+          sizes="(min-width: 1024px) 265px, (min-width: 768px) 165px, 130px"
+          className="relative z-20 h-auto w-[130px] drop-shadow-[0_18px_40px_rgba(227,169,43,0.4)] md:w-[180px] lg:w-[240px] xl:w-[320px] 2xl:w-[430px]"
+        />
+        <Image
+          src="/hero-mockup-amapa.webp"
+          alt=""
+          width={664}
+          height={1000}
+          priority={prioridade}
+          sizes="(min-width: 1024px) 200px, (min-width: 768px) 125px, 110px"
+          className="relative z-10 -ml-5 h-auto w-[110px] rotate-[4deg] drop-shadow-[0_14px_30px_rgba(227,169,43,0.35)] md:-ml-6 md:w-[130px] lg:-ml-8 lg:w-[175px] xl:-ml-10 xl:w-[240px] 2xl:-ml-14 2xl:w-[320px]"
+        />
+      </div>
+    </>
+  );
+}
+
+// Miniatura da tela real do Treino de Redação (desenhada em código, sem imagem)
+function Redacao() {
+  const marca = (cor: string, borda: string) => ({ background: cor, borderBottom: `2px solid ${borda}` });
+  return (
+    <>
+      <div className="max-w-[620px]">
+        <Rotulo>Novo · Concursos e ENEM</Rotulo>
+        <Titulo>Treino de Redação com correção e nota.</Titulo>
+        <p className="mt-3 text-[15px] text-[#D7E6F7] md:text-base">
+          Escreva no editor, receba dicas enquanto desenvolve o texto e veja sua nota pela grade da banca.
+        </p>
+        <Itens
+          itens={[
+            { t: "Dicas ao vivo", d: "Marcações coloridas de gramática, coesão e argumentação, sem atrapalhar a escrita", c: "enquanto você escreve" },
+            { t: "Nota pela grade da banca", d: "Comentário por critério e sua introdução reescrita em nível de nota máxima", c: "comentada por critério" },
+            { t: "6 correções de bônus", d: "Incluídas nas apostilas de concursos com redação", c: "nas apostilas com redação" },
+          ]}
+        />
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          <BotaoPrincipal href="/minha-area/redacao">Treinar minha redação</BotaoPrincipal>
+          <BotaoSecundario href="/apostilas">Ver as apostilas</BotaoSecundario>
+        </div>
+      </div>
+      <div aria-hidden className="relative hidden w-full max-w-[560px] justify-self-center md:block">
+        <div className="grid grid-cols-[1.7fr_1fr] gap-2 bg-white/10 p-2 shadow-[0_18px_50px_rgba(0,0,0,0.45)]">
+          <div className="bg-white p-4 font-serif text-[12.5px] leading-[1.9] text-[#14213A]">
+            <p className="mb-2 font-data text-[9px] font-bold uppercase tracking-wide text-[#8B97A8]">↶ ↷ · A− A+ · Repetições · Foco</p>
+            A segurança pública nas grandes cidades é um dos principais desafios do país. Com o crescimento desordenado,{" "}
+            <span style={marca("#FBD9D9", "#C0392B")}>aumentou-se os índices</span> de violência.
+            <br />
+            Em primeiro lugar, a falta de policiamento <span style={marca("#FBD9D9", "#C0392B")}>comunitario</span> afasta a polícia dos
+            moradores, <span style={marca("#D8E6FB", "#2F6DB5")}>e isso dificulta</span> o trabalho de investigação.
+            <p className="mt-2 font-data text-[10px] font-bold text-[#0E7C6B]">≈ 22 de 20–30 linhas</p>
+          </div>
+          <div className="flex flex-col gap-1.5 bg-[#F6F8FA] p-2 text-[10.5px] text-[#33465E]">
+            <p className="font-display text-[12px] font-extrabold text-[#14213A]">Dicas</p>
+            <p className="border-l-[3px] border-[#C0392B] bg-white px-2 py-1"><b>Concordância</b><br />aumentaram os índices</p>
+            <p className="border-l-[3px] border-[#C0392B] bg-white px-2 py-1"><b>Acentuação</b><br />comunitário</p>
+            <p className="border-l-[3px] border-[#2F6DB5] bg-white px-2 py-1"><b>Coesão</b><br />nomeie a ideia retomada</p>
+            <p className="mt-auto bg-[#0B2A4A] px-2 py-1.5 text-center font-bold text-white">Nota 31/40</p>
+          </div>
         </div>
       </div>
     </>

@@ -1288,6 +1288,7 @@ export type Database = {
       pedidos: {
         Row: {
           atualizado_em: string
+          cupom: string | null
           criado_em: string
           entrega_enviada_em: string | null
           gateway: string
@@ -1304,6 +1305,7 @@ export type Database = {
         }
         Insert: {
           atualizado_em?: string
+          cupom?: string | null
           criado_em?: string
           entrega_enviada_em?: string | null
           gateway?: string
@@ -1320,6 +1322,7 @@ export type Database = {
         }
         Update: {
           atualizado_em?: string
+          cupom?: string | null
           criado_em?: string
           entrega_enviada_em?: string | null
           gateway?: string
@@ -1973,7 +1976,7 @@ export type Database = {
       }
       creditos_saldo: { Args: { p_produto_id: string }; Returns: number }
       criar_pedido_por_slug: {
-        Args: { p_slug: string }
+        Args: { p_slug: string; p_cupom?: string }
         Returns: {
           pedido_id: string
           produto_nome: string
@@ -2104,6 +2107,7 @@ export type Database = {
         Args: { p_order_id: string; p_payment_id?: string; p_pedido_id: string }
         Returns: undefined
       }
+      percentual_cupom: { Args: { p_cupom: string; p_produto: string }; Returns: number }
       saldo_redacao: { Args: { p_user: string }; Returns: number | null }
       registrar_tentativa: {
         Args: { p_chave: string; p_janela_segundos: number; p_limite: number }

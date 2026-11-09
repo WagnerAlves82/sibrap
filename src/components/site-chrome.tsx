@@ -74,9 +74,9 @@ export function CabecalhoSite({ logado, next, semLinks, semBusca }: { logado?: b
             <>
             <Link
               href={logado ? "/minha-area" : next ? `/login?next=${encodeURIComponent(next)}` : "/login"}
-              className="ml-1 rounded-md bg-brand px-3 py-2 sm:px-4 text-white transition-colors hover:brightness-125"
+              className="ml-1 whitespace-nowrap rounded-md bg-brand px-3 py-2 sm:px-4 text-white transition-colors hover:brightness-125"
             >
-              {logado ? "Minha Área" : "Entrar"}
+              {logado ? "Minha Área" : "Área do aluno"}
             </Link>
             {logado && (
               <form action={sairDaConta}>
