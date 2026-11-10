@@ -9,7 +9,7 @@ import fs from "node:fs";
 import path from "node:path";
 import QRCode from "qrcode";
 import { Document, Font, Image, Page, Path, Polygon, Svg, Text, View, renderToBuffer } from "@react-pdf/renderer";
-import { ASSINATURA_CARGO, ASSINATURA_CERTIFICADO, AVISO_CURSO_LIVRE, EMISSOR } from "@/lib/emissor";
+import { ASSINATURA_CARGO, ASSINATURA_CERTIFICADO, AVISO_CURSO_LIVRE, BASE_LEGAL_CERTIFICADO, EMISSOR } from "@/lib/emissor";
 import { MAPA_BRASIL_PATH } from "@/lib/certificado-desenho";
 
 Font.registerHyphenationCallback((palavra) => [palavra]);
@@ -26,8 +26,8 @@ const LARGURA = 841.89;
 const ALTURA = 595.28;
 const cq = (n: number) => (n * LARGURA) / 100;
 
-const L_ASSIN = cq(35);
-const L_QR = cq(19.5);
+const L_ASSIN = cq(31.5);
+const L_QR = cq(16.5);
 const linhaAssin = { width: L_ASSIN, fontSize: cq(0.78), lineHeight: 1.4, color: "#2B3A52" };
 const linhaQr = { width: L_QR, fontSize: cq(0.9), lineHeight: 1.4, color: CINZA };
 
@@ -106,30 +106,30 @@ function Frente({ d, qr, img }: { d: DadosCertificadoPdf; qr: string; img: Image
             <Text style={{ fontFamily: "Helvetica-Bold", fontSize: cq(3.4), color: TINTA, textAlign: "center" }}>{d.nome}</Text>
           </View>
           {d.cpfMascarado ? <Text style={{ marginTop: cq(0.6), fontFamily: "Courier", fontSize: cq(1.1), color: CINZA }}>CPF {d.cpfMascarado}</Text> : null}
-          <Text style={{ marginTop: cq(1.8), fontSize: cq(1.55), lineHeight: 1.5, textAlign: "center", maxWidth: cq(74), color: "#2B3A52" }}>
+          <Text style={{ marginTop: cq(1.6), fontSize: cq(1.4), lineHeight: 1.5, textAlign: "center", maxWidth: cq(76), color: "#2B3A52" }}>
             concluiu com aproveitamento o curso de <Text style={{ fontFamily: "Helvetica-Bold", color: NAVY }}>{d.curso}</Text>, com carga horária de{" "}
-            <Text style={{ fontFamily: "Helvetica-Bold", color: NAVY }}>{d.horas} horas</Text>, em {dataExtenso(d.emitidoEm)}.
+            <Text style={{ fontFamily: "Helvetica-Bold", color: NAVY }}>{d.horas} horas</Text>, em {dataExtenso(d.emitidoEm)}, {BASE_LEGAL_CERTIFICADO}.
           </Text>
 
-          <View style={{ marginTop: "auto", width: "100%", flexDirection: "row", alignItems: "flex-end", justifyContent: "space-between" }}>
-            <View style={{ flexDirection: "row", alignItems: "center", width: cq(30) }}>
+          <View style={{ marginTop: "auto", width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+            <View style={{ flexDirection: "row", alignItems: "center", width: cq(27) }}>
               <Image src={qr} style={{ width: cq(9), height: cq(9), flexShrink: 0 }} />
               <View style={{ marginLeft: cq(1.2), width: L_QR }}>
                 <Text style={[linhaQr, { fontFamily: "Helvetica-Bold", color: NAVY }]}>Valide este certificado</Text>
-                <Text style={linhaQr}>Aponte a câmera para o QR Code ou acesse</Text>
-                <Text style={linhaQr}>{d.siteUrl.replace(/^https?:\/\//, "")}/validar</Text>
+                <Text style={linhaQr}>Aponte a câmera para o QR Code</Text>
+                <Text style={linhaQr}>ou acesse {d.siteUrl.replace(/^https?:\/\//, "")}/validar</Text>
                 <Text style={[linhaQr, { fontFamily: "Courier-Bold", color: TINTA, marginTop: cq(0.3) }]}>Código {d.codigo}</Text>
               </View>
             </View>
 
             {abed ? (
-              <View style={{ alignItems: "center" }}>
+              <View style={{ alignItems: "center", width: cq(11) }}>
                 <Text style={{ fontFamily: "Helvetica-Bold", fontSize: cq(0.75), letterSpacing: cq(0.15), color: NAVY, marginBottom: cq(0.3) }}>SOMOS ASSOCIADOS</Text>
                 <Image src={abed} style={{ height: cq(5.5), width: cq(5.5) * (180 / 156) }} />
               </View>
             ) : null}
 
-            <View style={{ width: cq(42), flexDirection: "row", alignItems: "center", borderWidth: 0.75, borderColor: "#D5DEEA", paddingVertical: cq(0.6), paddingHorizontal: cq(0.9) }}>
+            <View style={{ width: cq(38), flexDirection: "row", alignItems: "center", borderWidth: 0.75, borderColor: "#D5DEEA", paddingVertical: cq(0.6), paddingHorizontal: cq(0.9) }}>
               {redonda ? <Image src={redonda} style={{ width: cq(3.8), height: cq(3.8), flexShrink: 0 }} /> : null}
               {/* largura em cada linha: o @react-pdf ignorava a largura do bloco e quebrava o texto pela metade */}
               <View style={{ marginLeft: cq(1), width: L_ASSIN }}>

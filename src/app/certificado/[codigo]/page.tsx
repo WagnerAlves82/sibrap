@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import QRCode from "qrcode";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
-import { ASSINATURA_CARGO, ASSINATURA_CERTIFICADO, AVISO_CURSO_LIVRE, EMISSOR } from "@/lib/emissor";
+import { ASSINATURA_CARGO, ASSINATURA_CERTIFICADO, AVISO_CURSO_LIVRE, BASE_LEGAL_CERTIFICADO, EMISSOR } from "@/lib/emissor";
 import { SeloAbed } from "@/components/selo-abed";
 import { BotaoImprimir } from "./BotaoImprimir";
 import { MAPA_BRASIL_PATH } from "@/lib/certificado-desenho";
@@ -203,11 +203,11 @@ export default async function CertificadoPage({
                 </div>
               )}
 
-              <div style={{ marginTop: cq(1.8), fontSize: cq(1.6), lineHeight: 1.55, textAlign: "center", maxWidth: cq(74), color: "#2B3A52" }}>
+              <div style={{ marginTop: cq(1.6), fontSize: cq(1.45), lineHeight: 1.5, textAlign: "center", maxWidth: cq(78), color: "#2B3A52" }}>
                 concluiu com aproveitamento o curso de{" "}
                 <strong style={{ color: NAVY }}>{cert.curso_nome}</strong>, com carga
                 horária de <strong style={{ color: NAVY }}>{cert.carga_horaria_horas} horas</strong>, em{" "}
-                {formatarData(cert.emitido_em)}.
+                {formatarData(cert.emitido_em)}, {BASE_LEGAL_CERTIFICADO}.
               </div>
 
               <div
@@ -215,9 +215,9 @@ export default async function CertificadoPage({
                   marginTop: "auto",
                   width: "100%",
                   display: "flex",
-                  alignItems: "flex-end",
+                  alignItems: "center",
                   justifyContent: "space-between",
-                  gap: cq(2),
+                  gap: cq(3),
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: cq(1.4) }}>
@@ -239,21 +239,21 @@ export default async function CertificadoPage({
 
                 <div
                   style={{
-                    width: cq(42),
+                    width: cq(41),
                     display: "flex",
                     alignItems: "center",
                     gap: cq(1.1),
                     border: `${cq(0.1)} solid #D5DEEA`,
                     background: "#FFFFFF",
                     padding: `${cq(0.8)} ${cq(1.1)}`,
-                    fontSize: cq(0.86),
+                    fontSize: cq(0.76),
                     lineHeight: 1.5,
                     color: "#2B3A52",
                     boxSizing: "border-box",
                   }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/logo-redonda.webp" alt={EMISSOR.nomeCurto} style={{ width: cq(4.6), height: "auto", flexShrink: 0 }} />
+                  <img src="/logo-redonda.webp" alt={EMISSOR.nomeCurto} style={{ width: cq(4), height: "auto", flexShrink: 0 }} />
                   <div style={{ minWidth: 0 }}>
                   <div style={{ fontWeight: 800, color: NAVY, fontSize: cq(1.0) }}>Documento assinado eletronicamente</div>
                   <div>

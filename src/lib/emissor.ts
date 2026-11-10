@@ -8,6 +8,10 @@ export const EMISSOR = {
 export const ASSINATURA_CERTIFICADO = "Wagner A. de S. Jr";
 export const ASSINATURA_CARGO = "Professor Habilitado";
 
+// Base legal citada logo após "concluiu com aproveitamento..." no certificado (pedido do Wagner, 10/11/2026).
+export const BASE_LEGAL_CERTIFICADO =
+  "nos termos do Decreto Presidencial nº 5.154, de 23 de julho de 2004, arts. 1º e 3º, e de acordo com as normas do Ministério da Educação (MEC) pela Resolução CNE nº 04/99, art. 11";
+
 export const AVISO_CURSO_LIVRE =
   "Curso livre de qualificação profissional, amparado pelo art. 42 da Lei nº 9.394/1996 (Lei de Diretrizes e Bases da Educação Nacional), que garante seu valor como capacitação profissional em todo o território nacional.";
 
