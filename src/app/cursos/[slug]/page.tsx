@@ -72,6 +72,12 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     largura: 1376,
     altura: 768,
   },
+  "assistente-administrativo": {
+    src: "/cursos/assistente-administrativo/hero.webp",
+    alt: "Assistente administrativa sorrindo em sua mesa, com notebook e pastas coloridas, num escritório amplo com colegas ao fundo",
+    largura: 960,
+    altura: 720,
+  },
   camareira: {
     src: "/cursos/camareira/hero.webp",
     alt: "Camareira de hotel arrumando a cama de um quarto claro e aconchegante, com carrinho de governança na porta",
