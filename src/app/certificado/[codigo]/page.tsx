@@ -232,9 +232,12 @@ export default async function CertificadoPage({
 
                 <div
                   style={{
-                    width: cq(38),
+                    width: cq(42),
+                    display: "flex",
+                    alignItems: "center",
+                    gap: cq(1.1),
                     border: `${cq(0.1)} solid #D5DEEA`,
-                    background: "#F7F9FC",
+                    background: "#FFFFFF",
                     padding: `${cq(0.8)} ${cq(1.1)}`,
                     fontSize: cq(0.86),
                     lineHeight: 1.5,
@@ -242,18 +245,23 @@ export default async function CertificadoPage({
                     boxSizing: "border-box",
                   }}
                 >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/logo-redonda.webp" alt={EMISSOR.nomeCurto} style={{ width: cq(4.6), height: "auto", flexShrink: 0 }} />
+                  <div style={{ minWidth: 0 }}>
                   <div style={{ fontWeight: 800, color: NAVY, fontSize: cq(1.0) }}>Documento assinado eletronicamente</div>
                   <div>
                     <span style={{ color: OURO, fontWeight: 900 }}>✓</span> <strong>{cert.nome_completo}</strong>
-                    {cert.cpf_mascarado ? ` · CPF ${cert.cpf_mascarado}` : ""} · {formatarDataHora(cert.assinado_aluno_em)}
+                    {cert.cpf_mascarado ? ` · CPF ${cert.cpf_mascarado}` : ""} ·{" "}
+                    <span style={{ whiteSpace: "nowrap" }}>{formatarDataHora(cert.assinado_aluno_em)}</span>
                   </div>
                   <div>
                     <span style={{ color: OURO, fontWeight: 900 }}>✓</span> <strong>{ASSINATURA_CERTIFICADO}</strong> · {ASSINATURA_CARGO} ·{" "}
-                    {formatarDataHora(cert.assinado_instituicao_em)}
+                    <span style={{ whiteSpace: "nowrap" }}>{formatarDataHora(cert.assinado_instituicao_em)}</span>
                   </div>
                   <div style={{ color: "#6B7A8F", fontSize: cq(0.8) }}>
                     CNPJ {EMISSOR.cnpj}
                     {cert.hash_conferencia ? ` · Conferência ${cert.hash_conferencia.slice(0, 12).toUpperCase()}` : ""} · Lei 14.063/2020
+                  </div>
                   </div>
                 </div>
               </div>
