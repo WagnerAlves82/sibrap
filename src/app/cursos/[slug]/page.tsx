@@ -60,6 +60,12 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     largura: 997,
     altura: 746,
   },
+  "excel-basico-ao-intermediario": {
+    src: "/cursos/excel/hero.webp",
+    alt: "Dois colegas de trabalho analisando uma planilha com gráficos e tabela dinâmica no monitor do escritório",
+    largura: 1376,
+    altura: 768,
+  },
   camareira: {
     src: "/cursos/camareira/hero.webp",
     alt: "Camareira de hotel arrumando a cama de um quarto claro e aconchegante, com carrinho de governança na porta",
