@@ -62,6 +62,7 @@ export function FormApostila({ apostila }: { apostila?: ApostilaAdmin }) {
           <label className={ROTULO}>
             UF
             <select name="uf" defaultValue={a?.uf ?? "SC"} className={INPUT}>
+              <option value="BR">BR (nacional)</option>
               {UFS.map((u) => (
                 <option key={u}>{u}</option>
               ))}

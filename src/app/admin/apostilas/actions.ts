@@ -92,7 +92,7 @@ export async function salvarApostilaAction(
   const ordem = inteiroOuNulo(formData, "ordem");
 
   if (!titulo || !orgao || !cargo) return { erro: "Preencha título, órgão e cargo." };
-  if (!(UFS as readonly string[]).includes(uf)) return { erro: "Escolha o estado (UF)." };
+  if (uf !== "BR" && !(UFS as readonly string[]).includes(uf)) return { erro: "Escolha o estado (UF)." };
   if (!(CATEGORIAS as readonly string[]).includes(categoria)) return { erro: "Escolha a categoria." };
   if (centavos === null) return { erro: "Preço inválido. Exemplo: 39,90" };
   if ([paginas, questoes, simulados, ordem].includes("invalido")) {
