@@ -187,11 +187,11 @@ export function PlayerAula({
           <Alert variant="sucesso" claro className="text-sm">
             Aula concluída! Seu progresso foi salvo.{" "}
             {proximaHref ? (
-              <Link href={proximaHref} className="font-bold underline underline-offset-4">
+              <Link prefetch={false} href={proximaHref} className="font-bold underline underline-offset-4">
                 Ir para a próxima aula →
               </Link>
             ) : (
-              <Link href={provaHref} className="font-bold underline underline-offset-4">
+              <Link prefetch={false} href={provaHref} className="font-bold underline underline-offset-4">
                 Fazer a prova final →
               </Link>
             )}

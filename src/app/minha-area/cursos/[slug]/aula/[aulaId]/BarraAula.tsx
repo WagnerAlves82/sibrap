@@ -86,13 +86,13 @@ export function BarraAula({
     );
   } else if (proximaHref) {
     central = (
-      <Link href={proximaHref} className={`${principal} bg-accent text-accent-ink hover:brightness-105`}>
+      <Link prefetch={false} href={proximaHref} className={`${principal} bg-accent text-accent-ink hover:brightness-105`}>
         Próxima aula <span aria-hidden>→</span>
       </Link>
     );
   } else {
     central = (
-      <Link href={provaHref} className={`${principal} bg-accent-2 text-white hover:brightness-110`}>
+      <Link prefetch={false} href={provaHref} className={`${principal} bg-accent-2 text-white hover:brightness-110`}>
         Fazer a prova <span aria-hidden>→</span>
       </Link>
     );
@@ -112,7 +112,7 @@ export function BarraAula({
             <span aria-hidden className="text-[18px]">☰</span> Aulas
           </button>
           {anteriorHref ? (
-            <Link href={anteriorHref} className={lado}>
+            <Link prefetch={false} href={anteriorHref} className={lado}>
               <span aria-hidden className="text-[18px]">←</span> Anterior
             </Link>
           ) : (
@@ -128,7 +128,7 @@ export function BarraAula({
             <span className="hidden sm:inline">aulas</span>
             <span className="sm:hidden">{pct}%</span>
           </span>
-          <Link href={certificadoHref} className={lado}>
+          <Link prefetch={false} href={certificadoHref} className={lado}>
             <span aria-hidden className="text-[18px]">🎓</span> Certificado
           </Link>
         </div>
@@ -153,7 +153,7 @@ export function BarraAula({
                     <p className="bg-[#F6F9FC] px-4 py-2 text-[12px] font-bold uppercase tracking-wide text-[#516278]">{a.modulo}</p>
                   )}
                   {a.href && !a.atual ? (
-                    <Link href={a.href} onClick={() => setListaAberta(false)} className="flex items-center gap-2.5 border-t border-[#F0F4F8] px-4 py-3 text-[15px] text-[#14213A] hover:bg-[#F6F9FC]">
+                    <Link href={a.href} prefetch={false} onClick={() => setListaAberta(false)} className="flex items-center gap-2.5 border-t border-[#F0F4F8] px-4 py-3 text-[15px] text-[#14213A] hover:bg-[#F6F9FC]">
                       <Icone a={a} /> {a.titulo}
                     </Link>
                   ) : (

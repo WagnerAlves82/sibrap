@@ -14,7 +14,29 @@ import { COOKIE_LOGADO, OPCOES_COOKIE_LOGADO } from "@/lib/marca-logado";
 // páginas do admin que não exigem sessão (login, recuperação, "não fui eu")
 const ADMIN_PUBLICO = /^\/admin\/(login|recuperar|revogar)(\/|$)/;
 
+// Larguras aceitas pela rota /img (as mesmas de src/app/img/[largura]/[...caminho]/route.ts)
+const LARGURAS_IMG = [64, 128, 256, 384, 640, 828, 1080, 1280, 1920];
+const PREFIXO_CAPAS = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/apostilas-capas/`;
+
+// O site não usa mais o otimizador da Vercel (/_next/image), mas links antigos (Google, AdSense,
+// páginas em cache) ainda chamam esse endereço e cada chamada gastava a cota de transformações.
+// Aqui ele vira um redirecionamento: arquivo de /public direto, capa do Supabase pela rota /img.
+function redirecionarImagemAntiga(request: NextRequest) {
+  const url = request.nextUrl.searchParams.get("url") ?? "";
+  const largura = Number(request.nextUrl.searchParams.get("w")) || 640;
+  if (url.startsWith("/") && !url.startsWith("//")) {
+    return NextResponse.redirect(new URL(url, request.url), 308);
+  }
+  if (url.startsWith(PREFIXO_CAPAS)) {
+    const w = LARGURAS_IMG.find((l) => l >= largura) ?? 1920;
+    return NextResponse.redirect(new URL(`/img/${w}/${url.slice(PREFIXO_CAPAS.length)}`, request.url), 308);
+  }
+  return new NextResponse("Imagem não encontrada", { status: 404 });
+}
+
 export async function proxy(request: NextRequest) {
+  if (request.nextUrl.pathname === "/_next/image") return redirecionarImagemAntiga(request);
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -71,5 +93,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/minha-area/:path*", "/admin/:path*"],
+  matcher: ["/minha-area/:path*", "/admin/:path*", "/_next/image"],
 };

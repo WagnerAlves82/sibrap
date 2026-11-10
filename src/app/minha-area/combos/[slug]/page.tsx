@@ -55,7 +55,7 @@ export default async function ComboAreaPage({ params }: { params: Promise<{ slug
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
       <CabecalhoSite logado={!!user} next={`/minha-area/combos/${slug}`} />
       <main className="mx-auto w-full max-w-[860px] flex-1 px-4 py-10 sm:px-6">
-        <Link href="/minha-area" className="text-[13px] font-semibold text-brand underline underline-offset-4">
+        <Link prefetch={false} href="/minha-area" className="text-[13px] font-semibold text-brand underline underline-offset-4">
           ← Minha área
         </Link>
 
@@ -79,7 +79,7 @@ export default async function ComboAreaPage({ params }: { params: Promise<{ slug
                   {combo.videoaulas.join(" e ")} aparecem aqui na sua área.
                 </p>
                 <div className="mt-4 flex flex-wrap gap-3">
-                  <Link
+                  <Link prefetch={false}
                     href={`/minha-area/apostilas/${slug}`}
                     className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3.5 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"
                   >

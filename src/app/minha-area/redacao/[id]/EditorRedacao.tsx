@@ -459,7 +459,7 @@ export function EditorRedacao(props: {
               </p>
               {erroCorrecao && <p className="mt-2 text-[13px] font-bold text-[#B42318]">{erroCorrecao}</p>}
               {props.saldo <= 0 ? (
-                <Link href="/minha-area/redacao" className="mt-3 block bg-accent px-4 py-2.5 text-center text-[14px] font-bold text-accent-ink">
+                <Link prefetch={false} href="/minha-area/redacao" className="mt-3 block bg-accent px-4 py-2.5 text-center text-[14px] font-bold text-accent-ink">
                   Comprar +5 correções
                 </Link>
               ) : !confirmando ? (

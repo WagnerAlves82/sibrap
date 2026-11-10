@@ -168,7 +168,7 @@ export default async function CertificadoAreaPage({
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
       <CabecalhoSite logado />
       <main className="mx-auto w-full max-w-[720px] flex-1 px-6 py-10">
-        <Link href={cursoHref} className="text-[13px] font-semibold text-brand underline underline-offset-4">
+        <Link prefetch={false} href={cursoHref} className="text-[13px] font-semibold text-brand underline underline-offset-4">
           ← Voltar ao curso
         </Link>
         <h1 className="mt-3 font-display text-3xl font-extrabold text-[#14213A]">
@@ -185,7 +185,7 @@ export default async function CertificadoAreaPage({
               Abra, imprima ou salve em PDF. Qualquer pessoa pode conferir se é
               verdadeiro pelo QR Code.
             </p>
-            <Link
+            <Link prefetch={false}
               href={`/certificado/${certificado.codigo}`}
               className="mt-5 inline-block rounded-lg bg-accent px-6 py-3 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"
             >
@@ -223,7 +223,7 @@ export default async function CertificadoAreaPage({
                     <>
                       {" "}
                       —{" "}
-                      <Link href={cursoHref} className="font-semibold text-brand underline underline-offset-4">
+                      <Link prefetch={false} href={cursoHref} className="font-semibold text-brand underline underline-offset-4">
                         ir para as aulas
                       </Link>
                     </>
@@ -236,7 +236,7 @@ export default async function CertificadoAreaPage({
                     <>
                       {" "}
                       —{" "}
-                      <Link href={`${cursoHref}/prova`} className="font-semibold text-brand underline underline-offset-4">
+                      <Link prefetch={false} href={`${cursoHref}/prova`} className="font-semibold text-brand underline underline-offset-4">
                         fazer a prova
                       </Link>
                     </>

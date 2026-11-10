@@ -95,7 +95,7 @@ export function LeitorCapitulo({
       {/* Barra superior fixa */}
       <header className="fixed inset-x-0 top-0 z-30 border-b border-[#D7DEE6] bg-white/95 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-[720px] items-center gap-2 px-3 sm:px-5">
-          <Link
+          <Link prefetch={false}
             href={vindoDoSimulado ? `${base}/simulado` : `${base}/ler`}
             className="shrink-0 rounded-full px-2 py-1.5 text-[13px] font-bold text-brand"
             aria-label={vindoDoSimulado ? "Voltar ao simulado" : "Índice da apostila"}
@@ -105,10 +105,10 @@ export function LeitorCapitulo({
           <p className="min-w-0 flex-1 truncate text-center font-data text-[11.5px] font-semibold text-[#516278]">
             Cap. {capitulo.numero} de {indice.length}
           </p>
-          <Link href={anterior ? hrefCap(anterior.numero) : "#"} aria-disabled={!anterior} aria-label="Capítulo anterior" className={botao}>
+          <Link prefetch={false} href={anterior ? hrefCap(anterior.numero) : "#"} aria-disabled={!anterior} aria-label="Capítulo anterior" className={botao}>
             ‹
           </Link>
-          <Link href={proximo ? hrefCap(proximo.numero) : "#"} aria-disabled={!proximo} aria-label="Próximo capítulo" className={botao}>
+          <Link prefetch={false} href={proximo ? hrefCap(proximo.numero) : "#"} aria-disabled={!proximo} aria-label="Próximo capítulo" className={botao}>
             ›
           </Link>
           <button type="button" onClick={() => setMenu(true)} aria-label="Abrir menu do capítulo" className={botao}>
@@ -124,7 +124,7 @@ export function LeitorCapitulo({
 
         <div className="mt-8 grid grid-cols-2 gap-3">
           {anterior ? (
-            <Link href={hrefCap(anterior.numero)} className="rounded-xl border border-[#D7DEE6] bg-white px-4 py-3 text-[13px] font-semibold text-brand">
+            <Link prefetch={false} href={hrefCap(anterior.numero)} className="rounded-xl border border-[#D7DEE6] bg-white px-4 py-3 text-[13px] font-semibold text-brand">
               <span className="block text-[11px] font-bold uppercase text-[#516278]">← Anterior</span>
               <span className="line-clamp-2">{anterior.titulo}</span>
             </Link>
@@ -132,12 +132,12 @@ export function LeitorCapitulo({
             <span />
           )}
           {proximo ? (
-            <Link href={hrefCap(proximo.numero)} className="rounded-xl bg-brand px-4 py-3 text-right text-[13px] font-semibold text-white">
+            <Link prefetch={false} href={hrefCap(proximo.numero)} className="rounded-xl bg-brand px-4 py-3 text-right text-[13px] font-semibold text-white">
               <span className="block text-[11px] font-bold uppercase text-[#B9D0EA]">Próximo →</span>
               <span className="line-clamp-2">{proximo.titulo}</span>
             </Link>
           ) : (
-            <Link href={`${base}/simulado`} className="rounded-xl bg-accent-2 px-4 py-3 text-right text-[13px] font-bold text-white">
+            <Link prefetch={false} href={`${base}/simulado`} className="rounded-xl bg-accent-2 px-4 py-3 text-right text-[13px] font-bold text-white">
               <span className="block text-[11px] font-bold uppercase text-[#CDEFE8]">Fim da apostila</span>
               Praticar no simulado →
             </Link>
@@ -147,7 +147,7 @@ export function LeitorCapitulo({
 
       {/* Atalho para voltar à questão */}
       {vindoDoSimulado && (
-        <Link
+        <Link prefetch={false}
           href={`${base}/simulado`}
           className="fixed bottom-[max(16px,env(safe-area-inset-bottom))] left-1/2 z-30 -translate-x-1/2 rounded-full bg-accent px-5 py-3 text-[13.5px] font-bold text-accent-ink shadow-lg"
         >
@@ -196,7 +196,7 @@ export function LeitorCapitulo({
             <ol className="flex flex-col gap-1">
               {indice.map((c) => (
                 <li key={c.numero}>
-                  <Link
+                  <Link prefetch={false}
                     href={hrefCap(c.numero)}
                     onClick={() => setMenu(false)}
                     className={`flex gap-2 rounded-lg px-3 py-2 text-[13px] leading-snug hover:bg-surface-2 ${

@@ -38,7 +38,7 @@ export default async function LerIndicePage({ params }: { params: Promise<{ slug
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
       <CabecalhoSite logado />
       <main className="mx-auto w-full max-w-[720px] flex-1 px-4 py-8 sm:px-6">
-        <Link href={`/minha-area/apostilas/${slug}`} className="text-[13px] font-semibold text-brand underline underline-offset-4">
+        <Link prefetch={false} href={`/minha-area/apostilas/${slug}`} className="text-[13px] font-semibold text-brand underline underline-offset-4">
           ← Voltar à apostila
         </Link>
         <h1 className="mt-4 font-display text-[1.6rem] font-extrabold text-[#14213A]">Ler a apostila</h1>
@@ -52,7 +52,7 @@ export default async function LerIndicePage({ params }: { params: Promise<{ slug
           <ol className="mt-6 flex flex-col gap-2">
             {capitulos!.map((c) => (
               <li key={c.numero}>
-                <Link
+                <Link prefetch={false}
                   href={`/minha-area/apostilas/${slug}/ler/${c.numero}`}
                   className="flex items-center gap-3 rounded-xl border border-[#D7DEE6] bg-white px-4 py-3 transition-colors hover:border-brand"
                 >

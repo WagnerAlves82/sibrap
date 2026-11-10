@@ -131,7 +131,7 @@ export default async function AreaDoCursoPage({
 
       <main className="mx-auto w-full max-w-[900px] flex-1 px-6 py-10">
         <Reveal>
-          <Link href="/minha-area" className="text-[13px] font-semibold text-brand underline underline-offset-4">
+          <Link prefetch={false} href="/minha-area" className="text-[13px] font-semibold text-brand underline underline-offset-4">
             ← Minha área
           </Link>
           <h1 className="mt-3 font-display text-3xl font-extrabold text-[#14213A] sm:text-4xl">
@@ -149,7 +149,7 @@ export default async function AreaDoCursoPage({
             </div>
             <BarraProgresso percentual={percentual} className="mt-3" />
             {proxima && (
-              <Link
+              <Link prefetch={false}
                 href={`/minha-area/cursos/${curso.slug}/aula/${proxima.id}`}
                 className="mt-5 inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"
               >
@@ -214,6 +214,7 @@ export default async function AreaDoCursoPage({
                         {disponivel ? (
                           <Link
                             href={`/minha-area/cursos/${curso.slug}/aula/${aula.id}`}
+                            prefetch={false}
                             className="flex items-center gap-3 px-5 py-3 transition-colors hover:bg-[#F6F9FC]"
                           >
                             {conteudo}
@@ -265,7 +266,7 @@ function EtapaCard({
       <p className="mt-2 font-display text-lg font-extrabold text-[#14213A]">{titulo}</p>
       <p className="mt-1 flex-1 text-[13px] text-[#516278]">{texto}</p>
       {href && (
-        <Link href={href} className="mt-3 text-[13.5px] font-bold text-brand underline underline-offset-4">
+        <Link prefetch={false} href={href} className="mt-3 text-[13.5px] font-bold text-brand underline underline-offset-4">
           {rotuloLink} →
         </Link>
       )}

@@ -96,7 +96,7 @@ export function SimuladoGratisApp() {
     return (
       <Cartao>
         <Alert variant="erro">{erro}</Alert>
-        <Link
+        <Link prefetch={false}
           href="/minha-area"
           className="mt-6 inline-block text-sm text-blue-500 underline"
         >
@@ -189,7 +189,7 @@ export function SimuladoGratisApp() {
           (banco de questões com simulação de acordo com o perfil da banca
           Cesgranrio).
         </p>
-        <Link
+        <Link prefetch={false}
           href="/minha-area/premium"
           className="mt-5 inline-block w-full rounded-md bg-blue-600 px-4 py-3 text-center font-medium text-white transition-colors hover:bg-blue-500"
         >

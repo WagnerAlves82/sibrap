@@ -91,7 +91,7 @@ export function ProvaApp({
         <button onClick={comecar} disabled={fase === "carregando"} className={`mt-6 ${BOTAO}`}>
           {fase === "carregando" ? "Carregando..." : "Começar a prova"}
         </button>
-        <Link href={cursoHref} className="mt-4 block text-[14px] font-semibold text-brand underline underline-offset-4">
+        <Link prefetch={false} href={cursoHref} className="mt-4 block text-[14px] font-semibold text-brand underline underline-offset-4">
           Voltar ao curso
         </Link>
       </Cartao>
@@ -104,7 +104,7 @@ export function ProvaApp({
         <Alert variant="erro" claro className="text-sm">
           {erro}
         </Alert>
-        <Link href={cursoHref} className={`mt-5 inline-block ${BOTAO}`}>
+        <Link prefetch={false} href={cursoHref} className={`mt-5 inline-block ${BOTAO}`}>
           Voltar ao curso
         </Link>
       </Cartao>
@@ -144,7 +144,7 @@ export function ProvaApp({
           )}
           <div className="mt-6 flex flex-wrap items-center gap-3">
             {resultado.aprovado ? (
-              <Link href={`${cursoHref}/certificado`} className={BOTAO}>
+              <Link prefetch={false} href={`${cursoHref}/certificado`} className={BOTAO}>
                 Ir para o certificado →
               </Link>
             ) : (
@@ -157,7 +157,7 @@ export function ProvaApp({
                 Ver gabarito comentado
               </button>
             )}
-            <Link href={cursoHref} className="text-[14px] font-semibold text-brand underline underline-offset-4">
+            <Link prefetch={false} href={cursoHref} className="text-[14px] font-semibold text-brand underline underline-offset-4">
               Voltar ao curso
             </Link>
           </div>

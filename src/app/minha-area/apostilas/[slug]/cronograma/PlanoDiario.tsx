@@ -78,7 +78,7 @@ export function PlanoDiario({
           </p>
           <p className="font-data text-[11.5px] text-[#94A3B8]">~{duracao(it.minutos)}</p>
         </div>
-        <Link href={`${base}/ler/${it.numero}`} className="shrink-0 rounded-md border border-brand px-3 py-1.5 text-[12.5px] font-bold text-brand hover:bg-brand/5">
+        <Link prefetch={false} href={`${base}/ler/${it.numero}`} className="shrink-0 rounded-md border border-brand px-3 py-1.5 text-[12.5px] font-bold text-brand hover:bg-brand/5">
           Ler
         </Link>
       </li>
@@ -121,7 +121,7 @@ export function PlanoDiario({
             </ul>
           )}
           <div className="mt-3 flex flex-wrap items-center gap-3">
-            {comSimulado && (            <Link href={`${base}/simulado`} className="inline-flex items-center gap-2 rounded-lg bg-brand px-5 py-3 text-[14.5px] font-bold text-white hover:brightness-125">
+            {comSimulado && (            <Link prefetch={false} href={`${base}/simulado`} className="inline-flex items-center gap-2 rounded-lg bg-brand px-5 py-3 text-[14.5px] font-bold text-white hover:brightness-125">
                 Praticar com o simulado <span aria-hidden>→</span>
               </Link>)}
             {hoje.minutos > 0 && <span className="font-data text-[12.5px] text-[#516278]">Estudo de hoje: ~{duracao(hoje.minutos)}</span>}

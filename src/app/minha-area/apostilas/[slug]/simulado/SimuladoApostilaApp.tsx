@@ -229,7 +229,7 @@ export function SimuladoApostilaApp({
   if (fase === "intro") {
     return (
       <Cartao>
-        <Link href={areaHref} className="text-[13px] font-semibold text-brand underline underline-offset-4">
+        <Link prefetch={false} href={areaHref} className="text-[13px] font-semibold text-brand underline underline-offset-4">
           ← {rotuloVoltar}
         </Link>
         <h1 className="mt-4 font-display text-2xl font-extrabold text-[#14213A]">Simulado online</h1>
@@ -493,7 +493,7 @@ export function SimuladoApostilaApp({
           >
             {fase === "enviando" ? "Corrigindo..." : "Encerrar e ver o resultado final"}
           </button>
-          <Link
+          <Link prefetch={false}
             href={areaHref}
             className="text-center text-[13px] font-semibold text-brand underline underline-offset-4"
           >
@@ -557,7 +557,7 @@ export function SimuladoApostilaApp({
             Escolher outro cargo
           </button>
         )}
-        <Link
+        <Link prefetch={false}
           href={areaHref}
           className="text-center text-[13.5px] font-semibold text-brand underline underline-offset-4"
         >

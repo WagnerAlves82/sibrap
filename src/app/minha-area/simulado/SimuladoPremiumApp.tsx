@@ -65,7 +65,7 @@ export function SimuladoPremiumApp({
 
   return (
     <div className="rounded-xl border border-[#D7DEE6] bg-white p-6 sm:p-8">
-      <Link href="/minha-area" className="text-[13px] font-semibold text-brand underline underline-offset-4">
+      <Link prefetch={false} href="/minha-area" className="text-[13px] font-semibold text-brand underline underline-offset-4">
         ← Voltar pra minha área
       </Link>
       <h1 className="mt-4 font-display text-2xl font-extrabold text-[#14213A]">Simulado completo</h1>

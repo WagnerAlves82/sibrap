@@ -71,7 +71,7 @@ export function MinigameVF({
   if (fase === "intro") {
     return (
       <Cartao>
-        <Link href={areaHref} className="text-[13px] font-semibold text-brand underline underline-offset-4">
+        <Link prefetch={false} href={areaHref} className="text-[13px] font-semibold text-brand underline underline-offset-4">
           ← Voltar pra apostila
         </Link>
         <p className="mt-4 font-data text-[11px] font-bold uppercase tracking-wide text-accent">
@@ -220,7 +220,7 @@ export function MinigameVF({
         >
           Jogar de novo
         </button>
-        <Link
+        <Link prefetch={false}
           href={areaHref}
           className="text-center text-[13.5px] font-semibold text-brand underline underline-offset-4"
         >

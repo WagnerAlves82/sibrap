@@ -110,7 +110,7 @@ export default async function MinhaAreaPage() {
             <h2 className="mb-3 font-display text-xl font-extrabold text-[#14213A]">Minhas apostilas</h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {minhasApostilas!.map((a) => (
-                <Link
+                <Link prefetch={false}
                   key={a.slug}
                   href={`/minha-area/apostilas/${a.slug}`}
                   className={`${cartao} block transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)]`}
@@ -131,7 +131,7 @@ export default async function MinhaAreaPage() {
         {minhasApostilas?.some(
           (a) => a.tem_redacao && (!a.data_prova || a.data_prova >= new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" }))
         ) && (
-          <Link
+          <Link prefetch={false}
             href="/minha-area/redacao"
             className="mt-6 flex flex-wrap items-center justify-between gap-3 border-l-[4px] border-accent bg-brand px-6 py-5 text-white"
           >
@@ -151,7 +151,7 @@ export default async function MinhaAreaPage() {
                 const pct = percentualDe(curso.id);
                 return (
                   <Reveal key={curso.id} delay={i * 80}>
-                    <Link
+                    <Link prefetch={false}
                       href={`/minha-area/cursos/${curso.slug}`}
                       className="block overflow-hidden rounded-xl border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)]"
                     >
@@ -196,7 +196,7 @@ export default async function MinhaAreaPage() {
                 O seu progresso fica salvo. A apostila em PDF e as vídeo-aulas chegam em
                 breve por e-mail.
               </p>
-              <Link href="/minha-area/simulado" className={`mt-4 ${botao}`}>
+              <Link prefetch={false} href="/minha-area/simulado" className={`mt-4 ${botao}`}>
                 Abrir banco de questões
               </Link>
             </div>
@@ -208,7 +208,7 @@ export default async function MinhaAreaPage() {
                 Lógico, no estilo da banca Cesgranrio. É de graça e só pode ser feito uma
                 vez.
               </p>
-              <Link href="/minha-area/simulado-gratis" className={`mt-4 ${botao}`}>
+              <Link prefetch={false} href="/minha-area/simulado-gratis" className={`mt-4 ${botao}`}>
                 Começar amostra grátis
               </Link>
             </div>

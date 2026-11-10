@@ -166,7 +166,7 @@ export default async function MissoesPage({
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
       <CabecalhoSite logado />
       <main className="mx-auto w-full max-w-[820px] flex-1 px-4 py-10 sm:px-6">
-        <Link
+        <Link prefetch={false}
           href={`/minha-area/apostilas/${slug}`}
           className="text-[13px] font-semibold text-brand underline underline-offset-4"
         >

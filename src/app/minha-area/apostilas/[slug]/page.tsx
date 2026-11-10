@@ -101,7 +101,7 @@ export default async function ApostilaAreaPage({
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
       <CabecalhoSite logado={!!user} next={`/minha-area/apostilas/${apostila.slug}`} />
       <main className="mx-auto w-full max-w-[860px] flex-1 px-4 py-10 sm:px-6">
-        <Link href="/minha-area" className="text-[13px] font-semibold text-brand underline underline-offset-4">
+        <Link prefetch={false} href="/minha-area" className="text-[13px] font-semibold text-brand underline underline-offset-4">
           ← Minha área
         </Link>
 
@@ -150,7 +150,7 @@ export default async function ApostilaAreaPage({
                     Baixar apostila (PDF) <span aria-hidden>↓</span>
                   </a>
                   {(capitulosOnline ?? 0) > 0 && (
-                    <Link
+                    <Link prefetch={false}
                       href={`/minha-area/apostilas/${apostila.slug}/ler`}
                       className="inline-flex items-center gap-2 rounded-lg bg-accent-2 px-6 py-3.5 text-[15px] font-bold text-white transition-colors hover:brightness-110"
                     >
@@ -158,7 +158,7 @@ export default async function ApostilaAreaPage({
                     </Link>
                   )}
                   {temSimulado && (
-                    <Link
+                    <Link prefetch={false}
                       href={`/minha-area/apostilas/${apostila.slug}/simulado`}
                       className="inline-flex items-center gap-2 rounded-lg bg-brand px-6 py-3.5 text-[15px] font-bold text-white transition-colors hover:brightness-125"
                     >
@@ -166,7 +166,7 @@ export default async function ApostilaAreaPage({
                     </Link>
                   )}
                   {(temSimulado || (capitulosOnline ?? 0) > 0) && (
-                    <Link
+                    <Link prefetch={false}
                       href={`/minha-area/apostilas/${apostila.slug}/cronograma`}
                       className="inline-flex items-center gap-2 rounded-lg border-[1.5px] border-brand px-6 py-3.5 text-[15px] font-bold text-brand transition-colors hover:bg-brand/5"
                     >
@@ -174,7 +174,7 @@ export default async function ApostilaAreaPage({
                     </Link>
                   )}
                   {temSimulado && (
-                    <Link
+                    <Link prefetch={false}
                       href={`/minha-area/apostilas/${apostila.slug}/missoes`}
                       className="inline-flex items-center gap-2 rounded-lg border-[1.5px] border-accent-2 px-6 py-3.5 text-[15px] font-bold text-accent-2 transition-colors hover:bg-accent-2/5"
                     >
@@ -182,7 +182,7 @@ export default async function ApostilaAreaPage({
                     </Link>
                   )}
                   {temSimulado && (
-                    <Link
+                    <Link prefetch={false}
                       href={`/minha-area/apostilas/${apostila.slug}/minigame`}
                       className="inline-flex items-center gap-2 rounded-lg border-[1.5px] border-[#D7DEE6] px-6 py-3.5 text-[15px] font-bold text-[#33465E] transition-colors hover:bg-[#F6F8FB]"
                     >

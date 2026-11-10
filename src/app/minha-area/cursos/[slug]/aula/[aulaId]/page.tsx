@@ -105,7 +105,7 @@ export default async function AulaPage({
               {aula.modulo} · Aula {indice + 1} de {lista.length}
             </p>
             {anterior && (
-              <Link href={aulaHref(anterior.id)} className="text-[14px] font-semibold text-brand underline underline-offset-4">
+              <Link prefetch={false} href={aulaHref(anterior.id)} className="text-[14px] font-semibold text-brand underline underline-offset-4">
                 ← Aula anterior
               </Link>
             )}
@@ -217,7 +217,7 @@ export default async function AulaPage({
                     return (
                       <li key={a.id} className={`border-t border-[#F0F4F8] ${atual ? "bg-[#FBF5E4]" : ""}`}>
                         {liberada && !atual ? (
-                          <Link href={aulaHref(a.id)} className="flex items-center gap-2.5 px-4 py-2.5 text-[#14213A] hover:bg-[#F6F9FC]">
+                          <Link prefetch={false} href={aulaHref(a.id)} className="flex items-center gap-2.5 px-4 py-2.5 text-[#14213A] hover:bg-[#F6F9FC]">
                             {linha}
                           </Link>
                         ) : (
@@ -231,7 +231,7 @@ export default async function AulaPage({
                 </ul>
               </div>
             ))}
-            <Link href={cursoHref} className="block border-t border-[#E7EDF3] px-4 py-3 text-[15px] font-bold text-brand">
+            <Link prefetch={false} href={cursoHref} className="block border-t border-[#E7EDF3] px-4 py-3 text-[15px] font-bold text-brand">
               ← Voltar ao painel do curso
             </Link>
           </div>

@@ -146,7 +146,7 @@ export function ResultadoRedacao({
                 Reescrever com as dicas
               </button>
             </form>
-            <Link href="/minha-area/redacao" className="border border-brand px-5 py-2.5 text-[14.5px] font-bold text-brand">
+            <Link prefetch={false} href="/minha-area/redacao" className="border border-brand px-5 py-2.5 text-[14.5px] font-bold text-brand">
               Nova redação
             </Link>
           </div>

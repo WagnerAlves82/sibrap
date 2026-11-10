@@ -43,7 +43,7 @@ export default async function RedacaoPage({ searchParams }: { searchParams: Prom
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
       <CabecalhoSite logado />
       <main className="mx-auto w-full max-w-[900px] flex-1 px-4 py-10 sm:px-6">
-        <Link href="/minha-area" className="text-[13.5px] font-bold text-brand">← Minha área</Link>
+        <Link prefetch={false} href="/minha-area" className="text-[13.5px] font-bold text-brand">← Minha área</Link>
         <h1 className="mt-2 font-display text-3xl font-extrabold text-[#14213A] sm:text-4xl">Treino de Redação</h1>
         <p className="mt-2 max-w-[640px] text-[15px] text-[#33465E]">
           Escreva, receba dicas enquanto desenvolve o texto e veja sua nota pela grade da banca.
@@ -71,7 +71,7 @@ export default async function RedacaoPage({ searchParams }: { searchParams: Prom
             <p className="mt-2 text-[14.5px] text-[#33465E]">
               Com a apostila da PM-SP, PM-SC ou SEAD-AP você ganha 6 correções com nota da banca.
             </p>
-            <Link href="/apostilas" className="mt-4 inline-block bg-accent px-5 py-2.5 text-[14.5px] font-bold text-accent-ink">
+            <Link prefetch={false} href="/apostilas" className="mt-4 inline-block bg-accent px-5 py-2.5 text-[14.5px] font-bold text-accent-ink">
               Ver apostilas
             </Link>
           </section>
@@ -114,7 +114,7 @@ export default async function RedacaoPage({ searchParams }: { searchParams: Prom
               <ul className="divide-y divide-[#D7DEE6] border border-[#D7DEE6] bg-white">
                 {redacoes.map((r) => (
                   <li key={r.id} className="flex items-center gap-4 px-5 py-4">
-                    <Link href={`/minha-area/redacao/${r.id}`} className="min-w-0 flex-1">
+                    <Link prefetch={false} href={`/minha-area/redacao/${r.id}`} className="min-w-0 flex-1">
                       <p className="truncate font-bold text-[#14213A]">{r.tema}</p>
                       <p className="text-[12.5px] text-[#516278]">
                         {r.modo === "simulado" ? "Simulado" : "Treino"} ·{" "}
