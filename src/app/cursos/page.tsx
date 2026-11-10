@@ -5,7 +5,7 @@ import Link from "next/link";
 import { criarClienteSupabasePublico } from "@/lib/supabase-publico";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { Reveal } from "@/components/reveal";
-import { FOTO_CURSO_PADRAO, FOTOS_POR_CURSO } from "@/lib/cursos-fotos";
+import { VitrineCursos, type CursoVitrine } from "@/components/vitrine-cursos";
 
 // Página igual para todos os visitantes: a Vercel guarda em cache e refaz no máximo a cada 1 h
 // (gasta CPU só nessa hora, não a cada visita). Nada de cookies aqui — ver src/lib/supabase-publico.ts.
@@ -36,10 +36,12 @@ export const metadata: Metadata = {
 export default async function CursosPage() {
   const supabase = criarClienteSupabasePublico();
 
-  const [{ data: cursos }, { data: pagos }] = await Promise.all([
-    supabase.from("cursos").select("slug, nome, subtitulo, descricao, carga_horaria_horas").order("criado_em"),
+  const [{ data: cursos }, { data: pagos }, { data: avaliacoes }] = await Promise.all([
+    supabase.from("cursos").select("id, slug, nome, descricao, carga_horaria_horas, categoria").eq("ativo", true).order("criado_em"),
     // cursos pagos têm produto ativo 'curso-<slug>'; os demais são gratuitos (só o certificado é pago)
     supabase.from("produtos").select("slug, preco_centavos").like("slug", "curso-%").eq("ativo", true),
+    // média real da pesquisa de satisfação (só cursos com 3+ respostas)
+    supabase.rpc("avaliacoes_cursos"),
   ]);
   const precoDoCurso = new Map(
     (pagos ?? []).map((p) => [
@@ -47,6 +49,16 @@ export default async function CursosPage() {
       `${(p.preco_centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} ou ${textoParcela(p.preco_centavos)}`,
     ])
   );
+  const notaDoCurso = new Map((avaliacoes ?? []).map((a) => [a.curso_id, { media: Number(a.media), total: Number(a.total) }]));
+  const vitrine: CursoVitrine[] = (cursos ?? []).map((c) => ({
+    slug: c.slug,
+    nome: c.nome,
+    descricao: c.descricao,
+    carga_horaria_horas: c.carga_horaria_horas,
+    categoria: c.categoria,
+    preco: precoDoCurso.get(c.slug) ?? null,
+    avaliacao: notaDoCurso.get(c.id) ?? null,
+  }));
 
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
@@ -66,60 +78,24 @@ export default async function CursosPage() {
           </p>
         </Reveal>
 
-        <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
-          {cursos?.map((curso, i) => (
-            <Reveal key={curso.slug} delay={i * 100}>
-              <Link
-                href={`/cursos/${curso.slug}`}
-                className="group flex h-full flex-col overflow-hidden border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)]"
-              >
-                {/* 4:3: os banners com título (celular, inglês) aparecem inteiros; as fotos perdem só um pouco das laterais */}
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-2">
-                  <Image
-                    src={FOTOS_POR_CURSO[curso.slug] ?? FOTO_CURSO_PADRAO}
-                    alt=""
-                    fill
-                    sizes="(min-width: 768px) 560px, 100vw"
-                    className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
-                  />
-                </div>
-                <div className="flex flex-1 flex-col p-7">
-                  <span className="font-data text-xs font-semibold text-accent-2">
-                    {curso.carga_horaria_horas}h ·{" "}
-                    {precoDoCurso.get(curso.slug) ? (
-                      <span className="text-[#14213A]">{precoDoCurso.get(curso.slug)}, com certificado</span>
-                    ) : (
-                      "Grátis"
-                    )}
-                  </span>
-                  <h2 className="mt-2 font-display text-2xl font-extrabold text-[#14213A]">
-                    {curso.nome}
-                  </h2>
-                  <p className="mt-3 line-clamp-3 flex-1 text-[15px] leading-relaxed text-[#516278]">
-                    {curso.descricao}
-                  </p>
-                  <span
-                    aria-hidden
-                    className="mt-6 flex justify-end text-lg text-accent transition-transform group-hover:translate-x-1"
-                  >
-                    →
-                  </span>
-                </div>
-              </Link>
-            </Reveal>
-          ))}
-          {cursos?.length === 0 && (
-            <p className="text-[#516278]">Novos cursos em breve.</p>
-          )}
-        </div>
+        {vitrine.length ? <VitrineCursos cursos={vitrine} /> : <p className="mt-10 text-[#516278]">Novos cursos em breve.</p>}
 
         {(cursos?.length ?? 0) >= 2 && (
           <Reveal delay={200}>
             <Link
               href="/cursos/combo"
-              className="group mt-6 flex flex-col items-start justify-between gap-4 border-2 border-accent bg-white p-7 transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)] sm:flex-row sm:items-center"
+              className="group mt-12 grid overflow-hidden border-2 border-accent bg-white transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)] md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.4fr)_auto] md:items-center"
             >
-              <div>
+              <div className="relative aspect-[3/2] w-full overflow-hidden">
+                <Image
+                  src="/combo-informatica-atendimento.webp"
+                  alt="Combo de 2 cursos: Informática Básica com IA e Atendimento ao Cliente"
+                  fill
+                  sizes="(min-width: 768px) 360px, 100vw"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              </div>
+              <div className="px-6 pt-6 md:py-6">
                 <span className="font-data text-xs font-semibold uppercase tracking-wide text-accent">
                   Combo · para o currículo do jovem aprendiz
                 </span>
@@ -130,8 +106,8 @@ export default async function CursosPage() {
                   Informática Básica com IA + Atendimento ao Cliente, em vez de R$ 29,90 cada um.
                 </p>
               </div>
-              <span className="inline-flex shrink-0 items-center gap-2 bg-accent px-6 py-3 text-[14.5px] font-bold text-accent-ink transition-transform group-hover:translate-x-1">
-                Ver o combo <span aria-hidden>→</span>
+              <span className="m-6 inline-flex w-fit shrink-0 items-center bg-accent px-6 py-3 text-[14.5px] font-bold text-accent-ink transition-[filter] group-hover:brightness-95">
+                Conheça o combo
               </span>
             </Link>
           </Reveal>
