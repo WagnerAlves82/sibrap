@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import crypto from "node:crypto";
 import QRCode from "qrcode";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { AVISO_CURSO_LIVRE, EMISSOR } from "@/lib/emissor";
@@ -27,6 +28,22 @@ const MAPA_BRASIL_PATH =
 // Tudo dimensionado em cqw (largura do próprio certificado): o mesmo layout
 // vale na tela do celular e na folha A4 paisagem impressa.
 const cq = (n: number) => `${n}cqw`;
+
+// Assinatura eletrônica simples (Lei 14.063/2020, art. 4º, I) do diretor do SIBRAP: o código de autenticação
+// é um resumo SHA-256 dos dados do certificado, então qualquer alteração no documento muda o código.
+const ASSINANTE = "Wagner A. de S. Jr";
+
+function codigoAutenticacao(partes: (string | number | null | undefined)[]) {
+  const h = crypto.createHash("sha256").update(partes.map((p) => String(p ?? "")).join("|")).digest("hex").toUpperCase();
+  return h.slice(0, 16).match(/.{4}/g)!.join("-");
+}
+
+function formatarDataHora(iso: string) {
+  const d = new Date(iso);
+  const data = d.toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" });
+  const hora = d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" });
+  return `${data} às ${hora}`;
+}
 
 function formatarData(iso: string) {
   return new Date(iso).toLocaleDateString("pt-BR", {
@@ -64,6 +81,7 @@ export default async function CertificadoPage({
     : { data: [] };
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
+  const autenticacao = codigoAutenticacao([codigo.toUpperCase(), cert.nome_completo, cert.curso_nome, cert.carga_horaria_horas, cert.emitido_em, ASSINANTE]);
   const urlValidacao = `${siteUrl}/validar/${codigo.toUpperCase()}`;
   const qrSvg = await QRCode.toString(urlValidacao, {
     type: "svg",
@@ -224,13 +242,28 @@ export default async function CertificadoPage({
                 <SeloAbed altura={cq(6.8)} fonteLegenda={cq(0.95)} />
 
                 <div style={{ textAlign: "center", fontSize: cq(1.05), color: "#516278" }}>
-                  <div style={{ fontFamily: "var(--font-signature), cursive", fontSize: cq(2.9), color: "#000000", lineHeight: 1 }}>
-                    Wagner Alves de S. Jr
-                  </div>
                   <div style={{ width: cq(30), borderTop: `${cq(0.12)} solid ${TINTA}`, paddingTop: cq(0.5), marginTop: cq(0.3) }}>
-                    <div style={{ fontWeight: 700, color: NAVY }}>Wagner Alves de S. Jr</div>
-                    <div>Professor habilitado · Diretor do {EMISSOR.nomeCurto}</div>
-                    <div>CNPJ {EMISSOR.cnpj}</div>
+                    <div style={{ fontWeight: 700, color: NAVY }}>{ASSINANTE}</div>
+                    <div>Professor habilitado</div>
+                    <div>Diretor do {EMISSOR.nomeCurto} · CNPJ {EMISSOR.cnpj}</div>
+                  </div>
+                  <div
+                    style={{
+                      marginTop: cq(0.7),
+                      border: `${cq(0.1)} solid ${OURO}`,
+                      padding: `${cq(0.4)} ${cq(0.7)}`,
+                      fontSize: cq(0.92),
+                      lineHeight: 1.45,
+                      textAlign: "left",
+                      color: "#516278",
+                    }}
+                  >
+                    <div style={{ fontWeight: 700, color: NAVY }}>✓ Assinado eletronicamente</div>
+                    <div>por {ASSINANTE} em {formatarDataHora(cert.emitido_em)}</div>
+                    <div>
+                      Autenticação{" "}
+                      <span style={{ fontFamily: "var(--font-plex-mono), monospace", fontWeight: 600, color: TINTA }}>{autenticacao}</span>
+                    </div>
                   </div>
                 </div>
               </div>
