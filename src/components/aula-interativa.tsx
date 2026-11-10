@@ -919,6 +919,23 @@ function Fluxo({ b, id }: { b: Extract<Bloco, { tipo: "fluxo" }>; id: string }) 
   );
 }
 
+// Lê número no jeito brasileiro: "R$ 2.650,00", "2650", "8.910,10", "5%". Devolve null se não for número.
+function lerNumero(s: string): number | null {
+  let x = s.replace(/r\$|%|\s/gi, "");
+  if (x.includes(",")) x = x.replace(/\./g, "").replace(",", ".");
+  else if (/^-?\d{1,3}(\.\d{3})+$/.test(x)) x = x.replace(/\./g, "");
+  if (!/^-?\d+(\.\d+)?$/.test(x)) return null;
+  return Number(x);
+}
+
+// Respostas numéricas valem em qualquer formato ("2.650", "2650,00", "R$ 2.650"); as demais, sem diferenciar maiúsculas.
+function respostaConfere(valor: string, correto: string): boolean {
+  const a = lerNumero(valor);
+  const b = lerNumero(correto);
+  if (a !== null && b !== null) return Math.abs(a - b) < 0.005;
+  return valor.trim().toLowerCase() === correto.trim().toLowerCase();
+}
+
 function Simulador({ b, id }: { b: Extract<Bloco, { tipo: "simulador" }>; id: string }) {
   const concluir = useConcluir(id);
   const [valores, setValores] = useState<string[]>(() => b.campos.map(() => ""));
@@ -929,7 +946,7 @@ function Simulador({ b, id }: { b: Extract<Bloco, { tipo: "simulador" }>; id: st
       const v = valores[i].trim();
       if (!v) return setErro(`Preencha o campo "${c.rotulo}".`);
       if (c.tipo === "opcao" && c.correto && v !== c.correto) return setErro(`Confira "${c.rotulo}": releia o cenário com atenção.`);
-      if (c.tipo === "texto" && c.correto && v.toLowerCase() !== c.correto.toLowerCase()) return setErro(`Confira "${c.rotulo}": o dado não bate com o cenário.`);
+      if (c.tipo === "texto" && c.correto && !respostaConfere(v, c.correto)) return setErro(`Confira "${c.rotulo}": o dado não bate com o cenário.`);
     }
     setErro(null);
     setOk(true);
