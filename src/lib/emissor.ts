@@ -4,6 +4,10 @@ export const EMISSOR = {
   cnpj: "34.340.453/0001-89",
 } as const;
 
+// Quem assina eletronicamente os certificados pela instituição (Lei 14.063/2020).
+export const ASSINATURA_CERTIFICADO = "Wagner A. de S. Jr";
+export const ASSINATURA_CARGO = "Professor Habilitado";
+
 export const AVISO_CURSO_LIVRE =
   "Curso livre de qualificação profissional, amparado pelo art. 42 da Lei nº 9.394/1996 (Lei de Diretrizes e Bases da Educação Nacional), que garante seu valor como capacitação profissional em todo o território nacional.";
 

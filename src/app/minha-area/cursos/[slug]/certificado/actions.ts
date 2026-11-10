@@ -132,6 +132,9 @@ export async function emitirCertificadoAction(
   if (!cpfValido(cpf)) {
     return { erro: "Digite um CPF válido." };
   }
+  if (formData.get("aceite") !== "on") {
+    return { erro: "Marque a caixa de assinatura eletrônica para emitir o certificado." };
+  }
 
   const impresso = String(formData.get("formato") ?? "") === "impresso";
   let endereco: {

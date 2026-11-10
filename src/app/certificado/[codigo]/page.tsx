@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import crypto from "node:crypto";
 import QRCode from "qrcode";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
-import { AVISO_CURSO_LIVRE, EMISSOR } from "@/lib/emissor";
+import { ASSINATURA_CARGO, ASSINATURA_CERTIFICADO, AVISO_CURSO_LIVRE, EMISSOR } from "@/lib/emissor";
 import { SeloAbed } from "@/components/selo-abed";
 import { BotaoImprimir } from "./BotaoImprimir";
 
@@ -29,20 +28,11 @@ const MAPA_BRASIL_PATH =
 // vale na tela do celular e na folha A4 paisagem impressa.
 const cq = (n: number) => `${n}cqw`;
 
-// Assinatura eletrônica simples (Lei 14.063/2020, art. 4º, I) do diretor do SIBRAP: o código de autenticação
-// é um resumo SHA-256 dos dados do certificado, então qualquer alteração no documento muda o código.
-const ASSINANTE = "Wagner A. de S. Jr";
-
-function codigoAutenticacao(partes: (string | number | null | undefined)[]) {
-  const h = crypto.createHash("sha256").update(partes.map((p) => String(p ?? "")).join("|")).digest("hex").toUpperCase();
-  return h.slice(0, 16).match(/.{4}/g)!.join("-");
-}
-
 function formatarDataHora(iso: string) {
   const d = new Date(iso);
   const data = d.toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" });
   const hora = d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" });
-  return `${data} às ${hora}`;
+  return `${data} ${hora}`;
 }
 
 function formatarData(iso: string) {
@@ -81,7 +71,6 @@ export default async function CertificadoPage({
     : { data: [] };
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
-  const autenticacao = codigoAutenticacao([codigo.toUpperCase(), cert.nome_completo, cert.curso_nome, cert.carga_horaria_horas, cert.emitido_em, ASSINANTE]);
   const urlValidacao = `${siteUrl}/validar/${codigo.toUpperCase()}`;
   const qrSvg = await QRCode.toString(urlValidacao, {
     type: "svg",
@@ -241,29 +230,30 @@ export default async function CertificadoPage({
 
                 <SeloAbed altura={cq(6.8)} fonteLegenda={cq(0.95)} />
 
-                <div style={{ textAlign: "center", fontSize: cq(1.05), color: "#516278" }}>
-                  <div style={{ width: cq(30), borderTop: `${cq(0.12)} solid ${TINTA}`, paddingTop: cq(0.5), marginTop: cq(0.3) }}>
-                    <div style={{ fontWeight: 700, color: NAVY }}>{ASSINANTE}</div>
-                    <div>Professor habilitado</div>
-                    <div>Diretor do {EMISSOR.nomeCurto} · CNPJ {EMISSOR.cnpj}</div>
+                <div
+                  style={{
+                    width: cq(38),
+                    border: `${cq(0.1)} solid #D5DEEA`,
+                    background: "#F7F9FC",
+                    padding: `${cq(0.8)} ${cq(1.1)}`,
+                    fontSize: cq(0.86),
+                    lineHeight: 1.5,
+                    color: "#2B3A52",
+                    boxSizing: "border-box",
+                  }}
+                >
+                  <div style={{ fontWeight: 800, color: NAVY, fontSize: cq(1.0) }}>Documento assinado eletronicamente</div>
+                  <div>
+                    <span style={{ color: OURO, fontWeight: 900 }}>✓</span> <strong>{cert.nome_completo}</strong>
+                    {cert.cpf_mascarado ? ` · CPF ${cert.cpf_mascarado}` : ""} · {formatarDataHora(cert.assinado_aluno_em)}
                   </div>
-                  <div
-                    style={{
-                      marginTop: cq(0.7),
-                      border: `${cq(0.1)} solid ${OURO}`,
-                      padding: `${cq(0.4)} ${cq(0.7)}`,
-                      fontSize: cq(0.92),
-                      lineHeight: 1.45,
-                      textAlign: "left",
-                      color: "#516278",
-                    }}
-                  >
-                    <div style={{ fontWeight: 700, color: NAVY }}>✓ Assinado eletronicamente</div>
-                    <div>por {ASSINANTE} em {formatarDataHora(cert.emitido_em)}</div>
-                    <div>
-                      Autenticação{" "}
-                      <span style={{ fontFamily: "var(--font-plex-mono), monospace", fontWeight: 600, color: TINTA }}>{autenticacao}</span>
-                    </div>
+                  <div>
+                    <span style={{ color: OURO, fontWeight: 900 }}>✓</span> <strong>{ASSINATURA_CERTIFICADO}</strong> · {ASSINATURA_CARGO} ·{" "}
+                    {formatarDataHora(cert.assinado_instituicao_em)}
+                  </div>
+                  <div style={{ color: "#6B7A8F", fontSize: cq(0.8) }}>
+                    CNPJ {EMISSOR.cnpj}
+                    {cert.hash_conferencia ? ` · Conferência ${cert.hash_conferencia.slice(0, 12).toUpperCase()}` : ""} · Lei 14.063/2020
                   </div>
                 </div>
               </div>

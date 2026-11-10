@@ -587,6 +587,9 @@ export type Database = {
       }
       certificados: {
         Row: {
+          assinado_aluno_em: string
+          assinado_instituicao_em: string
+          hash_conferencia: string | null
           carga_horaria_horas: number
           codigo: string
           cpf: string | null
@@ -598,6 +601,9 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          assinado_aluno_em?: string
+          assinado_instituicao_em?: string
+          hash_conferencia?: string | null
           carga_horaria_horas: number
           codigo: string
           cpf?: string | null
@@ -609,6 +615,9 @@ export type Database = {
           user_id: string
         }
         Update: {
+          assinado_aluno_em?: string
+          assinado_instituicao_em?: string
+          hash_conferencia?: string | null
           carga_horaria_horas?: number
           codigo?: string
           cpf?: string | null
@@ -2203,6 +2212,9 @@ export type Database = {
       validar_certificado: {
         Args: { p_codigo: string }
         Returns: {
+          assinado_aluno_em: string
+          assinado_instituicao_em: string
+          hash_conferencia: string | null
           carga_horaria_horas: number
           cpf_mascarado: string
           curso_nome: string

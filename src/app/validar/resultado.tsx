@@ -1,5 +1,5 @@
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
-import { EMISSOR } from "@/lib/emissor";
+import { ASSINATURA_CARGO, ASSINATURA_CERTIFICADO, EMISSOR } from "@/lib/emissor";
 
 export async function ResultadoValidacao({ codigo }: { codigo: string }) {
   const supabase = await criarClienteSupabaseServer();
@@ -42,9 +42,17 @@ export async function ResultadoValidacao({ codigo }: { codigo: string }) {
         <Campo rotulo="Emitido em" valor={data_emissao} />
         <Campo rotulo="Código" valor={codigo.toUpperCase()} mono />
         <Campo rotulo="Emitido por" valor={`${EMISSOR.nome} · CNPJ ${EMISSOR.cnpj}`} />
+        <Campo rotulo="Assinado pelo aluno" valor={`${cert.nome_completo} · ${dataHora(cert.assinado_aluno_em)}`} />
+        <Campo rotulo="Assinado pela instituição" valor={`${ASSINATURA_CERTIFICADO} · ${ASSINATURA_CARGO} · ${dataHora(cert.assinado_instituicao_em)}`} />
+        {cert.hash_conferencia && <Campo rotulo="Código de conferência (SHA-256)" valor={cert.hash_conferencia} mono destaque />}
       </dl>
     </div>
   );
+}
+
+function dataHora(iso: string) {
+  const d = new Date(iso);
+  return `${d.toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" })} às ${d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" })}`;
 }
 
 function Campo({

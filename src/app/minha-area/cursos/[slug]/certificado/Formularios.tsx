@@ -263,6 +263,13 @@ export function FormEmitir({
         Usamos o CPF só para identificação no certificado — ele aparece parcialmente oculto na versão pública.
         Confira com atenção: depois de emitido, o certificado não pode ser alterado.
       </p>
+      <label className="flex items-start gap-3 border border-[#D7DEE6] bg-[#F7F9FC] p-3 text-[13.5px] leading-snug text-[#14213A]">
+        <input type="checkbox" name="aceite" required className="mt-0.5 h-5 w-5 shrink-0 accent-[#0B2A4A]" />
+        <span>
+          Declaro que meus dados estão corretos e <strong>assino eletronicamente</strong> este certificado (assinatura eletrônica simples,
+          Lei 14.063/2020). A data e a hora ficam registradas e podem ser conferidas na validação.
+        </span>
+      </label>
       <button type="submit" disabled={pending} className={BOTAO}>
         {pending ? "Emitindo..." : "Emitir meu certificado"}
       </button>
