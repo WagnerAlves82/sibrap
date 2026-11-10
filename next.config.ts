@@ -29,6 +29,14 @@ const nextConfig: NextConfig = {
     return [
       { source: "/blog", destination: "/noticias", permanent: true },
       { source: "/blog/:slug", destination: "/noticias/:slug", permanent: true },
+      // O site não usa mais o otimizador da Vercel, mas links antigos /_next/image?url=/arquivo (Google,
+      // AdSense, páginas em cache) ainda gastavam a cota de transformações: vão direto para o arquivo.
+      {
+        source: "/_next/image",
+        has: [{ type: "query", key: "url", value: "/(?<arquivo>[^/].*)" }],
+        destination: "/:arquivo",
+        permanent: true,
+      },
     ];
   },
   async headers() {
