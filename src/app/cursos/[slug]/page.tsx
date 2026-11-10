@@ -60,6 +60,12 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     largura: 997,
     altura: 746,
   },
+  "tbo-treinamento-basico-operacional": {
+    src: "/cursos/tbo/hero.webp",
+    alt: "Líder de produção com capacete e colete conversando com três operadores uniformizados ao lado de uma máquina com proteções amarelas",
+    largura: 1376,
+    altura: 768,
+  },
   "excel-basico-ao-intermediario": {
     src: "/cursos/excel/hero.webp",
     alt: "Dois colegas de trabalho analisando uma planilha com gráficos e tabela dinâmica no monitor do escritório",
