@@ -42,3 +42,6 @@ next-env.d.ts
 
 # rascunhos de producao de apostilas (PDFs e fontes; nao vao pro deploy)
 /producao-apostilas/
+
+# fotos brutas para as aulas (as usadas vão para public/cursos/)
+/assets/
