@@ -48,6 +48,7 @@ export default async function Home() {
     .sort((a, b) => a.dias! - b.dias!)[0];
 
   // menor preço da vitrine (a primeira da lista é a mais nova, não a mais barata)
+  const pmsp = apostilas.find((a) => a.slug === "pmsp-soldado");
   const preco = apostilas.length ? Math.min(...apostilas.map((a) => a.preco_centavos)) : 2990;
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
@@ -119,7 +120,11 @@ export default async function Home() {
 
       <MenuAncora />
 
-      <CarrosselHome precoTexto={`A partir de ${formatarPreco(preco)}`} blackFriday={BLACK_FRIDAY} />
+      <CarrosselHome
+        precoTexto={`A partir de ${formatarPreco(preco)}`}
+        precoPmsp={pmsp ? formatarPreco(pmsp.preco_centavos) : undefined}
+        blackFriday={BLACK_FRIDAY}
+      />
 
       {/* Vitrine de apostilas */}
       <section id="apostilas" className="scroll-mt-14 bg-[#F6F8FB] py-14 sm:py-16">

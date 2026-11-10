@@ -1,8 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import type { ApostilaVitrine } from "@/lib/apostilas";
 import { CardApostila } from "@/components/card-apostila";
+import { CardDestaqueVitrine } from "@/components/destaque-vitrine";
+import { DESTAQUES_VITRINE, POSICOES_DESTAQUE } from "@/lib/destaques-vitrine";
 import { casaComTermos, termosDaBusca, textoDaApostila } from "@/lib/busca";
 
 // Vitrine com filtros (categoria, estado e busca). A lista é pequena e
@@ -38,6 +40,21 @@ export function VitrineApostilas({
     );
     return limite ? lista.slice(0, limite) : lista;
   }, [apostilas, categoria, uf, busca, limite]);
+
+  // Destaques de linha inteira (só sem filtro): cada um entra na próxima posição livre.
+  const semFiltro = categoria === "Todas" && !uf && !busca.trim();
+  const destaques = useMemo(() => {
+    if (!semFiltro) return new Map<number, { d: (typeof DESTAQUES_VITRINE)[number]; a: ApostilaVitrine }>();
+    const disponiveis = DESTAQUES_VITRINE.flatMap((d) => {
+      const a = apostilas.find((x) => x.slug === d.slug);
+      return a ? [{ d, a }] : [];
+    });
+    return new Map(
+      POSICOES_DESTAQUE.filter((pos) => pos < filtradas.length)
+        .slice(0, disponiveis.length)
+        .map((pos, i) => [pos, disponiveis[i]])
+    );
+  }, [semFiltro, apostilas, filtradas.length]);
 
   const chip = (ativo: boolean) =>
     `rounded-full border px-3.5 py-1.5 text-[13px] font-semibold transition-colors ${
@@ -95,9 +112,15 @@ export function VitrineApostilas({
         </p>
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
-          {filtradas.map((a) => (
-            <CardApostila key={a.id} apostila={a} />
-          ))}
+          {filtradas.map((a, i) => {
+            const extra = destaques.get(i);
+            return (
+              <Fragment key={a.id}>
+                {extra && <CardDestaqueVitrine destaque={extra.d} apostila={extra.a} />}
+                <CardApostila apostila={a} />
+              </Fragment>
+            );
+          })}
         </div>
       )}
     </div>

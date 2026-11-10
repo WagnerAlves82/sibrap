@@ -4,17 +4,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
-type SlideHero = { id: "blackfriday" | "redacao" | "metodo" | "apostila" | "simulado"; rotulo: string };
+type SlideHero = { id: "blackfriday" | "pmspRedacao" | "redacao" | "metodo" | "apostila" | "simulado"; rotulo: string };
 
 // Durante a Black Friday: Black Friday, Redação e Simulado (Método e Apostilas saem até o fim da promoção).
 // Depois: Método, Redação, Apostilas e Simulado.
 const SLIDES_BLACK_FRIDAY: SlideHero[] = [
   { id: "blackfriday", rotulo: "Black Friday" },
+  { id: "pmspRedacao", rotulo: "PMSP com Treino de Redação" },
   { id: "redacao", rotulo: "Treino de Redação" },
   { id: "simulado", rotulo: "Simulados on-line" },
 ];
 const SLIDES_NORMAIS: SlideHero[] = [
   { id: "metodo", rotulo: "Método SIBRAP" },
+  { id: "pmspRedacao", rotulo: "PMSP com Treino de Redação" },
   { id: "redacao", rotulo: "Treino de Redação" },
   { id: "apostila", rotulo: "Apostilas" },
   { id: "simulado", rotulo: "Simulados on-line" },
@@ -25,6 +27,7 @@ const FUNDO = "linear-gradient(135deg, #2e3192 0%, #1f5fb0 55%, #0b7cc4 100%)";
 const FUNDOS: Partial<Record<SlideHero["id"], string>> = {
   blackfriday: "radial-gradient(ellipse at 75% 40%, #2a2208 0%, #0d0d0d 55%, #000 100%)",
   redacao: "linear-gradient(135deg, #071b33 0%, #0b2a4a 60%, #0e4a6b 100%)",
+  pmspRedacao: "linear-gradient(120deg, #3d0609 0%, #8a0f16 50%, #c4161f 100%)",
 };
 
 // Leitura do navegador sem quebrar a hidratação: no servidor (e na
@@ -40,8 +43,16 @@ function assinarMovimento(aviso: () => void) {
 // simulado on-line, só com imagens reais do produto (mockups das apostilas e
 // a tela do simulado). Todos os slides ocupam a mesma célula da grade: a
 // altura é a do maior.
-export function CarrosselHome({ precoTexto, blackFriday = false }: { precoTexto: string; blackFriday?: boolean }) {
-  const SLIDES = blackFriday ? SLIDES_BLACK_FRIDAY : SLIDES_NORMAIS;
+export function CarrosselHome({
+  precoTexto,
+  precoPmsp,
+  blackFriday = false,
+}: {
+  precoTexto: string;
+  precoPmsp?: string;
+  blackFriday?: boolean;
+}) {
+  const SLIDES = (blackFriday ? SLIDES_BLACK_FRIDAY : SLIDES_NORMAIS).filter((s) => s.id !== "pmspRedacao" || precoPmsp);
   const [atual, setAtual] = useState(0);
   const [pausado, setPausado] = useState(false);
   const reduzido = useSyncExternalStore(
@@ -84,7 +95,7 @@ export function CarrosselHome({ precoTexto, blackFriday = false }: { precoTexto:
     >
       <div className="grid">
         {SLIDES.map((s, i) => (
-          <Slide key={s.id} slide={s} ativo={i === atual} indice={i} total={total} precoTexto={precoTexto} />
+          <Slide key={s.id} slide={s} ativo={i === atual} indice={i} total={total} precoTexto={precoTexto} precoPmsp={precoPmsp} />
         ))}
       </div>
 
@@ -132,12 +143,14 @@ function Slide({
   indice,
   total,
   precoTexto,
+  precoPmsp,
 }: {
   slide: SlideHero;
   ativo: boolean;
   indice: number;
   total: number;
   precoTexto: string;
+  precoPmsp?: string;
 }) {
   return (
     <div
@@ -162,6 +175,7 @@ function Slide({
       />
       <div className="relative mx-auto grid w-full max-w-[1180px] items-center 2xl:max-w-[1480px] gap-6 px-6 pb-14 pt-8 md:grid-cols-[0.9fr_1.1fr] md:gap-8 md:py-12">
         {slide.id === "blackfriday" && <BlackFriday prioridade={indice === 0} />}
+        {slide.id === "pmspRedacao" && precoPmsp && <PmspRedacao preco={precoPmsp} />}
         {slide.id === "redacao" && <Redacao />}
         {slide.id === "metodo" && <Metodo prioridade={indice === 0} />}
         {slide.id === "apostila" && <Apostila precoTexto={precoTexto} />}
@@ -465,6 +479,56 @@ function Redacao() {
             <p className="border-l-[3px] border-[#C0392B] bg-white px-2 py-1"><b>Acentuação</b><br />comunitário</p>
             <p className="border-l-[3px] border-[#2F6DB5] bg-white px-2 py-1"><b>Coesão</b><br />nomeie a ideia retomada</p>
             <p className="mt-auto bg-[#0B2A4A] px-2 py-1.5 text-center font-bold text-white">Nota 31/40</p>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// Apostila da PMSP + Treino de Redação, nas cores da capa (vermelho PMESP).
+function PmspRedacao({ preco }: { preco: string }) {
+  const marca = (cor: string, borda: string) => ({ background: cor, borderBottom: `2px solid ${borda}` });
+  return (
+    <>
+      <div className="max-w-[620px]">
+        <Rotulo>PMSP · Vunesp · 2.000 vagas</Rotulo>
+        <Titulo>A apostila do Soldado PM que corrige a sua redação.</Titulo>
+        <p className="mt-3 text-[15px] text-[#F6D5D6] md:text-base">
+          A redação vale 40 pontos na prova. Treine com dicas enquanto escreve e receba a nota pela grade da Vunesp.
+        </p>
+        <Itens
+          itens={[
+            { t: "6 correções com nota", d: "Comentário por critério e introdução reescrita em nível de nota máxima", c: "até o dia da prova" },
+            { t: "Dicas enquanto você escreve", d: "Gramática, coesão e argumentação marcadas no texto, sem travar a escrita", c: "gramática e coesão" },
+            { t: "Apostila completa", d: "247 exercícios comentados e simulado com questões oficiais da PMSP", c: "247 exercícios" },
+          ]}
+        />
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          <BotaoPrincipal href="/apostilas/pmsp-soldado">Quero a apostila da PMSP</BotaoPrincipal>
+          <span className="font-data text-[15px] font-bold text-white">{preco}</span>
+        </div>
+      </div>
+      <div aria-hidden className="relative flex items-center justify-center justify-self-center">
+        <Image
+          src="/hero-mockup-pmsp.webp"
+          alt=""
+          width={526}
+          height={885}
+          sizes="(min-width: 1280px) 300px, (min-width: 1024px) 250px, (min-width: 768px) 200px, 150px"
+          className="relative z-10 h-auto w-[150px] -rotate-[3deg] drop-shadow-[0_18px_40px_rgba(0,0,0,0.55)] md:w-[200px] lg:w-[250px] xl:w-[300px]"
+        />
+        <div className="relative z-20 -ml-10 mt-24 w-[210px] bg-white text-[#14213A] shadow-[0_18px_50px_rgba(0,0,0,0.5)] md:-ml-12 md:w-[250px] lg:w-[290px]">
+          <p className="flex items-center justify-between bg-[#F1F4F8] px-3 py-1.5 font-data text-[10px] font-bold uppercase tracking-wide text-[#516278]">
+            <span>Treino de Redação</span>
+            <span className="bg-[#9E1219] px-1.5 py-0.5 text-white">Nota 31/40</span>
+          </p>
+          <p className="px-3 pt-2 font-serif text-[11.5px] leading-[1.8] lg:text-[12.5px]">
+            Com o crescimento das cidades, <span style={marca("#FBD9D9", "#C0392B")}>aumentou-se os índices</span> de violência.
+          </p>
+          <div className="flex flex-col gap-1 p-2.5 text-[10.5px] text-[#33465E] lg:text-[11px]">
+            <p className="border-l-[3px] border-[#C0392B] bg-[#F6F8FA] px-2 py-1"><b>Concordância:</b> aumentaram os índices</p>
+            <p className="border-l-[3px] border-[#0E7C6B] bg-[#F6F8FA] px-2 py-1"><b>Tema:</b> abordagem completa</p>
           </div>
         </div>
       </div>
