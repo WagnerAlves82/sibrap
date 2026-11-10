@@ -5,9 +5,9 @@ export function BotaoImprimir() {
     <button
       type="button"
       onClick={() => window.print()}
-      className="rounded-lg bg-accent px-5 py-2.5 text-[14px] font-bold text-accent-ink transition-colors hover:brightness-105"
+      className="border border-[#0B2A4A] px-4 py-2.5 text-[13.5px] font-semibold text-[#0B2A4A] transition-colors hover:bg-white"
     >
-      Imprimir / salvar em PDF
+      Imprimir
     </button>
   );
 }

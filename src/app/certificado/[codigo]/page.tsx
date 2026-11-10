@@ -7,6 +7,7 @@ import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { ASSINATURA_CARGO, ASSINATURA_CERTIFICADO, AVISO_CURSO_LIVRE, EMISSOR } from "@/lib/emissor";
 import { SeloAbed } from "@/components/selo-abed";
 import { BotaoImprimir } from "./BotaoImprimir";
+import { MAPA_BRASIL_PATH } from "@/lib/certificado-desenho";
 
 export const metadata: Metadata = {
   title: "Certificado",
@@ -19,10 +20,7 @@ const TINTA = "#14213A";
 const AZUL_MEDIO = "#2E5C8A";
 const AZUL_CLARO = "#7FB2E6";
 
-// Contorno simplificado do Brasil (viewBox 0 0 100 100), gerado a partir de
-// coordenadas geográficas reais — não é um ícone genérico desenhado à mão.
-const MAPA_BRASIL_PATH =
-  "M42.18,88.2 L45.37,84.94 L48.08,82.61 L49.68,81.64 L51.7,80.32 L51.75,78.41 L50.55,77.02 L49.36,77.48 L49.83,76.1 L50.16,74.68 L50.16,73.37 L49.3,72.93 L48.4,73.32 L47.5,73.21 L47.22,72.29 L47,70.1 L46.55,69.38 L44.94,68.74 L43.96,69.2 L41.43,68.74 L41.59,65.49 L40.88,64.16 L41.63,63.67 L41.4,62.3 L42.06,61.25 L42.48,59.37 L41.92,57.88 L40.61,57.21 L40.35,56.26 L40.7,54.88 L36.11,54.78 L35.19,51.99 L35.89,51.95 L35.86,50.92 L35.39,50.22 L35.29,48.84 L33.9,48.13 L32.39,48.15 L31.4,47.45 L29.78,46.98 L28.84,46.09 L26.16,45.69 L23.56,43.55 L23.75,41.94 L23.45,41.02 L23.71,39.23 L20.58,39.63 L19.31,40.53 L17.22,41.5 L16.69,42.22 L15.45,42.28 L13.67,42.07 L12.32,42.49 L11.23,42.21 L11.39,38.57 L9.43,39.99 L7.32,39.92 L6.41,38.65 L4.82,38.51 L5.33,37.48 L4,36.02 L3,33.87 L3.63,33.43 L3.63,32.42 L5.08,31.73 L4.84,30.43 L5.45,29.6 L5.62,28.48 L8.36,26.85 L10.32,26.39 L10.64,26.03 L12.8,26.14 L13.88,19.58 L13.93,18.54 L13.56,17.17 L12.5,16.29 L12.51,14.55 L13.86,14.16 L14.34,14.41 L14.42,13.49 L13.02,13.24 L12.99,11.74 L17.65,11.8 L18.44,10.97 L19.11,11.73 L19.57,13.14 L20.03,12.85 L21.35,14.12 L23.21,13.96 L23.67,13.23 L25.45,12.67 L26.44,12.28 L26.72,11.26 L28.43,10.58 L28.3,10.08 L26.27,9.87 L25.94,8.36 L26.03,6.76 L24.96,6.14 L25.41,5.92 L27.18,6.22 L29.09,6.82 L29.78,6.26 L31.5,5.88 L34.18,4.99 L35.05,4.07 L34.74,3.4 L35.98,3.29 L36.54,3.84 L36.23,4.9 L37.05,5.26 L37.6,6.37 L36.93,7.21 L36.55,9.25 L37.17,10.46 L37.34,11.57 L38.81,12.7 L39.99,12.81 L40.25,12.34 L41.01,12.24 L42.09,11.82 L42.87,11.18 L44.2,11.39 L44.78,11.3 L46.08,11.5 L46.3,11.01 L45.89,10.53 L46.13,9.84 L47.1,10.05 L48.23,9.81 L49.6,10.31 L50.65,10.81 L51.39,10.16 L51.92,10.26 L52.25,10.93 L53.4,10.76 L54.32,9.85 L55.05,8.09 L56.47,5.9 L57.28,5.79 L57.88,7.11 L59.22,11.3 L60.5,11.69 L60.56,13.35 L58.76,15.32 L59.51,16.04 L63.74,16.41 L63.83,18.81 L65.64,17.24 L68.66,18.1 L72.63,19.57 L73.8,20.97 L73.41,22.29 L76.19,21.56 L80.85,22.82 L84.43,22.73 L87.97,24.71 L91.03,27.39 L92.87,28.08 L94.92,28.18 L95.79,28.94 L96.6,31.98 L97,33.43 L96.05,37.39 L94.83,38.96 L91.45,42.29 L89.93,44.99 L88.16,47.07 L87.56,47.12 L86.89,48.88 L87.06,53.36 L86.39,57.06 L86.14,58.63 L85.38,59.58 L84.95,62.78 L82.53,65.91 L82.12,68.38 L80.18,69.42 L79.62,70.85 L77.02,70.85 L73.25,71.77 L71.57,72.83 L68.88,73.53 L66.07,75.44 L64.04,77.81 L63.69,79.6 L64.09,80.92 L63.64,83.34 L63.1,84.51 L61.42,85.83 L58.77,90.04 L56.66,91.94 L55.03,93.06 L53.94,95.34 L52.36,96.71 L51.7,95.35 L52.75,94.22 L51.37,92.59 L49.49,91.26 L47.02,89.73 L46.13,89.8 L43.73,87.95 L42.18,88.2 Z";
+
 
 // Tudo dimensionado em cqw (largura do próprio certificado): o mesmo layout
 // vale na tela do celular e na folha A4 paisagem impressa.
@@ -104,7 +102,16 @@ export default async function CertificadoPage({
         <Link href="/minha-area" className="text-[13px] font-semibold text-brand underline underline-offset-4">
           ← Minha área
         </Link>
-        <BotaoImprimir />
+        <div className="flex flex-wrap items-center gap-3">
+          {/* PDF pronto em A4 paisagem, gerado no servidor: no celular o "imprimir" saía em retrato e cortado */}
+          <a
+            href={`/certificado/${codigo.toUpperCase()}/pdf`}
+            className="bg-accent px-5 py-2.5 text-[14px] font-bold text-accent-ink transition-colors hover:brightness-105"
+          >
+            Baixar certificado em PDF
+          </a>
+          <BotaoImprimir />
+        </div>
       </div>
 
       <div className="flex flex-col items-center gap-6 px-4 pb-10 print:gap-0 print:p-0">
