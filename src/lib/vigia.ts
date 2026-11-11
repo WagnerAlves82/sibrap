@@ -13,6 +13,7 @@
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { abacatePayAtivo } from "@/lib/abacatepay";
 import { enviarAlertaAdmin, esc } from "@/lib/resend";
+import { bloqueiosUltimas24h } from "@/lib/gateway-instavel";
 
 const db = () => criarClienteSupabaseAdmin();
 const REPETIR_ALERTA_MS = 6 * 60 * 60 * 1000;
@@ -151,6 +152,14 @@ export async function executarVigia(lojaEsperada: string): Promise<ResultadoVigi
   if ((pendentes ?? 0) >= 3 && (pagos ?? 0) === 0) {
     avisos.push(
       `${pendentes} PIX gerados nas últimas 24 h e nenhum confirmado. Verifique o webhook e se os pagamentos estão entrando na sua conta.`
+    );
+  }
+
+  // cobranças barradas pelo próprio gateway (Cloudflare/antifraude/fora do ar) nas últimas 24 h
+  const bloqueios = await bloqueiosUltimas24h();
+  if (bloqueios > 0) {
+    avisos.push(
+      `O AbacatePay bloqueou ${bloqueios} tentativa(s) de gerar cobrança nas últimas 24 h (página do Cloudflare ou gateway fora do ar). Os clientes viram a mensagem para tentar de novo em alguns minutos. Se continuar, fale com o suporte do AbacatePay.`
     );
   }
 

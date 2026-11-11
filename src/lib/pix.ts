@@ -11,6 +11,14 @@ import { abacatePayAtivo, criarCobrancaPix } from "@/lib/abacatepay";
 import { dentroDoLimite, hash } from "@/lib/limite";
 import { vendasPausadas } from "@/lib/vigia";
 import { gravarOrigemPedido } from "@/lib/origem";
+import {
+  GatewayIndisponivel,
+  MSG_FALHA_PAGAMENTO,
+  MSG_GATEWAY_INSTAVEL,
+  descartarPedidoSemCobranca,
+  gatewayEmPausa,
+  registrarBloqueio,
+} from "@/lib/gateway-instavel";
 
 export type EstadoPix =
   | { erro: string }
@@ -50,6 +58,11 @@ export async function gerarPixParaPedido({
   await gravarOrigemPedido(pedidoId);
 
   if (abacatePayAtivo()) {
+    // gateway bloqueou há poucos minutos: nem tenta de novo (cada clique piorava o bloqueio)
+    if (await gatewayEmPausa()) {
+      await descartarPedidoSemCobranca(pedidoId);
+      return { erro: MSG_GATEWAY_INSTAVEL };
+    }
     try {
       const cobranca = await criarCobrancaPix({ valorCentavos, descricao: produtoNome, pedidoId });
       // o id da cobrança é gravado com a chave de serviço, só por aqui
@@ -67,8 +80,13 @@ export async function gerarPixParaPedido({
         valorCentavos,
       };
     } catch (e) {
+      await descartarPedidoSemCobranca(pedidoId);
+      if (e instanceof GatewayIndisponivel) {
+        await registrarBloqueio("PIX", e);
+        return { erro: MSG_GATEWAY_INSTAVEL };
+      }
       console.error("Falha ao criar PIX no AbacatePay", e);
-      return { erro: "Não deu pra gerar o PIX agora. Tenta de novo." };
+      return { erro: MSG_FALHA_PAGAMENTO };
     }
   }
 

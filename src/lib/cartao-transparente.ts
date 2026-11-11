@@ -14,6 +14,13 @@ import { dentroDoLimite, hash } from "@/lib/limite";
 import { vendasPausadas } from "@/lib/vigia";
 import { gravarOrigemPedido } from "@/lib/origem";
 import type { StatusPedido } from "@/lib/mercadopago";
+import {
+  GatewayIndisponivel,
+  MSG_GATEWAY_INSTAVEL,
+  descartarPedidoSemCobranca,
+  gatewayEmPausa,
+  registrarBloqueio,
+} from "@/lib/gateway-instavel";
 
 export type DadosCartao = { token: string; parcelas: number; nome: string; cpf: string; celular: string };
 export type EstadoCartao = { erro: string } | { pedidoId: string; status: StatusPedido; valorCentavos: number };
@@ -73,6 +80,11 @@ export async function pagarPedidoComCartao({
 
   await gravarOrigemPedido(pedidoId);
 
+  if (await gatewayEmPausa()) {
+    await descartarPedidoSemCobranca(pedidoId);
+    return { erro: MSG_GATEWAY_INSTAVEL };
+  }
+
   let cobranca;
   try {
     cobranca = await criarCobrancaCartao({
@@ -83,6 +95,11 @@ export async function pagarPedidoComCartao({
       pedidoId,
     });
   } catch (e) {
+    await descartarPedidoSemCobranca(pedidoId);
+    if (e instanceof GatewayIndisponivel) {
+      await registrarBloqueio("cartão", e);
+      return { erro: MSG_GATEWAY_INSTAVEL };
+    }
     console.error("Falha ao cobrar o cartão no AbacatePay", pedidoId, e);
     return { erro: mensagemAmigavel(e) };
   }

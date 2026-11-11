@@ -9,6 +9,7 @@ import crypto from "node:crypto";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { entregarPedido } from "@/lib/entrega";
 import type { StatusPedido } from "@/lib/mercadopago";
+import { erroDeBloqueio } from "@/lib/gateway-instavel";
 
 const BASE = "https://api.abacatepay.com/v2";
 
@@ -58,7 +59,20 @@ async function chamar<T>(caminho: string, init?: RequestInit): Promise<T> {
     },
     cache: "no-store",
   });
-  const corpo = (await resposta.json().catch(() => null)) as Envelope<T> | null;
+  const texto = await resposta.text().catch(() => "");
+  let corpo: Envelope<T> | null = null;
+  try {
+    corpo = JSON.parse(texto) as Envelope<T>;
+  } catch {
+    corpo = null;
+  }
+  // página do Cloudflare, limite ou fora do ar: erro próprio, sem despejar o HTML no log
+  if (!corpo) {
+    const bloqueio = erroDeBloqueio(resposta.status, texto, resposta.headers.get("content-type"));
+    if (bloqueio) throw bloqueio;
+  } else if (!resposta.ok && [429, 502, 503, 504].includes(resposta.status)) {
+    throw erroDeBloqueio(resposta.status, "", null) ?? new Error(`AbacatePay ${resposta.status}`);
+  }
   if (!resposta.ok || !corpo?.success || !corpo.data) {
     throw new Error(`AbacatePay ${resposta.status}: ${corpo?.error ?? "resposta inválida"}`);
   }
