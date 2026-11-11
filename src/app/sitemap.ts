@@ -25,16 +25,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // páginas de listagem: data da notícia/apostila mais recente
   let ultimaNoticia = FIXAS;
   let ultimaApostila = FIXAS;
+  let ultimoCurso = FIXAS;
 
   try {
+    // atualizado_em muda por gatilho quando o curso, um módulo ou uma aula é alterado
     const { data: cursos } = await criarClienteSupabaseAdmin()
       .from("cursos")
-      .select("slug")
+      .select("slug, atualizado_em")
       .eq("ativo", true);
     for (const curso of cursos ?? []) {
+      const data = new Date(curso.atualizado_em);
+      if (data > ultimoCurso) ultimoCurso = data;
       paginas.push({
         url: `${siteUrl}/cursos/${curso.slug}`,
-        lastModified: FIXAS,
+        lastModified: data,
         changeFrequency: "weekly",
         priority: 0.9,
       });
@@ -78,12 +82,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // sem a chave de serviço (ex.: build local): fica só com as páginas fixas
   }
 
-  const recente = ultimaNoticia > ultimaApostila ? ultimaNoticia : ultimaApostila;
+  const recente = [ultimaNoticia, ultimaApostila, ultimoCurso].reduce((a, b) => (b > a ? b : a));
   paginas.unshift(
     { url: siteUrl, lastModified: recente, changeFrequency: "daily", priority: 1 },
     { url: `${siteUrl}/apostilas`, lastModified: ultimaApostila, changeFrequency: "weekly", priority: 0.95 },
     { url: `${siteUrl}/noticias`, lastModified: ultimaNoticia, changeFrequency: "daily", priority: 0.8 },
-    { url: `${siteUrl}/cursos`, lastModified: FIXAS, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${siteUrl}/cursos`, lastModified: ultimoCurso, changeFrequency: "weekly", priority: 0.9 },
     { url: `${siteUrl}/bancas`, lastModified: ultimaApostila, changeFrequency: "weekly", priority: 0.6 },
   );
   return paginas;

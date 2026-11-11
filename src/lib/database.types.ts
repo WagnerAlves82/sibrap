@@ -1020,6 +1020,7 @@ export type Database = {
       cursos: {
         Row: {
           ativo: boolean
+          atualizado_em: string
           carga_horaria_horas: number
           categoria: string | null
           criado_em: string
@@ -1035,6 +1036,7 @@ export type Database = {
         }
         Insert: {
           ativo?: boolean
+          atualizado_em?: string
           carga_horaria_horas: number
           categoria?: string | null
           criado_em?: string
@@ -1050,6 +1052,7 @@ export type Database = {
         }
         Update: {
           ativo?: boolean
+          atualizado_em?: string
           carga_horaria_horas?: number
           categoria?: string | null
           criado_em?: string
