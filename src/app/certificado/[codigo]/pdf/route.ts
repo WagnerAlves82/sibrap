@@ -5,6 +5,7 @@
 // O certificado não muda depois de emitido, então a resposta fica no cache da CDN por 7 dias.
 
 import { criarClienteSupabasePublico } from "@/lib/supabase-publico";
+import { responsavelTecnico } from "@/lib/emissor";
 import { gerarPdfCertificado } from "@/lib/certificado-pdf";
 
 export const maxDuration = 30;
@@ -39,6 +40,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ codigo:
     assinadoAlunoEm: cert.assinado_aluno_em,
     assinadoInstituicaoEm: cert.assinado_instituicao_em,
     hashConferencia: cert.hash_conferencia,
+    responsavel: responsavelTecnico(cert.curso_slug),
     modulos: (modulos ?? []).map((m) => ({ titulo: m.titulo, aulas: m.aulas.map((a) => a.titulo) })),
     siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br",
   });

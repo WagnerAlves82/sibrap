@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import QRCode from "qrcode";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
-import { ASSINATURA_CARGO, ASSINATURA_CERTIFICADO, AVISO_CURSO_LIVRE, BASE_LEGAL_CERTIFICADO, EMISSOR } from "@/lib/emissor";
+import { ASSINATURA_CARGO, ASSINATURA_CERTIFICADO, AVISO_CURSO_LIVRE, BASE_LEGAL_CERTIFICADO, EMISSOR, responsavelTecnico } from "@/lib/emissor";
 import { SeloAbed } from "@/components/selo-abed";
 import { BotaoImprimir } from "./BotaoImprimir";
 import { MAPA_BRASIL_PATH } from "@/lib/certificado-desenho";
@@ -53,6 +53,7 @@ export default async function CertificadoPage({
   const { data } = await supabase.rpc("validar_certificado", { p_codigo: codigo });
   const cert = data?.[0];
   if (!cert) notFound();
+  const rt = responsavelTecnico(cert.curso_slug);
 
   const { data: curso } = await supabase
     .from("cursos")
@@ -265,6 +266,11 @@ export default async function CertificadoPage({
                     <span style={{ color: OURO, fontWeight: 900 }}>✓</span> <strong>{ASSINATURA_CERTIFICADO}</strong> · {ASSINATURA_CARGO} ·{" "}
                     <span style={{ whiteSpace: "nowrap" }}>{formatarDataHora(cert.assinado_instituicao_em)}</span>
                   </div>
+                  {rt && (
+                    <div>
+                      Responsável técnico: <strong>{rt.nome}</strong> · {rt.titulo} · {rt.registro}
+                    </div>
+                  )}
                   <div style={{ color: "#6B7A8F", fontSize: cq(0.8) }}>
                     CNPJ {EMISSOR.cnpj}
                     {cert.hash_conferencia ? ` · Conferência ${cert.hash_conferencia.slice(0, 12).toUpperCase()}` : ""} · Lei 14.063/2020

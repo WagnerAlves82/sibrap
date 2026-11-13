@@ -9,7 +9,7 @@ import fs from "node:fs";
 import path from "node:path";
 import QRCode from "qrcode";
 import { Document, Font, Image, Page, Path, Polygon, Svg, Text, View, renderToBuffer } from "@react-pdf/renderer";
-import { ASSINATURA_CARGO, ASSINATURA_CERTIFICADO, AVISO_CURSO_LIVRE, BASE_LEGAL_CERTIFICADO, EMISSOR } from "@/lib/emissor";
+import { ASSINATURA_CARGO, ASSINATURA_CERTIFICADO, AVISO_CURSO_LIVRE, BASE_LEGAL_CERTIFICADO, EMISSOR, type ResponsavelTecnico } from "@/lib/emissor";
 import { MAPA_BRASIL_PATH } from "@/lib/certificado-desenho";
 
 Font.registerHyphenationCallback((palavra) => [palavra]);
@@ -41,6 +41,7 @@ export type DadosCertificadoPdf = {
   assinadoAlunoEm: string;
   assinadoInstituicaoEm: string;
   hashConferencia: string | null;
+  responsavel?: ResponsavelTecnico | null;
   modulos: { titulo: string; aulas: string[] }[];
   siteUrl: string;
 };
@@ -143,6 +144,12 @@ function Frente({ d, qr, img }: { d: DadosCertificadoPdf; qr: string; img: Image
                   <Text style={{ fontFamily: "Helvetica-Bold", color: OURO }}>• </Text>
                   <Text style={{ fontFamily: "Helvetica-Bold" }}>{ASSINATURA_CERTIFICADO}</Text> · {ASSINATURA_CARGO} · {dataHora(d.assinadoInstituicaoEm)}
                 </Text>
+                {d.responsavel ? (
+                  <Text style={linhaAssin}>
+                    Responsável técnico: <Text style={{ fontFamily: "Helvetica-Bold" }}>{d.responsavel.nome}</Text> · {d.responsavel.titulo} ·{" "}
+                    {d.responsavel.registro}
+                  </Text>
+                ) : null}
                 <Text style={[linhaAssin, { color: "#6B7A8F", fontSize: cq(0.7) }]}>
                   CNPJ {EMISSOR.cnpj}
                   {d.hashConferencia ? ` · Conferência ${d.hashConferencia.slice(0, 12).toUpperCase()}` : ""} · Lei 14.063/2020

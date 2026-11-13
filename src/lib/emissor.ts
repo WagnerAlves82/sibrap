@@ -8,6 +8,17 @@ export const EMISSOR = {
 export const ASSINATURA_CERTIFICADO = "Wagner A. de S. Jr";
 export const ASSINATURA_CARGO = "Professor Habilitado";
 
+// Responsável técnico por curso (ex.: curso de eletricista com técnico em eletrotécnica registrado no CRT).
+// Só entra no certificado com o consentimento por escrito do profissional. Chave = slug do curso.
+export type ResponsavelTecnico = { nome: string; titulo: string; registro: string };
+const RESPONSAVEL_TECNICO_POR_CURSO: Record<string, ResponsavelTecnico> = {
+  // "eletricista-residencial-basico": { nome: "Nome Completo", titulo: "Técnico em Eletrotécnica", registro: "CRT-XX nº 000000" },
+};
+export function responsavelTecnico(cursoSlug: string | null | undefined): ResponsavelTecnico | null {
+  return (cursoSlug && RESPONSAVEL_TECNICO_POR_CURSO[cursoSlug]) || null;
+}
+export const textoResponsavel = (r: ResponsavelTecnico) => `${r.nome} · ${r.titulo} · ${r.registro}`;
+
 // Base legal citada logo após "concluiu com aproveitamento..." no certificado (pedido do Wagner, 10/11/2026).
 export const BASE_LEGAL_CERTIFICADO =
   "nos termos do Decreto Presidencial nº 5.154, de 23 de julho de 2004, arts. 1º e 3º, e de acordo com as normas do Ministério da Educação (MEC) pela Resolução CNE nº 04/99, art. 11";
