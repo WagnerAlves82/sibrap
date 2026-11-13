@@ -12,7 +12,8 @@ export const ASSINATURA_CARGO = "Professor Habilitado";
 // Só entra no certificado com o consentimento por escrito do profissional. Chave = slug do curso.
 export type ResponsavelTecnico = { nome: string; titulo: string; registro: string };
 const RESPONSAVEL_TECNICO_POR_CURSO: Record<string, ResponsavelTecnico> = {
-  // "eletricista-residencial-basico": { nome: "Nome Completo", titulo: "Técnico em Eletrotécnica", registro: "CRT-XX nº 000000" },
+  // sem número de registro: o registro nacional do CFT é o CPF dele (página e validação são públicas)
+  "eletricista-residencial-basico": { nome: "Alexsandro de Sousa Silva", titulo: "Técnico em Eletrotécnica", registro: "CRT-01" },
 };
 export function responsavelTecnico(cursoSlug: string | null | undefined): ResponsavelTecnico | null {
   return (cursoSlug && RESPONSAVEL_TECNICO_POR_CURSO[cursoSlug]) || null;
