@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Fragment } from "react";
 import { notFound } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
@@ -9,6 +10,8 @@ import { matricularAction } from "./actions";
 import { ComprarCurso } from "./ComprarCurso";
 import { formatarReais, produtoDoCursoPago } from "@/lib/curso-pago";
 import { dadosCartaoCompra } from "@/lib/cartao-transparente";
+import { PopupEtapa } from "./certificado/PopupEtapa";
+import { TourEtapas } from "./TourEtapas";
 
 export const metadata: Metadata = {
   title: "Meu curso",
@@ -25,12 +28,12 @@ export default async function AreaDoCursoPage({
 
   const { data: curso } = await supabase
     .from("cursos")
-    .select("id, slug, nome, carga_horaria_horas, nota_minima, ordem_obrigatoria")
+    .select("id, slug, nome, carga_horaria_horas, nota_minima, ordem_obrigatoria, certificado_por_etapas")
     .eq("slug", slug)
     .maybeSingle();
   if (!curso) notFound();
 
-  const [{ data: matricula }, { data: modulos }, { data: progresso }, { data: tentativas }, { data: certificado }] =
+  const [{ data: matricula }, { data: modulos }, { data: progresso }, { data: tentativas }, { data: certificado }, { data: etapas }] =
     await Promise.all([
       supabase.from("matriculas").select("curso_id").eq("curso_id", curso.id).maybeSingle(),
       supabase
@@ -44,8 +47,11 @@ export default async function AreaDoCursoPage({
         .from("tentativas_quiz")
         .select("nota")
         .eq("curso_id", curso.id)
+        .is("etapa_horas", null)
         .not("finalizado_em", "is", null),
       supabase.from("certificados").select("codigo").eq("curso_id", curso.id).maybeSingle(),
+      // certificado por etapas: situação de cada etapa (20 h, 40 h…) para este aluno
+      curso.certificado_por_etapas ? supabase.rpc("minhas_etapas_curso", { p_curso: curso.id }) : Promise.resolve({ data: null }),
     ]);
 
   if (!matricula) {
@@ -119,6 +125,13 @@ export default async function AreaDoCursoPage({
   const melhorNota = (tentativas ?? []).reduce((m, t) => Math.max(m, Number(t.nota ?? 0)), 0);
   const provaOk = melhorNota >= curso.nota_minima;
   const proxima = todasAulas.find((a) => !concluidas.has(a.id));
+  const listaEtapas = (etapas ?? []) as { horas: number; aulas_exigidas: number; tem_questionario: boolean; aprovado: boolean; melhor_nota: number | null }[];
+  const etapaLiberada = (e: (typeof listaEtapas)[number]) => feitas >= e.aulas_exigidas && (!e.tem_questionario || e.aprovado);
+  const ultimaLiberada = [...listaEtapas].reverse().find(etapaLiberada);
+  const proximaEtapa = listaEtapas.find((e) => !etapaLiberada(e));
+  // marcador do questionário na lista de aulas: logo depois da aula de número aulas_exigidas
+  const posicaoAula = new Map(todasAulas.map((a, i) => [a.id, i + 1]));
+  const etapaDepoisDa = new Map(listaEtapas.map((e) => [e.aulas_exigidas, e]));
   const liberada = (id: string) => {
     const i = todasAulas.findIndex((a) => a.id === id);
     if (!curso.ordem_obrigatoria || i === 0 || concluidas.has(id)) return true;
@@ -159,6 +172,74 @@ export default async function AreaDoCursoPage({
           </div>
         </Reveal>
 
+        {curso.certificado_por_etapas && listaEtapas.length > 0 ? (
+          <Reveal delay={100} className="mt-6">
+            <TourEtapas
+              chave={curso.slug}
+              cargaTotal={curso.carga_horaria_horas}
+              etapas={listaEtapas.map((e) => ({ horas: e.horas, aulas: e.aulas_exigidas }))}
+              totalAulas={total}
+            />
+            {ultimaLiberada && !certificado && (
+              <PopupEtapa
+                horas={ultimaLiberada.horas}
+                proxima={proximaEtapa?.horas ?? curso.carga_horaria_horas}
+                cursoHref={`/minha-area/cursos/${curso.slug}`}
+                chave={`${curso.slug}-${ultimaLiberada.horas}`}
+                emitirHref={`/minha-area/cursos/${curso.slug}/certificado#certificado-opcoes`}
+              />
+            )}
+            <div className="border border-[#D7DEE6] bg-white p-5">
+              <h2 className="font-display text-lg font-extrabold text-[#14213A]">Jornada do certificado</h2>
+              <p className="mt-1 text-[14px] text-[#516278]">
+                Cada etapa libera um certificado: conclua as aulas, faça o questionário de 5 questões e emita quando quiser,
+                ou continue até a carga completa.
+              </p>
+              <ol className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {listaEtapas.map((e) => {
+                  const ok = etapaLiberada(e);
+                  const aulasOkEtapa = feitas >= e.aulas_exigidas;
+                  return (
+                    <li key={e.horas} className={`flex flex-col border p-4 ${ok ? "border-accent-2 bg-[#E6F4F1]" : "border-[#D7DEE6]"}`}>
+                      <p className="font-display text-2xl font-extrabold text-[#14213A]">
+                        {e.horas} h {ok && <span aria-hidden>⭐</span>}
+                      </p>
+                      <p className="mt-1 flex-1 text-[13px] text-[#516278]">
+                        {ok
+                          ? "Liberado!"
+                          : aulasOkEtapa
+                            ? "Aulas concluídas: falta o questionário"
+                            : `Faltam ${e.aulas_exigidas - feitas} aulas`}
+                      </p>
+                      {ok ? (
+                        <Link prefetch={false} href={`/minha-area/cursos/${curso.slug}/certificado`} className="mt-3 text-[13.5px] font-bold text-accent-2 underline underline-offset-4">
+                          Emitir certificado →
+                        </Link>
+                      ) : aulasOkEtapa && e.tem_questionario ? (
+                        <Link prefetch={false} href={`/minha-area/cursos/${curso.slug}/prova?etapa=${e.horas}`} className="mt-3 bg-accent px-3 py-2 text-center text-[13.5px] font-bold text-accent-ink">
+                          Fazer questionário
+                        </Link>
+                      ) : null}
+                    </li>
+                  );
+                })}
+                <li className={`flex flex-col border p-4 ${aulasOk && provaOk ? "border-accent-2 bg-[#E6F4F1]" : "border-[#D7DEE6]"}`}>
+                  <p className="font-display text-2xl font-extrabold text-[#14213A]">
+                    {curso.carga_horaria_horas} h {aulasOk && provaOk && <span aria-hidden>🏆</span>}
+                  </p>
+                  <p className="mt-1 flex-1 text-[13px] text-[#516278]">
+                    {aulasOk && provaOk ? "Curso completo!" : aulasOk ? "Falta a prova final" : `Todas as ${total} aulas + prova final`}
+                  </p>
+                  {aulasOk && (
+                    <Link prefetch={false} href={`/minha-area/cursos/${curso.slug}/prova`} className="mt-3 text-[13.5px] font-bold text-brand underline underline-offset-4">
+                      {provaOk ? "Refazer a prova" : "Fazer a prova final"} →
+                    </Link>
+                  )}
+                </li>
+              </ol>
+            </div>
+          </Reveal>
+        ) : (
         <Reveal delay={100} className="mt-6">
           <ol className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <EtapaCard numero={1} titulo="Concluir as aulas" ok={aulasOk} texto={`${feitas}/${total} concluídas`} />
@@ -180,6 +261,8 @@ export default async function AreaDoCursoPage({
             />
           </ol>
         </Reveal>
+        )}
+
 
         <div className="mt-8 flex flex-col gap-4">
           {modulos?.map((modulo, i) => (
@@ -210,7 +293,8 @@ export default async function AreaDoCursoPage({
                       </>
                     );
                     return (
-                      <li key={aula.id} className="border-b border-[#F0F4F8] last:border-0">
+                      <Fragment key={aula.id}>
+                      <li className="border-b border-[#F0F4F8] last:border-0">
                         {disponivel ? (
                           <Link
                             href={`/minha-area/cursos/${curso.slug}/aula/${aula.id}`}
@@ -223,6 +307,32 @@ export default async function AreaDoCursoPage({
                           <div className="flex items-center gap-3 px-5 py-3 opacity-70">{conteudo}</div>
                         )}
                       </li>
+                      {(() => {
+                        const e = etapaDepoisDa.get(posicaoAula.get(aula.id) ?? -1);
+                        if (!e || !e.tem_questionario) return null;
+                        const ok = etapaLiberada(e);
+                        const disponivelQ = feitas >= e.aulas_exigidas;
+                        return (
+                          <li className="border-b border-[#F0F4F8] bg-[#FFF8EB] last:border-0">
+                            {disponivelQ && !ok ? (
+                              <Link prefetch={false} href={`/minha-area/cursos/${curso.slug}/prova?etapa=${e.horas}`} className="flex items-center gap-3 px-5 py-3 font-semibold text-[#14213A] hover:bg-[#FFF1D6]">
+                                <span aria-hidden>⭐</span>
+                                <span className="flex-1 text-[15px]">Questionário da etapa de {e.horas} horas (5 questões)</span>
+                                <span className="text-[13px] font-bold text-brand">Fazer →</span>
+                              </Link>
+                            ) : (
+                              <div className={`flex items-center gap-3 px-5 py-3 ${ok ? "" : "opacity-70"}`}>
+                                <span aria-hidden>{ok ? "⭐" : "🔒"}</span>
+                                <span className="flex-1 text-[15px] text-[#14213A]">
+                                  Questionário da etapa de {e.horas} horas{ok ? " · aprovado, certificado liberado" : ""}
+                                </span>
+                              </div>
+                            )}
+                          </li>
+                        );
+                      })()}
+                      </Fragment>
+
                     );
                   })}
                 </ul>

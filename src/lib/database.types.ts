@@ -1022,6 +1022,7 @@ export type Database = {
           ativo: boolean
           atualizado_em: string
           carga_horaria_horas: number
+          certificado_por_etapas: boolean
           categoria: string | null
           criado_em: string
           descricao: string | null
@@ -1054,6 +1055,7 @@ export type Database = {
           ativo?: boolean
           atualizado_em?: string
           carga_horaria_horas?: number
+          certificado_por_etapas?: boolean
           categoria?: string | null
           criado_em?: string
           descricao?: string | null
@@ -1807,6 +1809,7 @@ export type Database = {
           comentario: string | null
           curso_id: string
           enunciado: string
+          etapa_horas: number | null
           gabarito: string
           id: string
         }
@@ -1825,6 +1828,7 @@ export type Database = {
           comentario?: string | null
           curso_id?: string
           enunciado?: string
+          etapa_horas?: number | null
           gabarito?: string
           id?: string
         }
@@ -1841,6 +1845,7 @@ export type Database = {
       tentativas_quiz: {
         Row: {
           curso_id: string
+          etapa_horas: number | null
           finalizado_em: string | null
           id: string
           iniciado_em: string
@@ -1861,6 +1866,7 @@ export type Database = {
         }
         Update: {
           curso_id?: string
+          etapa_horas?: number | null
           finalizado_em?: string | null
           id?: string
           iniciado_em?: string
@@ -2057,6 +2063,14 @@ export type Database = {
             Args: { p_cpf: string; p_curso_id: string; p_nome: string }
             Returns: string
           }
+      minhas_etapas_curso: {
+        Args: { p_curso: string }
+        Returns: { aprovado: boolean; aulas_exigidas: number; horas: number; melhor_nota: number | null; tem_questionario: boolean }[]
+      }
+      minha_etapa_certificado: {
+        Args: { p_curso: string }
+        Returns: { compradas: number | null; feitas: number; liberadas: number; total: number }[]
+      }
       finalizar_quiz: {
         Args: { p_respostas: Json; p_tentativa_id: string }
         Returns: {
@@ -2084,7 +2098,7 @@ export type Database = {
         }[]
       }
       iniciar_quiz: {
-        Args: { p_curso_id: string }
+        Args: { p_curso_id: string; p_etapa_horas?: number }
         Returns: {
           alternativas: Json
           enunciado: string

@@ -5,16 +5,20 @@ import { CabecalhoSite } from "@/components/site-chrome";
 import { ProvaApp } from "./ProvaApp";
 
 export const metadata: Metadata = {
-  title: "Prova final",
+  title: "Prova e questionários",
   robots: { index: false },
 };
 
 export default async function ProvaPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ etapa?: string }>;
 }) {
   const { slug } = await params;
+  const etapaNum = Number((await searchParams).etapa);
+  const etapaHoras = Number.isInteger(etapaNum) && etapaNum > 0 ? etapaNum : null;
   const supabase = await criarClienteSupabaseServer();
   const cursoHref = `/minha-area/cursos/${slug}`;
 
@@ -41,6 +45,7 @@ export default async function ProvaPage({
           cursoHref={cursoHref}
           totalQuestoes={curso.quiz_num_questoes}
           notaMinima={curso.nota_minima}
+          etapaHoras={etapaHoras}
         />
       </main>
     </div>

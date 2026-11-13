@@ -6,6 +6,7 @@ import { CabecalhoSite } from "@/components/site-chrome";
 import { Alert } from "@/components/alert";
 import { EscolherCarga, FormComprovante, FormEmitir, PagamentoCertificado, type OpcaoCarga } from "./Formularios";
 import { PopupParabens } from "./PopupParabens";
+import { PopupEtapa } from "./PopupEtapa";
 import { PesquisaSatisfacao } from "./PesquisaSatisfacao";
 import { dadosCartaoCompra } from "@/lib/cartao-transparente";
 
@@ -39,7 +40,7 @@ export default async function CertificadoAreaPage({
 
   const { data: curso } = await supabase
     .from("cursos")
-    .select("id, nome, nota_minima, carga_horaria_horas, permite_isencao_cadunico")
+    .select("id, nome, nota_minima, carga_horaria_horas, permite_isencao_cadunico, certificado_por_etapas")
     .eq("slug", slug)
     .maybeSingle();
   if (!curso) notFound();
@@ -57,6 +58,7 @@ export default async function CertificadoAreaPage({
     { data: produtoImpresso },
     { data: pesquisa },
     { data: produtosCarga },
+    { data: etapaRows },
   ] = await Promise.all([
     supabase.auth.getUser(),
     supabase.from("matriculas").select("curso_id").eq("curso_id", curso.id).maybeSingle(),
@@ -67,6 +69,7 @@ export default async function CertificadoAreaPage({
       .from("tentativas_quiz")
       .select("nota")
       .eq("curso_id", curso.id)
+      .is("etapa_horas", null)
       .not("finalizado_em", "is", null),
     supabase
       .from("comprovantes_cadunico")
@@ -99,6 +102,8 @@ export default async function CertificadoAreaPage({
       .like("slug", `certificado-${slug}-%`)
       .not("certificado_horas", "is", null)
       .eq("ativo", true),
+    // certificado por etapas: aulas feitas e carga já liberada (cursos longos)
+    curso.certificado_por_etapas ? supabase.rpc("minha_etapa_certificado", { p_curso: curso.id }) : Promise.resolve({ data: null }),
   ]);
 
   if (!matricula) redirect(cursoHref);
@@ -121,7 +126,13 @@ export default async function CertificadoAreaPage({
   const elegivel = cadunicoAprovado || pago;
   // pesquisa de satisfação: aparece ao terminar o curso, mas é opcional (não trava o certificado)
   const pesquisaRespondida = Boolean(pesquisa);
-  const podeEmitir = aulasOk && provaOk && elegivel;
+  // por etapas: cada carga libera com a fração proporcional das aulas; a carga completa exige também a prova
+  const porEtapas = curso.certificado_por_etapas;
+  const etapa = porEtapas ? (etapaRows as { feitas: number; total: number; liberadas: number; compradas: number | null }[] | null)?.[0] : undefined;
+  const horasLiberadas = etapa?.liberadas ?? 0;
+  const horasCompradas = etapa?.compradas ?? null;
+  const aulasPara = (h: number) => (h >= curso.carga_horaria_horas ? totalAulas : Math.ceil((totalAulas * h) / curso.carga_horaria_horas));
+  const podeEmitir = porEtapas ? horasLiberadas > 0 && elegivel : aulasOk && provaOk && elegivel;
   const formatoEmissao: "online" | "impresso" = pagoImpresso ? "impresso" : "online";
   const precoOnline = produtoOnline
     ? (produtoOnline.preco_centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
@@ -142,7 +153,13 @@ export default async function CertificadoAreaPage({
         .map((o) => ({
           ...o,
           rotulo: `Certificado de ${o.horas} horas`,
-          detalhe: o.horas === curso.carga_horaria_horas ? "Carga horária completa do curso" : undefined,
+          detalhe: porEtapas
+            ? o.horas >= curso.carga_horaria_horas
+              ? `Curso completo (${totalAulas} aulas) + prova final`
+              : `Libera com ${aulasPara(o.horas)} aulas concluídas${horasLiberadas >= o.horas ? " · já liberado ✓" : ""}`
+            : o.horas === curso.carga_horaria_horas
+              ? "Carga horária completa do curso"
+              : undefined,
           cartao: dadosCartaoCompra(o.slug, userData.user),
         }))
     : [];
@@ -191,13 +208,22 @@ export default async function CertificadoAreaPage({
             >
               Ver meu certificado →
             </Link>
+            {porEtapas && horasCompradas !== null && horasCompradas > horasEmitidas && (
+              <p className="mt-4 border border-accent-2 bg-[#E6F4F1] p-3 text-[14px] text-accent-2">
+                Você comprou o certificado de {horasCompradas} horas. Ele sobe sozinho, com o mesmo código, quando você
+                concluir {aulasPara(horasCompradas)} aulas
+                {horasCompradas >= curso.carga_horaria_horas ? " e passar na prova final" : ""} (você está em {etapa?.feitas ?? 0}).
+              </p>
+            )}
             {opcoesUpgrade.length > 0 && (
               <div className="mt-6 border-t border-[#EEF2F6] pt-5">
                 <p className="font-display text-lg font-extrabold text-[#14213A]">
                   Seu certificado tem {horasEmitidas} horas. Quer aumentar?
                 </p>
                 <p className="mb-4 mt-1 text-[14px] text-[#516278]">
-                  Você já estudou o curso completo. Pague só a diferença e o certificado é atualizado na hora.
+                  {porEtapas
+                    ? `Você concluiu ${etapa?.feitas ?? 0} de ${totalAulas} aulas. Pague só a diferença: o certificado sobe na hora se as aulas já estiverem feitas, ou assim que você concluí-las.`
+                    : "Você já estudou o curso completo. Pague só a diferença e o certificado é atualizado na hora."}
                 </p>
                 <EscolherCarga cursoSlug={slug} opcoes={opcoesUpgrade} rotuloComprar="Aumentar carga horária" />
               </div>
@@ -209,14 +235,55 @@ export default async function CertificadoAreaPage({
             {aulasOk && provaOk && !elegivel && (
               <PopupParabens precoOnline={precoAPartir ?? precoOnline} precoImpresso={precoImpresso} permiteCadunico={permiteCadunico} />
             )}
-            {!podeEmitir && (
+            {porEtapas && horasLiberadas > 0 && !elegivel && (
+              <PopupEtapa
+                horas={horasLiberadas}
+                proxima={opcoesCarga.find((o) => o.horas > horasLiberadas)?.horas ?? null}
+                cursoHref={cursoHref}
+                chave={`${slug}-${horasLiberadas}`}
+              />
+            )}
+            {porEtapas && horasLiberadas > 0 && !elegivel && (
+              <Alert variant="sucesso" claro>
+                Seu certificado de {horasLiberadas} horas está liberado. Pague abaixo e emita na hora, ou continue estudando para
+                liberar mais horas.
+              </Alert>
+            )}
+            {!podeEmitir && !(porEtapas && horasLiberadas > 0) && (
               <Alert variant="info" claro>
-                Você precisa concluir todas as etapas para liberar o seu certificado. Bons estudos!
+                {porEtapas
+                  ? `Conclua ${aulasPara(opcoesCarga[0]?.horas ?? curso.carga_horaria_horas)} aulas e o questionário da primeira etapa para liberar o certificado de ${opcoesCarga[0]?.horas ?? curso.carga_horaria_horas} horas. Bons estudos!`
+                  : "Você precisa concluir todas as etapas para liberar o seu certificado. Bons estudos!"}
+              </Alert>
+            )}
+            {porEtapas && podeEmitir && horasCompradas !== null && horasCompradas > horasLiberadas && (
+              <Alert variant="info" claro>
+                Você comprou o certificado de {horasCompradas} horas. Já pode emitir agora com {horasLiberadas} horas: ele sobe
+                sozinho, com o mesmo código, quando você concluir as próximas etapas.
               </Alert>
             )}
             <section className="rounded-xl border border-[#D7DEE6] bg-white p-6">
               <h2 className="font-display text-lg font-extrabold text-[#14213A]">Requisitos</h2>
-              <ul className="mt-4 flex flex-col gap-3">
+              {porEtapas && (
+                <div className="mt-3">
+                  <p className="text-[14px] text-[#516278]">
+                    Certificado por etapas: cada carga horária libera quando você conclui as aulas dela e passa no
+                    questionário da etapa. Você está em <strong>{etapa?.feitas ?? 0} de {totalAulas} aulas</strong>.
+                  </p>
+                  <ul className="mt-3 flex flex-col gap-2">
+                    {opcoesCarga.map((o) => (
+                      <Item key={o.slug} ok={horasLiberadas >= o.horas}>
+                        <strong>{o.horas} horas</strong>:{" "}
+                        {o.horas >= curso.carga_horaria_horas
+                          ? `todas as ${totalAulas} aulas + prova final`
+                          : `${aulasPara(o.horas)} aulas + questionário da etapa`}
+                        {horasLiberadas >= o.horas ? " · liberado" : ""}
+                      </Item>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <ul className={`mt-4 flex flex-col gap-3 ${porEtapas ? "hidden" : ""}`}>
                 <Item ok={aulasOk}>
                   Concluir todas as aulas ({[...concluidas].length}/{totalAulas})
                   {!aulasOk && (
@@ -255,13 +322,14 @@ export default async function CertificadoAreaPage({
             </section>
 
             {!elegivel && (
-              <section className="rounded-xl border border-[#D7DEE6] bg-white p-6">
+              <section id="certificado-opcoes" className="scroll-mt-20 rounded-xl border border-[#D7DEE6] bg-white p-6">
                 <h2 className="font-display text-lg font-extrabold text-[#14213A]">
                   Como obter o certificado
                 </h2>
                 <p className="mt-1 text-[14px] text-[#516278]">
-                  O pagamento pode ser feito a qualquer momento, mas o certificado só é liberado
-                  depois que você concluir todas as aulas e passar na prova final.
+                  {porEtapas
+                    ? "O pagamento pode ser feito a qualquer momento. Cada carga horária libera quando você conclui as aulas e o questionário da etapa; a carga completa exige também a prova final."
+                    : "O pagamento pode ser feito a qualquer momento, mas o certificado só é liberado depois que você concluir todas as aulas e passar na prova final."}
                 </p>
 
                 <div className={`mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 ${permiteCadunico ? "lg:grid-cols-3" : "lg:max-w-[640px]"}`}>
@@ -300,7 +368,12 @@ export default async function CertificadoAreaPage({
                           O curso é o mesmo para todos; você escolhe só a carga horária que sai no certificado. Dá
                           para aumentar depois, pagando a diferença.
                         </p>
-                        <EscolherCarga cursoSlug={slug} opcoes={opcoesCarga} rotuloComprar="Comprar certificado" />
+                        <EscolherCarga
+                          cursoSlug={slug}
+                          opcoes={opcoesCarga}
+                          rotuloComprar="Comprar certificado"
+                          inicial={porEtapas ? [...opcoesCarga].reverse().find((o) => o.horas <= horasLiberadas)?.slug : undefined}
+                        />
                       </>
                     ) : (
                       <>
@@ -351,7 +424,9 @@ export default async function CertificadoAreaPage({
                 </div>
               ) : (
                 <p className="mt-2 text-[14.5px] text-[#516278]">
-                  Disponível quando os três requisitos acima estiverem cumpridos.
+                  {porEtapas
+                    ? "Disponível quando a primeira etapa estiver liberada e o certificado estiver pago."
+                    : "Disponível quando os três requisitos acima estiverem cumpridos."}
                 </p>
               )}
             </section>

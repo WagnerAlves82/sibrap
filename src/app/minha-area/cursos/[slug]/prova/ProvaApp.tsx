@@ -29,11 +29,14 @@ export function ProvaApp({
   cursoHref,
   totalQuestoes,
   notaMinima,
+  etapaHoras = null,
 }: {
   cursoId: string;
   cursoHref: string;
   totalQuestoes: number;
   notaMinima: number;
+  /** questionário de etapa (certificado por etapas); null = prova final */
+  etapaHoras?: number | null;
 }) {
   const [fase, setFase] = useState<Fase>("intro");
   const [questoes, setQuestoes] = useState<QuestaoProva[]>([]);
@@ -47,7 +50,7 @@ export function ProvaApp({
     setFase("carregando");
     setRespostas({});
     setRevisao(null);
-    const r = await iniciarProvaAction(cursoId);
+    const r = await iniciarProvaAction(cursoId, etapaHoras);
     if ("erro" in r) {
       setErro(r.erro);
       setFase("erro");
@@ -82,14 +85,16 @@ export function ProvaApp({
   if (fase === "intro" || fase === "carregando") {
     return (
       <Cartao>
-        <h1 className="font-display text-2xl font-extrabold text-[#14213A]">Prova final</h1>
+        <h1 className="font-display text-2xl font-extrabold text-[#14213A]">
+          {etapaHoras ? `Questionário da etapa de ${etapaHoras} horas` : "Prova final"}
+        </h1>
         <p className="mt-3 text-[15px] leading-relaxed text-[#516278]">
-          {totalQuestoes} questões de múltipla escolha sobre tudo o que você
-          aprendeu. Para ser aprovado(a), é preciso acertar pelo menos{" "}
-          {notaMinima}%. Se não passar, pode refazer com outras questões.
+          {etapaHoras
+            ? `5 questões sobre as aulas desta etapa. Acertando pelo menos ${notaMinima}%, você libera o certificado de ${etapaHoras} horas. Se não passar, pode refazer com outras questões.`
+            : `${totalQuestoes} questões de múltipla escolha sobre tudo o que você aprendeu. Para ser aprovado(a), é preciso acertar pelo menos ${notaMinima}%. Se não passar, pode refazer com outras questões.`}
         </p>
         <button onClick={comecar} disabled={fase === "carregando"} className={`mt-6 ${BOTAO}`}>
-          {fase === "carregando" ? "Carregando..." : "Começar a prova"}
+          {fase === "carregando" ? "Carregando..." : etapaHoras ? "Começar o questionário" : "Começar a prova"}
         </button>
         <Link prefetch={false} href={cursoHref} className="mt-4 block text-[14px] font-semibold text-brand underline underline-offset-4">
           Voltar ao curso
@@ -134,22 +139,24 @@ export function ProvaApp({
           </p>
           {resultado.aprovado ? (
             <Alert variant="sucesso" claro className="mt-5 text-sm">
-              Parabéns, você foi aprovado(a)! Agora é só emitir o seu certificado.
+              {etapaHoras
+                ? `Parabéns! Você liberou o certificado de ${etapaHoras} horas.`
+                : "Parabéns, você foi aprovado(a)! Agora é só emitir o seu certificado."}
             </Alert>
           ) : (
             <Alert variant="aviso" claro className="mt-5 text-sm">
               A nota mínima é {resultado.nota_minima}%. Revise as aulas e tente
-              de novo — você pode refazer a prova quantas vezes precisar.
+              de novo: você pode refazer {etapaHoras ? "o questionário" : "a prova"} quantas vezes precisar.
             </Alert>
           )}
           <div className="mt-6 flex flex-wrap items-center gap-3">
             {resultado.aprovado ? (
               <Link prefetch={false} href={`${cursoHref}/certificado`} className={BOTAO}>
-                Ir para o certificado →
+                {etapaHoras ? `Emitir o certificado de ${etapaHoras} horas →` : "Ir para o certificado →"}
               </Link>
             ) : (
               <button onClick={comecar} className={BOTAO}>
-                Refazer a prova
+                {etapaHoras ? "Refazer o questionário" : "Refazer a prova"}
               </button>
             )}
             {!revisao && (
@@ -240,7 +247,7 @@ export function ProvaApp({
       </div>
 
       <button onClick={avancar} disabled={!marcada} className={`mt-6 ${BOTAO}`}>
-        {ultima ? "Finalizar prova" : "Próxima questão →"}
+        {ultima ? (etapaHoras ? "Finalizar questionário" : "Finalizar prova") : "Próxima questão →"}
       </button>
     </Cartao>
   );

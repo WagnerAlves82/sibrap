@@ -31,7 +31,8 @@ export type ItemRevisao = {
 };
 
 export async function iniciarProvaAction(
-  cursoId: string
+  cursoId: string,
+  etapaHoras: number | null = null
 ): Promise<{ erro: string } | { questoes: QuestaoProva[] }> {
   const supabase = await criarClienteSupabaseServer();
   const {
@@ -43,7 +44,7 @@ export async function iniciarProvaAction(
     return { erro: MSG_MUITAS_TENTATIVAS };
   }
 
-  const { data, error } = await supabase.rpc("iniciar_quiz", { p_curso_id: cursoId });
+  const { data, error } = await supabase.rpc("iniciar_quiz", etapaHoras ? { p_curso_id: cursoId, p_etapa_horas: etapaHoras } : { p_curso_id: cursoId });
   if (error) return { erro: error.message };
   if (!data?.length) return { erro: "Ainda não há questões de prova disponíveis." };
   return {

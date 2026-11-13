@@ -133,8 +133,20 @@ export type OpcaoCarga = {
 };
 
 // Escolha da carga horária do certificado (ou do upgrade) antes de pagar; o curso é o mesmo para todos.
-export function EscolherCarga({ cursoSlug, opcoes, rotuloComprar }: { cursoSlug: string; opcoes: OpcaoCarga[]; rotuloComprar: string }) {
-  const [escolhida, setEscolhida] = useState(opcoes[opcoes.length - 1]?.slug);
+export function EscolherCarga({
+  cursoSlug,
+  opcoes,
+  rotuloComprar,
+  inicial,
+}: {
+  cursoSlug: string;
+  opcoes: OpcaoCarga[];
+  rotuloComprar: string;
+  inicial?: string;
+}) {
+  const [escolhida, setEscolhida] = useState(
+    opcoes.some((o) => o.slug === inicial) ? inicial : opcoes[opcoes.length - 1]?.slug,
+  );
   const opcao = opcoes.find((o) => o.slug === escolhida) ?? opcoes[0];
   if (!opcao) return null;
   return (
