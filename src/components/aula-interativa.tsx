@@ -53,7 +53,8 @@ export type Bloco =
       titulo?: string;
       intro?: string;
       assunto: string;
-      linhas: Frase[];
+      // Frase = e-mail em inglês com tradução; texto = documento em português
+      linhas: Frase[] | string[];
     }
   | {
       tipo: "escolha";
@@ -70,7 +71,8 @@ export type Bloco =
       intro?: string;
       itens: { texto: string; verdadeiro: boolean; explicacao: string }[];
     }
-  | { tipo: "ordenar"; titulo?: string; intro?: string; itens: Frase[] }
+  // itens em Frase = monte a frase em inglês; itens em texto = coloque as etapas na ordem (cursos em português)
+  | { tipo: "ordenar"; titulo?: string; intro?: string; itens: Frase[] | string[] }
   // vocabulário em Libras: cada palavra abre o vídeo do sinal no dicionário SpreadTheSign (Libras, pt-BR)
   | {
       tipo: "sinais";
@@ -527,13 +529,21 @@ function Email({ b }: { b: Extract<Bloco, { tipo: "email" }> }) {
       <div ref={caixa} className="border border-[#D7DEE6] bg-white">
         <div className="flex items-center gap-2 border-b border-[#D7DEE6] bg-[#F6F9FC] px-4 py-2.5">
           <span aria-hidden>✉️</span>
-          <p className="text-[15.5px] font-semibold text-[#14213A]">Subject: {b.assunto}</p>
+          <p className="text-[15.5px] font-semibold text-[#14213A]">
+            {typeof b.linhas[0] === "string" ? "Assunto" : "Subject"}: {b.assunto}
+          </p>
         </div>
         <ul className="flex min-h-[120px] flex-col gap-2 px-4 py-4">
-          {b.linhas.slice(0, n).map((f, i) => (
+          {(b.linhas as (Frase | string)[]).slice(0, n).map((f, i) => (
             <li key={i} className="animate-[rise-in_.5s_ease-out] motion-reduce:animate-none">
-              <p className="text-[16.5px] text-[#14213A]">{f.en}</p>
-              <p className="text-[13.5px] text-accent-2">{f.pt}</p>
+              {typeof f === "string" ? (
+                <p className="text-[16.5px] text-[#14213A]">{f}</p>
+              ) : (
+                <>
+                  <p className="text-[16.5px] text-[#14213A]">{f.en}</p>
+                  <p className="text-[13.5px] text-accent-2">{f.pt}</p>
+                </>
+              )}
             </li>
           ))}
           {n < b.linhas.length && <li className="h-4 w-2 animate-pulse bg-brand" aria-hidden />}
@@ -677,8 +687,8 @@ function Ordenar({ b, id }: { b: Extract<Bloco, { tipo: "ordenar" }>; id: string
   const [i, setI] = useState(0);
   const [montada, setMontada] = useState<number[]>([]);
   const [feitas, setFeitas] = useState(0);
-  const item = b.itens[i];
-  const palavras = useMemo(() => item?.en.split(" ") ?? [], [item]);
+  const item = (b.itens as Frase[])[i];
+  const palavras = useMemo(() => item?.en?.split(" ") ?? [], [item]);
   const ordem = useMemo(() => {
     let o = embaralhar(
       palavras.map((_, k) => k),
@@ -753,12 +763,82 @@ function Ordenar({ b, id }: { b: Extract<Bloco, { tipo: "ordenar" }>; id: string
   );
 }
 
-function Concluido({ b }: { b: Extract<Bloco, { tipo: "ordenar" }> }) {
+// coloque as etapas de um processo na ordem certa (cursos em português: itens são textos)
+function OrdenarEtapas({ b, id }: { b: Extract<Bloco, { tipo: "ordenar" }>; id: string }) {
+  const concluir = useConcluir(id);
+  const etapas = b.itens as string[];
+  const ordem = useMemo(() => {
+    let o = embaralhar(
+      etapas.map((_, k) => k),
+      etapas.length * 11 + 5,
+    );
+    if (o.every((v, k) => v === k) && o.length > 1) o = [...o.slice(1), o[0]];
+    return o;
+  }, [etapas]);
+  const [feitas, setFeitas] = useState<number[]>([]);
+  const [erro, setErro] = useState<number | null>(null);
+  const escolher = (k: number) => {
+    if (k === feitas.length) {
+      const n = [...feitas, k];
+      setFeitas(n);
+      setErro(null);
+      if (n.length === etapas.length) concluir();
+    } else setErro(k);
+  };
   return (
-    <Caixa titulo={b.titulo ?? "Monte a frase"}>
+    <Caixa titulo={b.titulo ?? "Coloque na ordem"} intro={b.intro ?? "Toque nas etapas na ordem certa, da primeira à última."}>
+      <div className="border-2 border-accent bg-white p-5">
+        <ol className="flex flex-col gap-2">
+          {feitas.map((k, n) => (
+            <li key={k} className="flex gap-3 border border-accent-2 bg-[#E6F4F1] px-3 py-2 text-[16px] font-semibold text-[#14213A]">
+              <span className="font-data text-accent-2">{n + 1}.</span>
+              {etapas[k]}
+            </li>
+          ))}
+        </ol>
+        {feitas.length < etapas.length && (
+          <>
+            <p className="mt-4 font-data text-xs font-semibold uppercase tracking-wide text-[#93A0AF]">
+              Qual é a etapa {feitas.length + 1}?
+            </p>
+            <div className="mt-2 flex flex-col gap-2">
+              {ordem.map((k) =>
+                feitas.includes(k) ? null : (
+                  <button
+                    key={k}
+                    type="button"
+                    onClick={() => escolher(k)}
+                    className={`border px-3 py-2 text-left text-[16px] font-semibold text-[#14213A] hover:border-brand ${
+                      erro === k ? "border-[#C0392B] bg-[#FDECEA]" : "border-[#C4CEDA] bg-white"
+                    }`}
+                  >
+                    {etapas[k]}
+                  </button>
+                ),
+              )}
+            </div>
+            {erro !== null && <p className="mt-2 text-[15px] font-semibold text-[#C0392B]">Essa não é a próxima etapa. Tente outra.</p>}
+          </>
+        )}
+      </div>
+    </Caixa>
+  );
+}
+
+function Concluido({ b }: { b: Extract<Bloco, { tipo: "ordenar" }> }) {
+  const etapas = typeof b.itens[0] === "string";
+  return (
+    <Caixa titulo={b.titulo ?? (etapas ? "Coloque na ordem" : "Monte a frase")}>
       <p className="border border-accent-2 bg-[#E6F4F1] p-4 text-[16.5px] font-semibold text-accent-2">
-        ✓ Você montou as {b.itens.length} frases. Muito bem!
+        {etapas ? `✓ Você colocou as ${b.itens.length} etapas na ordem certa. Muito bem!` : `✓ Você montou as ${b.itens.length} frases. Muito bem!`}
       </p>
+      {etapas && (
+        <ol className="mt-3 list-decimal pl-6 text-[16px] text-[#14213A]">
+          {(b.itens as string[]).map((t) => (
+            <li key={t}>{t}</li>
+          ))}
+        </ol>
+      )}
     </Caixa>
   );
 }
@@ -776,7 +856,7 @@ function OrdenarOuConcluido({ b, id }: { b: Extract<Bloco, { tipo: "ordenar" }>;
   if (fim) return <Concluido b={b} />;
   return (
     <Placar.Provider value={concluir}>
-      <Ordenar b={b} id={id} />
+      {typeof b.itens[0] === "string" ? <OrdenarEtapas b={b} id={id} /> : <Ordenar b={b} id={id} />}
     </Placar.Provider>
   );
 }
