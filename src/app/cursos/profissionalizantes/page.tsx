@@ -33,7 +33,6 @@ const CURSOS = [
     onde: ["Construtoras e obras", "Empresas de instalação e manutenção predial", "Condomínios, hotéis, hospitais e shoppings", "Por conta própria, atendendo casas e comércios"],
     salario: "R$ 2.100 a R$ 2.700",
     fonteSalario: "Do piso de eletricista auxiliar à média de eletricista de instalações (Novo CAGED 2026).",
-    beneficios: ["Carteira assinada: 13º, férias e FGTS", "Adicional de periculosidade de 30% para quem trabalha exposto a risco elétrico (CLT, art. 193)", "Pode atuar como autônomo ou MEI"],
   },
   {
     slug: "automacao-residencial-inteligente",
@@ -44,18 +43,16 @@ const CURSOS = [
     onde: ["Empresas de automação e segurança eletrônica", "Lojas de casa inteligente e de material elétrico", "Construtoras e instaladoras de alto padrão", "Por conta própria, com projetos e instalações"],
     salario: "R$ 1.500 a R$ 2.600",
     fonteSalario: "Estimativa de sites de vagas para técnico instalador; ainda não há dado oficial só desta função.",
-    beneficios: ["Mercado novo e em crescimento", "Serviços cobrados por projeto, além do salário", "Pode atuar como autônomo ou MEI"],
   },
   {
     slug: "bombeiro-hidraulico",
     area: "Bombeiro Hidráulico",
     nome: "Bombeiro Hidráulico (Encanador)",
     horas: 80,
-    resumo: "Água fria e quente, esgoto, tubos e conexões, louças e metais, vazamentos e manutenção.",
+    resumo: "Água fria e quente, tubos e conexões, louças e metais, vazamentos e manutenção.",
     onde: ["Construtoras e obras", "Empresas de manutenção predial", "Condomínios, hotéis, hospitais e indústrias", "Por conta própria, com reparos e emergências"],
     salario: "R$ 2.400 a R$ 2.800",
     fonteSalario: "Do piso à média de encanador / bombeiro hidráulico (Novo CAGED 2026).",
-    beneficios: ["Carteira assinada: 13º, férias e FGTS", "Serviço procurado o ano inteiro, em toda cidade", "Pode atuar como autônomo ou MEI"],
   },
 ] as const;
 
@@ -215,19 +212,7 @@ export default async function CursosProfissionalizantesPage() {
                       <p className="mt-1 font-display text-2xl font-extrabold text-[#14213A]">
                         {c.salario} <span className="text-[13px] font-semibold text-[#516278]">por mês</span>
                       </p>
-                      <p className="mt-1 text-[12.5px] leading-snug text-[#8B97A8]">{c.fonteSalario}</p>
-
-                      <h4 className="mt-5 font-data text-xs font-semibold uppercase tracking-wide text-accent-2">Benefícios</h4>
-                      <ul className="mb-5 mt-2 flex flex-col gap-1.5 text-[14.5px] text-[#2B3A52]">
-                        {c.beneficios.map((b) => (
-                          <li key={b} className="flex gap-2">
-                            <span aria-hidden className="text-accent-2">
-                              ✓
-                            </span>
-                            {b}
-                          </li>
-                        ))}
-                      </ul>
+                      <p className="mb-5 mt-1 text-[12.5px] leading-snug text-[#8B97A8]">{c.fonteSalario}</p>
 
                       <div className="mt-auto flex items-center justify-between gap-3 border-t border-[#EEF2F6] pt-5">
                         <span className="text-[#14213A]">
