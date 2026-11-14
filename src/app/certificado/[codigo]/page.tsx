@@ -268,7 +268,7 @@ export default async function CertificadoPage({
                   </div>
                   {rt && (
                     <div>
-                      Responsável técnico: <strong>{rt.nome}</strong> · {rt.titulo} · {rt.registro}
+                      Instrutor: <strong>{rt.nome}</strong> · {rt.titulo} · {rt.registro}
                     </div>
                   )}
                   <div style={{ color: "#6B7A8F", fontSize: cq(0.8) }}>

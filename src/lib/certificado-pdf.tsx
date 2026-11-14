@@ -146,7 +146,7 @@ function Frente({ d, qr, img }: { d: DadosCertificadoPdf; qr: string; img: Image
                 </Text>
                 {d.responsavel ? (
                   <Text style={linhaAssin}>
-                    Responsável técnico: <Text style={{ fontFamily: "Helvetica-Bold" }}>{d.responsavel.nome}</Text> · {d.responsavel.titulo} ·{" "}
+                    Instrutor: <Text style={{ fontFamily: "Helvetica-Bold" }}>{d.responsavel.nome}</Text> · {d.responsavel.titulo} ·{" "}
                     {d.responsavel.registro}
                   </Text>
                 ) : null}

@@ -8,7 +8,7 @@ export const EMISSOR = {
 export const ASSINATURA_CERTIFICADO = "Wagner A. de S. Jr";
 export const ASSINATURA_CARGO = "Professor Habilitado";
 
-// Responsável técnico por curso (ex.: curso de eletricista com técnico em eletrotécnica registrado no CRT).
+// Instrutor habilitado por curso (aparece no certificado como "Instrutor") (ex.: curso de eletricista com técnico em eletrotécnica registrado no CRT).
 // Só entra no certificado com o consentimento por escrito do profissional. Chave = slug do curso.
 export type ResponsavelTecnico = { nome: string; titulo: string; registro: string };
 const RESPONSAVEL_TECNICO_POR_CURSO: Record<string, ResponsavelTecnico> = {
