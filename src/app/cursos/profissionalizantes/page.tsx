@@ -3,7 +3,6 @@ import Link from "next/link";
 import { criarClienteSupabasePublico } from "@/lib/supabase-publico";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { Reveal } from "@/components/reveal";
-import { textoParcela } from "@/lib/apostilas";
 
 // Página de venda dos cursos profissionalizantes (curso + apostila prática em PDF + certificado).
 // Igual para todos os visitantes: fica em cache e é refeita no máximo a cada 1 h (sem cookies).
@@ -11,7 +10,7 @@ export const revalidate = 3600;
 
 const TITULO = "Cursos profissionalizantes online: curso, apostila e certificado";
 const DESCRICAO =
-  "Aprenda uma profissão do zero: Eletricista Residencial, Automação Residencial e Bombeiro Hidráulico. Curso online, apostila prática em PDF e certificado com QR Code.";
+  "Escolha a sua área: Elétrica, Automação ou Bombeiro Hidráulico. Cada curso por R$ 59,90, com apostila prática em PDF e certificado com QR Code. Veja onde trabalhar e a faixa salarial.";
 
 export const metadata: Metadata = {
   title: TITULO,
@@ -20,32 +19,51 @@ export const metadata: Metadata = {
   openGraph: { title: `${TITULO} | SIBRAP`, description: DESCRICAO, url: "/cursos/profissionalizantes", siteName: "SIBRAP", locale: "pt_BR", type: "website" },
 };
 
-// A trilha da área. Cada curso aparece como "em breve" até ser publicado (curso ativo no banco).
-const TRILHA = [
+// Cursos independentes: cada pessoa escolhe a área, e cada curso tem o seu certificado (carga horária completa).
+// Aparecem como "em breve" até serem publicados (curso ativo no banco).
+// Salários: Novo CAGED 2026 (carteira assinada), consultado no Portal Salário em 14/11/2026. Atualizar uma vez por ano.
+const PRECO_PADRAO = 5990;
+const CURSOS = [
   {
     slug: "eletricista-residencial-basico",
+    area: "Elétrica",
     nome: "Eletricista Residencial Básico",
     horas: 40,
     resumo: "Segurança, tomadas, interruptores, three-way, iluminação, quadro, DR e aterramento. Para quem nunca mexeu com elétrica.",
-    destaque: "Instrutor: técnico em eletrotécnica com registro no CRT",
+    onde: ["Construtoras e obras", "Empresas de instalação e manutenção predial", "Condomínios, hotéis, hospitais e shoppings", "Por conta própria, atendendo casas e comércios"],
+    salario: "R$ 2.100 a R$ 2.700",
+    fonteSalario: "Do piso de eletricista auxiliar à média de eletricista de instalações (Novo CAGED 2026).",
+    beneficios: ["Carteira assinada: 13º, férias e FGTS", "Adicional de periculosidade de 30% para quem trabalha exposto a risco elétrico (CLT, art. 193)", "Pode atuar como autônomo ou MEI"],
   },
   {
     slug: "automacao-residencial-inteligente",
+    area: "Automação",
     nome: "Automação Residencial Inteligente",
     horas: 60,
     resumo: "Casa inteligente na prática: Wi-Fi, Zigbee, dispositivos, aplicativos, Alexa, cenas e rotinas.",
-    destaque: "O passo seguinte para quem já fez o de eletricista",
+    onde: ["Empresas de automação e segurança eletrônica", "Lojas de casa inteligente e de material elétrico", "Construtoras e instaladoras de alto padrão", "Por conta própria, com projetos e instalações"],
+    salario: "R$ 1.500 a R$ 2.600",
+    fonteSalario: "Estimativa de sites de vagas para técnico instalador; ainda não há dado oficial só desta função.",
+    beneficios: ["Mercado novo e em crescimento", "Serviços cobrados por projeto, além do salário", "Pode atuar como autônomo ou MEI"],
   },
   {
     slug: "bombeiro-hidraulico",
+    area: "Bombeiro Hidráulico",
     nome: "Bombeiro Hidráulico (Encanador)",
     horas: 80,
     resumo: "Água fria e quente, esgoto, tubos e conexões, louças e metais, vazamentos e manutenção.",
-    destaque: "A profissão que toda obra e toda casa precisa",
+    onde: ["Construtoras e obras", "Empresas de manutenção predial", "Condomínios, hotéis, hospitais e indústrias", "Por conta própria, com reparos e emergências"],
+    salario: "R$ 2.400 a R$ 2.800",
+    fonteSalario: "Do piso à média de encanador / bombeiro hidráulico (Novo CAGED 2026).",
+    beneficios: ["Carteira assinada: 13º, férias e FGTS", "Serviço procurado o ano inteiro, em toda cidade", "Pode atuar como autônomo ou MEI"],
   },
 ] as const;
 
 const PERGUNTAS = [
+  {
+    p: "Preciso fazer os três cursos?",
+    r: "Não. Cada curso é independente: você escolhe a área que quer seguir, estuda só esse curso e recebe o certificado dele, com a carga horária completa.",
+  },
   {
     p: "Preciso ter experiência ou estudo na área?",
     r: "Não. Os cursos começam do zero, com linguagem simples, e você estuda no celular ou no computador, no seu ritmo.",
@@ -64,7 +82,7 @@ const PERGUNTAS = [
   },
   {
     p: "Como é o pagamento?",
-    r: "Pagamento único, por PIX ou cartão em até 3 vezes. Sem mensalidade. O curso, a apostila e o certificado já estão incluídos.",
+    r: "Cada curso custa R$ 59,90, em pagamento único por PIX ou cartão em até 3 vezes. Sem mensalidade. O curso, a apostila e o certificado dele já estão incluídos.",
   },
 ];
 
@@ -72,7 +90,7 @@ const reais = (c: number) => (c / 100).toLocaleString("pt-BR", { style: "currenc
 
 export default async function CursosProfissionalizantesPage() {
   const supabase = criarClienteSupabasePublico();
-  const slugs = TRILHA.map((t) => t.slug);
+  const slugs = CURSOS.map((t) => t.slug);
   const [{ data: ativos }, { data: produtos }] = await Promise.all([
     supabase.from("cursos").select("slug").eq("ativo", true).in("slug", slugs),
     supabase.from("produtos").select("slug, preco_centavos").eq("ativo", true).in("slug", slugs.map((s) => `curso-${s}`)),
@@ -110,7 +128,7 @@ export default async function CursosProfissionalizantesPage() {
               Aprenda uma profissão do zero. Saia com certificado.
             </h1>
             <p className="mt-4 max-w-[56ch] text-[17px] leading-relaxed text-[#C9D6E5]">
-              Curso online, apostila prática em PDF e certificado com QR Code. Tudo incluído, em um pagamento único.
+              Escolha a sua área. Cada curso vem com apostila prática em PDF e certificado com QR Code, por R$ 59,90.
             </p>
             <ul className="mt-7 flex flex-wrap gap-2.5 font-data text-[13px] font-semibold">
               {["Curso online", "Apostila prática em PDF", "Certificado com QR Code"].map((t, i) => (
@@ -128,7 +146,7 @@ export default async function CursosProfissionalizantesPage() {
         {/* O que você leva */}
         <section className="mx-auto w-full max-w-[1180px] px-6 py-14">
           <Reveal>
-            <h2 className="font-display text-3xl font-extrabold text-[#14213A]">Você leva os três</h2>
+            <h2 className="font-display text-3xl font-extrabold text-[#14213A]">Em cada curso, você recebe</h2>
             <div className="mt-7 grid grid-cols-1 gap-5 md:grid-cols-3">
               {[
                 {
@@ -144,7 +162,7 @@ export default async function CursosProfissionalizantesPage() {
                 {
                   n: "3",
                   t: "O certificado",
-                  d: "Com carga horária, QR Code de validação e o nome do instrutor habilitado. Válido em todo o território nacional.",
+                  d: "Com a carga horária completa do curso e QR Code de validação. Válido em todo o território nacional.",
                 },
               ].map((b) => (
                 <div key={b.n} className="border border-[#D7DEE6] border-t-4 border-t-accent bg-white p-6">
@@ -160,63 +178,81 @@ export default async function CursosProfissionalizantesPage() {
         {/* Cursos */}
         <section id="cursos" className="mx-auto w-full max-w-[1180px] scroll-mt-24 px-6 pb-14">
           <Reveal>
-            <h2 className="font-display text-3xl font-extrabold text-[#14213A]">Escolha por onde começar</h2>
-            <p className="mt-2 max-w-[60ch] text-[16px] text-[#516278]">
-              Cada curso soma no currículo e prepara para o próximo. Você se especializa um passo de cada vez.
+            <h2 className="font-display text-3xl font-extrabold text-[#14213A]">Escolha a sua área de interesse</h2>
+            <p className="mt-2 max-w-[64ch] text-[16px] text-[#516278]">
+              Elétrica, Automação ou Bombeiro Hidráulico: o passo inicial para conquistar sua vaga profissional no mercado de trabalho.
             </p>
             <div className="mt-7 grid grid-cols-1 gap-5 lg:grid-cols-3">
-              {TRILHA.map((c, i) => {
+              {CURSOS.map((c) => {
                 const ativo = noAr.has(c.slug);
-                const centavos = preco.get(c.slug);
-                const corpo = (
-                  <>
+                const centavos = preco.get(c.slug) ?? PRECO_PADRAO;
+                return (
+                  <article key={c.slug} className="flex h-full flex-col overflow-hidden border border-[#D7DEE6] bg-white">
                     <div className="flex items-end justify-between bg-[#0B2A4A] px-6 py-5 text-white">
-                      <span className="font-data text-xs font-semibold uppercase tracking-wide text-accent">Etapa {i + 1}</span>
-                      <span className="font-display text-4xl font-extrabold leading-none">
+                      <span className="font-display text-xl font-extrabold text-accent">{c.area}</span>
+                      <span className="font-display text-3xl font-extrabold leading-none">
                         {c.horas}
-                        <span className="ml-1 text-lg">h</span>
+                        <span className="ml-1 text-base">h</span>
                       </span>
                     </div>
                     <div className="flex flex-1 flex-col p-6">
-                      <h3 className="font-display text-[1.35rem] font-extrabold leading-snug text-[#14213A]">{c.nome}</h3>
+                      <h3 className="font-display text-[1.3rem] font-extrabold leading-snug text-[#14213A]">{c.nome}</h3>
                       <p className="mt-2 text-[15px] leading-relaxed text-[#516278]">{c.resumo}</p>
-                      <p className="mt-3 text-[13.5px] font-semibold text-accent-2">{c.destaque}</p>
-                      <div className="mt-auto pt-5">
-                        {ativo ? (
-                          <div className="flex items-center justify-between gap-3">
-                            <span className="text-[14px] text-[#14213A]">
-                              {centavos ? (
-                                <>
-                                  <strong className="font-display text-xl">{reais(centavos)}</strong>
-                                  <span className="block text-[12.5px] text-[#516278]">ou {textoParcela(centavos)}</span>
-                                </>
-                              ) : (
-                                <strong>Inscrições abertas</strong>
-                              )}
+
+                      <h4 className="mt-5 font-data text-xs font-semibold uppercase tracking-wide text-accent-2">Onde você pode trabalhar</h4>
+                      <ul className="mt-2 flex flex-col gap-1.5 text-[14.5px] text-[#2B3A52]">
+                        {c.onde.map((o) => (
+                          <li key={o} className="flex gap-2">
+                            <span aria-hidden className="text-accent-2">
+                              ✓
                             </span>
-                            <span className="shrink-0 bg-accent px-5 py-2.5 text-[14.5px] font-bold text-accent-ink">Quero começar →</span>
-                          </div>
+                            {o}
+                          </li>
+                        ))}
+                      </ul>
+
+                      <h4 className="mt-5 font-data text-xs font-semibold uppercase tracking-wide text-accent-2">Faixa salarial inicial</h4>
+                      <p className="mt-1 font-display text-2xl font-extrabold text-[#14213A]">
+                        {c.salario} <span className="text-[13px] font-semibold text-[#516278]">por mês</span>
+                      </p>
+                      <p className="mt-1 text-[12.5px] leading-snug text-[#8B97A8]">{c.fonteSalario}</p>
+
+                      <h4 className="mt-5 font-data text-xs font-semibold uppercase tracking-wide text-accent-2">Benefícios</h4>
+                      <ul className="mb-5 mt-2 flex flex-col gap-1.5 text-[14.5px] text-[#2B3A52]">
+                        {c.beneficios.map((b) => (
+                          <li key={b} className="flex gap-2">
+                            <span aria-hidden className="text-accent-2">
+                              ✓
+                            </span>
+                            {b}
+                          </li>
+                        ))}
+                      </ul>
+
+                      <div className="mt-auto flex items-center justify-between gap-3 border-t border-[#EEF2F6] pt-5">
+                        <span className="text-[#14213A]">
+                          <strong className="font-display text-2xl">{reais(centavos)}</strong>
+                          <span className="block text-[12.5px] text-[#516278]">curso + apostila + certificado de {c.horas} h</span>
+                        </span>
+                        {ativo ? (
+                          <Link href={`/cursos/${c.slug}`} className="shrink-0 bg-accent px-5 py-2.5 text-[14.5px] font-bold text-accent-ink transition-[filter] hover:brightness-105">
+                            Quero começar →
+                          </Link>
                         ) : (
-                          <span className="inline-block border border-[#D7DEE6] bg-surface-2 px-4 py-2 font-data text-[12.5px] font-semibold uppercase tracking-wide text-[#516278]">
+                          <span className="shrink-0 border border-[#D7DEE6] bg-surface-2 px-4 py-2 font-data text-[12.5px] font-semibold uppercase tracking-wide text-[#516278]">
                             Em breve
                           </span>
                         )}
                       </div>
                     </div>
-                  </>
-                );
-                const classe = "flex h-full flex-col overflow-hidden border border-[#D7DEE6] bg-white";
-                return ativo ? (
-                  <Link key={c.slug} href={`/cursos/${c.slug}`} className={`${classe} transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)]`}>
-                    {corpo}
-                  </Link>
-                ) : (
-                  <div key={c.slug} className={classe}>
-                    {corpo}
-                  </div>
+                  </article>
                 );
               })}
             </div>
+            <p className="mt-4 text-[13px] leading-relaxed text-[#8B97A8]">
+              Salários de referência para trabalho com carteira assinada no Brasil; variam conforme a cidade, a empresa e a experiência. O curso
+              prepara para a vaga, mas não garante contratação.
+            </p>
           </Reveal>
         </section>
 
@@ -246,8 +282,7 @@ export default async function CursosProfissionalizantesPage() {
                 <h3 className="font-display text-xl font-extrabold text-[#14213A]">Com os pés no chão</h3>
                 <p className="mt-2 text-[15.5px] leading-relaxed text-[#516278]">
                   São cursos de entrada na profissão. Você aprende os fundamentos e a trabalhar com segurança, e o certificado comprova
-                  essa qualificação no currículo. O caminho continua com a prática ao lado de quem tem experiência e com novas
-                  especializações.
+                  essa qualificação no currículo. O caminho continua com a prática ao lado de quem tem experiência.
                 </p>
               </div>
             </Reveal>
@@ -267,9 +302,9 @@ export default async function CursosProfissionalizantesPage() {
           </div>
           <div className="mt-10 border-2 border-accent bg-white p-7 text-center">
             <p className="font-display text-2xl font-extrabold text-[#14213A]">Curso + apostila + certificado</p>
-            <p className="mt-1 text-[15.5px] text-[#516278]">Um pagamento, sem mensalidade. Comece hoje pelo celular.</p>
+            <p className="mt-1 text-[15.5px] text-[#516278]">R$ 59,90 por curso, em pagamento único. Você escolhe a área e estuda no celular.</p>
             <a href="#cursos" className="mt-5 inline-block bg-accent px-7 py-3.5 text-[16px] font-bold text-accent-ink transition-[filter] hover:brightness-105">
-              Escolher meu curso →
+              Escolher minha área →
             </a>
           </div>
         </section>
