@@ -74,8 +74,8 @@ const PERGUNTAS = [
     r: "Um manual em PDF com o passo a passo das atividades do curso, os diagramas e os checklists de segurança. Você baixa e consulta quando quiser, mesmo fora do site.",
   },
   {
-    p: "Depois do curso já posso trabalhar sozinho?",
-    r: "O curso é a porta de entrada: você aprende os fundamentos e a trabalhar com segurança. Comece como ajudante, com um profissional experiente, e siga se especializando. Para serviços em eletricidade, as empresas exigem também o treinamento da NR-10.",
+    p: "Depois do curso já posso trabalhar?",
+    r: "Sim. Você conclui sabendo fazer os serviços básicos da área com segurança, e pode buscar vaga ou atender clientes. Serviços maiores e mais complexos vêm com a prática e novas qualificações; em empresas, o trabalho com eletricidade exige também o treinamento da NR-10.",
   },
   {
     p: "Como é o pagamento?",
@@ -134,7 +134,7 @@ export default async function CursosProfissionalizantesPage() {
                 </li>
               ))}
             </ul>
-            <a href="#cursos" className="mt-8 inline-block bg-accent px-7 py-3.5 text-[16px] font-bold text-accent-ink transition-[filter] hover:brightness-105">
+            <a href="#cursos" className="btn-pulso brilho mt-8 inline-flex items-center gap-2 bg-accent px-7 py-4 text-[16px] font-extrabold text-accent-ink">
               Ver os cursos →
             </a>
           </div>
@@ -220,7 +220,7 @@ export default async function CursosProfissionalizantesPage() {
                           <span className="block text-[12.5px] text-[#516278]">curso + apostila + certificado de {c.horas} h</span>
                         </span>
                         {ativo ? (
-                          <Link href={`/cursos/${c.slug}`} className="shrink-0 bg-accent px-5 py-2.5 text-[14.5px] font-bold text-accent-ink transition-[filter] hover:brightness-105">
+                          <Link href={`/cursos/${c.slug}`} className="btn-pulso-suave brilho shrink-0 bg-accent px-5 py-2.5 text-[14.5px] font-extrabold text-accent-ink">
                             Quero começar →
                           </Link>
                         ) : (
@@ -264,10 +264,10 @@ export default async function CursosProfissionalizantesPage() {
             </Reveal>
             <Reveal delay={120}>
               <div className="border-l-4 border-accent bg-surface-2 p-6">
-                <h3 className="font-display text-xl font-extrabold text-[#14213A]">Com os pés no chão</h3>
+                <h3 className="font-display text-xl font-extrabold text-[#14213A]">Pronto para o primeiro serviço</h3>
                 <p className="mt-2 text-[15.5px] leading-relaxed text-[#516278]">
-                  São cursos de entrada na profissão. Você aprende os fundamentos e a trabalhar com segurança, e o certificado comprova
-                  essa qualificação no currículo. O caminho continua com a prática ao lado de quem tem experiência.
+                  Ao concluir, você executa os serviços básicos da área com segurança, sabe explicar o que está fazendo e tem o certificado
+                  para apresentar. Já dá para buscar a primeira vaga ou atender os primeiros clientes, e crescer a cada serviço.
                 </p>
               </div>
             </Reveal>
@@ -288,7 +288,7 @@ export default async function CursosProfissionalizantesPage() {
           <div className="mt-10 border-2 border-accent bg-white p-7 text-center">
             <p className="font-display text-2xl font-extrabold text-[#14213A]">Curso + apostila + certificado</p>
             <p className="mt-1 text-[15.5px] text-[#516278]">R$ 59,90 por curso, em pagamento único. Você escolhe a área e estuda no celular.</p>
-            <a href="#cursos" className="mt-5 inline-block bg-accent px-7 py-3.5 text-[16px] font-bold text-accent-ink transition-[filter] hover:brightness-105">
+            <a href="#cursos" className="btn-pulso brilho mt-5 inline-flex items-center gap-2 bg-accent px-7 py-4 text-[16px] font-extrabold text-accent-ink">
               Escolher minha área →
             </a>
           </div>
