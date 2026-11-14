@@ -1,0 +1,281 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { criarClienteSupabasePublico } from "@/lib/supabase-publico";
+import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
+import { Reveal } from "@/components/reveal";
+import { textoParcela } from "@/lib/apostilas";
+
+// Página de venda dos cursos profissionalizantes (curso + apostila prática em PDF + certificado).
+// Igual para todos os visitantes: fica em cache e é refeita no máximo a cada 1 h (sem cookies).
+export const revalidate = 3600;
+
+const TITULO = "Cursos profissionalizantes online: curso, apostila e certificado";
+const DESCRICAO =
+  "Aprenda uma profissão do zero: Eletricista Residencial, Automação Residencial e Bombeiro Hidráulico. Curso online, apostila prática em PDF e certificado com QR Code.";
+
+export const metadata: Metadata = {
+  title: TITULO,
+  description: DESCRICAO,
+  alternates: { canonical: "/cursos/profissionalizantes" },
+  openGraph: { title: `${TITULO} | SIBRAP`, description: DESCRICAO, url: "/cursos/profissionalizantes", siteName: "SIBRAP", locale: "pt_BR", type: "website" },
+};
+
+// A trilha da área. Cada curso aparece como "em breve" até ser publicado (curso ativo no banco).
+const TRILHA = [
+  {
+    slug: "eletricista-residencial-basico",
+    nome: "Eletricista Residencial Básico",
+    horas: 40,
+    resumo: "Segurança, tomadas, interruptores, three-way, iluminação, quadro, DR e aterramento. Para quem nunca mexeu com elétrica.",
+    destaque: "Instrutor: técnico em eletrotécnica com registro no CRT",
+  },
+  {
+    slug: "automacao-residencial-inteligente",
+    nome: "Automação Residencial Inteligente",
+    horas: 60,
+    resumo: "Casa inteligente na prática: Wi-Fi, Zigbee, dispositivos, aplicativos, Alexa, cenas e rotinas.",
+    destaque: "O passo seguinte para quem já fez o de eletricista",
+  },
+  {
+    slug: "bombeiro-hidraulico",
+    nome: "Bombeiro Hidráulico (Encanador)",
+    horas: 80,
+    resumo: "Água fria e quente, esgoto, tubos e conexões, louças e metais, vazamentos e manutenção.",
+    destaque: "A profissão que toda obra e toda casa precisa",
+  },
+] as const;
+
+const PERGUNTAS = [
+  {
+    p: "Preciso ter experiência ou estudo na área?",
+    r: "Não. Os cursos começam do zero, com linguagem simples, e você estuda no celular ou no computador, no seu ritmo.",
+  },
+  {
+    p: "O certificado vale no currículo?",
+    r: "Sim. É certificado de curso livre de qualificação profissional, válido em todo o território nacional (Lei nº 9.394/1996, art. 42), com carga horária e QR Code para a empresa conferir. Não é diploma de curso técnico.",
+  },
+  {
+    p: "O que é a apostila prática?",
+    r: "Um manual em PDF com o passo a passo das atividades do curso, os diagramas e os checklists de segurança. Você baixa e consulta quando quiser, mesmo fora do site.",
+  },
+  {
+    p: "Depois do curso já posso trabalhar sozinho?",
+    r: "O curso é a porta de entrada: você aprende os fundamentos e a trabalhar com segurança. Comece como ajudante, com um profissional experiente, e siga se especializando. Para serviços em eletricidade, as empresas exigem também o treinamento da NR-10.",
+  },
+  {
+    p: "Como é o pagamento?",
+    r: "Pagamento único, por PIX ou cartão em até 3 vezes. Sem mensalidade. O curso, a apostila e o certificado já estão incluídos.",
+  },
+];
+
+const reais = (c: number) => (c / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+export default async function CursosProfissionalizantesPage() {
+  const supabase = criarClienteSupabasePublico();
+  const slugs = TRILHA.map((t) => t.slug);
+  const [{ data: ativos }, { data: produtos }] = await Promise.all([
+    supabase.from("cursos").select("slug").eq("ativo", true).in("slug", slugs),
+    supabase.from("produtos").select("slug, preco_centavos").eq("ativo", true).in("slug", slugs.map((s) => `curso-${s}`)),
+  ]);
+  const noAr = new Set((ativos ?? []).map((c) => c.slug));
+  const preco = new Map((produtos ?? []).map((p) => [p.slug.slice("curso-".length), p.preco_centavos]));
+
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: PERGUNTAS.map((q) => ({ "@type": "Question", name: q.p, acceptedAnswer: { "@type": "Answer", text: q.r } })),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Cursos", item: "https://sibrap.tec.br/cursos" },
+        { "@type": "ListItem", position: 2, name: "Cursos profissionalizantes", item: "https://sibrap.tec.br/cursos/profissionalizantes" },
+      ],
+    },
+  ];
+
+  return (
+    <div className="flex min-h-screen flex-col bg-surface-2 font-body">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <CabecalhoSite />
+
+      <main className="flex-1">
+        {/* Topo */}
+        <section className="bg-[#0B2A4A] text-white">
+          <div className="mx-auto w-full max-w-[1180px] px-6 py-16 sm:py-20">
+            <p className="font-data text-xs uppercase tracking-[0.2em] text-accent">Cursos profissionalizantes</p>
+            <h1 className="mt-3 max-w-[20ch] font-display text-4xl font-extrabold leading-tight sm:text-5xl">
+              Aprenda uma profissão do zero. Saia com certificado.
+            </h1>
+            <p className="mt-4 max-w-[56ch] text-[17px] leading-relaxed text-[#C9D6E5]">
+              Curso online, apostila prática em PDF e certificado com QR Code. Tudo incluído, em um pagamento único.
+            </p>
+            <ul className="mt-7 flex flex-wrap gap-2.5 font-data text-[13px] font-semibold">
+              {["Curso online", "Apostila prática em PDF", "Certificado com QR Code"].map((t, i) => (
+                <li key={t} className="flex items-center gap-2 border border-white/25 px-3.5 py-2">
+                  <span className="text-accent">{i + 1}</span> {t}
+                </li>
+              ))}
+            </ul>
+            <a href="#cursos" className="mt-8 inline-block bg-accent px-7 py-3.5 text-[16px] font-bold text-accent-ink transition-[filter] hover:brightness-105">
+              Ver os cursos →
+            </a>
+          </div>
+        </section>
+
+        {/* O que você leva */}
+        <section className="mx-auto w-full max-w-[1180px] px-6 py-14">
+          <Reveal>
+            <h2 className="font-display text-3xl font-extrabold text-[#14213A]">Você leva os três</h2>
+            <div className="mt-7 grid grid-cols-1 gap-5 md:grid-cols-3">
+              {[
+                {
+                  n: "1",
+                  t: "O curso",
+                  d: "Aulas no celular ou no computador, com simuladores e jogos: você pratica as ligações na tela antes de pegar na ferramenta.",
+                },
+                {
+                  n: "2",
+                  t: "A apostila prática",
+                  d: "Manual em PDF com o passo a passo, os diagramas e os checklists de segurança. Para consultar no serviço, sem internet.",
+                },
+                {
+                  n: "3",
+                  t: "O certificado",
+                  d: "Com carga horária, QR Code de validação e o nome do instrutor habilitado. Válido em todo o território nacional.",
+                },
+              ].map((b) => (
+                <div key={b.n} className="border border-[#D7DEE6] border-t-4 border-t-accent bg-white p-6">
+                  <p className="font-display text-4xl font-extrabold text-accent">{b.n}</p>
+                  <h3 className="mt-2 font-display text-xl font-extrabold text-[#14213A]">{b.t}</h3>
+                  <p className="mt-2 text-[15px] leading-relaxed text-[#516278]">{b.d}</p>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        </section>
+
+        {/* Cursos */}
+        <section id="cursos" className="mx-auto w-full max-w-[1180px] scroll-mt-24 px-6 pb-14">
+          <Reveal>
+            <h2 className="font-display text-3xl font-extrabold text-[#14213A]">Escolha por onde começar</h2>
+            <p className="mt-2 max-w-[60ch] text-[16px] text-[#516278]">
+              Cada curso soma no currículo e prepara para o próximo. Você se especializa um passo de cada vez.
+            </p>
+            <div className="mt-7 grid grid-cols-1 gap-5 lg:grid-cols-3">
+              {TRILHA.map((c, i) => {
+                const ativo = noAr.has(c.slug);
+                const centavos = preco.get(c.slug);
+                const corpo = (
+                  <>
+                    <div className="flex items-end justify-between bg-[#0B2A4A] px-6 py-5 text-white">
+                      <span className="font-data text-xs font-semibold uppercase tracking-wide text-accent">Etapa {i + 1}</span>
+                      <span className="font-display text-4xl font-extrabold leading-none">
+                        {c.horas}
+                        <span className="ml-1 text-lg">h</span>
+                      </span>
+                    </div>
+                    <div className="flex flex-1 flex-col p-6">
+                      <h3 className="font-display text-[1.35rem] font-extrabold leading-snug text-[#14213A]">{c.nome}</h3>
+                      <p className="mt-2 text-[15px] leading-relaxed text-[#516278]">{c.resumo}</p>
+                      <p className="mt-3 text-[13.5px] font-semibold text-accent-2">{c.destaque}</p>
+                      <div className="mt-auto pt-5">
+                        {ativo ? (
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="text-[14px] text-[#14213A]">
+                              {centavos ? (
+                                <>
+                                  <strong className="font-display text-xl">{reais(centavos)}</strong>
+                                  <span className="block text-[12.5px] text-[#516278]">ou {textoParcela(centavos)}</span>
+                                </>
+                              ) : (
+                                <strong>Inscrições abertas</strong>
+                              )}
+                            </span>
+                            <span className="shrink-0 bg-accent px-5 py-2.5 text-[14.5px] font-bold text-accent-ink">Quero começar →</span>
+                          </div>
+                        ) : (
+                          <span className="inline-block border border-[#D7DEE6] bg-surface-2 px-4 py-2 font-data text-[12.5px] font-semibold uppercase tracking-wide text-[#516278]">
+                            Em breve
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                );
+                const classe = "flex h-full flex-col overflow-hidden border border-[#D7DEE6] bg-white";
+                return ativo ? (
+                  <Link key={c.slug} href={`/cursos/${c.slug}`} className={`${classe} transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)]`}>
+                    {corpo}
+                  </Link>
+                ) : (
+                  <div key={c.slug} className={classe}>
+                    {corpo}
+                  </div>
+                );
+              })}
+            </div>
+          </Reveal>
+        </section>
+
+        {/* Para quem é */}
+        <section className="bg-white">
+          <div className="mx-auto grid w-full max-w-[1180px] grid-cols-1 gap-10 px-6 py-14 md:grid-cols-2">
+            <Reveal>
+              <h2 className="font-display text-3xl font-extrabold text-[#14213A]">Para quem quer a primeira oportunidade</h2>
+              <ul className="mt-5 flex flex-col gap-3 text-[16px] text-[#2B3A52]">
+                {[
+                  "Nunca trabalhou na área e quer começar",
+                  "Já faz bicos e quer um certificado para mostrar",
+                  "Quer trabalhar por conta própria no bairro",
+                  "Trabalha em obra e quer subir de função",
+                ].map((t) => (
+                  <li key={t} className="flex gap-3">
+                    <span aria-hidden className="font-bold text-accent-2">
+                      ✓
+                    </span>
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+            <Reveal delay={120}>
+              <div className="border-l-4 border-accent bg-surface-2 p-6">
+                <h3 className="font-display text-xl font-extrabold text-[#14213A]">Com os pés no chão</h3>
+                <p className="mt-2 text-[15.5px] leading-relaxed text-[#516278]">
+                  São cursos de entrada na profissão. Você aprende os fundamentos e a trabalhar com segurança, e o certificado comprova
+                  essa qualificação no currículo. O caminho continua com a prática ao lado de quem tem experiência e com novas
+                  especializações.
+                </p>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Perguntas */}
+        <section className="mx-auto w-full max-w-[820px] px-6 py-14">
+          <h2 className="font-display text-3xl font-extrabold text-[#14213A]">Perguntas frequentes</h2>
+          <div className="mt-6 flex flex-col gap-3">
+            {PERGUNTAS.map((q) => (
+              <details key={q.p} className="border border-[#D7DEE6] bg-white p-5">
+                <summary className="cursor-pointer font-display text-[17px] font-bold text-[#14213A]">{q.p}</summary>
+                <p className="mt-3 text-[15.5px] leading-relaxed text-[#516278]">{q.r}</p>
+              </details>
+            ))}
+          </div>
+          <div className="mt-10 border-2 border-accent bg-white p-7 text-center">
+            <p className="font-display text-2xl font-extrabold text-[#14213A]">Curso + apostila + certificado</p>
+            <p className="mt-1 text-[15.5px] text-[#516278]">Um pagamento, sem mensalidade. Comece hoje pelo celular.</p>
+            <a href="#cursos" className="mt-5 inline-block bg-accent px-7 py-3.5 text-[16px] font-bold text-accent-ink transition-[filter] hover:brightness-105">
+              Escolher meu curso →
+            </a>
+          </div>
+        </section>
+      </main>
+
+      <RodapeSite />
+    </div>
+  );
+}
