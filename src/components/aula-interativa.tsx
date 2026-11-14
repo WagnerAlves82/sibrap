@@ -6,6 +6,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 // abas, diálogos, áudios gravados e exercícios. Cada bloco "ativo" conta no placar do topo,
 // para o aluno ver o próprio avanço dentro da aula e não só rolar a página.
 
+import { JogoBornes, JogoCircuito, type BorneJogo, type FioJogo, type ModeloCircuito } from "./jogos-eletrica";
+
 export type Frase = { en: string; pt: string };
 export type Bloco =
   | { tipo: "texto"; titulo?: string; paragrafos: string[] }
@@ -142,12 +144,16 @@ export type Bloco =
   // ditado: ouve a frase (normal ou devagar) e escreve o que ouviu; a correção mostra palavra por palavra
   | { tipo: "ditado"; titulo?: string; intro?: string; itens: Frase[] }
   // fala: ouve, fala no microfone e o reconhecimento de voz do navegador confere a pronúncia
-  | { tipo: "fala"; titulo?: string; intro?: string; itens: Frase[] };
+  | { tipo: "fala"; titulo?: string; intro?: string; itens: Frase[] }
+  // jogo de elétrica: o aluno aciona disjuntor e interruptores e vê a lâmpada (simples, three-way, four-way)
+  | { tipo: "circuito"; titulo?: string; intro?: string; modelo: ModeloCircuito }
+  // jogo de elétrica: escolher o fio e tocar no borne certo; depois "ligar o disjuntor" para testar
+  | { tipo: "bornes"; titulo?: string; intro?: string; fios: FioJogo[]; bornes: BorneJogo[]; sucesso: string };
 
 // qualquer bloco pode ter "voz" própria (ex.: "en-US" para a pronúncia do alfabeto da OTAN num curso em português)
 type ComVoz = { voz?: string | null };
 
-const ATIVOS = new Set(["frases", "cards", "escolha", "vf", "ordenar", "dialogos", "sinais", "checklist", "fluxo", "simulador", "triagem", "associar", "caca", "leis", "calendario", "ditado", "fala"]);
+const ATIVOS = new Set(["frases", "cards", "escolha", "vf", "ordenar", "dialogos", "sinais", "checklist", "fluxo", "simulador", "triagem", "associar", "caca", "leis", "calendario", "ditado", "fala", "circuito", "bornes"]);
 
 const Placar = createContext<(id: string) => void>(() => {});
 // idioma da voz do navegador (en-US no inglês); null = curso sem voz (ex.: Libras)
@@ -1692,6 +1698,24 @@ function Fala({ b, id }: { b: Extract<Bloco, { tipo: "fala" }>; id: string }) {
   );
 }
 
+function Circuito({ b, id }: { b: Extract<Bloco, { tipo: "circuito" }>; id: string }) {
+  const concluir = useConcluir(id);
+  return (
+    <Caixa titulo={b.titulo ?? "Teste o circuito"} intro={b.intro ?? "Toque no disjuntor e nos interruptores e veja o que acontece com a lâmpada."}>
+      <JogoCircuito modelo={b.modelo} onConcluir={concluir} />
+    </Caixa>
+  );
+}
+
+function Bornes({ b, id }: { b: Extract<Bloco, { tipo: "bornes" }>; id: string }) {
+  const concluir = useConcluir(id);
+  return (
+    <Caixa titulo={b.titulo ?? "Ligue os fios"} intro={b.intro ?? "Escolha um fio e toque no borne onde ele deve ser ligado."}>
+      <JogoBornes fios={b.fios} bornes={b.bornes} sucesso={b.sucesso} onConcluir={concluir} />
+    </Caixa>
+  );
+}
+
 function Render({ b, id }: { b: Bloco; id: string }) {
   switch (b.tipo) {
     case "texto":
@@ -1752,6 +1776,10 @@ function Render({ b, id }: { b: Bloco; id: string }) {
       return <Fala b={b} id={id} />;
     case "calendario":
       return <Calendario b={b} id={id} />;
+    case "circuito":
+      return <Circuito b={b} id={id} />;
+    case "bornes":
+      return <Bornes b={b} id={id} />;
     default:
       return null;
   }
