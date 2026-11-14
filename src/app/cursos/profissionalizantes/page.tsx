@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { criarClienteSupabasePublico } from "@/lib/supabase-publico";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
@@ -10,7 +11,7 @@ export const revalidate = 3600;
 
 const TITULO = "Cursos profissionalizantes online: curso, apostila e certificado";
 const DESCRICAO =
-  "Escolha a sua área: Elétrica, Automação ou Bombeiro Hidráulico. Cada curso por R$ 59,90, com apostila prática em PDF e certificado com QR Code. Veja onde trabalhar e a faixa salarial.";
+  "Escolha a sua área: Elétrica, Automação ou Bombeiro Hidráulico. Cada curso por R$ 59,90, com apostila prática em PDF e certificado com QR Code. Escolha a área e veja os detalhes de cada curso.";
 
 export const metadata: Metadata = {
   title: TITULO,
@@ -26,6 +27,7 @@ const PRECO_PADRAO = 5990;
 const CURSOS = [
   {
     slug: "eletricista-residencial-basico",
+    foto: "/cursos/profissionalizantes/eletrica.webp",
     area: "Elétrica",
     nome: "Eletricista Residencial Básico",
     horas: 40,
@@ -36,6 +38,7 @@ const CURSOS = [
   },
   {
     slug: "automacao-residencial-inteligente",
+    foto: "/cursos/profissionalizantes/automacao.webp",
     area: "Automação",
     nome: "Automação Residencial Inteligente",
     horas: 60,
@@ -46,6 +49,7 @@ const CURSOS = [
   },
   {
     slug: "bombeiro-hidraulico",
+    foto: "/cursos/profissionalizantes/hidraulica.webp",
     area: "Bombeiro Hidráulico",
     nome: "Bombeiro Hidráulico (Encanador)",
     horas: 80,
@@ -185,6 +189,9 @@ export default async function CursosProfissionalizantesPage() {
                 const centavos = preco.get(c.slug) ?? PRECO_PADRAO;
                 return (
                   <article key={c.slug} className="flex h-full flex-col overflow-hidden border border-[#D7DEE6] bg-white">
+                    <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-2">
+                      <Image src={c.foto} alt={c.nome} fill sizes="(min-width: 1024px) 370px, 100vw" className="object-cover" />
+                    </div>
                     <div className="flex items-end justify-between bg-[#0B2A4A] px-6 py-5 text-white">
                       <span className="font-display text-xl font-extrabold text-accent">{c.area}</span>
                       <span className="font-display text-3xl font-extrabold leading-none">
@@ -194,25 +201,7 @@ export default async function CursosProfissionalizantesPage() {
                     </div>
                     <div className="flex flex-1 flex-col p-6">
                       <h3 className="font-display text-[1.3rem] font-extrabold leading-snug text-[#14213A]">{c.nome}</h3>
-                      <p className="mt-2 text-[15px] leading-relaxed text-[#516278]">{c.resumo}</p>
-
-                      <h4 className="mt-5 font-data text-xs font-semibold uppercase tracking-wide text-accent-2">Onde você pode trabalhar</h4>
-                      <ul className="mt-2 flex flex-col gap-1.5 text-[14.5px] text-[#2B3A52]">
-                        {c.onde.map((o) => (
-                          <li key={o} className="flex gap-2">
-                            <span aria-hidden className="text-accent-2">
-                              ✓
-                            </span>
-                            {o}
-                          </li>
-                        ))}
-                      </ul>
-
-                      <h4 className="mt-5 font-data text-xs font-semibold uppercase tracking-wide text-accent-2">Faixa salarial inicial</h4>
-                      <p className="mt-1 font-display text-2xl font-extrabold text-[#14213A]">
-                        {c.salario} <span className="text-[13px] font-semibold text-[#516278]">por mês</span>
-                      </p>
-                      <p className="mb-5 mt-1 text-[12.5px] leading-snug text-[#8B97A8]">{c.fonteSalario}</p>
+                      <p className="mb-5 mt-2 text-[15px] leading-relaxed text-[#516278]">{c.resumo}</p>
 
                       <div className="mt-auto flex items-center justify-between gap-3 border-t border-[#EEF2F6] pt-5">
                         <span className="text-[#14213A]">
@@ -234,10 +223,6 @@ export default async function CursosProfissionalizantesPage() {
                 );
               })}
             </div>
-            <p className="mt-4 text-[13px] leading-relaxed text-[#8B97A8]">
-              Salários de referência para trabalho com carteira assinada no Brasil; variam conforme a cidade, a empresa e a experiência. O curso
-              prepara para a vaga, mas não garante contratação.
-            </p>
           </Reveal>
         </section>
 
