@@ -168,7 +168,7 @@ export default async function Home() {
               Elétrica, Automação ou Bombeiro Hidráulico: escolha a sua área e comece pelo celular.
             </p>
             <ul className="mt-4 flex flex-col gap-2 text-[15px] text-white/90">
-              {["Curso online com validade em todo o Brasil", "Apostila prática em PDF", "Certificado com QR Code, por R$ 59,90"].map((i) => (
+              {["Curso com certificado válido em todo o Brasil", "Apostila prática em PDF", "Certificado com QR Code, por R$ 59,90"].map((i) => (
                 <li key={i} className="flex gap-2">
                   <span className="mt-0.5 text-accent" aria-hidden>
                     ✓
