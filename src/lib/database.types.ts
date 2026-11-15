@@ -590,6 +590,8 @@ export type Database = {
           assinado_aluno_em: string
           assinado_instituicao_em: string
           hash_conferencia: string | null
+          data_inicio: string | null
+          data_conclusao: string | null
           carga_horaria_horas: number
           codigo: string
           cpf: string | null
@@ -604,6 +606,8 @@ export type Database = {
           assinado_aluno_em?: string
           assinado_instituicao_em?: string
           hash_conferencia?: string | null
+          data_inicio?: string | null
+          data_conclusao?: string | null
           carga_horaria_horas: number
           codigo: string
           cpf?: string | null
@@ -618,6 +622,8 @@ export type Database = {
           assinado_aluno_em?: string
           assinado_instituicao_em?: string
           hash_conferencia?: string | null
+          data_inicio?: string | null
+          data_conclusao?: string | null
           carga_horaria_horas?: number
           codigo?: string
           cpf?: string | null
@@ -1023,6 +1029,7 @@ export type Database = {
           atualizado_em: string
           carga_horaria_horas: number
           certificado_por_etapas: boolean
+          profissionalizante: boolean
           categoria: string | null
           criado_em: string
           descricao: string | null
@@ -1056,6 +1063,7 @@ export type Database = {
           atualizado_em?: string
           carga_horaria_horas?: number
           certificado_por_etapas?: boolean
+          profissionalizante?: boolean
           categoria?: string | null
           criado_em?: string
           descricao?: string | null
@@ -2236,6 +2244,8 @@ export type Database = {
           assinado_aluno_em: string
           assinado_instituicao_em: string
           hash_conferencia: string | null
+          data_inicio: string | null
+          data_conclusao: string | null
           carga_horaria_horas: number
           cpf_mascarado: string
           curso_nome: string

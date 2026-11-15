@@ -1,5 +1,5 @@
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
-import { ASSINATURA_CARGO, ASSINATURA_CERTIFICADO, EMISSOR, responsavelTecnico, textoResponsavel } from "@/lib/emissor";
+import { ASSINATURA_CARGO, ASSINATURA_CERTIFICADO, EMISSOR, dataCurta, responsavelTecnico, textoResponsavel } from "@/lib/emissor";
 
 export async function ResultadoValidacao({ codigo }: { codigo: string }) {
   const supabase = await criarClienteSupabaseServer();
@@ -39,6 +39,9 @@ export async function ResultadoValidacao({ codigo }: { codigo: string }) {
         <Campo rotulo="Nome" valor={cert.nome_completo} destaque />
         <Campo rotulo="Curso" valor={cert.curso_nome} />
         <Campo rotulo="Carga horária" valor={`${cert.carga_horaria_horas} horas`} />
+        {cert.data_inicio && cert.data_conclusao && (
+          <Campo rotulo="Período do curso" valor={`${dataCurta(cert.data_inicio)} a ${dataCurta(cert.data_conclusao)}`} />
+        )}
         <Campo rotulo="Emitido em" valor={data_emissao} />
         <Campo rotulo="Código" valor={codigo.toUpperCase()} mono />
         <Campo rotulo="Emitido por" valor={`${EMISSOR.nome} · CNPJ ${EMISSOR.cnpj}`} />

@@ -18,6 +18,13 @@ const RESPONSAVEL_TECNICO_POR_CURSO: Record<string, ResponsavelTecnico> = {
 export function responsavelTecnico(cursoSlug: string | null | undefined): ResponsavelTecnico | null {
   return (cursoSlug && RESPONSAVEL_TECNICO_POR_CURSO[cursoSlug]) || null;
 }
+// "2026-11-09" -> "09/11/2026" (colunas date do banco, sem fuso horário)
+export function dataCurta(iso: string | null | undefined): string {
+  if (!iso) return "";
+  const [a, m, d] = iso.slice(0, 10).split("-");
+  return `${d}/${m}/${a}`;
+}
+
 export const textoResponsavel = (r: ResponsavelTecnico) => `${r.nome} · ${r.titulo} · ${r.registro}`;
 
 // Base legal citada logo após "concluiu com aproveitamento..." no certificado (pedido do Wagner, 10/11/2026).

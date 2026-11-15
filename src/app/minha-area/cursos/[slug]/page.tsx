@@ -13,6 +13,7 @@ import { dadosCartaoCompra } from "@/lib/cartao-transparente";
 import { PopupEtapa } from "./certificado/PopupEtapa";
 import { TourEtapas } from "./TourEtapas";
 import { APOSTILA_DO_CURSO } from "@/lib/cursos-apostila";
+import { dataHoraBR, liberacaoCertificado } from "@/lib/certificado-prazo";
 
 export const metadata: Metadata = {
   title: "Meu curso",
@@ -29,14 +30,14 @@ export default async function AreaDoCursoPage({
 
   const { data: curso } = await supabase
     .from("cursos")
-    .select("id, slug, nome, carga_horaria_horas, nota_minima, ordem_obrigatoria, certificado_por_etapas")
+    .select("id, slug, nome, carga_horaria_horas, nota_minima, ordem_obrigatoria, certificado_por_etapas, profissionalizante")
     .eq("slug", slug)
     .maybeSingle();
   if (!curso) notFound();
 
   const [{ data: matricula }, { data: modulos }, { data: progresso }, { data: tentativas }, { data: certificado }, { data: etapas }] =
     await Promise.all([
-      supabase.from("matriculas").select("curso_id").eq("curso_id", curso.id).maybeSingle(),
+      supabase.from("matriculas").select("curso_id, criado_em").eq("curso_id", curso.id).maybeSingle(),
       supabase
         .from("modulos")
         .select("id, titulo, ordem, aulas(id, titulo, ordem, carga_min, youtube_id)")
@@ -169,6 +170,13 @@ export default async function AreaDoCursoPage({
               >
                 {feitas === 0 ? "Começar a primeira aula" : "Continuar de onde parei"} <span aria-hidden>→</span>
               </Link>
+            )}
+            {curso.profissionalizante && !certificado && (
+              <p className="mt-4 border-l-4 border-accent bg-[#FFF8EB] px-4 py-3 text-[14.5px] leading-relaxed text-[#14213A]">
+                <strong>Sobre o seu certificado:</strong> ele traz a data de início e a de conclusão do curso e pode ser emitido a
+                partir de <strong>{dataHoraBR(liberacaoCertificado(matricula.criado_em))}</strong> (5 dias após a compra), depois de
+                concluir as aulas e passar na prova final. É o tempo para você estudar com calma e praticar.
+              </p>
             )}
             {APOSTILA_DO_CURSO[curso.slug] && (
               <a

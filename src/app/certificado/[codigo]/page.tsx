@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import QRCode from "qrcode";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
-import { ASSINATURA_CARGO, ASSINATURA_CERTIFICADO, AVISO_CURSO_LIVRE, BASE_LEGAL_CERTIFICADO, EMISSOR, responsavelTecnico } from "@/lib/emissor";
+import { ASSINATURA_CARGO, ASSINATURA_CERTIFICADO, AVISO_CURSO_LIVRE, BASE_LEGAL_CERTIFICADO, EMISSOR, dataCurta, responsavelTecnico } from "@/lib/emissor";
 import { SeloAbed } from "@/components/selo-abed";
 import { BotaoImprimir } from "./BotaoImprimir";
 import { MAPA_BRASIL_PATH } from "@/lib/certificado-desenho";
@@ -207,8 +207,16 @@ export default async function CertificadoPage({
               <div style={{ marginTop: cq(1.6), fontSize: cq(1.45), lineHeight: 1.5, textAlign: "center", maxWidth: cq(78), color: "#2B3A52" }}>
                 concluiu com aproveitamento o curso de{" "}
                 <strong style={{ color: NAVY }}>{cert.curso_nome}</strong>, com carga
-                horária de <strong style={{ color: NAVY }}>{cert.carga_horaria_horas} horas</strong>, em{" "}
-                {formatarData(cert.emitido_em)}, {BASE_LEGAL_CERTIFICADO}.
+                horária de <strong style={{ color: NAVY }}>{cert.carga_horaria_horas} horas</strong>,{" "}
+                {cert.data_inicio && cert.data_conclusao ? (
+                  <>
+                    realizado de <strong style={{ color: NAVY }}>{dataCurta(cert.data_inicio)}</strong> a{" "}
+                    <strong style={{ color: NAVY }}>{dataCurta(cert.data_conclusao)}</strong>,
+                  </>
+                ) : (
+                  <>em {formatarData(cert.emitido_em)},</>
+                )}{" "}
+                {BASE_LEGAL_CERTIFICADO}.
               </div>
 
               <div

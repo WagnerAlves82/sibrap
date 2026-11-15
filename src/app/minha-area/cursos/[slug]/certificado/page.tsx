@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { dataHoraBR, liberacaoCertificado } from "@/lib/certificado-prazo";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
@@ -40,7 +41,7 @@ export default async function CertificadoAreaPage({
 
   const { data: curso } = await supabase
     .from("cursos")
-    .select("id, nome, nota_minima, carga_horaria_horas, permite_isencao_cadunico, certificado_por_etapas")
+    .select("id, nome, nota_minima, carga_horaria_horas, permite_isencao_cadunico, certificado_por_etapas, profissionalizante")
     .eq("slug", slug)
     .maybeSingle();
   if (!curso) notFound();
@@ -61,7 +62,7 @@ export default async function CertificadoAreaPage({
     { data: etapaRows },
   ] = await Promise.all([
     supabase.auth.getUser(),
-    supabase.from("matriculas").select("curso_id").eq("curso_id", curso.id).maybeSingle(),
+    supabase.from("matriculas").select("curso_id, criado_em").eq("curso_id", curso.id).maybeSingle(),
     supabase.from("certificados").select("codigo, carga_horaria_horas, forma").eq("curso_id", curso.id).maybeSingle(),
     supabase.from("aulas").select("id").eq("curso_id", curso.id),
     supabase.from("progresso_aulas").select("aula_id, concluida_em"),
@@ -132,7 +133,11 @@ export default async function CertificadoAreaPage({
   const horasLiberadas = etapa?.liberadas ?? 0;
   const horasCompradas = etapa?.compradas ?? null;
   const aulasPara = (h: number) => (h >= curso.carga_horaria_horas ? totalAulas : Math.ceil((totalAulas * h) / curso.carga_horaria_horas));
-  const podeEmitir = porEtapas ? horasLiberadas > 0 && elegivel : aulasOk && provaOk && elegivel;
+  // profissionalizante: só a partir de 5 dias da compra (o banco também confere)
+  const liberaEm = curso.profissionalizante && matricula ? liberacaoCertificado(matricula.criado_em) : null;
+  // eslint-disable-next-line react-hooks/purity -- página dinâmica da área do aluno: a hora atual é lida a cada acesso
+  const antesDoPrazo = liberaEm ? liberaEm.getTime() > Date.now() : false;
+  const podeEmitir = (porEtapas ? horasLiberadas > 0 && elegivel : aulasOk && provaOk && elegivel) && !antesDoPrazo;
   const formatoEmissao: "online" | "impresso" = pagoImpresso ? "impresso" : "online";
   const precoOnline = produtoOnline
     ? (produtoOnline.preco_centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
@@ -249,7 +254,13 @@ export default async function CertificadoAreaPage({
                 liberar mais horas.
               </Alert>
             )}
-            {!podeEmitir && !(porEtapas && horasLiberadas > 0) && (
+            {antesDoPrazo && liberaEm && (
+              <Alert variant="info" claro>
+                O certificado deste curso traz a data de início e a de conclusão e pode ser emitido a partir de{" "}
+                {dataHoraBR(liberaEm)} (5 dias após a compra), depois de concluir as aulas e passar na prova final.
+              </Alert>
+            )}
+            {!podeEmitir && !antesDoPrazo && !(porEtapas && horasLiberadas > 0) && (
               <Alert variant="info" claro>
                 {porEtapas
                   ? `Conclua ${aulasPara(opcoesCarga[0]?.horas ?? curso.carga_horaria_horas)} aulas e o questionário da primeira etapa para liberar o certificado de ${opcoesCarga[0]?.horas ?? curso.carga_horaria_horas} horas. Bons estudos!`

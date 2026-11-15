@@ -9,7 +9,7 @@ import fs from "node:fs";
 import path from "node:path";
 import QRCode from "qrcode";
 import { Document, Font, Image, Page, Path, Polygon, Svg, Text, View, renderToBuffer } from "@react-pdf/renderer";
-import { ASSINATURA_CARGO, ASSINATURA_CERTIFICADO, AVISO_CURSO_LIVRE, BASE_LEGAL_CERTIFICADO, EMISSOR, type ResponsavelTecnico } from "@/lib/emissor";
+import { ASSINATURA_CARGO, ASSINATURA_CERTIFICADO, AVISO_CURSO_LIVRE, BASE_LEGAL_CERTIFICADO, EMISSOR, dataCurta, type ResponsavelTecnico } from "@/lib/emissor";
 import { MAPA_BRASIL_PATH } from "@/lib/certificado-desenho";
 
 Font.registerHyphenationCallback((palavra) => [palavra]);
@@ -42,6 +42,8 @@ export type DadosCertificadoPdf = {
   assinadoInstituicaoEm: string;
   hashConferencia: string | null;
   responsavel?: ResponsavelTecnico | null;
+  dataInicio?: string | null;
+  dataConclusao?: string | null;
   modulos: { titulo: string; aulas: string[] }[];
   siteUrl: string;
 };
@@ -109,7 +111,16 @@ function Frente({ d, qr, img }: { d: DadosCertificadoPdf; qr: string; img: Image
           {d.cpfMascarado ? <Text style={{ marginTop: cq(0.6), fontFamily: "Courier", fontSize: cq(1.1), color: CINZA }}>CPF {d.cpfMascarado}</Text> : null}
           <Text style={{ marginTop: cq(1.6), fontSize: cq(1.4), lineHeight: 1.5, textAlign: "center", maxWidth: cq(76), color: "#2B3A52" }}>
             concluiu com aproveitamento o curso de <Text style={{ fontFamily: "Helvetica-Bold", color: NAVY }}>{d.curso}</Text>, com carga horária de{" "}
-            <Text style={{ fontFamily: "Helvetica-Bold", color: NAVY }}>{d.horas} horas</Text>, em {dataExtenso(d.emitidoEm)}, {BASE_LEGAL_CERTIFICADO}.
+            <Text style={{ fontFamily: "Helvetica-Bold", color: NAVY }}>{d.horas} horas</Text>,{" "}
+            {d.dataInicio && d.dataConclusao ? (
+              <>
+                realizado de <Text style={{ fontFamily: "Helvetica-Bold", color: NAVY }}>{dataCurta(d.dataInicio)}</Text> a{" "}
+                <Text style={{ fontFamily: "Helvetica-Bold", color: NAVY }}>{dataCurta(d.dataConclusao)}</Text>,
+              </>
+            ) : (
+              <>em {dataExtenso(d.emitidoEm)},</>
+            )}{" "}
+            {BASE_LEGAL_CERTIFICADO}.
           </Text>
 
           <View style={{ marginTop: "auto", width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
