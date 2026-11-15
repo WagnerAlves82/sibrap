@@ -173,8 +173,12 @@ export default function FormacaoEletricistaPage() {
 
       {/* Faixa da promoção */}
       {promo && (
-        <div className="bg-accent px-4 py-2.5 text-center font-data text-[13.5px] font-bold text-accent-ink">
-          Comece 2027 com profissão: {PRECO_PIX_PROMO} no PIX só até 31 de dezembro
+        <div className="bg-accent px-4 py-3.5 text-center font-display text-[18px] font-extrabold leading-snug text-accent-ink sm:py-4 sm:text-[22px]">
+          Comece 2027 com profissão:{" "}
+          <span className="whitespace-nowrap">
+            <span className="bg-accent-ink px-1.5 text-accent">{PRECO_PIX_PROMO}</span> no PIX
+          </span>{" "}
+          <span className="whitespace-nowrap">só até 31 de dezembro</span>
         </div>
       )}
 
@@ -183,7 +187,7 @@ export default function FormacaoEletricistaPage() {
         <section className="overflow-hidden bg-[#0B2A4A] text-white">
           <div className="mx-auto grid w-full max-w-[1180px] items-center gap-10 px-6 py-14 sm:py-16 md:grid-cols-2">
             <Reveal variante="esquerda">
-              <p className="font-data text-xs uppercase tracking-[0.2em] text-accent">
+              <p className="inline-block border-l-4 border-accent pl-3 font-display text-[20px] font-extrabold uppercase leading-tight tracking-wide text-accent sm:text-[24px]">
                 Formação Inicial para Eletricista
               </p>
               <h1 className="mt-3 max-w-[18ch] font-display text-4xl font-extrabold leading-tight sm:text-5xl">
