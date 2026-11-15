@@ -16,7 +16,7 @@ import {
 
 // Formação Inicial para Eletricista: Eletricista Residencial Básico +
 // NR-10 + preparatório NR-35. 3 certificados de
-// curso livre assinados eletronicamente pelo instrutor Alexsandro (CRT-01).
+// curso livre assinados eletronicamente pelo instrutor (nome só no certificado, nunca nas páginas).
 // NR-35 fica como preparatório (Portaria MTE nº 1.259/2026: treinamento de NR-35 só presencial).
 export const revalidate = 3600;
 
@@ -120,11 +120,6 @@ export default function FormacaoEletricistaPage() {
         "3 certificados de curso livre: Eletricista Residencial Básico (40 h), NR-10 (40 h) e NR-35: Segurança no Trabalho em Altura (8 h)",
       timeRequired: `PT${F.horasTotais}H`,
       provider: { "@type": "Organization", name: "SIBRAP", sameAs: SITE },
-      instructor: {
-        "@type": "Person",
-        name: "Alexsandro de Sousa Silva",
-        jobTitle: "Técnico em Eletrotécnica",
-      },
       hasCourseInstance: {
         "@type": "CourseInstance",
         courseMode: "online",
@@ -293,7 +288,7 @@ export default function FormacaoEletricistaPage() {
               </h2>
               <ul className="mt-5 flex flex-col gap-3 text-[16px] text-[#2B3A52]">
                 {[
-                  "Assinatura eletrônica do instrutor técnico em eletrotécnica (CRT-01)",
+                  "Assinatura eletrônica de instrutor técnico em eletrotécnica, com registro no conselho profissional",
                   "Conteúdo programático completo no verso",
                   "QR Code e código de validação",
                   "Válido em todo o território nacional",
@@ -310,14 +305,15 @@ export default function FormacaoEletricistaPage() {
             <Reveal delay={120}>
               <div className="border-l-4 border-accent bg-surface-2 p-6">
                 <h3 className="font-display text-xl font-extrabold text-[#14213A]">
-                  Instrutor
+                  Instrutor habilitado
                 </h3>
                 <p className="mt-2 text-[15.5px] leading-relaxed text-[#516278]">
+                  Os três certificados são assinados eletronicamente por{" "}
                   <strong className="text-[#14213A]">
-                    Alexsandro de Sousa Silva
+                    técnico em Eletrotécnica registrado no Conselho Federal dos
+                    Técnicos Industriais
                   </strong>
-                  , Técnico em Eletrotécnica com registro no CRT-01. Ele assina
-                  eletronicamente os três certificados.
+                  .
                 </p>
               </div>
             </Reveal>

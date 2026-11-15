@@ -11,7 +11,7 @@ export const FORMACAO_ELETRICISTA = {
     "Curso profissionalizante de eletricista online: Eletricista Residencial Básico (40 h), NR-10 (40 h) e preparatório NR-35 (8 h). 3 certificados válidos em todo o Brasil, assinados por técnico em eletrotécnica. R$ 129,90 no PIX até 31/12.",
   // Resumo direto (primeiro parágrafo da página e do llms.txt): responde "o que é, quanto custa, o que recebo".
   resumo:
-    "A Formação Inicial para Eletricista do SIBRAP é um curso profissionalizante online de 88 horas com 3 certificados: Eletricista Residencial Básico (40 h), NR-10 (40 h) e preparatório NR-35 (8 h). Os certificados têm QR Code, valem em todo o Brasil e são assinados pelo instrutor Alexsandro de Sousa Silva, Técnico em Eletrotécnica (CRT-01). Custa R$ 129,90 no PIX até 31/12/2026, ou R$ 149,90 em até 3x sem juros no cartão.",
+    "A Formação Inicial para Eletricista do SIBRAP é um curso profissionalizante online de 88 horas com 3 certificados: Eletricista Residencial Básico (40 h), NR-10 (40 h) e preparatório NR-35 (8 h). Os certificados têm QR Code, valem em todo o Brasil e são assinados por instrutor técnico em Eletrotécnica registrado no Conselho Federal dos Técnicos Industriais. Custa R$ 129,90 no PIX até 31/12/2026, ou R$ 149,90 em até 3x sem juros no cartão.",
   horasTotais: 88,
   precoPixPromoCentavos: 12990,
   precoNormalCentavos: 14990,
@@ -102,7 +102,7 @@ export const PERGUNTAS_FORMACAO = [
   },
   {
     p: "Quantos certificados eu recebo?",
-    r: "Três: um de cada curso, com a carga horária completa (40 h, 40 h e 8 h), QR Code de validação e assinatura eletrônica do instrutor Alexsandro de Sousa Silva, Técnico em Eletrotécnica (CRT-01).",
+    r: "Três: um de cada curso, com a carga horária completa (40 h, 40 h e 8 h), QR Code de validação e assinatura eletrônica de instrutor técnico em Eletrotécnica registrado no Conselho Federal dos Técnicos Industriais.",
   },
   {
     p: "O certificado de eletricista é reconhecido?",
