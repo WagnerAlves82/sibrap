@@ -1,5 +1,5 @@
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
-import { ASSINATURA_CARGO, ASSINATURA_CERTIFICADO, EMISSOR, dataCurta, responsavelTecnico, textoResponsavel } from "@/lib/emissor";
+import { ASSINATURA_CARGO, ASSINATURA_CERTIFICADO, CNDB_URL, EMISSOR, dataCurta, responsavelTecnico, textoResponsavel } from "@/lib/emissor";
 
 export async function ResultadoValidacao({ codigo }: { codigo: string }) {
   const supabase = await criarClienteSupabaseServer();
@@ -47,6 +47,14 @@ export async function ResultadoValidacao({ codigo }: { codigo: string }) {
         <Campo rotulo="Emitido por" valor={`${EMISSOR.nome} · CNPJ ${EMISSOR.cnpj}`} />
         <Campo rotulo="Assinado pelo aluno" valor={`${cert.nome_completo} · ${dataHora(cert.assinado_aluno_em)}`} />
         <Campo rotulo="Assinado pela instituição" valor={`${ASSINATURA_CERTIFICADO} · ${ASSINATURA_CARGO} · ${dataHora(cert.assinado_instituicao_em)}`} />
+        <div>
+          <dt className="text-[12px] uppercase tracking-wide text-[#93A0AF]">Habilitação docente</dt>
+          <dd className="mt-0.5 text-[15px] font-semibold text-[#14213A]">
+            <a href={CNDB_URL} target="_blank" rel="noopener noreferrer" className="underline">
+              Conferir a Carteira Nacional Docente (MEC)
+            </a>
+          </dd>
+        </div>
         {responsavelTecnico(cert.curso_slug) && (
           <Campo rotulo="Assinado pelo instrutor" valor={`${textoResponsavel(responsavelTecnico(cert.curso_slug)!)} · ${dataHora(cert.assinado_instituicao_em)}`} />
         )}
