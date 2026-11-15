@@ -3,6 +3,7 @@ import Image from "next/image";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { Reveal } from "@/components/reveal";
 import { ContagemRegressiva } from "@/components/contagem-regressiva";
+import { BarraCompraFixa } from "@/components/barra-compra-fixa";
 import {
   AREA_FORMACAO,
   CURSOS_FORMACAO,
@@ -378,6 +379,12 @@ export default function FormacaoEletricistaPage() {
         </section>
       </main>
 
+      <BarraCompraFixa
+        preco={promo ? PRECO_PIX_PROMO : PRECO_NORMAL}
+        detalhe={promo ? `no PIX até 31/12 · ou ${PRECO_NORMAL} em ${PARCELA}` : `no PIX ou em ${PARCELA}`}
+        href={CHECKOUT}
+        rotulo="Quero minha formação →"
+      />
       <RodapeSite />
     </div>
   );

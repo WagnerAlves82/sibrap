@@ -34,8 +34,8 @@ function canalDoCookie(): string {
 }
 
 // Botão fixo "Posso ajudar?" que abre uma conversa no WhatsApp. Fica fora das
-// áreas logada e administrativa e sobe um pouco nas páginas de apostila (celular),
-// para não ficar em cima da barra de compra.
+// áreas logada e administrativa e sobe nas páginas com barra de compra fixa
+// (apostila e combo no celular; cursos em todos os tamanhos), para não ficar em cima dela.
 export function BotaoWhatsApp() {
   const caminho = usePathname() ?? "";
   if (!WHATSAPP_NUMERO) return null;
@@ -43,7 +43,9 @@ export function BotaoWhatsApp() {
 
   const link = (canal: string) =>
     `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(`Olá! ${assunto(caminho)}${canal ? ` (origem: ${canal})` : ""}`)}`;
-  const comBarraDeCompra = caminho.startsWith("/apostilas/");
+  // apostila e combo: barra de compra só no celular; curso (e formação): barra em todos os tamanhos
+  const comBarraCelular = caminho.startsWith("/apostilas/") || caminho.startsWith("/combos/");
+  const comBarraSempre = /^\/cursos\/(?!profissionalizantes\/?$)[^/]+\/?$/.test(caminho);
 
   return (
     <a
@@ -55,8 +57,8 @@ export function BotaoWhatsApp() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Posso ajudar? Falar no WhatsApp"
-      className={`group fixed right-3 z-50 flex items-center gap-2 rounded-full bg-[#25D366] p-1 text-[13.5px] font-extrabold text-white shadow-[0_10px_24px_-10px_rgba(0,0,0,0.5)] transition-transform hover:-translate-y-0.5 hover:brightness-105 sm:right-5 sm:bottom-5 sm:py-2 sm:pl-2 sm:pr-4 ${
-        comBarraDeCompra ? "bottom-24" : "bottom-3"
+      className={`group fixed right-3 z-50 flex items-center gap-2 rounded-full bg-[#25D366] p-1 text-[13.5px] font-extrabold text-white shadow-[0_10px_24px_-10px_rgba(0,0,0,0.5)] transition-transform hover:-translate-y-0.5 hover:brightness-105 sm:right-5 sm:py-2 sm:pl-2 sm:pr-4 ${
+        comBarraSempre ? "bottom-24 sm:bottom-24" : comBarraCelular ? "bottom-24 sm:bottom-5" : "bottom-3 sm:bottom-5"
       }`}
     >
       <span className="icone-balanca flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#25D366] sm:h-9 sm:w-9">

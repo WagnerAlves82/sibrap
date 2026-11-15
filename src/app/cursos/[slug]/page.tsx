@@ -7,6 +7,7 @@ import { CURSOS_SO_NA_FORMACAO, FORMACAO_ELETRICISTA } from "@/lib/formacao-elet
 import { criarClienteSupabasePublico } from "@/lib/supabase-publico";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { Reveal } from "@/components/reveal";
+import { BarraCompraFixa } from "@/components/barra-compra-fixa";
 import { AVISO_CURSO_LIVRE, EMISSOR } from "@/lib/emissor";
 import { VISITAS_MINIMAS_PARA_EXIBIR, visitasDoCurso } from "@/lib/visitas";
 import { textoParcela } from "@/lib/apostilas";
@@ -620,6 +621,12 @@ export default async function CursoPublicoPage({ params }: Props) {
         </div>
       </section>
 
+      <BarraCompraFixa
+        preco={precoCurso ?? "Grátis"}
+        detalhe={precoCurso && pago ? `ou ${textoParcela(pago.preco_centavos)} · certificado incluso` : "Curso online · certificado opcional"}
+        href={ctaHref}
+        rotulo={precoCurso ? "Quero fazer o curso →" : "Quero me inscrever →"}
+      />
       <RodapeSite />
     </div>
   );
