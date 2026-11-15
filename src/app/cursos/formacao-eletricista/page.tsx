@@ -248,8 +248,12 @@ export default function FormacaoEletricistaPage() {
               {CURSOS.map((c) => (
                 <article
                   key={c.n}
-                  className="flex flex-col border border-[#D7DEE6] border-t-4 border-t-accent bg-white p-6"
+                  className="flex flex-col overflow-hidden border border-[#D7DEE6] border-t-4 border-t-accent bg-white"
                 >
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-2">
+                    <Image src={c.foto} alt={c.alt} fill sizes="(min-width: 768px) 370px, 100vw" className="object-cover" />
+                  </div>
+                  <div className="flex flex-1 flex-col p-6">
                   <div className="flex items-start justify-between gap-3">
                     <span className="font-display text-4xl font-extrabold text-accent">
                       {c.n}
@@ -273,6 +277,7 @@ export default function FormacaoEletricistaPage() {
                   <p className="mt-auto pt-4 font-data text-[13px] font-semibold text-accent-2">
                     ✓ Certificado de {c.horas} h
                   </p>
+                  </div>
                 </article>
               ))}
             </div>
@@ -322,6 +327,15 @@ export default function FormacaoEletricistaPage() {
         {/* Para quem é */}
         <section className="mx-auto w-full max-w-[1180px] px-6 py-14">
           <Reveal>
+            <div className="relative mb-8 aspect-[16/9] w-full overflow-hidden border-2 border-accent sm:aspect-[21/9]">
+              <Image
+                src="/cursos/formacao-eletricista/equipe.webp"
+                alt="Três eletricistas de capacete, cinturão e uniforme caminhando juntos numa obra ao fim da tarde"
+                fill
+                sizes="(min-width: 1180px) 1132px, 100vw"
+                className="object-cover"
+              />
+            </div>
             <h2 className="font-display text-3xl font-extrabold text-[#14213A]">
               Para quem quer começar 2027 trabalhando
             </h2>

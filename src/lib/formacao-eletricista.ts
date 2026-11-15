@@ -58,12 +58,16 @@ export type CursoFormacao = {
   selo?: string;
   horas: number;
   texto: string;
+  foto: string;
+  alt: string;
 };
 
 export const CURSOS_FORMACAO: readonly CursoFormacao[] = [
   {
     n: "1",
     nome: "Eletricista Residencial Básico",
+    foto: "/cursos/formacao-eletricista/card-eletricista.webp",
+    alt: "Eletricista de óculos de proteção instalando uma tomada na parede de uma sala",
     horas: 40,
     texto:
       "Tomadas, interruptores, three-way, iluminação, quadro de distribuição, DR e aterramento, com simuladores de ligação.",
@@ -71,6 +75,8 @@ export const CURSOS_FORMACAO: readonly CursoFormacao[] = [
   {
     n: "2",
     nome: "NR-10: Segurança em Instalações e Serviços em Eletricidade",
+    foto: "/cursos/formacao-eletricista/card-nr10.webp",
+    alt: "Eletricista de capacete, óculos e luvas isolantes colocando cadeado de bloqueio num painel elétrico",
     selo: "NR-10",
     horas: 40,
     texto:
@@ -79,6 +85,8 @@ export const CURSOS_FORMACAO: readonly CursoFormacao[] = [
   {
     n: "3",
     nome: "NR-35: Segurança no Trabalho em Altura",
+    foto: "/cursos/formacao-eletricista/card-nr35.webp",
+    alt: "Trabalhador de capacete e cinturão preso à ancoragem instalando um refletor no alto de um prédio",
     selo: "Preparatório NR-35",
     horas: 8,
     texto:
