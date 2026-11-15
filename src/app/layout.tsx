@@ -116,6 +116,7 @@ s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
 try{if(localStorage.getItem('sibrap_cookies')!=='aceito'){fbq('consent','revoke')}}catch(e){fbq('consent','revoke')}
 fbq('init', '733506279098670');
+fbq('init', '30037871909147615'); // pixel "eletric" do portfólio sibrap (anúncios desde 15/11/2026)
 fbq('track', 'PageView');`}
         </Script>
         {/* Pixel do ChatGPT Ads (OpenAI): como o Meta, só mede depois que o visitante aceita os cookies */}
