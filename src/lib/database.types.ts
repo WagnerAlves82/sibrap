@@ -1030,6 +1030,9 @@ export type Database = {
           carga_horaria_horas: number
           certificado_por_etapas: boolean
           profissionalizante: boolean
+          tempo_min_aula_pct: number | null
+          minutos_dia_max: number | null
+          dias_minimos_prova: number | null
           categoria: string | null
           criado_em: string
           descricao: string | null
@@ -1064,6 +1067,9 @@ export type Database = {
           carga_horaria_horas?: number
           certificado_por_etapas?: boolean
           profissionalizante?: boolean
+          tempo_min_aula_pct?: number | null
+          minutos_dia_max?: number | null
+          dias_minimos_prova?: number | null
           categoria?: string | null
           criado_em?: string
           descricao?: string | null
@@ -1635,18 +1641,24 @@ export type Database = {
           aula_id: string
           concluida_em: string | null
           iniciada_em: string
+          tempo_seg: number
+          ultimo_ping: string | null
           user_id: string
         }
         Insert: {
           aula_id: string
           concluida_em?: string | null
           iniciada_em?: string
+          tempo_seg?: number
+          ultimo_ping?: string | null
           user_id: string
         }
         Update: {
           aula_id?: string
           concluida_em?: string | null
           iniciada_em?: string
+          tempo_seg?: number
+          ultimo_ping?: string | null
           user_id?: string
         }
         Relationships: [
@@ -2024,6 +2036,8 @@ export type Database = {
         }[]
       }
       concluir_aula: { Args: { p_aula_id: string }; Returns: undefined }
+      minutos_concluidos_hoje: { Args: { p_curso: string; p_user: string }; Returns: number }
+      registrar_tempo_aula: { Args: { p_aula_id: string }; Returns: number }
       conferir_miniquiz: {
         Args: { p_letra: string; p_questao_id: string }
         Returns: {

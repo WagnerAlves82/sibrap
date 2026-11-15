@@ -30,6 +30,9 @@ export function BarraAula({
   quizOk,
   concluindo,
   onConcluir,
+  dicaBloqueio = "Responda o “Fixe o que aprendeu” no fim da aula para concluir e seguir.",
+  alvoDica = "fixe-o-que-aprendeu",
+  rotuloBloqueado,
 }: {
   lista: ItemLista[];
   anteriorHref: string | null;
@@ -41,6 +44,12 @@ export function BarraAula({
   quizOk: boolean;
   concluindo: boolean;
   onConcluir: () => void;
+  /** texto do balão quando "Concluir" ainda está travado */
+  dicaBloqueio?: string;
+  /** id do elemento para onde a tela rola ao tocar no botão travado */
+  alvoDica?: string;
+  /** texto do botão travado (ex.: tempo que falta) */
+  rotuloBloqueado?: string;
 }) {
   const [listaAberta, setListaAberta] = useState(false);
   const [dica, setDica] = useState(false);
@@ -56,7 +65,7 @@ export function BarraAula({
   const tentarConcluir = () => {
     if (!quizOk) {
       setDica(true);
-      document.getElementById("fixe-o-que-aprendeu")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      document.getElementById(alvoDica)?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
     onConcluir();
@@ -75,10 +84,10 @@ export function BarraAula({
         aria-disabled={!quizOk}
         className={`${principal} ${quizOk ? "bg-accent text-accent-ink hover:brightness-105" : "bg-[#E7EDF3] text-[#93A0AF]"}`}
       >
-        {concluindo ? "Salvando..." : "✓ Concluir aula"}
+        {concluindo ? "Salvando..." : !quizOk && rotuloBloqueado ? rotuloBloqueado : "✓ Concluir aula"}
         {dica && (
           <span role="status" className="absolute bottom-full left-1/2 mb-2 w-[260px] -translate-x-1/2 bg-[#14213A] px-3 py-2 text-left text-[13px] font-semibold leading-snug text-white shadow-lg">
-            Responda o “Fixe o que aprendeu” no fim da aula para concluir e seguir.
+            {dicaBloqueio}
             <span aria-hidden className="absolute left-1/2 top-full -translate-x-1/2 border-x-8 border-t-8 border-x-transparent border-t-[#14213A]" />
           </span>
         )}

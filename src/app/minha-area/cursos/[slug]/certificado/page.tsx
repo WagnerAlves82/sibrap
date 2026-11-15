@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { dataHoraBR, liberacaoCertificado } from "@/lib/certificado-prazo";
+import { dataHoraBR, diasParaCertificado, liberacaoCertificado } from "@/lib/certificado-prazo";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
@@ -41,7 +41,7 @@ export default async function CertificadoAreaPage({
 
   const { data: curso } = await supabase
     .from("cursos")
-    .select("id, nome, nota_minima, carga_horaria_horas, permite_isencao_cadunico, certificado_por_etapas, profissionalizante")
+    .select("id, nome, nota_minima, carga_horaria_horas, permite_isencao_cadunico, certificado_por_etapas, profissionalizante, dias_minimos_prova")
     .eq("slug", slug)
     .maybeSingle();
   if (!curso) notFound();
@@ -133,8 +133,9 @@ export default async function CertificadoAreaPage({
   const horasLiberadas = etapa?.liberadas ?? 0;
   const horasCompradas = etapa?.compradas ?? null;
   const aulasPara = (h: number) => (h >= curso.carga_horaria_horas ? totalAulas : Math.ceil((totalAulas * h) / curso.carga_horaria_horas));
-  // profissionalizante: só a partir de 5 dias da compra (o banco também confere)
-  const liberaEm = curso.profissionalizante && matricula ? liberacaoCertificado(matricula.criado_em) : null;
+  // profissionalizante: só a partir de 5 dias da compra, ou mais nos cursos com ritmo (o banco também confere)
+  const diasCert = diasParaCertificado(curso.dias_minimos_prova);
+  const liberaEm = curso.profissionalizante && matricula ? liberacaoCertificado(matricula.criado_em, diasCert) : null;
   // eslint-disable-next-line react-hooks/purity -- página dinâmica da área do aluno: a hora atual é lida a cada acesso
   const antesDoPrazo = liberaEm ? liberaEm.getTime() > Date.now() : false;
   const podeEmitir = (porEtapas ? horasLiberadas > 0 && elegivel : aulasOk && provaOk && elegivel) && !antesDoPrazo;
@@ -257,7 +258,7 @@ export default async function CertificadoAreaPage({
             {antesDoPrazo && liberaEm && (
               <Alert variant="info" claro>
                 O certificado deste curso traz a data de início e a de conclusão e pode ser emitido a partir de{" "}
-                {dataHoraBR(liberaEm)} (5 dias após a compra), depois de concluir as aulas e passar na prova final.
+                {dataHoraBR(liberaEm)} ({diasCert} dias após a compra), depois de concluir as aulas e passar na prova final.
               </Alert>
             )}
             {!podeEmitir && !antesDoPrazo && !(porEtapas && horasLiberadas > 0) && (

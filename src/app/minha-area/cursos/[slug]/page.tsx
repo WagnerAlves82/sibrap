@@ -13,7 +13,7 @@ import { dadosCartaoCompra } from "@/lib/cartao-transparente";
 import { PopupEtapa } from "./certificado/PopupEtapa";
 import { TourEtapas } from "./TourEtapas";
 import { APOSTILA_DO_CURSO } from "@/lib/cursos-apostila";
-import { dataHoraBR, liberacaoCertificado } from "@/lib/certificado-prazo";
+import { dataHoraBR, diaBR, diasParaCertificado, liberacaoCertificado } from "@/lib/certificado-prazo";
 
 export const metadata: Metadata = {
   title: "Meu curso",
@@ -30,7 +30,7 @@ export default async function AreaDoCursoPage({
 
   const { data: curso } = await supabase
     .from("cursos")
-    .select("id, slug, nome, carga_horaria_horas, nota_minima, ordem_obrigatoria, certificado_por_etapas, profissionalizante")
+    .select("id, slug, nome, carga_horaria_horas, nota_minima, ordem_obrigatoria, certificado_por_etapas, profissionalizante, tempo_min_aula_pct, minutos_dia_max, dias_minimos_prova")
     .eq("slug", slug)
     .maybeSingle();
   if (!curso) notFound();
@@ -127,6 +127,16 @@ export default async function AreaDoCursoPage({
   const melhorNota = (tentativas ?? []).reduce((m, t) => Math.max(m, Number(t.nota ?? 0)), 0);
   const provaOk = melhorNota >= curso.nota_minima;
   const proxima = todasAulas.find((a) => !concluidas.has(a.id));
+  // ritmo de estudo (cursos com limite diário): carga concluída hoje, no fuso de Brasília
+  const hoje = diaBR(new Date());
+  const cargaDaAula = new Map(todasAulas.map((a) => [a.id, a.carga_min]));
+  const minutosHoje = (progresso ?? [])
+    .filter((p) => p.concluida_em && diaBR(p.concluida_em) === hoje)
+    .reduce((s, p) => s + (cargaDaAula.get(p.aula_id) ?? 0), 0);
+  const proximaJaAberta = !!proxima && (progresso ?? []).some((p) => p.aula_id === proxima.id);
+  const limiteHoje = !!curso.minutos_dia_max && minutosHoje >= curso.minutos_dia_max && !proximaJaAberta;
+  const diasCert = diasParaCertificado(curso.dias_minimos_prova);
+  const provaLiberaEm = curso.dias_minimos_prova ? liberacaoCertificado(matricula.criado_em, curso.dias_minimos_prova) : null;
   const listaEtapas = (etapas ?? []) as { horas: number; aulas_exigidas: number; tem_questionario: boolean; aprovado: boolean; melhor_nota: number | null }[];
   const etapaLiberada = (e: (typeof listaEtapas)[number]) => feitas >= e.aulas_exigidas && (!e.tem_questionario || e.aprovado);
   const ultimaLiberada = [...listaEtapas].reverse().find(etapaLiberada);
@@ -163,7 +173,14 @@ export default async function AreaDoCursoPage({
               </p>
             </div>
             <BarraProgresso percentual={percentual} className="mt-3" />
-            {proxima && (
+            {proxima && limiteHoje && (
+              <p className="mt-5 border-l-4 border-accent-2 bg-[#EAF6F3] px-4 py-3 text-[15px] leading-relaxed text-[#14213A]">
+                <strong>Você já cumpriu {formatarHoras(minutosHoje)} de aulas hoje.</strong> O limite deste curso é de{" "}
+                {formatarHoras(curso.minutos_dia_max!)} por dia; a próxima aula libera amanhã. Aproveite para revisar e baixar a
+                apostila.
+              </p>
+            )}
+            {proxima && !limiteHoje && (
               <Link prefetch={false}
                 href={`/minha-area/cursos/${curso.slug}/aula/${proxima.id}`}
                 className="mt-5 inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"
@@ -171,11 +188,32 @@ export default async function AreaDoCursoPage({
                 {feitas === 0 ? "Começar a primeira aula" : "Continuar de onde parei"} <span aria-hidden>→</span>
               </Link>
             )}
+            {(curso.minutos_dia_max || curso.tempo_min_aula_pct) && !certificado && (
+              <div className="mt-4 border border-[#D7DEE6] bg-[#F6F9FC] px-4 py-3 text-[14.5px] leading-relaxed text-[#14213A]">
+                <p className="font-bold">Ritmo do curso (controle de tempo de estudo)</p>
+                <ul className="mt-1 list-disc pl-5 text-[#33465E]">
+                  {curso.tempo_min_aula_pct ? (
+                    <li>Cada aula tem um tempo mínimo de estudo, contado com a aula aberta na tela.</li>
+                  ) : null}
+                  {curso.minutos_dia_max ? (
+                    <li>
+                      Até {formatarHoras(curso.minutos_dia_max)} de aulas por dia. Hoje: <strong>{formatarHoras(minutosHoje)}</strong>.
+                    </li>
+                  ) : null}
+                  {provaLiberaEm ? (
+                    <li>
+                      Prova final a partir de <strong>{dataHoraBR(provaLiberaEm)}</strong> ({curso.dias_minimos_prova} dias após a
+                      matrícula).
+                    </li>
+                  ) : null}
+                </ul>
+              </div>
+            )}
             {curso.profissionalizante && !certificado && (
               <p className="mt-4 border-l-4 border-accent bg-[#FFF8EB] px-4 py-3 text-[14.5px] leading-relaxed text-[#14213A]">
-                <strong>Sobre o seu certificado:</strong> ele traz a data de início e a de conclusão do curso e pode ser emitido a
-                partir de <strong>{dataHoraBR(liberacaoCertificado(matricula.criado_em))}</strong> (5 dias após a compra), depois de
-                concluir as aulas e passar na prova final. É o tempo para você estudar com calma e praticar.
+                <strong>Sobre o seu certificado:</strong> ele traz a data de início (matrícula) e a de conclusão do curso e pode ser
+                emitido a partir de <strong>{dataHoraBR(liberacaoCertificado(matricula.criado_em, diasCert))}</strong> ({diasCert} dias
+                após a compra), depois de concluir as aulas e passar na prova final. É o tempo para você estudar com calma e praticar.
               </p>
             )}
             {APOSTILA_DO_CURSO[curso.slug] && (

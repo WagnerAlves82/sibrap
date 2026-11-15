@@ -34,7 +34,7 @@ export default async function AulaPage({
 
   const { data: curso } = await supabase
     .from("cursos")
-    .select("id, nome, ordem_obrigatoria")
+    .select("id, nome, ordem_obrigatoria, tempo_min_aula_pct")
     .eq("slug", slug)
     .maybeSingle();
   if (!curso) notFound();
@@ -50,7 +50,7 @@ export default async function AulaPage({
       .eq("curso_id", curso.id)
       .order("ordem")
       .order("ordem", { referencedTable: "aulas" }),
-    supabase.from("progresso_aulas").select("aula_id, concluida_em"),
+    supabase.from("progresso_aulas").select("aula_id, concluida_em, tempo_seg"),
   ]);
   if (!matricula) redirect(cursoHref);
 
@@ -68,6 +68,8 @@ export default async function AulaPage({
       .maybeSingle(),
     supabase.rpc("abrir_aula", { p_aula_id: itemAula.id }),
   ]);
+  // limite de horas do dia (cursos com ritmo): volta ao painel, que explica quando a próxima aula libera
+  if (erroAbrir?.message?.includes("Limite de estudo de hoje")) redirect(`${cursoHref}?ritmo=hoje`);
   if (erroAbrir || !detalhe) redirect(cursoHref);
   const aula = { ...itemAula, ...detalhe };
 
@@ -136,6 +138,10 @@ export default async function AulaPage({
             lista={itensBarra}
             feitasInicial={feitas}
             totalQuiz={questoes.length}
+            tempoMinSeg={
+              curso.tempo_min_aula_pct ? Math.ceil(((aula.carga_min ?? 0) * 60 * curso.tempo_min_aula_pct) / 100) : null
+            }
+            tempoSegInicial={(progresso ?? []).find((p) => p.aula_id === aula.id)?.tempo_seg ?? 0}
           >
             {Array.isArray(aula.conteudo) && aula.conteudo.length > 0 && (
               // voz do navegador só no curso de inglês (nos outros, como Libras, os botões de ouvir somem)

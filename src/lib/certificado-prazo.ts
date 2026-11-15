@@ -3,8 +3,18 @@
 // Não anunciar na página pública: o aluno fica sabendo na área do curso, depois de comprar.
 export const DIAS_PARA_CERTIFICADO = 5;
 
-export function liberacaoCertificado(matriculaEm: string): Date {
-  return new Date(new Date(matriculaEm).getTime() + DIAS_PARA_CERTIFICADO * 24 * 60 * 60 * 1000);
+// cursos com ritmo (cursos.dias_minimos_prova, ex.: 15 na Formação para Eletricista) esperam mais
+export function diasParaCertificado(diasMinimosProva: number | null | undefined): number {
+  return Math.max(DIAS_PARA_CERTIFICADO, diasMinimosProva ?? DIAS_PARA_CERTIFICADO);
+}
+
+export function liberacaoCertificado(matriculaEm: string, dias: number = DIAS_PARA_CERTIFICADO): Date {
+  return new Date(new Date(matriculaEm).getTime() + dias * 24 * 60 * 60 * 1000);
+}
+
+/** "2026-11-15T..." -> "2026-11-15" no fuso de Brasília */
+export function diaBR(d: Date | string): string {
+  return new Date(d).toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
 }
 
 export function dataHoraBR(d: Date): string {

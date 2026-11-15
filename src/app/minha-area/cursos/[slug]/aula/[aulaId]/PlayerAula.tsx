@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Alert } from "@/components/alert";
 import { concluirAulaAction } from "./actions";
+import { criarClienteSupabaseBrowser } from "@/lib/supabase-browser";
 import { BarraAula, QuizAula, type ItemLista } from "./BarraAula";
 
 type YTPlayer = {
@@ -60,6 +61,8 @@ export function PlayerAula({
   lista,
   feitasInicial,
   totalQuiz,
+  tempoMinSeg = null,
+  tempoSegInicial = 0,
   children,
 }: {
   aulaId: string;
@@ -73,6 +76,9 @@ export function PlayerAula({
   lista: ItemLista[];
   feitasInicial: number;
   totalQuiz: number;
+  /** tempo mínimo com a aula aberta antes de concluir (cursos com controle de tempo, ex.: NR-10) */
+  tempoMinSeg?: number | null;
+  tempoSegInicial?: number;
   children?: React.ReactNode;
 }) {
   const router = useRouter();
@@ -87,7 +93,9 @@ export function PlayerAula({
   const [concluindo, setConcluindo] = useState(false);
   // "Concluir" só depois de responder todas as questões do "Fixe o que aprendeu" (aula já concluída não trava)
   const [respondidas, setRespondidas] = useState(0);
-  const quizOk = concluidaInicial || totalQuiz === 0 || respondidas >= totalQuiz;
+  const quizRespondido = concluidaInicial || totalQuiz === 0 || respondidas >= totalQuiz;
+  const tempo = useCronometroAula(aulaId, tempoMinSeg, tempoSegInicial, concluida);
+  const quizOk = quizRespondido && tempo.ok;
   const quizOkRef = useRef(quizOk);
   useEffect(() => {
     quizOkRef.current = quizOk;
@@ -180,6 +188,8 @@ export function PlayerAula({
         </p>
       )}
 
+      {tempoMinSeg ? <PainelTempo tempo={tempo} minSeg={tempoMinSeg} concluida={concluida} /> : null}
+
       <QuizAula.Provider value={setRespondidas}>{children}</QuizAula.Provider>
 
       <div className="mt-8 flex flex-col gap-3 border-t border-[#D7DEE6] pt-6">
@@ -213,11 +223,94 @@ export function PlayerAula({
         concluida={concluida}
         quizOk={quizOk}
         concluindo={concluindo}
+        {...(!tempo.ok
+          ? {
+              dicaBloqueio: `Faltam ${mmss(tempo.falta)} de estudo nesta aula. O tempo conta com a aula aberta na tela.`,
+              alvoDica: "tempo-de-estudo",
+              rotuloBloqueado: tempo.falta > 0 ? `⏱ ${mmss(tempo.falta)}` : "⏱ Salvando...",
+            }
+          : {})}
         onConcluir={() => {
           ultimaTentativaRef.current = 0;
           concluir();
         }}
       />
+    </div>
+  );
+}
+
+// ---------- controle de tempo de estudo (sem vídeo) ----------
+// A aula aberta e visível manda um sinal ao banco a cada 30 s (registrar_tempo_aula); o banco soma no
+// máximo 30 s por sinal e é ele quem decide se a aula pode ser concluída. Aqui o relógio só mostra.
+type Tempo = { seg: number; ok: boolean; falta: number };
+
+function mmss(seg: number) {
+  const s = Math.max(0, Math.ceil(seg));
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+}
+
+function useCronometroAula(aulaId: string, minSeg: number | null, inicial: number, concluida: boolean): Tempo {
+  const [servidor, setServidor] = useState(inicial);
+  const [extra, setExtra] = useState(0);
+  const ativo = !!minSeg && !concluida;
+
+  useEffect(() => {
+    if (!ativo) return;
+    const supabase = criarClienteSupabaseBrowser();
+    let ultimoSinal = Date.now();
+    const sinal = async () => {
+      if (document.visibilityState !== "visible") return;
+      const { data } = await supabase.rpc("registrar_tempo_aula", { p_aula_id: aulaId });
+      ultimoSinal = Date.now();
+      if (typeof data === "number") {
+        setServidor(data);
+        setExtra(0);
+      }
+    };
+    sinal();
+    const a = setInterval(sinal, 30000);
+    // relógio na tela (só enquanto a aba está visível; nunca adianta mais de 30 s do que o banco já somou)
+    const b = setInterval(() => {
+      if (document.visibilityState === "visible") setExtra(Math.min(30, Math.floor((Date.now() - ultimoSinal) / 1000)));
+    }, 1000);
+    const aoVoltar = () => {
+      if (document.visibilityState === "visible") sinal();
+    };
+    document.addEventListener("visibilitychange", aoVoltar);
+    return () => {
+      clearInterval(a);
+      clearInterval(b);
+      document.removeEventListener("visibilitychange", aoVoltar);
+    };
+  }, [ativo, aulaId]);
+
+  const seg = servidor + extra;
+  if (!minSeg || concluida) return { seg, ok: true, falta: 0 };
+  return { seg, ok: servidor >= minSeg, falta: Math.max(0, minSeg - seg) };
+}
+
+function PainelTempo({ tempo, minSeg, concluida }: { tempo: Tempo; minSeg: number; concluida: boolean }) {
+  const pct = Math.min(100, Math.round((tempo.seg / minSeg) * 100));
+  const pronto = concluida || tempo.ok;
+  return (
+    <div id="tempo-de-estudo" className="mt-4 scroll-mt-6 border border-[#D7DEE6] bg-white px-4 py-3">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <p className="text-[15px] font-bold text-[#14213A]">
+          ⏱ Tempo de estudo nesta aula: {mmss(Math.min(tempo.seg, minSeg))} de {mmss(minSeg)}
+        </p>
+        <p className={`text-[13.5px] font-semibold ${pronto ? "text-accent-2" : "text-[#516278]"}`}>
+          {pronto ? "✓ Tempo mínimo cumprido" : `Faltam ${mmss(tempo.falta)}`}
+        </p>
+      </div>
+      <div className="mt-2 h-1.5 bg-[#EEF2F6]" aria-hidden>
+        <div className="h-1.5 bg-accent-2 transition-all" style={{ width: `${pronto ? 100 : pct}%` }} />
+      </div>
+      {!pronto && (
+        <p className="mt-2 text-[13.5px] leading-snug text-[#516278]">
+          Este curso tem controle de tempo de estudo: o relógio só conta com a aula aberta na tela. Leia com calma; o botão
+          Concluir libera quando o tempo terminar.
+        </p>
+      )}
     </div>
   );
 }
