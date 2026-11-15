@@ -8,10 +8,10 @@ export const FORMACAO_ELETRICISTA = {
   nome: "Formação Inicial para Eletricista",
   titulo: "Curso de Eletricista com NR-10 e Certificado | Formação Inicial",
   descricao:
-    "Curso profissionalizante de eletricista online: Eletricista Residencial Básico (40 h), NR-10 Básico (40 h) e preparatório NR-35 (8 h). 3 certificados válidos em todo o Brasil, assinados por técnico em eletrotécnica. R$ 129,90 no PIX até 31/12.",
+    "Curso profissionalizante de eletricista online: Eletricista Residencial Básico (40 h), NR-10 (40 h) e preparatório NR-35 (8 h). 3 certificados válidos em todo o Brasil, assinados por técnico em eletrotécnica. R$ 129,90 no PIX até 31/12.",
   // Resumo direto (primeiro parágrafo da página e do llms.txt): responde "o que é, quanto custa, o que recebo".
   resumo:
-    "A Formação Inicial para Eletricista do SIBRAP é um curso profissionalizante online de 88 horas com 3 certificados: Eletricista Residencial Básico (40 h), NR-10 Básico (40 h) e preparatório NR-35 (8 h). Os certificados têm QR Code, valem em todo o Brasil e são assinados pelo instrutor Alexsandro de Sousa Silva, Técnico em Eletrotécnica (CRT-01). Custa R$ 129,90 no PIX até 31/12/2026, ou R$ 149,90 em até 3x sem juros no cartão.",
+    "A Formação Inicial para Eletricista do SIBRAP é um curso profissionalizante online de 88 horas com 3 certificados: Eletricista Residencial Básico (40 h), NR-10 (40 h) e preparatório NR-35 (8 h). Os certificados têm QR Code, valem em todo o Brasil e são assinados pelo instrutor Alexsandro de Sousa Silva, Técnico em Eletrotécnica (CRT-01). Custa R$ 129,90 no PIX até 31/12/2026, ou R$ 149,90 em até 3x sem juros no cartão.",
   horasTotais: 88,
   precoPixPromoCentavos: 12990,
   precoNormalCentavos: 14990,
@@ -70,7 +70,7 @@ export const CURSOS_FORMACAO: readonly CursoFormacao[] = [
   },
   {
     n: "2",
-    nome: "NR-10 Básico: Segurança em Instalações e Serviços em Eletricidade",
+    nome: "NR-10: Segurança em Instalações e Serviços em Eletricidade",
     selo: "NR-10",
     horas: 40,
     texto:
@@ -78,7 +78,7 @@ export const CURSOS_FORMACAO: readonly CursoFormacao[] = [
   },
   {
     n: "3",
-    nome: "Segurança no Trabalho em Altura",
+    nome: "NR-35: Segurança no Trabalho em Altura",
     selo: "Preparatório NR-35",
     horas: 8,
     texto:
