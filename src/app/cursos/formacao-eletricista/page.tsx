@@ -4,6 +4,7 @@ import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { Reveal } from "@/components/reveal";
 import { ContagemRegressiva } from "@/components/contagem-regressiva";
 import { BarraCompraFixa } from "@/components/barra-compra-fixa";
+import { PixelFormacao } from "@/components/meta-pixel";
 import {
   AREA_FORMACAO,
   PRECO_SEPARADOS_CENTAVOS,
@@ -177,6 +178,7 @@ export default function FormacaoEletricistaPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <PixelFormacao />
       <CabecalhoSite />
 
       {/* Faixa da promoção */}

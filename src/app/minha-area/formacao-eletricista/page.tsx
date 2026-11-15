@@ -15,6 +15,7 @@ import {
   produtoPixFormacao,
 } from "@/lib/formacao-eletricista";
 import { ComprarFormacao } from "./ComprarFormacao";
+import { PixelFormacao } from "@/components/meta-pixel";
 
 export const metadata: Metadata = { title: "Formação Inicial para Eletricista", robots: { index: false } };
 
@@ -39,6 +40,7 @@ export default async function FormacaoEletricistaAreaPage() {
   if (!comprou) {
     return (
       <div className="flex min-h-screen flex-col bg-surface-2 font-body">
+        <PixelFormacao />
         <CabecalhoSite logado />
         <main className="mx-auto flex w-full max-w-[640px] flex-1 items-center px-6 py-14">
           <div className="w-full border border-[#D7DEE6] bg-white p-8">
