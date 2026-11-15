@@ -3,7 +3,7 @@
 
 export const FORMACAO_ELETRICISTA = {
   // false: página fora do Google, do sitemap e do llms.txt (sem cursos/checkout ainda). Trocar para true ao abrir a venda.
-  vendaAberta: false as boolean,
+  vendaAberta: true as boolean,
   caminho: "/cursos/formacao-eletricista",
   nome: "Formação Inicial para Eletricista",
   titulo: "Curso de Eletricista com NR-10 e Certificado | Formação Inicial",
@@ -35,6 +35,22 @@ export const FORMACAO_ELETRICISTA = {
     "curso para conseguir emprego em 2027",
   ],
 } as const;
+
+// Produtos no banco (supabase/migrations/20261115040000): o PIX usa o promocional até o fim da promoção;
+// depois disso, PIX e cartão usam o produto de preço cheio.
+export const PRODUTO_FORMACAO_PIX = "formacao-eletricista";
+export const PRODUTO_FORMACAO_CARTAO = "formacao-eletricista-cartao";
+export const CURSOS_SLUGS_FORMACAO = ["eletricista-residencial-basico", "nr-10-basico", "seguranca-trabalho-em-altura"] as const;
+// cursos vendidos só dentro da formação (as páginas deles levam para a formação)
+export const CURSOS_SO_NA_FORMACAO = ["nr-10-basico", "seguranca-trabalho-em-altura"];
+export const AREA_FORMACAO = "/minha-area/formacao-eletricista";
+
+export function promocaoFormacaoAtiva(agora = new Date()): boolean {
+  return agora.getTime() <= new Date(FORMACAO_ELETRICISTA.fimPromocao).getTime();
+}
+export function produtoPixFormacao(agora = new Date()): string {
+  return promocaoFormacaoAtiva(agora) ? PRODUTO_FORMACAO_PIX : PRODUTO_FORMACAO_CARTAO;
+}
 
 export type CursoFormacao = {
   n: string;

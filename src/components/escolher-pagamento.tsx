@@ -16,8 +16,11 @@ export function EscolherPagamento({
   conversaoAds = false,
   cartao,
   aoAprovar,
+  valorCartaoCentavos,
 }: {
   valorCentavos: number;
+  /** preço no cartão quando for diferente do PIX (ex.: promoção só no PIX); o cartão.produtoSlug deve ter esse preço */
+  valorCartaoCentavos?: number;
   /** texto do botão principal, ex.: "Comprar por R$ 35,90" */
   rotuloComprar?: string;
   criarPix: () => Promise<EstadoPix>;
@@ -29,7 +32,9 @@ export function EscolherPagamento({
   const [aberto, setAberto] = useState(false);
   const [forma, setForma] = useState<"pix" | "cartao" | null>(null);
   const preco = formatarPreco(valorCentavos);
-  const parcelas = maxParcelas(valorCentavos);
+  const valorCartao = valorCartaoCentavos ?? valorCentavos;
+  const precoCartao = formatarPreco(valorCartao);
+  const parcelas = maxParcelas(valorCartao);
 
   // trava a rolagem da página e fecha com Esc enquanto o modal está aberto
   useEffect(() => {
@@ -70,7 +75,11 @@ export function EscolherPagamento({
       >
         {rotuloComprar ?? `Comprar por ${preco}`}
       </button>
-      {parcelas > 1 && <p className="mt-1.5 text-center text-[12.5px] text-[#516278]">PIX ou {textoParcela(valorCentavos)}</p>}
+      {parcelas > 1 && (
+        <p className="mt-1.5 text-center text-[12.5px] text-[#516278]">
+          {valorCartao === valorCentavos ? `PIX ou ${textoParcela(valorCartao)}` : `${preco} no PIX ou ${precoCartao} em ${textoParcela(valorCartao)}`}
+        </p>
+      )}
 
       {aberto && (
         <div
@@ -91,7 +100,7 @@ export function EscolherPagamento({
                 <p className="font-display text-[19px] font-extrabold text-[#14213A]">
                   {forma === "pix" ? "Pagar com PIX" : forma === "cartao" ? "Pagar no cartão" : "Como você quer pagar?"}
                 </p>
-                <p className="text-[13.5px] text-[#516278]">Total: {preco}</p>
+                <p className="text-[13.5px] text-[#516278]">Total: {forma === "cartao" ? precoCartao : preco}</p>
               </div>
               <button type="button" onClick={() => setAberto(false)} aria-label="Fechar" className="text-[22px] leading-none text-[#93A0AF] hover:text-[#14213A]">
                 ×
@@ -113,7 +122,7 @@ export function EscolherPagamento({
                     <span className="block text-[13px] text-[#516278]">{parcelas > 1 ? `Em até ${parcelas}x` : "À vista"}</span>
                   </span>
                   <span className="font-data text-[15px] font-semibold text-[#14213A]">
-                    {parcelas > 1 ? textoParcela(valorCentavos) : preco}
+                    {parcelas > 1 ? textoParcela(valorCartao) : precoCartao}
                   </span>
                 </button>
                 <p className="mt-1 text-center text-[12px] text-[#93A0AF]">🔒 Pagamento seguro. Acesso liberado automaticamente após o pagamento.</p>
@@ -137,7 +146,7 @@ export function EscolherPagamento({
               <CartaoTransparente
                 produtoSlug={cartao.produtoSlug}
                 cupom={cartao.cupom}
-                valorCentavos={valorCentavos}
+                valorCentavos={valorCartao}
                 chavePublica={cartao.chavePublica}
                 emailCliente={cartao.email}
                 nomeInicial={cartao.nome}

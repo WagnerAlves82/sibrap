@@ -4,9 +4,11 @@ import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { Reveal } from "@/components/reveal";
 import { ContagemRegressiva } from "@/components/contagem-regressiva";
 import {
+  AREA_FORMACAO,
   CURSOS_FORMACAO,
   FORMACAO_ELETRICISTA,
   PERGUNTAS_FORMACAO,
+  promocaoFormacaoAtiva,
   reaisFormacao,
 } from "@/lib/formacao-eletricista";
 
@@ -51,7 +53,18 @@ export const metadata: Metadata = {
   },
 };
 
-function Oferta({ escuro = false }: { escuro?: boolean }) {
+// cadastro (ou login) e depois a tela de pagamento na área do aluno
+const CHECKOUT = `/cadastro?next=${encodeURIComponent(AREA_FORMACAO)}`;
+
+function Oferta({ escuro = false, promo }: { escuro?: boolean; promo: boolean }) {
+  if (!promo) {
+    return (
+      <div className={escuro ? "text-white" : "text-[#14213A]"}>
+        <strong className="font-display text-5xl font-extrabold leading-none">{PRECO_NORMAL}</strong>
+        <p className={`mt-2 text-[14.5px] ${escuro ? "text-[#C9D6E5]" : "text-[#516278]"}`}>no PIX ou em até {PARCELA} no cartão</p>
+      </div>
+    );
+  }
   return (
     <div className={escuro ? "text-white" : "text-[#14213A]"}>
       <p
@@ -79,6 +92,7 @@ function Oferta({ escuro = false }: { escuro?: boolean }) {
 }
 
 export default function FormacaoEletricistaPage() {
+  const promo = promocaoFormacaoAtiva();
   const url = `${SITE}${F.caminho}`;
   const jsonLd = [
     {
@@ -112,9 +126,9 @@ export default function FormacaoEletricistaPage() {
       offers: {
         "@type": "Offer",
         category: "Paid",
-        price: (F.precoPixPromoCentavos / 100).toFixed(2),
+        price: ((promo ? F.precoPixPromoCentavos : F.precoNormalCentavos) / 100).toFixed(2),
         priceCurrency: "BRL",
-        priceValidUntil: F.fimPromocaoData,
+        ...(promo ? { priceValidUntil: F.fimPromocaoData } : {}),
         availability: "https://schema.org/InStock",
         url,
       },
@@ -158,10 +172,11 @@ export default function FormacaoEletricistaPage() {
       <CabecalhoSite />
 
       {/* Faixa da promoção */}
-      <div className="bg-accent px-4 py-2.5 text-center font-data text-[13.5px] font-bold text-accent-ink">
-        Comece 2027 com profissão: {PRECO_PIX_PROMO} no PIX só até 31 de
-        dezembro
-      </div>
+      {promo && (
+        <div className="bg-accent px-4 py-2.5 text-center font-data text-[13.5px] font-bold text-accent-ink">
+          Comece 2027 com profissão: {PRECO_PIX_PROMO} no PIX só até 31 de dezembro
+        </div>
+      )}
 
       <main className="flex-1">
         {/* Topo */}
@@ -179,14 +194,14 @@ export default function FormacaoEletricistaPage() {
                 certificados assinados por técnico em eletrotécnica.
               </p>
               <div className="mt-6">
-                <Oferta escuro />
+                <Oferta escuro promo={promo} />
               </div>
-              <ContagemRegressiva ate={FIM_PROMOCAO} className="mt-5" />
+              {promo && <ContagemRegressiva ate={FIM_PROMOCAO} className="mt-5" />}
               <a
-                href="#oferta"
+                href={CHECKOUT}
                 className="btn-pulso brilho mt-7 inline-flex items-center gap-2 bg-accent px-7 py-4 text-[16px] font-extrabold text-accent-ink"
               >
-                Garantir a promoção →
+                {promo ? "Garantir a promoção →" : "Quero minha formação →"}
               </a>
             </Reveal>
             <Reveal variante="direita" delay={150}>
@@ -318,20 +333,17 @@ export default function FormacaoEletricistaPage() {
         <section id="oferta" className="scroll-mt-24 bg-[#0B2A4A] text-white">
           <div className="mx-auto flex w-full max-w-[820px] flex-col items-center px-6 py-14 text-center">
             <h2 className="font-display text-3xl font-extrabold">
-              A promoção acaba em
+              {promo ? "A promoção acaba em" : "Comece hoje a sua formação"}
             </h2>
-            <ContagemRegressiva
-              ate={FIM_PROMOCAO}
-              className="mt-5 justify-center"
-            />
+            {promo && <ContagemRegressiva ate={FIM_PROMOCAO} className="mt-5 justify-center" />}
             <div className="mt-7">
-              <Oferta escuro />
+              <Oferta escuro promo={promo} />
             </div>
             <p className="mt-4 text-[15px] text-[#C9D6E5]">
               3 cursos + 3 certificados · 88 horas · pagamento único
             </p>
             <a
-              href="#oferta"
+              href={CHECKOUT}
               className="btn-pulso brilho mt-6 inline-flex items-center gap-2 bg-accent px-8 py-4 text-[17px] font-extrabold text-accent-ink"
             >
               Quero minha formação →

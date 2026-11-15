@@ -2,7 +2,8 @@ import { CompartilharWhatsApp } from "@/components/compartilhar-whatsapp";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
+import { CURSOS_SO_NA_FORMACAO, FORMACAO_ELETRICISTA } from "@/lib/formacao-eletricista";
 import { criarClienteSupabasePublico } from "@/lib/supabase-publico";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { Reveal } from "@/components/reveal";
@@ -177,6 +178,8 @@ function perguntasFrequentes(
 
 export default async function CursoPublicoPage({ params }: Props) {
   const { slug } = await params;
+  // NR-10 e NR-35 são vendidos só dentro da Formação Inicial para Eletricista
+  if (CURSOS_SO_NA_FORMACAO.includes(slug)) permanentRedirect(FORMACAO_ELETRICISTA.caminho);
   const { supabase, curso } = await carregarCurso(slug);
   if (!curso) notFound();
 
