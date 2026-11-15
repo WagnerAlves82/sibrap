@@ -1,3 +1,4 @@
+import { blocoLlmsFormacao } from "@/lib/formacao-eletricista";
 import { SITE_URL, blocoCombos, blocoSobre, carregarCatalogo, linhaApostila } from "@/lib/llms";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 
@@ -27,6 +28,7 @@ export async function GET() {
   linhas.push(`- [Notícias](${SITE_URL}/noticias): notícias sobre concursos públicos (vagas efetivas) e processos seletivos (contratações temporárias).`);
   linhas.push(`- [Versão completa deste resumo](${SITE_URL}/llms-full.txt): todas as apostilas, cursos e perguntas frequentes em um só arquivo.`);
   linhas.push("");
+  for (const l of blocoLlmsFormacao(SITE_URL)) linhas.push(l);
 
   try {
     const { apostilas, cursos } = await carregarCatalogo();

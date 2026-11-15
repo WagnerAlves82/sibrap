@@ -41,6 +41,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ codigo:
     assinadoInstituicaoEm: cert.assinado_instituicao_em,
     hashConferencia: cert.hash_conferencia,
     responsavel: responsavelTecnico(cert.curso_slug),
+    cursoSlug: cert.curso_slug,
     dataInicio: cert.data_inicio,
     dataConclusao: cert.data_conclusao,
     modulos: (modulos ?? []).map((m) => ({ titulo: m.titulo, aulas: m.aulas.map((a) => a.titulo) })),

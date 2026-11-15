@@ -10,11 +10,15 @@ export const ASSINATURA_CARGO = "Professor Habilitado";
 
 // Instrutor habilitado por curso (aparece no certificado como "Instrutor") (ex.: curso de eletricista com técnico em eletrotécnica registrado no CRT).
 // Só entra no certificado com o consentimento por escrito do profissional. Chave = slug do curso.
-export type ResponsavelTecnico = { nome: string; titulo: string; registro: string };
+// assinaturaNoVerso: o verso repete o bloco de assinaturas eletrônicas e traz a base legal.
+export type ResponsavelTecnico = { nome: string; titulo: string; registro: string; assinaturaNoVerso?: boolean };
 const RESPONSAVEL_TECNICO_POR_CURSO: Record<string, ResponsavelTecnico> = {
   // sem número de registro: o registro nacional do CFT é o CPF dele (página e validação são públicas)
-  "eletricista-residencial-basico": { nome: "Alexsandro de Sousa Silva", titulo: "Técnico em Eletrotécnica", registro: "CRT-01" },
+  "eletricista-residencial-basico": { nome: "Alexsandro de Sousa Silva", titulo: "Técnico em Eletrotécnica", registro: "CRT-01", assinaturaNoVerso: true },
   "automacao-residencial-inteligente": { nome: "Alexsandro de Sousa Silva", titulo: "Técnico em Eletrotécnica", registro: "CRT-01" },
+  // Formação Inicial para Eletricista
+  "nr-10-basico": { nome: "Alexsandro de Sousa Silva", titulo: "Técnico em Eletrotécnica", registro: "CRT-01", assinaturaNoVerso: true },
+  "seguranca-trabalho-em-altura": { nome: "Alexsandro de Sousa Silva", titulo: "Técnico em Eletrotécnica", registro: "CRT-01", assinaturaNoVerso: true },
 };
 export function responsavelTecnico(cursoSlug: string | null | undefined): ResponsavelTecnico | null {
   return (cursoSlug && RESPONSAVEL_TECNICO_POR_CURSO[cursoSlug]) || null;
@@ -54,3 +58,19 @@ export const RAZAO_SOCIAL = "34.340.453 Wagner Alves de Souza Junior";
 // WhatsApp de atendimento (só dígitos, com DDI+DDD, ex.: "5547999999999").
 // Enquanto estiver vazio, o botão "Posso ajudar?" não aparece no site.
 export const WHATSAPP_NUMERO = "5547992069330";
+
+// Base legal impressa no verso (certificados com assinaturaNoVerso).
+const BASE_LEGAL_VERSO_COMUM = [
+  "Lei nº 9.394/1996 (LDB), art. 42: cursos livres de educação profissional.",
+  "Decreto nº 5.154/2004, arts. 1º e 3º: formação inicial e continuada de trabalhadores.",
+  "Lei nº 14.063/2020: assinaturas eletrônicas.",
+];
+const BASE_LEGAL_VERSO_POR_CURSO: Record<string, string> = {
+  "eletricista-residencial-basico": "ABNT NBR 5410: instalações elétricas de baixa tensão (referência técnica do conteúdo).",
+  "nr-10-basico": "NR-10 (Portaria MTb nº 3.214/1978, redação da Portaria GM/MTE nº 598/2004): conteúdo do Anexo III.",
+  "seguranca-trabalho-em-altura": "NR-35 (Portaria MTP nº 4.218/2022): conteúdo do treinamento de trabalho em altura.",
+};
+export function baseLegalVerso(cursoSlug: string | null | undefined): string[] {
+  const extra = cursoSlug ? BASE_LEGAL_VERSO_POR_CURSO[cursoSlug] : undefined;
+  return extra ? [extra, ...BASE_LEGAL_VERSO_COMUM] : BASE_LEGAL_VERSO_COMUM;
+}

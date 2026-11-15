@@ -48,7 +48,7 @@ export async function ResultadoValidacao({ codigo }: { codigo: string }) {
         <Campo rotulo="Assinado pelo aluno" valor={`${cert.nome_completo} · ${dataHora(cert.assinado_aluno_em)}`} />
         <Campo rotulo="Assinado pela instituição" valor={`${ASSINATURA_CERTIFICADO} · ${ASSINATURA_CARGO} · ${dataHora(cert.assinado_instituicao_em)}`} />
         {responsavelTecnico(cert.curso_slug) && (
-          <Campo rotulo="Instrutor" valor={textoResponsavel(responsavelTecnico(cert.curso_slug)!)} />
+          <Campo rotulo="Assinado pelo instrutor" valor={`${textoResponsavel(responsavelTecnico(cert.curso_slug)!)} · ${dataHora(cert.assinado_instituicao_em)}`} />
         )}
         {cert.hash_conferencia && <Campo rotulo="Código de conferência (SHA-256)" valor={cert.hash_conferencia} mono destaque />}
       </dl>

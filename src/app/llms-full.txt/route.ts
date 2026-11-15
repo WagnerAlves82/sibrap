@@ -1,3 +1,4 @@
+import { blocoLlmsFormacao } from "@/lib/formacao-eletricista";
 import { perguntasVenda } from "@/components/venda-apostila";
 import { SITE_URL, blocoCombos, blocoSobre, carregarCatalogo, fatosDe, localDe } from "@/lib/llms";
 
@@ -44,6 +45,7 @@ export async function GET() {
     const combos = blocoCombos(apostilas);
     if (combos.length > 0) linhas.push("## Combos", "", ...combos, "");
 
+    linhas.push(...blocoLlmsFormacao(SITE_URL, true));
     linhas.push("## Cursos livres com certificado", "");
     for (const c of cursos) {
       const valor = c.preco_centavos
