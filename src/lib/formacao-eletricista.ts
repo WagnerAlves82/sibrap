@@ -41,8 +41,8 @@ export const FORMACAO_ELETRICISTA = {
 export const PRODUTO_FORMACAO_PIX = "formacao-eletricista";
 export const PRODUTO_FORMACAO_CARTAO = "formacao-eletricista-cartao";
 export const CURSOS_SLUGS_FORMACAO = ["eletricista-residencial-basico", "nr-10-basico", "seguranca-trabalho-em-altura"] as const;
-// cursos vendidos só dentro da formação (as páginas deles levam para a formação)
-export const CURSOS_SO_NA_FORMACAO = ["nr-10-basico", "seguranca-trabalho-em-altura"];
+// preço dos 3 cursos comprados separados (Eletricista R$ 59,90 + NR-10 R$ 59,90 + NR-35 R$ 45,90), para comparar com a formação
+export const PRECO_SEPARADOS_CENTAVOS = 5990 + 5990 + 4590;
 export const AREA_FORMACAO = "/minha-area/formacao-eletricista";
 
 export function promocaoFormacaoAtiva(agora = new Date()): boolean {

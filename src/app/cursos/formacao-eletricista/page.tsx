@@ -6,6 +6,7 @@ import { ContagemRegressiva } from "@/components/contagem-regressiva";
 import { BarraCompraFixa } from "@/components/barra-compra-fixa";
 import {
   AREA_FORMACAO,
+  PRECO_SEPARADOS_CENTAVOS,
   CURSOS_FORMACAO,
   FORMACAO_ELETRICISTA,
   PERGUNTAS_FORMACAO,
@@ -45,10 +46,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/cursos/profissionalizantes/eletrica.webp",
+        url: "/cursos/formacao-eletricista/formacao-hero.webp",
         width: 1200,
-        height: 900,
-        alt: "Eletricista instalando tomada",
+        height: 896,
+        alt: "Eletricista com capacete, óculos e luvas isolantes medindo um quadro elétrico bloqueado com cadeado",
       },
     ],
   },
@@ -63,6 +64,7 @@ function Oferta({ escuro = false, promo }: { escuro?: boolean; promo: boolean })
       <div className={escuro ? "text-white" : "text-[#14213A]"}>
         <strong className="font-display text-5xl font-extrabold leading-none">{PRECO_NORMAL}</strong>
         <p className={`mt-2 text-[14.5px] ${escuro ? "text-[#C9D6E5]" : "text-[#516278]"}`}>no PIX ou em até {PARCELA} no cartão</p>
+        <Separados escuro={escuro} />
       </div>
     );
   }
@@ -88,7 +90,17 @@ function Oferta({ escuro = false, promo }: { escuro?: boolean; promo: boolean })
       >
         ou {PRECO_NORMAL} no cartão em até {PARCELA}
       </p>
+      <Separados escuro={escuro} />
     </div>
+  );
+}
+
+// comparação real: os 3 cursos comprados separados
+function Separados({ escuro }: { escuro: boolean }) {
+  return (
+    <p className={`mt-1.5 text-[13.5px] ${escuro ? "text-[#9FB3C8]" : "text-[#8A97A8]"}`}>
+      Comprando os 3 cursos separados: <span className="line-through">{reaisFormacao(PRECO_SEPARADOS_CENTAVOS)}</span>
+    </p>
   );
 }
 
@@ -211,10 +223,10 @@ export default function FormacaoEletricistaPage() {
             </Reveal>
             <Reveal variante="direita" delay={150}>
               <Image
-                src="/cursos/profissionalizantes/eletrica.webp"
-                alt="Eletricista instalando quadro de distribuição"
+                src="/cursos/formacao-eletricista/formacao-hero.webp"
+                alt="Eletricista com capacete, óculos e luvas isolantes medindo um quadro elétrico bloqueado com cadeado"
                 width={1200}
-                height={900}
+                height={896}
                 priority
                 sizes="(min-width: 768px) 540px, 90vw"
                 className="mx-auto h-auto w-full max-w-[540px] border-2 border-accent"

@@ -2,8 +2,7 @@ import { CompartilharWhatsApp } from "@/components/compartilhar-whatsapp";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound, permanentRedirect } from "next/navigation";
-import { CURSOS_SO_NA_FORMACAO, FORMACAO_ELETRICISTA } from "@/lib/formacao-eletricista";
+import { notFound } from "next/navigation";
 import { criarClienteSupabasePublico } from "@/lib/supabase-publico";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { Reveal } from "@/components/reveal";
@@ -110,6 +109,18 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     largura: 1000,
     altura: 747,
   },
+  "nr-10-basico": {
+    src: "/cursos/formacao-eletricista/nr10-hero.webp",
+    alt: "Eletricista com capacete, óculos e luvas isolantes medindo um quadro elétrico bloqueado com cadeado",
+    largura: 1200,
+    altura: 896,
+  },
+  "seguranca-trabalho-em-altura": {
+    src: "/cursos/formacao-eletricista/nr35-hero.webp",
+    alt: "Trabalhador de capacete ajustando o cinturão de segurança tipo paraquedista diante de uma escada",
+    largura: 1200,
+    altura: 896,
+  },
   "libras-iniciante": {
     src: "/libras-card.webp",
     alt: "Mulher e homem conversando em Libras, a Língua Brasileira de Sinais, numa sala de aula iluminada",
@@ -179,8 +190,6 @@ function perguntasFrequentes(
 
 export default async function CursoPublicoPage({ params }: Props) {
   const { slug } = await params;
-  // NR-10 e NR-35 são vendidos só dentro da Formação Inicial para Eletricista
-  if (CURSOS_SO_NA_FORMACAO.includes(slug)) permanentRedirect(FORMACAO_ELETRICISTA.caminho);
   const { supabase, curso } = await carregarCurso(slug);
   if (!curso) notFound();
 

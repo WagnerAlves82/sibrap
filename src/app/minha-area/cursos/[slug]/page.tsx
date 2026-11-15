@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Fragment } from "react";
-import { notFound, redirect } from "next/navigation";
-import { AREA_FORMACAO, CURSOS_SO_NA_FORMACAO } from "@/lib/formacao-eletricista";
+import { notFound } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { BarraProgresso, Reveal } from "@/components/reveal";
@@ -58,8 +57,6 @@ export default async function AreaDoCursoPage({
     ]);
 
   if (!matricula) {
-    // NR-10 e NR-35: comprados só na Formação Inicial para Eletricista
-    if (CURSOS_SO_NA_FORMACAO.includes(curso.slug)) redirect(AREA_FORMACAO);
     // curso pago: sem compra, mostra o pagamento (a matrícula é travada no banco até o pagamento ser aprovado)
     const produtoPago = await produtoDoCursoPago(supabase, curso.slug);
     const {
