@@ -246,6 +246,66 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
       ["Depois do curso já posso trabalhar?", "Sim. Você conclui sabendo fazer os serviços básicos com segurança e pode buscar vaga ou atender clientes. Serviços maiores vêm com a prática e novas qualificações."],
     ],
   },
+  "automacao-residencial-inteligente": {
+    paraQuem: [
+      "Quem gosta de tecnologia e quer trabalhar com casas inteligentes",
+      "Eletricistas e técnicos que querem oferecer um serviço a mais",
+      "Vendedores de lojas de eletrônicos e material elétrico",
+      "Quem quer automatizar a própria casa com segurança e economia",
+    ],
+    ganhos: [
+      { titulo: "Curso completo", texto: "16 aulas: protocolos, dispositivos, pareamento, aplicativos, Alexa, centrais, cenas e rotinas." },
+      { titulo: "Apostila prática em PDF", texto: "Fichas passo a passo de vistoria, pareamento, rotinas e entrega ao cliente." },
+      { titulo: "Certificado de 60 horas", texto: "Com QR Code de validação e o nome do instrutor, técnico em eletrotécnica com registro no CRT." },
+      { titulo: "Projeto final", texto: "Você monta o projeto completo de uma casa inteligente, com orçamento." },
+    ],
+    ondeTrabalhar: ["Empresas de automação", "Segurança eletrônica", "Lojas de casa inteligente", "Lojas de material elétrico", "Construtoras de alto padrão", "Por conta própria"],
+    salario: {
+      faixa: "R$ 1.500 a R$ 2.600",
+      fonte: "Estimativa de sites de vagas para técnico instalador; ainda não há dado oficial só desta função. Serviços por projeto podem render mais.",
+    },
+    destaques: [
+      "Simuladores de rede, pareamento e diagnóstico de falhas",
+      "Monte rotinas QUANDO, SE, ENTÃO e cenas de iluminação",
+      "Jogo de demonstração da ligação do relé inteligente",
+      "Projeto final de uma casa inteligente com orçamento",
+    ],
+    faq: [
+      ["O curso vem com apostila?", "Sim. Você baixa a apostila prática em PDF na área do aluno, com as fichas passo a passo de cada tarefa."],
+      ["Preciso saber elétrica?", "Não. O curso começa pelo que não exige obra (lâmpadas, tomadas, sensores, Alexa). As ligações em 127/220 V são mostradas como demonstração e ficam com o eletricista."],
+      ["Quais marcas o curso usa?", "As explicações valem para qualquer marca e usam como referência a documentação pública de fabricantes conhecidos e do Home Assistant."],
+    ],
+  },
+  "bombeiro-hidraulico": {
+    paraQuem: [
+      "Quem nunca trabalhou na área e quer começar na profissão",
+      "Quem já faz pequenos reparos e quer um certificado para mostrar",
+      "Ajudantes de obra e de manutenção que querem subir de função",
+      "Quem quer atender casas e comércios por conta própria",
+    ],
+    ganhos: [
+      { titulo: "Curso completo", texto: "16 aulas: hidráulica básica, tubos e conexões, água fria e quente, ralos, louças, metais e vazamentos." },
+      { titulo: "Apostila prática em PDF", texto: "Fichas passo a passo de soldas, testes, reparos, vaso, chuveiro, desentupimento e vazamentos." },
+      { titulo: "Certificado de 80 horas", texto: "Com QR Code de validação, para mostrar no currículo e aos clientes." },
+      { titulo: "Pronto para o primeiro serviço", texto: "Os reparos mais pedidos do dia a dia, com método e segurança." },
+    ],
+    ondeTrabalhar: ["Construtoras e obras", "Manutenção predial", "Condomínios", "Hotéis e hospitais", "Indústrias", "Lojas de material de construção", "Por conta própria"],
+    salario: {
+      faixa: "R$ 2.400 a R$ 2.800",
+      fonte: "Do piso à média de encanador / bombeiro hidráulico, com carteira assinada (Novo CAGED 2026). Varia conforme a cidade e a experiência.",
+    },
+    destaques: [
+      "Simuladores de pressão, hidrômetro, declividade e orçamento",
+      "Diagnósticos de caixa acoplada, entupimento e vazamento oculto",
+      "Passo a passo de solda de PVC, veda-rosca e teste de estanqueidade",
+      "Diagramas de caixa-d'água, sifão, aquecimento solar e banheiro",
+    ],
+    faq: [
+      ["O curso vem com apostila?", "Sim. Você baixa a apostila prática em PDF na área do aluno, com 11 fichas passo a passo dos serviços mais comuns."],
+      ["Preciso ter experiência?", "Não. O curso começa do zero, com linguagem simples, e você estuda no celular ou no computador."],
+      ["Depois do curso já posso trabalhar?", "Sim. Você conclui sabendo fazer os serviços básicos com segurança e pode buscar vaga ou atender clientes. Serviços maiores vêm com a prática e novas qualificações."],
+    ],
+  },
   "libras-iniciante": {
     paraQuem: [
       "Quem atende o público e quer se comunicar com pessoas surdas",

@@ -6,4 +6,12 @@ export const APOSTILA_DO_CURSO: Record<string, { caminho: string; arquivo: strin
     caminho: "cursos/eletricista-residencial-basico/apostila-pratica.pdf",
     arquivo: "SIBRAP-Apostila-Pratica-Eletricista-Residencial.pdf",
   },
+  "automacao-residencial-inteligente": {
+    caminho: "cursos/automacao-residencial-inteligente/apostila-pratica.pdf",
+    arquivo: "SIBRAP-Apostila-Pratica-Automacao-Residencial.pdf",
+  },
+  "bombeiro-hidraulico": {
+    caminho: "cursos/bombeiro-hidraulico/apostila-pratica.pdf",
+    arquivo: "SIBRAP-Apostila-Pratica-Bombeiro-Hidraulico.pdf",
+  },
 };

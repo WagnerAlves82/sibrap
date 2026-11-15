@@ -96,6 +96,18 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     largura: 1376,
     altura: 768,
   },
+  "automacao-residencial-inteligente": {
+    src: "/cursos/automacao-residencial/hero.webp",
+    alt: "Técnico configurando uma casa inteligente pelo tablet, com luzes, cortinas e assistente de voz numa sala moderna",
+    largura: 1000,
+    altura: 747,
+  },
+  "bombeiro-hidraulico": {
+    src: "/cursos/bombeiro-hidraulico/hero.webp",
+    alt: "Bombeiro hidráulico instalando uma torneira cromada na pia de um banheiro moderno",
+    largura: 1000,
+    altura: 747,
+  },
   "libras-iniciante": {
     src: "/libras-card.webp",
     alt: "Mulher e homem conversando em Libras, a Língua Brasileira de Sinais, numa sala de aula iluminada",

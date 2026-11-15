@@ -15,4 +15,6 @@ export const FOTOS_POR_CURSO: Record<string, string> = {
   "tbo-treinamento-basico-operacional": "/cursos/tbo/card.webp",
   "assistente-administrativo": "/cursos/assistente-administrativo/card.webp",
   "eletricista-residencial-basico": "/cursos/eletricista-residencial/card.webp",
+  "automacao-residencial-inteligente": "/cursos/automacao-residencial/card.webp",
+  "bombeiro-hidraulico": "/cursos/bombeiro-hidraulico/card.webp",
 };

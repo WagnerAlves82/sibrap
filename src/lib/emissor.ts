@@ -14,6 +14,7 @@ export type ResponsavelTecnico = { nome: string; titulo: string; registro: strin
 const RESPONSAVEL_TECNICO_POR_CURSO: Record<string, ResponsavelTecnico> = {
   // sem número de registro: o registro nacional do CFT é o CPF dele (página e validação são públicas)
   "eletricista-residencial-basico": { nome: "Alexsandro de Sousa Silva", titulo: "Técnico em Eletrotécnica", registro: "CRT-01" },
+  "automacao-residencial-inteligente": { nome: "Alexsandro de Sousa Silva", titulo: "Técnico em Eletrotécnica", registro: "CRT-01" },
 };
 export function responsavelTecnico(cursoSlug: string | null | undefined): ResponsavelTecnico | null {
   return (cursoSlug && RESPONSAVEL_TECNICO_POR_CURSO[cursoSlug]) || null;
