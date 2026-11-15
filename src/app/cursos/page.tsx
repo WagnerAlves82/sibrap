@@ -78,6 +78,20 @@ export default async function CursosPage() {
           </p>
         </Reveal>
 
+        <Reveal delay={100}>
+          <Link
+            href="/cursos/profissionalizantes"
+            className="group mt-8 flex flex-col gap-3 border-2 border-accent bg-[#0B2A4A] p-6 text-white transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.5)] sm:flex-row sm:items-center sm:justify-between"
+          >
+            <span>
+              <span className="font-data text-xs font-semibold uppercase tracking-[0.2em] text-accent">Novo · Cursos profissionalizantes</span>
+              <span className="mt-1 block font-display text-xl font-extrabold">Elétrica, Automação e Bombeiro Hidráulico</span>
+              <span className="mt-1 block text-[14.5px] text-[#C9D6E5]">Curso + apostila prática em PDF + certificado, por R$ 59,90.</span>
+            </span>
+            <span className="btn-pulso-suave brilho shrink-0 bg-accent px-6 py-3 text-[15px] font-extrabold text-accent-ink">Escolher minha área →</span>
+          </Link>
+        </Reveal>
+
         {vitrine.length ? <VitrineCursos cursos={vitrine} /> : <p className="mt-10 text-[#516278]">Novos cursos em breve.</p>}
 
         {(cursos?.length ?? 0) >= 2 && (

@@ -90,6 +90,12 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     largura: 1376,
     altura: 768,
   },
+  "eletricista-residencial-basico": {
+    src: "/cursos/eletricista-residencial/hero.webp",
+    alt: "Eletricista conferindo a caixa de um interruptor com o multímetro, acompanhada por um profissional experiente com o projeto na mão",
+    largura: 1376,
+    altura: 768,
+  },
   "libras-iniciante": {
     src: "/libras-card.webp",
     alt: "Mulher e homem conversando em Libras, a Língua Brasileira de Sinais, numa sala de aula iluminada",
@@ -484,6 +490,15 @@ export default async function CursoPublicoPage({ params }: Props) {
                     </li>
                   ))}
                 </ul>
+                {pagina.salario && (
+                  <div className="mt-6 border-l-4 border-accent bg-white p-5">
+                    <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent-2">Faixa salarial inicial</p>
+                    <p className="mt-1 font-display text-3xl font-extrabold text-[#14213A]">
+                      {pagina.salario.faixa} <span className="text-[14px] font-semibold text-[#516278]">por mês</span>
+                    </p>
+                    <p className="mt-1 text-[13px] leading-snug text-[#8B97A8]">{pagina.salario.fonte}</p>
+                  </div>
+                )}
               </Reveal>
             )}
           </div>

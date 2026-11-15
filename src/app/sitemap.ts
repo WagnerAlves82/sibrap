@@ -88,6 +88,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/apostilas`, lastModified: ultimaApostila, changeFrequency: "weekly", priority: 0.95 },
     { url: `${siteUrl}/noticias`, lastModified: ultimaNoticia, changeFrequency: "daily", priority: 0.8 },
     { url: `${siteUrl}/cursos`, lastModified: ultimoCurso, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${siteUrl}/cursos/profissionalizantes`, lastModified: ultimoCurso, changeFrequency: "weekly", priority: 0.9 },
     { url: `${siteUrl}/bancas`, lastModified: ultimaApostila, changeFrequency: "weekly", priority: 0.6 },
   );
   return paginas;

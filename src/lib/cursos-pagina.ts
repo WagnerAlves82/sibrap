@@ -1,10 +1,12 @@
 // Copy de venda de cada curso (página /cursos/<slug>). Textos curtos: no máximo 3 linhas por item.
-// Sem salários e sem promessas de emprego; só o que o curso realmente entrega.
+// Sem promessas de emprego. Salário só nos cursos profissionalizantes, com fonte oficial (campo salario).
 
 export type PaginaCurso = {
   paraQuem: string[];
   ganhos: { titulo: string; texto: string }[];
   ondeTrabalhar?: string[];
+  /** Faixa salarial inicial (cursos profissionalizantes), sempre com a fonte */
+  salario?: { faixa: string; fonte: string };
   destaques?: string[];
   faq?: [string, string][];
   /** ID do vídeo de apresentação no YouTube (até 90 s), exibido logo abaixo do topo da página */
@@ -210,6 +212,38 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
       "Ditados: ouça e escreva, com correção palavra por palavra",
       "Fale em inglês: o navegador confere a sua pronúncia",
       "Diálogos de atendimento e jogos de ordenar frases",
+    ],
+  },
+  "eletricista-residencial-basico": {
+    paraQuem: [
+      "Quem nunca mexeu com elétrica e quer começar na profissão",
+      "Quem já faz pequenos reparos e quer um certificado para mostrar",
+      "Ajudantes de obra e de manutenção que querem subir de função",
+      "Quem quer atender casas e comércios por conta própria",
+    ],
+    ganhos: [
+      { titulo: "Curso completo", texto: "16 aulas no celular ou no computador, da Lei de Ohm ao quadro de distribuição, com segurança em primeiro lugar." },
+      { titulo: "Apostila prática em PDF", texto: "O passo a passo dos serviços, os diagramas e os checklists de segurança, para consultar no trabalho." },
+      { titulo: "Certificado de 40 horas", texto: "Com QR Code de validação e o nome do instrutor, técnico em eletrotécnica com registro no CRT." },
+      { titulo: "Pronto para o primeiro serviço", texto: "Tomadas, interruptores, three-way, ponto de luz e diagnóstico de defeitos comuns." },
+    ],
+    ondeTrabalhar: ["Construtoras e obras", "Empresas de instalação elétrica", "Manutenção predial", "Condomínios", "Hotéis e hospitais", "Shoppings e lojas", "Indústrias", "Por conta própria"],
+    salario: {
+      faixa: "R$ 2.100 a R$ 2.700",
+      fonte: "Do piso de eletricista auxiliar à média de eletricista de instalações, com carteira assinada (Novo CAGED 2026). Varia conforme a cidade e a experiência.",
+    },
+    destaques: [
+      "Jogos de ligação: acione os interruptores e veja a corrente acender a lâmpada",
+      "Ligue os fios nos bornes da tomada, do interruptor e do quadro, e teste",
+      "Three-way e four-way funcionando na tela, passo a passo",
+      "Simuladores de multímetro, de dimensionamento e de diagnóstico de defeitos",
+      "11 diagramas de ligação para consultar sempre que precisar",
+    ],
+    faq: [
+      ["O curso vem com apostila?", "Sim. Você baixa a apostila prática em PDF na área do aluno: o passo a passo dos serviços, os diagramas de ligação e os checklists de segurança."],
+      ["Quem é o instrutor?", "O curso tem como instrutor um técnico em eletrotécnica com registro no CRT (Conselho Regional dos Técnicos Industriais). O nome dele aparece no certificado."],
+      ["Este curso substitui a NR-10?", "Não. É um curso de entrada na profissão. O treinamento de segurança da NR-10 é outro curso, exigido de quem trabalha com eletricidade em empresas, e a aula final mostra como seguir."],
+      ["Depois do curso já posso trabalhar?", "Sim. Você conclui sabendo fazer os serviços básicos com segurança e pode buscar vaga ou atender clientes. Serviços maiores vêm com a prática e novas qualificações."],
     ],
   },
   "libras-iniciante": {

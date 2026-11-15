@@ -12,6 +12,7 @@ import { formatarReais, produtoDoCursoPago } from "@/lib/curso-pago";
 import { dadosCartaoCompra } from "@/lib/cartao-transparente";
 import { PopupEtapa } from "./certificado/PopupEtapa";
 import { TourEtapas } from "./TourEtapas";
+import { APOSTILA_DO_CURSO } from "@/lib/cursos-apostila";
 
 export const metadata: Metadata = {
   title: "Meu curso",
@@ -168,6 +169,14 @@ export default async function AreaDoCursoPage({
               >
                 {feitas === 0 ? "Começar a primeira aula" : "Continuar de onde parei"} <span aria-hidden>→</span>
               </Link>
+            )}
+            {APOSTILA_DO_CURSO[curso.slug] && (
+              <a
+                href={`/minha-area/cursos/${curso.slug}/apostila`}
+                className="ml-0 mt-3 inline-flex items-center gap-2 border-2 border-brand px-5 py-2.5 text-[15px] font-bold text-brand transition-colors hover:bg-[#F6F9FC] sm:ml-3"
+              >
+                Baixar a apostila prática (PDF) <span aria-hidden>↓</span>
+              </a>
             )}
           </div>
         </Reveal>
