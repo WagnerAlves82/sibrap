@@ -3,19 +3,20 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { FORMACAO_ELETRICISTA, promocaoFormacaoAtiva, reaisFormacao } from "@/lib/formacao-eletricista";
 
-type SlideHero = { id: "blackfriday" | "pmspRedacao" | "redacao" | "metodo" | "apostila" | "simulado"; rotulo: string };
+type SlideHero = { id: "formacao" | "blackfriday" | "pmspRedacao" | "redacao" | "metodo" | "apostila" | "simulado"; rotulo: string };
 
-// Durante a Black Friday: Black Friday, Redação e Simulado (Método e Apostilas saem até o fim da promoção).
-// Depois: Método, Redação, Apostilas e Simulado.
+// Primeiro slide: Formação Inicial para Eletricista (pedido do Wagner, 15/11/2026: no lugar do primeiro card).
+// Durante a Black Friday: Formação, Redação e Simulado. Depois: Formação, Redação, Apostilas e Simulado.
 const SLIDES_BLACK_FRIDAY: SlideHero[] = [
-  { id: "blackfriday", rotulo: "Black Friday" },
+  { id: "formacao", rotulo: "Formação Inicial para Eletricista" },
   { id: "pmspRedacao", rotulo: "PMSP com Treino de Redação" },
   { id: "redacao", rotulo: "Treino de Redação" },
   { id: "simulado", rotulo: "Simulados on-line" },
 ];
 const SLIDES_NORMAIS: SlideHero[] = [
-  { id: "metodo", rotulo: "Método SIBRAP" },
+  { id: "formacao", rotulo: "Formação Inicial para Eletricista" },
   { id: "pmspRedacao", rotulo: "PMSP com Treino de Redação" },
   { id: "redacao", rotulo: "Treino de Redação" },
   { id: "apostila", rotulo: "Apostilas" },
@@ -26,6 +27,7 @@ const INTERVALO_MS = 7000;
 const FUNDO = "linear-gradient(135deg, #2e3192 0%, #1f5fb0 55%, #0b7cc4 100%)";
 const FUNDOS: Partial<Record<SlideHero["id"], string>> = {
   blackfriday: "radial-gradient(ellipse at 75% 40%, #2a2208 0%, #0d0d0d 55%, #000 100%)",
+  formacao: "linear-gradient(125deg, #061a30 0%, #0b2a4a 55%, #123d63 100%)",
   redacao: "linear-gradient(135deg, #071b33 0%, #0b2a4a 60%, #0e4a6b 100%)",
   pmspRedacao: "linear-gradient(120deg, #3d0609 0%, #8a0f16 50%, #c4161f 100%)",
 };
@@ -174,6 +176,7 @@ function Slide({
         }}
       />
       <div className="relative mx-auto grid w-full max-w-[1180px] items-center 2xl:max-w-[1480px] gap-6 px-6 pb-14 pt-8 md:grid-cols-[0.9fr_1.1fr] md:gap-8 md:py-12">
+        {slide.id === "formacao" && <Formacao prioridade={indice === 0} />}
         {slide.id === "blackfriday" && <BlackFriday prioridade={indice === 0} />}
         {slide.id === "pmspRedacao" && precoPmsp && <PmspRedacao preco={precoPmsp} />}
         {slide.id === "redacao" && <Redacao />}
@@ -243,6 +246,53 @@ function Itens({ itens }: { itens: { t: string; d: string; c: string }[] }) {
         </li>
       ))}
     </ul>
+  );
+}
+
+function Formacao({ prioridade }: { prioridade: boolean }) {
+  const promo = promocaoFormacaoAtiva();
+  const F = FORMACAO_ELETRICISTA;
+  return (
+    <>
+      <div className="max-w-[620px]">
+        <Rotulo>Formação Inicial para Eletricista</Rotulo>
+        <Titulo>Qualifique-se neste fim de ano e comece 2027 pronto para trabalhar.</Titulo>
+        <p className="mt-3 text-[15px] text-[#D7E6F7] md:text-base">
+          Cursos feitos para o mercado de trabalho, com certificado válido em todo o Brasil.
+        </p>
+        <Itens
+          itens={[
+            { t: "Eletricista Residencial Básico", d: "40 h: tomadas, interruptores, quadro, DR e aterramento", c: "40 h" },
+            { t: "NR-10", d: "40 h de segurança em instalações e serviços em eletricidade", c: "40 h" },
+            { t: "NR-35", d: "8 h de segurança no trabalho em altura", c: "8 h" },
+          ]}
+        />
+        <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3">
+          <BotaoPrincipal href={F.caminho}>Quero minha formação</BotaoPrincipal>
+          <span className="font-display text-[15px] font-extrabold text-white">
+            {promo ? (
+              <>
+                <span className="mr-1.5 text-[13px] font-semibold text-[#9FB3C8] line-through">{reaisFormacao(F.precoNormalCentavos)}</span>
+                <span className="text-accent">{reaisFormacao(F.precoPixPromoCentavos)}</span> no PIX até 31/12
+              </>
+            ) : (
+              <>{reaisFormacao(F.precoNormalCentavos)} · 3 certificados</>
+            )}
+          </span>
+        </div>
+      </div>
+      <div aria-hidden className="relative justify-self-center">
+        <Image
+          src="/cursos/formacao-eletricista/formacao-hero.webp"
+          alt=""
+          width={1200}
+          height={896}
+          priority={prioridade}
+          sizes="(min-width: 1536px) 620px, (min-width: 1280px) 540px, (min-width: 1024px) 460px, (min-width: 768px) 380px, 320px"
+          className="h-auto w-[320px] border-2 border-accent drop-shadow-[0_18px_40px_rgba(0,0,0,0.45)] md:w-[380px] lg:w-[460px] xl:w-[540px] 2xl:w-[620px]"
+        />
+      </div>
+    </>
   );
 }
 
