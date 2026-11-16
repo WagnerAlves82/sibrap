@@ -27,6 +27,7 @@ export async function GET() {
   linhas.push(`- [Gerador de currículo](${SITE_URL}/curriculo): monta currículo passo a passo (Jovem Aprendiz/primeiro emprego e nível médio), com prévia e download em PDF gratuito.`);
   linhas.push(`- [Notícias](${SITE_URL}/noticias): notícias sobre concursos públicos (vagas efetivas) e processos seletivos (contratações temporárias).`);
   linhas.push(`- [Profissões](${SITE_URL}/profissoes): guias de profissões (o que faz, quanto ganha, o que diz a lei e como começar).`);
+  linhas.push(`- [Para empresas](${SITE_URL}/empresas): treinamentos online para equipes (informática, Excel, rotinas administrativas, atendimento, NR-10 e NR-35), com certificado e controle de estudo; proposta sob consulta.`);
   linhas.push(`- [Versão completa deste resumo](${SITE_URL}/llms-full.txt): todas as apostilas, cursos e perguntas frequentes em um só arquivo.`);
   linhas.push("");
   for (const l of blocoLlmsFormacao(SITE_URL)) linhas.push(l);

@@ -162,6 +162,11 @@ export function RodapeSite() {
                 </Link>
               </li>
               <li>
+                <Link href="/empresas" className={linkRodape}>
+                  Para empresas
+                </Link>
+              </li>
+              <li>
                 <Link href="/curriculo" className={linkRodape}>
                   Gerador de currículo
                 </Link>
