@@ -11,6 +11,7 @@ import { CarrosselEstado } from "@/components/carrossel-estado";
 import { AnuncioLateral } from "@/components/anuncio-lateral";
 import { CardApostilaMini } from "@/components/card-apostila-mini";
 import { GarantaPreparacao } from "@/components/garanta-preparacao";
+import { FaixaApostilaMateria } from "@/components/faixa-apostila-materia";
 import { BlocoAnuncio, ScriptAdsense } from "@/components/adsense";
 import { blocoAdsense, clienteAdsense } from "@/lib/adsense";
 import {
@@ -277,13 +278,16 @@ export default async function PostPage({ params }: Props) {
             const meio = Math.ceil(blocos.length / 2);
             const comCarrossel = !!post.uf && carrossel.length > 0 && blocos.length >= 6;
             const comAnuncioMeio = !!adsense && !!blocoAdsense("NOTICIA_MEIO") && blocos.length >= 6;
-            const partir = comCarrossel || comAnuncioMeio;
+            // matéria de concurso com apostila: faixa de venda no meio do texto
+            const comApostilaMeio = apostilasSaoEspecificas && !!post.apostilas_slugs?.length && blocos.length >= 4;
+            const partir = comCarrossel || comAnuncioMeio || comApostilaMeio;
             return (
               <>
                 <div
                   className="post-conteudo mt-8 text-[16px] leading-relaxed"
                   dangerouslySetInnerHTML={{ __html: partir ? blocos.slice(0, meio).join("\n") : html }}
                 />
+                {comApostilaMeio && <FaixaApostilaMateria apostila={apostilasEspecificas[0]} />}
                 {comAnuncioMeio && <BlocoAnuncio cliente={adsense} slot={blocoAdsense("NOTICIA_MEIO")} />}
                 {comCarrossel && <CarrosselEstado uf={post.uf!} itens={carrossel} />}
                 {partir && (
@@ -295,6 +299,8 @@ export default async function PostPage({ params }: Props) {
               </>
             );
           })()}
+
+          {apostilasSaoEspecificas && <GarantaPreparacao apostilas={apostilasEspecificas} />}
 
           <BlocoAnuncio cliente={adsense} slot={blocoAdsense("NOTICIA_FIM")} />
           <ScriptAdsense cliente={adsense} />
@@ -315,8 +321,6 @@ export default async function PostPage({ params }: Props) {
               </a>
             </aside>
           )}
-
-          {apostilasSaoEspecificas && <GarantaPreparacao apostilas={apostilasEspecificas} />}
 
           {apostilas.length > 0 && !apostilasSaoEspecificas && (
             <aside className="mt-6" aria-labelledby="apostila-rel">
