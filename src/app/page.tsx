@@ -117,7 +117,8 @@ export default async function Home() {
 
       <CabecalhoSite semLinks semFaixaBlackFriday />
 
-      <HeroEscolha totalApostilas={apostilas.length} precoApostila={formatarPreco(preco)} />
+      {/* celular/tablet: as 3 escolhas no topo; desktop: logo abaixo do carrossel */}
+      <HeroEscolha totalApostilas={apostilas.length} precoApostila={formatarPreco(preco)} className="lg:hidden" />
 
       <MenuAncora />
 
@@ -126,6 +127,8 @@ export default async function Home() {
         precoPmsp={pmsp ? formatarPreco(pmsp.preco_centavos) : undefined}
         blackFriday={BLACK_FRIDAY}
       />
+
+      <HeroEscolha totalApostilas={apostilas.length} precoApostila={formatarPreco(preco)} className="hidden lg:block" sufixo="-desktop" />
 
       {/* Vitrine de apostilas */}
       <section id="apostilas" className="scroll-mt-14 bg-[#F6F8FB] py-14 sm:py-16">
@@ -532,7 +535,17 @@ const ANCORAS: [string, string][] = [
 // Menu de âncoras da home. Cada item leva a uma seção da página e serve de
 // destino para os sitelinks do Google Ads (ex.: https://sibrap.tec.br/#simulado-online).
 // Topo da home (teste 15/11/2026): o visitante escolhe logo o que veio buscar.
-function HeroEscolha({ totalApostilas, precoApostila }: { totalApostilas: number; precoApostila: string }) {
+function HeroEscolha({
+  totalApostilas,
+  precoApostila,
+  className = "",
+  sufixo = "",
+}: {
+  totalApostilas: number;
+  precoApostila: string;
+  className?: string;
+  sufixo?: string;
+}) {
   const opcoes = [
     {
       href: "#apostilas",
@@ -557,9 +570,9 @@ function HeroEscolha({ totalApostilas, precoApostila }: { totalApostilas: number
     },
   ];
   return (
-    <section aria-labelledby="hero-escolha" className="bg-brand-deep text-white">
+    <section aria-labelledby={`hero-escolha${sufixo}`} className={`bg-brand-deep text-white ${className}`}>
       <div className="mx-auto max-w-[1180px] px-4 py-7 sm:px-6 sm:py-10">
-        <h1 id="hero-escolha" className="font-display text-[1.45rem] font-extrabold leading-tight sm:text-[2.1rem]">
+        <h1 id={`hero-escolha${sufixo}`} className="font-display text-[1.45rem] font-extrabold leading-tight sm:text-[2.1rem]">
           O que você quer estudar hoje?
         </h1>
         <p className="mt-1.5 text-[14px] text-[#C9D6E6] sm:text-[15.5px]">Escolha um caminho e comece agora.</p>
