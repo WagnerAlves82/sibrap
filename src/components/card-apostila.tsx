@@ -98,14 +98,19 @@ export function CardApostila({ apostila }: { apostila: ApostilaVitrine }) {
           </p>
         )}
 
-        <div className="mt-auto flex flex-wrap items-end justify-between gap-x-2 gap-y-1.5 pt-3">
-          <PrecoApostila centavos={apostila.preco_centavos} original={apostila.preco_original_centavos} />
-          <span
-            aria-hidden
-            className="ml-auto bg-brand px-2 py-0.5 text-[11px] font-bold leading-tight text-white transition-colors group-hover:brightness-125 sm:px-3 sm:py-1.5 sm:text-[12.5px]"
-          >
-            Ver →
-          </span>
+        <div className="mt-auto pt-3">
+          <PrecoApostila
+            centavos={apostila.preco_centavos}
+            original={apostila.preco_original_centavos}
+            acao={
+              <span
+                aria-hidden
+                className="shrink-0 rounded bg-brand px-1.5 py-0.5 text-[10.5px] font-bold leading-tight text-white transition-colors group-hover:brightness-125 sm:px-2.5 sm:py-1 sm:text-[12px]"
+              >
+                Ver →
+              </span>
+            }
+          />
         </div>
       </div>
     </Link>
