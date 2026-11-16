@@ -81,10 +81,43 @@ export async function enviarComprovanteAction(
   return { ok: true };
 }
 
+// carga horária escolhida (ou upgrade): só aceita produtos de certificado deste curso
+function slugCertificado(cursoSlug: string, formato: "online" | "impresso", produtoEscolhido?: string): string {
+  return produtoEscolhido && produtoEscolhido.startsWith(`certificado-${cursoSlug}-`) && /^[a-z0-9-]{3,100}$/.test(produtoEscolhido)
+    ? produtoEscolhido
+    : formato === "impresso"
+      ? `certificado-impresso-${cursoSlug}`
+      : `certificado-${cursoSlug}`;
+}
+
+// Confere o cupom antes do pagamento só para mostrar o novo preço; quem cobra o valor certo é o banco.
+export async function conferirCupomCertificadoAction(
+  cursoSlug: string,
+  formato: "online" | "impresso",
+  produtoEscolhido: string | undefined,
+  codigo: string
+): Promise<{ erro: string } | { codigo: string; valorCentavos: number; percentual: number }> {
+  const cupom = codigo.trim().toLowerCase().slice(0, 40);
+  if (!cupom) return { erro: "Digite o cupom." };
+  const admin = criarClienteSupabaseAdmin();
+  const { data: produto } = await admin
+    .from("produtos")
+    .select("id, preco_centavos")
+    .eq("slug", slugCertificado(cursoSlug, formato, produtoEscolhido))
+    .eq("ativo", true)
+    .maybeSingle();
+  if (!produto) return { erro: "Certificado indisponível para compra agora." };
+  const { data: pct, error } = await admin.rpc("percentual_cupom", { p_cupom: cupom, p_produto: produto.id });
+  const percentual = Number(pct);
+  if (error || !Number.isFinite(percentual)) return { erro: error?.message ?? "Cupom inválido ou expirado" };
+  return { valorCentavos: Math.round((produto.preco_centavos * (100 - percentual)) / 100), percentual, codigo: cupom };
+}
+
 export async function criarPagamentoCertificadoAction(
   cursoSlug: string,
   formato: "online" | "impresso" = "online",
-  produtoEscolhido?: string
+  produtoEscolhido?: string,
+  cupom?: string
 ): Promise<EstadoPix> {
   const supabase = await criarClienteSupabaseServer();
   const {
@@ -94,15 +127,10 @@ export async function criarPagamentoCertificadoAction(
     return { erro: "Você precisa estar logado com um e-mail válido." };
   }
 
-  // carga horária escolhida (ou upgrade): só aceita produtos de certificado deste curso
-  const produtoSlug =
-    produtoEscolhido && produtoEscolhido.startsWith(`certificado-${cursoSlug}-`) && /^[a-z0-9-]{3,100}$/.test(produtoEscolhido)
-      ? produtoEscolhido
-      : formato === "impresso"
-        ? `certificado-impresso-${cursoSlug}`
-        : `certificado-${cursoSlug}`;
+  const produtoSlug = slugCertificado(cursoSlug, formato, produtoEscolhido);
   const { data: pedidoRows, error } = await supabase.rpc("criar_pedido_por_slug", {
     p_slug: produtoSlug,
+    ...(cupom?.trim() ? { p_cupom: cupom.trim().slice(0, 40) } : {}),
   });
   if (error || !pedidoRows?.[0]) {
     return { erro: error?.message ?? "Não deu pra criar o pedido agora. Tenta de novo." };

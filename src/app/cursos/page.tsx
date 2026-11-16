@@ -46,7 +46,10 @@ export default async function CursosPage() {
   const precoDoCurso = new Map(
     (pagos ?? []).map((p) => [
       p.slug.slice("curso-".length),
-      `${(p.preco_centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} ou ${textoParcela(p.preco_centavos)}`,
+      {
+        valor: (p.preco_centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" }),
+        parcela: textoParcela(p.preco_centavos),
+      },
     ])
   );
   const notaDoCurso = new Map((avaliacoes ?? []).map((a) => [a.curso_id, { media: Number(a.media), total: Number(a.total) }]));

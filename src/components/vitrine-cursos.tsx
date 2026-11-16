@@ -11,7 +11,7 @@ export type CursoVitrine = {
   descricao: string | null;
   carga_horaria_horas: number;
   categoria: string | null;
-  preco: string | null; // null = gratuito (só o certificado é pago)
+  preco: { valor: string; parcela: string } | null; // null = gratuito (só o certificado é pago)
   avaliacao: { media: number; total: number } | null; // média real da pesquisa de satisfação
 };
 
@@ -96,19 +96,36 @@ function CardCurso({ curso }: { curso: CursoVitrine }) {
       </div>
       <div className="flex flex-1 flex-col p-5">
         <span className="font-data text-xs font-semibold text-accent-2">
-          {curso.carga_horaria_horas}h ·{" "}
-          {curso.preco ? <span className="text-[#14213A]">{curso.preco}, com certificado</span> : "Grátis"}
+          {curso.carga_horaria_horas}h · {curso.preco ? "Curso completo com certificado" : "Grátis"}
         </span>
         <h3 className="mt-2 font-display text-[1.3rem] font-extrabold leading-snug text-[#14213A]">{curso.nome}</h3>
         <div className="flex-1">
           <p className="mt-2 line-clamp-3 text-[14.5px] leading-relaxed text-[#516278]">{curso.descricao}</p>
         </div>
-        <div className="mt-5 flex items-center justify-between gap-3">
-          <Avaliacao avaliacao={curso.avaliacao} />
-          <span className="shrink-0 bg-brand px-4 py-2 text-[13.5px] font-bold text-white transition-[filter] group-hover:brightness-125">
-            {curso.preco ? "Conheça mais" : "Inscreva-se"}
-          </span>
-        </div>
+        {curso.preco ? (
+          // curso pago: avaliação em cima e o preço em destaque ao lado do botão
+          <>
+            <div className="mt-4">
+              <Avaliacao avaliacao={curso.avaliacao} />
+            </div>
+            <div className="mt-3 flex items-end justify-between gap-3 border-t border-[#E6EBF1] pt-3">
+              <span className="flex flex-col leading-none">
+                <span className="font-display text-[1.45rem] font-extrabold text-[#14213A]">{curso.preco.valor}</span>
+                <span className="mt-1 font-data text-[11.5px] font-semibold text-[#516278]">ou {curso.preco.parcela}</span>
+              </span>
+              <span className="shrink-0 bg-brand px-4 py-2 text-[13.5px] font-bold text-white transition-[filter] group-hover:brightness-125">
+                Conheça mais
+              </span>
+            </div>
+          </>
+        ) : (
+          <div className="mt-5 flex items-center justify-between gap-3">
+            <Avaliacao avaliacao={curso.avaliacao} />
+            <span className="shrink-0 bg-brand px-4 py-2 text-[13.5px] font-bold text-white transition-[filter] group-hover:brightness-125">
+              Inscreva-se
+            </span>
+          </div>
+        )}
       </div>
     </Link>
   );
