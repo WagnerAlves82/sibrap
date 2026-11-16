@@ -143,6 +143,24 @@ export function PesquisaSatisfacao({ cursoId, cursoNome }: { cursoId: string; cu
           />
         </label>
 
+        <div className="flex flex-col gap-1.5 border-t border-[#EEF2F6] pt-4">
+          <label htmlFor="depoimento" className="text-[15px] font-semibold text-[#14213A]">
+            Em uma frase: o que este curso trouxe de bom para você? <span className="font-normal text-[#516278]">(opcional)</span>
+          </label>
+          <textarea
+            id="depoimento"
+            name="depoimento"
+            rows={2}
+            maxLength={600}
+            placeholder="Ex.: Aprendi a… e agora me sinto mais preparado para…"
+            className="border border-[#D7DEE6] bg-white px-3 py-2 text-[14.5px] text-[#14213A] focus:border-brand focus:outline-none"
+          />
+          <label className="flex cursor-pointer items-start gap-2 text-[13.5px] text-[#516278]">
+            <input type="checkbox" name="autoriza_depoimento" className="mt-0.5" />
+            Autorizo o SIBRAP a publicar esta frase no site e nas redes, com meu primeiro nome.
+          </label>
+        </div>
+
         {contraditoria && (
           <div className="border-l-4 border-accent bg-[#FFF8E6] px-4 py-3 text-[14px] text-[#14213A]">
             <p>

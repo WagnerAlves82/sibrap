@@ -28,6 +28,11 @@ export default async function AdminPesquisasPage() {
     admin.from("pesquisas_satisfacao").select("*").order("criado_em", { ascending: false }).limit(2000),
     admin.from("cursos").select("id, nome"),
   ]);
+  const autores = [...new Set((respostas ?? []).filter((r) => r.depoimento).map((r) => r.user_id))];
+  const { data: perfis } = autores.length
+    ? await admin.from("profiles").select("id, nome").in("id", autores)
+    : { data: [] as { id: string; nome: string | null }[] };
+  const primeiroNome = new Map((perfis ?? []).map((p) => [p.id, (p.nome ?? "").trim().split(/\s+/)[0] || "Aluno"]));
   const nomeCurso = new Map((cursos ?? []).map((c) => [c.id, c.nome]));
   const porCurso = new Map<string, NonNullable<typeof respostas>>();
   for (const r of respostas ?? []) porCurso.set(r.curso_id, [...(porCurso.get(r.curso_id) ?? []), r]);
@@ -50,6 +55,7 @@ export default async function AdminPesquisasPage() {
           const nps = Math.round(((promotores - detratores) / lista.length) * 100);
           const dur = (v: string) => lista.filter((r) => r.duracao === v).length;
           const comentarios = lista.filter((r) => r.comentario);
+          const depoimentos = lista.filter((r) => r.depoimento);
           return (
             <section key={cursoId} className="mb-8 border border-zinc-200 bg-white p-5">
               <h2 className="text-lg font-semibold text-zinc-900">
@@ -73,6 +79,21 @@ export default async function AdminPesquisasPage() {
                   </p>
                 </div>
               </div>
+              {depoimentos.length > 0 && (
+                <div className="mt-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Depoimentos</p>
+                  <ul className="mt-2 flex flex-col gap-2">
+                    {depoimentos.map((r) => (
+                      <li key={r.id} className={`border-l-2 pl-3 text-sm ${r.autoriza_depoimento ? "border-green-500 text-zinc-800" : "border-zinc-300 text-zinc-500"}`}>
+                        “{r.depoimento}” — {primeiroNome.get(r.user_id) ?? "Aluno"}{" "}
+                        <span className="text-xs">
+                          {r.autoriza_depoimento ? "✓ pode publicar" : "não autorizou publicar"}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               {comentarios.length > 0 && (
                 <ul className="mt-4 flex flex-col gap-2">
                   {comentarios.map((r) => (

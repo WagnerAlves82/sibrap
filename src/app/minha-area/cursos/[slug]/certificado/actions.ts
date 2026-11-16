@@ -229,10 +229,12 @@ export async function responderPesquisaAction(
     return { erro: "Escolha uma nota de 0 a 10 para a recomendação." };
   }
   const comentario = String(formData.get("comentario") ?? "").trim().slice(0, 1000) || null;
+  const depoimento = String(formData.get("depoimento") ?? "").trim().slice(0, 600) || null;
+  const autoriza_depoimento = !!depoimento && formData.get("autoriza_depoimento") === "on";
   const supabase = await criarClienteSupabaseServer();
   const { error } = await supabase
     .from("pesquisas_satisfacao")
-    .insert({ curso_id: cursoId, ...notas, duracao, recomendacao, comentario });
+    .insert({ curso_id: cursoId, ...notas, duracao, recomendacao, comentario, depoimento, autoriza_depoimento });
   // 23505 = já respondida (resposta duplicada); segue em frente
   if (error && error.code !== "23505") {
     return { erro: "Não deu pra enviar sua resposta agora. Tenta de novo." };

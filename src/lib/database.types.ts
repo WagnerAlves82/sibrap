@@ -1274,10 +1274,12 @@ export type Database = {
       pesquisas_satisfacao: {
         Row: {
           aplicacao: number
+          autoriza_depoimento: boolean
           clareza: number
           comentario: string | null
           criado_em: string
           curso_id: string
+          depoimento: string | null
           duracao: string
           exercicios: number
           id: string
@@ -1287,6 +1289,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          autoriza_depoimento?: boolean
+          depoimento?: string | null
           aplicacao: number
           clareza: number
           comentario?: string | null
@@ -1301,6 +1305,8 @@ export type Database = {
           user_id?: string
         }
         Update: {
+          autoriza_depoimento?: boolean
+          depoimento?: string | null
           aplicacao?: number
           clareza?: number
           comentario?: string | null
