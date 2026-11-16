@@ -124,7 +124,7 @@ function inline(s: string): string {
 
 /**
  * Conversor Markdown -> HTML propositalmente simples (sem dependência
- * nova): parágrafos, ##/### títulos, listas (- ou 1.), > citação, **negrito**,
+ * nova): parágrafos, ##/### títulos, listas (- ou 1.), tabelas (| a | b |), > citação, **negrito**,
  * *itálico* e [link](https://...). Suficiente para posts de divulgação de
  * concursos; não aceita HTML embutido no texto (tudo passa por escapeHtml).
  */
@@ -154,10 +154,22 @@ export function markdownParaHtml(md: string): string {
       citacao = [];
     }
   };
+  // tabela simples: linhas que começam com "|" (a 2ª, só com traços, separa o cabeçalho). Sai em UMA linha de HTML,
+  // porque a página da notícia parte o texto por linha para encaixar blocos no meio.
+  let tabela: string[][] = [];
+  const fecharTabela = () => {
+    if (!tabela.length) return;
+    const [cab, ...corpo] = tabela;
+    const th = cab.map((c) => `<th>${inline(c)}</th>`).join("");
+    const trs = corpo.map((l) => `<tr>${l.map((c) => `<td>${inline(c)}</td>`).join("")}</tr>`).join("");
+    blocos.push(`<div class="tabela-rolagem"><table><thead><tr>${th}</tr></thead><tbody>${trs}</tbody></table></div>`);
+    tabela = [];
+  };
   const fecharTudo = () => {
     fecharParagrafo();
     fecharLista();
     fecharCitacao();
+    fecharTabela();
   };
 
   for (const linhaBruta of linhas) {
@@ -171,6 +183,15 @@ export function markdownParaHtml(md: string): string {
       fecharTudo();
       continue;
     }
+    if (/^\|.*\|\s*$/.test(linha.trim())) {
+      fecharParagrafo();
+      fecharLista();
+      fecharCitacao();
+      const celulas = linha.trim().slice(1, -1).split("|").map((c) => c.trim());
+      if (!celulas.every((c) => /^:?-{2,}:?$/.test(c))) tabela.push(celulas);
+      continue;
+    }
+    fecharTabela();
     if (titulo) {
       fecharTudo();
       const nivel = titulo[1].length;

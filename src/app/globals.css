@@ -72,6 +72,11 @@ body {
 .post-conteudo ul, .post-conteudo ol { padding-left: 1.3em; display: flex; flex-direction: column; gap: 0.5em; }
 .post-conteudo ul { list-style: disc; }
 .post-conteudo ol { list-style: decimal; }
+.post-conteudo .tabela-rolagem { overflow-x: auto; }
+.post-conteudo table { width: 100%; border-collapse: collapse; font-size: 0.94em; }
+.post-conteudo th { background: #0B2A4A; color: #fff; font-weight: 700; text-align: left; padding: 0.55em 0.7em; }
+.post-conteudo td { border: 1px solid #D7DEE6; padding: 0.55em 0.7em; vertical-align: top; }
+.post-conteudo tbody tr:nth-child(even) td { background: #F6F9FC; }
 .post-conteudo blockquote { border-left: 3px solid var(--color-accent); padding-left: 1em; color: #516278; font-style: italic; }
 
 /* Recompensa animada ao terminar um minigame (medalha + confete em CSS puro). */
