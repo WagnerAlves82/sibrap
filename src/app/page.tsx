@@ -552,7 +552,7 @@ function HeroEscolha({ totalApostilas, precoApostila }: { totalApostilas: number
       href: "/cursos/profissionalizantes",
       rotulo: "Profissão",
       titulo: "Cursos profissionalizantes",
-      texto: "Eletricista, NR-10, NR-35 e mais, com certificado.",
+      texto: "Certificações exigidas para o mercado de trabalho.",
       icone: "raio" as NomeIconeSolido,
     },
   ];
