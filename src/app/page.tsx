@@ -128,7 +128,7 @@ export default async function Home() {
         blackFriday={BLACK_FRIDAY}
       />
 
-      <HeroEscolha totalApostilas={apostilas.length} precoApostila={formatarPreco(preco)} className="hidden lg:block" sufixo="-desktop" />
+      <HeroEscolha totalApostilas={apostilas.length} precoApostila={formatarPreco(preco)} className="hidden lg:block" sufixo="-desktop" titulo="h2" />
 
       {/* Vitrine de apostilas */}
       <section id="apostilas" className="scroll-mt-14 bg-[#F6F8FB] py-14 sm:py-16">
@@ -540,11 +540,14 @@ function HeroEscolha({
   precoApostila,
   className = "",
   sufixo = "",
+  titulo: Titulo = "h1",
 }: {
   totalApostilas: number;
   precoApostila: string;
   className?: string;
   sufixo?: string;
+  /** só um h1 por página: a cópia do desktop usa h2 */
+  titulo?: "h1" | "h2";
 }) {
   const opcoes = [
     {
@@ -572,9 +575,9 @@ function HeroEscolha({
   return (
     <section aria-labelledby={`hero-escolha${sufixo}`} className={`bg-brand-deep text-white ${className}`}>
       <div className="mx-auto max-w-[1180px] px-4 py-7 sm:px-6 sm:py-10">
-        <h1 id={`hero-escolha${sufixo}`} className="font-display text-[1.45rem] font-extrabold leading-tight sm:text-[2.1rem]">
+        <Titulo id={`hero-escolha${sufixo}`} className="font-display text-[1.45rem] font-extrabold leading-tight sm:text-[2.1rem]">
           Clique na opção desejada para continuar.
-        </h1>
+        </Titulo>
         <p className="mt-1.5 text-[14px] text-[#C9D6E6] sm:text-[15.5px]">Escolha um caminho e comece agora.</p>
         <ul className="mt-5 grid gap-2.5 sm:mt-6 sm:grid-cols-3 sm:gap-4">
           {opcoes.map((o) => (

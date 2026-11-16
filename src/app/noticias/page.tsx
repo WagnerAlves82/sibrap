@@ -6,11 +6,11 @@ import { listarPostsVitrine } from "@/lib/blog";
 import { listarApostilasPublicadas } from "@/lib/apostilas";
 
 export const metadata: Metadata = {
-  title: "Notícias de concursos públicos e processos seletivos: editais, prazos e vagas",
+  title: "Notícias de concursos públicos: editais, prazos e vagas",
   description:
     "Notícias sobre concursos públicos (vagas efetivas) e processos seletivos (contratação temporária): editais, prazos de inscrição e vagas, por região e estado.",
   alternates: { canonical: "/noticias" },
-  openGraph: { title: "Notícias de concursos públicos | SIBRAP", url: "/noticias", type: "website", locale: "pt_BR" },
+  openGraph: { title: "Notícias de concursos públicos | SIBRAP", url: "/noticias", type: "website", locale: "pt_BR", images: ["/opengraph-image"] },
 };
 
 export default async function NoticiasPage({ searchParams }: { searchParams: Promise<{ uf?: string }> }) {

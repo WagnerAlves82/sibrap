@@ -50,11 +50,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { apostila } = await carregar(slug);
   if (!apostila) return {};
   const capa = urlCapa(apostila.capa_path);
-  const local = apostila.cidade ?? apostila.orgao;
+  // Nome que o candidato digita na busca: a cidade nas prefeituras; a sigla ou o nome curto nos demais órgãos
+  // (ex.: "Banestes — Banco do Estado…" vira "Banestes"; "Secretaria … (SESA-AP)" vira "SESA-AP").
+  const ehPrefeitura = /^(prefeitura|câmara|camara)/i.test(apostila.orgao);
+  const sigla = apostila.orgao.match(/\(([^)]{2,12})\)\s*$/)?.[1];
+  const curto = apostila.orgao.split(/\s[—–-]\s/)[0].trim();
+  const local = ehPrefeitura && apostila.cidade ? apostila.cidade : (sigla ?? (curto.length <= 28 ? curto : (apostila.cidade ?? curto)));
   const ano = apostila.data_prova ? apostila.data_prova.slice(0, 4) : "2026";
-  const tituloSeo = `Apostila ${local} ${ano}: ${apostila.cargo}${apostila.banca ? ` (banca ${apostila.banca})` : ""}`;
+  const base = `Apostila ${local} ${ano}: ${apostila.cargo}`;
+  const comBanca = apostila.banca ? `${base} (${apostila.banca})` : base;
+  const tituloSeo = comBanca.length <= 62 ? comBanca : base;
   const descricao =
-    `Apostila em PDF para o concurso ${apostila.orgao}, cargo de ${apostila.cargo}${apostila.banca ? `, banca ${apostila.banca}` : ""}${apostila.data_prova ? `, prova em ${formatarDataIso(apostila.data_prova)}` : ""}. Conteúdo na ordem do edital, questões comentadas e simulado on-line.`;
+    `Apostila em PDF do concurso ${local} ${ano} para ${apostila.cargo}${apostila.banca ? `, banca ${apostila.banca}` : ""}${apostila.data_prova ? `, prova em ${formatarDataIso(apostila.data_prova)}` : ""}. Segue o edital, com questões comentadas e simulado online.`;
   return {
     title: tituloSeo,
     description: descricao,

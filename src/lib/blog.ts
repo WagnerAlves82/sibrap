@@ -38,10 +38,15 @@ export function rotuloEsfera(valor: string | null | undefined): string | null {
   return ESFERAS.find((e) => e.valor === valor)?.rotulo ?? null;
 }
 
-/** Pontuação para escolher o que vai pro Facebook: esfera + destaque + ajuste manual. */
-export function pontuacaoDivulgacao(p: Pick<PostRow, "esfera" | "destaque" | "importancia">): number {
+/**
+ * Pontuação para escolher o que vai pro Facebook e a ordem dos carrosséis: esfera + destaque + ajuste manual.
+ * Matéria de concurso com apostila SIBRAP ganha prioridade (pedido do Wagner, 16/11/2026).
+ */
+export function pontuacaoDivulgacao(
+  p: Pick<PostRow, "esfera" | "destaque" | "importancia"> & { apostilas_slugs?: string[] | null }
+): number {
   const peso = ESFERAS.find((e) => e.valor === p.esfera)?.peso ?? 10;
-  return peso + (p.destaque ? 15 : 0) + (p.importancia ?? 0);
+  return peso + (p.destaque ? 15 : 0) + (p.importancia ?? 0) + (p.apostilas_slugs?.length ? 25 : 0);
 }
 
 export const CATEGORIAS_POST = ["Concursos", "Editais", "Dicas de estudo", "Notícias"] as const;
