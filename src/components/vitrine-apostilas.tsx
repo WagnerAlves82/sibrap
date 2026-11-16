@@ -13,16 +13,20 @@ export function VitrineApostilas({
   apostilas,
   comBusca = false,
   limite,
+  limiteInicial,
   ufInicial = "",
 }: {
   apostilas: ApostilaVitrine[];
   comBusca?: boolean;
   limite?: number;
+  /** mostra só as N mais recentes até o visitante pedir mais (filtro ou busca mostram tudo) */
+  limiteInicial?: number;
   ufInicial?: string;
 }) {
   const [categoria, setCategoria] = useState("Todas");
   const [uf, setUf] = useState(ufInicial);
   const [busca, setBusca] = useState("");
+  const [verTodas, setVerTodas] = useState(false);
 
   const categorias = useMemo(
     () => ["Todas", ...Array.from(new Set(apostilas.map((a) => a.categoria)))],
@@ -43,6 +47,8 @@ export function VitrineApostilas({
 
   // Destaques de linha inteira (só sem filtro): cada um entra na próxima posição livre.
   const semFiltro = categoria === "Todas" && !uf && !busca.trim();
+  const recolhida = !!limiteInicial && semFiltro && !verTodas && filtradas.length > limiteInicial;
+  const visiveis = recolhida ? filtradas.slice(0, limiteInicial) : filtradas;
   const destaques = useMemo(() => {
     if (!semFiltro) return new Map<number, { d: (typeof DESTAQUES_VITRINE)[number]; a: ApostilaVitrine }>();
     const disponiveis = DESTAQUES_VITRINE.flatMap((d) => {
@@ -50,11 +56,11 @@ export function VitrineApostilas({
       return a ? [{ d, a }] : [];
     });
     return new Map(
-      POSICOES_DESTAQUE.filter((pos) => pos < filtradas.length)
+      POSICOES_DESTAQUE.filter((pos) => pos < visiveis.length)
         .slice(0, disponiveis.length)
         .map((pos, i) => [pos, disponiveis[i]])
     );
-  }, [semFiltro, apostilas, filtradas.length]);
+  }, [semFiltro, apostilas, visiveis.length]);
 
   const chip = (ativo: boolean) =>
     `rounded-full border px-3.5 py-1.5 text-[13px] font-semibold transition-colors ${
@@ -112,7 +118,7 @@ export function VitrineApostilas({
         </p>
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
-          {filtradas.map((a, i) => {
+          {visiveis.map((a, i) => {
             const extra = destaques.get(i);
             return (
               <Fragment key={a.id}>
@@ -121,6 +127,18 @@ export function VitrineApostilas({
               </Fragment>
             );
           })}
+        </div>
+      )}
+
+      {recolhida && (
+        <div className="mt-8 text-center">
+          <button
+            type="button"
+            onClick={() => setVerTodas(true)}
+            className="inline-flex items-center gap-2 border-2 border-brand bg-white px-6 py-3 text-[14.5px] font-bold text-brand transition-colors hover:bg-brand hover:text-white"
+          >
+            Mostrar mais apostilas ({filtradas.length - visiveis.length}) <span aria-hidden>↓</span>
+          </button>
         </div>
       )}
     </div>

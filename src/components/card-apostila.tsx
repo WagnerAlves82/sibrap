@@ -23,18 +23,18 @@ export function CardApostila({ apostila }: { apostila: ApostilaVitrine }) {
   const simulados = apostila.simulados ?? 0;
 
   const badgeProva = provaFutura ? (
-    <span className="rounded bg-brand px-2 py-1 font-data text-[10.5px] font-semibold text-white shadow">
+    <span className="whitespace-nowrap bg-brand px-1.5 py-0.5 font-data text-[9.5px] font-semibold leading-tight text-white shadow sm:px-2 sm:py-1 sm:text-[10.5px]">
       {dias === 0 ? "Prova hoje" : dias === 1 ? "Prova amanhã" : `Prova em ${dias} dias`}
     </span>
   ) : null;
 
   const badgeDestaque =
     pct !== null ? (
-      <span className="rounded bg-accent px-2 py-1 font-data text-[11px] font-bold text-accent-ink shadow">
+      <span className="whitespace-nowrap bg-accent px-1.5 py-0.5 font-data text-[10px] font-bold leading-tight text-accent-ink shadow sm:px-2 sm:py-1 sm:text-[11px]">
         -{pct}%
       </span>
     ) : selo ? (
-      <span className="rounded bg-accent px-2 py-1 font-data text-[10.5px] font-bold text-accent-ink shadow">
+      <span className="truncate bg-accent px-1.5 py-0.5 font-data text-[9.5px] font-bold leading-tight text-accent-ink shadow sm:px-2 sm:py-1 sm:text-[10.5px]">
         {selo}
       </span>
     ) : null;
@@ -45,7 +45,7 @@ export function CardApostila({ apostila }: { apostila: ApostilaVitrine }) {
       className="group flex h-full flex-col overflow-hidden rounded-xl border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.35)]"
     >
       {(badgeProva || badgeDestaque) && (
-        <div className="flex items-center justify-between gap-2 px-3 pt-3 sm:hidden">
+        <div className="flex items-center justify-between gap-1.5 px-2.5 pt-2.5 sm:hidden">
           {badgeProva ?? <span />}
           {badgeDestaque}
         </div>
@@ -98,11 +98,11 @@ export function CardApostila({ apostila }: { apostila: ApostilaVitrine }) {
           </p>
         )}
 
-        <div className="mt-auto flex items-end justify-between gap-2 pt-3">
+        <div className="mt-auto flex flex-wrap items-end justify-between gap-x-2 gap-y-1.5 pt-3">
           <PrecoApostila centavos={apostila.preco_centavos} original={apostila.preco_original_centavos} />
           <span
             aria-hidden
-            className="rounded-md bg-brand px-3 py-1.5 text-[12.5px] font-bold text-white transition-colors group-hover:brightness-125"
+            className="ml-auto bg-brand px-2 py-0.5 text-[11px] font-bold leading-tight text-white transition-colors group-hover:brightness-125 sm:px-3 sm:py-1.5 sm:text-[12.5px]"
           >
             Ver →
           </span>

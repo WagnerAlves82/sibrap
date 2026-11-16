@@ -117,6 +117,8 @@ export default async function Home() {
 
       <CabecalhoSite semLinks semFaixaBlackFriday />
 
+      <HeroEscolha totalApostilas={apostilas.length} precoApostila={formatarPreco(preco)} />
+
       <MenuAncora />
 
       <CarrosselHome
@@ -143,7 +145,7 @@ export default async function Home() {
             </p>
           </Reveal>
 
-          <VitrineApostilas apostilas={apostilas} comBusca />
+          <VitrineApostilas apostilas={apostilas} comBusca limiteInicial={10} />
 
           <div className="mt-8 text-center">
             <Link href="/apostilas" className="text-sm font-semibold text-brand underline underline-offset-4">
@@ -529,6 +531,65 @@ const ANCORAS: [string, string][] = [
 
 // Menu de âncoras da home. Cada item leva a uma seção da página e serve de
 // destino para os sitelinks do Google Ads (ex.: https://sibrap.tec.br/#simulado-online).
+// Topo da home (teste 15/11/2026): o visitante escolhe logo o que veio buscar.
+function HeroEscolha({ totalApostilas, precoApostila }: { totalApostilas: number; precoApostila: string }) {
+  const opcoes = [
+    {
+      href: "#apostilas",
+      rotulo: "Concursos",
+      titulo: "Apostilas para concurso",
+      texto: `${totalApostilas} apostilas em PDF, a partir de ${precoApostila}.`,
+      icone: "livro" as NomeIconeSolido,
+    },
+    {
+      href: "/cursos",
+      rotulo: "Grátis",
+      titulo: "Cursos gratuitos",
+      texto: "Estude de graça. Certificado opcional.",
+      icone: "video" as NomeIconeSolido,
+    },
+    {
+      href: "/cursos/profissionalizantes",
+      rotulo: "Profissão",
+      titulo: "Cursos profissionalizantes",
+      texto: "Eletricista, NR-10, NR-35 e mais, com certificado.",
+      icone: "raio" as NomeIconeSolido,
+    },
+  ];
+  return (
+    <section aria-labelledby="hero-escolha" className="bg-brand-deep text-white">
+      <div className="mx-auto max-w-[1180px] px-4 py-7 sm:px-6 sm:py-10">
+        <h1 id="hero-escolha" className="font-display text-[1.45rem] font-extrabold leading-tight sm:text-[2.1rem]">
+          O que você quer estudar hoje?
+        </h1>
+        <p className="mt-1.5 text-[14px] text-[#C9D6E6] sm:text-[15.5px]">Escolha um caminho e comece agora.</p>
+        <ul className="mt-5 grid gap-2.5 sm:mt-6 sm:grid-cols-3 sm:gap-4">
+          {opcoes.map((o) => (
+            <li key={o.href}>
+              <a
+                href={o.href}
+                className="group flex h-full items-center gap-3 border border-white/15 bg-white/[0.06] p-3.5 transition-colors hover:border-accent hover:bg-white/10 sm:flex-col sm:items-start sm:gap-2 sm:p-5"
+              >
+                <span className="shrink-0">
+                  <IconeSolido nome={o.icone} tamanho="medio" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block font-data text-[10.5px] font-semibold uppercase tracking-[0.16em] text-accent">{o.rotulo}</span>
+                  <span className="block font-display text-[16px] font-extrabold leading-snug sm:text-[19px]">{o.titulo}</span>
+                  <span className="mt-0.5 block text-[12.5px] leading-snug text-[#C9D6E6] sm:text-[14px]">{o.texto}</span>
+                </span>
+                <span aria-hidden className="text-[18px] font-bold text-accent transition-transform group-hover:translate-x-1 sm:self-end">
+                  →
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
 function MenuAncora() {
   return (
     <nav aria-label="Seções da página" className="sticky top-0 z-30 border-b border-[#D7DEE6] bg-white/95 backdrop-blur">
