@@ -33,3 +33,6 @@ create policy "guias_profissoes_leitura_publica" on public.guias_profissoes for 
 create index if not exists guias_profissoes_publicado_idx on public.guias_profissoes (publicado_em desc) where status = 'publicada';
 drop trigger if exists guias_profissoes_tocar on public.guias_profissoes;
 create trigger guias_profissoes_tocar before update on public.guias_profissoes for each row execute function public.tocar_atualizado_em();
+
+-- leitura pública (a política de RLS limita às publicadas)
+grant select on public.guias_profissoes to anon, authenticated;
