@@ -1271,6 +1271,90 @@ export type Database = {
           },
         ]
       }
+      guias_profissoes: {
+        Row: {
+          area: string
+          atualizado_em: string
+          capa_credito: string | null
+          capa_path: string | null
+          capa_url: string | null
+          conteudo: string
+          criado_em: string
+          curso_chamada: string | null
+          curso_link: string | null
+          cursos_slugs: string[]
+          facebook_post_id: string | null
+          facebook_postado_em: string | null
+          faq: Json
+          hashtags: string[]
+          id: string
+          instagram_postado_em: string | null
+          palavras_chave: string[]
+          profissao: string
+          publicado_em: string | null
+          resumo: string
+          seo_descricao: string | null
+          seo_titulo: string | null
+          slug: string
+          status: string
+          titulo: string
+        }
+        Insert: {
+          area?: string
+          atualizado_em?: string
+          capa_credito?: string | null
+          capa_path?: string | null
+          capa_url?: string | null
+          conteudo: string
+          criado_em?: string
+          curso_chamada?: string | null
+          curso_link?: string | null
+          cursos_slugs?: string[]
+          facebook_post_id?: string | null
+          facebook_postado_em?: string | null
+          faq?: Json
+          hashtags?: string[]
+          id?: string
+          instagram_postado_em?: string | null
+          palavras_chave?: string[]
+          profissao: string
+          publicado_em?: string | null
+          resumo: string
+          seo_descricao?: string | null
+          seo_titulo?: string | null
+          slug: string
+          status?: string
+          titulo: string
+        }
+        Update: {
+          area?: string
+          atualizado_em?: string
+          capa_credito?: string | null
+          capa_path?: string | null
+          capa_url?: string | null
+          conteudo?: string
+          criado_em?: string
+          curso_chamada?: string | null
+          curso_link?: string | null
+          cursos_slugs?: string[]
+          facebook_post_id?: string | null
+          facebook_postado_em?: string | null
+          faq?: Json
+          hashtags?: string[]
+          id?: string
+          instagram_postado_em?: string | null
+          palavras_chave?: string[]
+          profissao?: string
+          publicado_em?: string | null
+          resumo?: string
+          seo_descricao?: string | null
+          seo_titulo?: string | null
+          slug?: string
+          status?: string
+          titulo?: string
+        }
+        Relationships: []
+      }
       pesquisas_satisfacao: {
         Row: {
           aplicacao: number

@@ -26,6 +26,7 @@ export async function GET() {
   linhas.push(`- [Cursos](${SITE_URL}/cursos): cursos livres online com certificado, gratuitos (só o certificado é pago) ou com pagamento único que já inclui o certificado.`);
   linhas.push(`- [Gerador de currículo](${SITE_URL}/curriculo): monta currículo passo a passo (Jovem Aprendiz/primeiro emprego e nível médio), com prévia e download em PDF gratuito.`);
   linhas.push(`- [Notícias](${SITE_URL}/noticias): notícias sobre concursos públicos (vagas efetivas) e processos seletivos (contratações temporárias).`);
+  linhas.push(`- [Profissões](${SITE_URL}/profissoes): guias de profissões (o que faz, quanto ganha, o que diz a lei e como começar).`);
   linhas.push(`- [Versão completa deste resumo](${SITE_URL}/llms-full.txt): todas as apostilas, cursos e perguntas frequentes em um só arquivo.`);
   linhas.push("");
   for (const l of blocoLlmsFormacao(SITE_URL)) linhas.push(l);
@@ -66,6 +67,19 @@ export async function GET() {
         const quando = p.publicado_em ? ` (${p.publicado_em.slice(0, 10)})` : "";
         const sobre = p.resumo || p.seo_descricao;
         linhas.push(`- [${p.titulo}](${SITE_URL}/noticias/${p.slug})${quando}${sobre ? `: ${sobre}` : ""}`);
+      }
+      linhas.push("");
+    }
+    const { data: guias } = await criarClienteSupabaseAdmin()
+      .from("guias_profissoes")
+      .select("slug, titulo, resumo, atualizado_em")
+      .eq("status", "publicada")
+      .order("publicado_em", { ascending: false })
+      .limit(60);
+    if (guias?.length) {
+      linhas.push("## Guias de profissões");
+      for (const g of guias) {
+        linhas.push(`- [${g.titulo}](${SITE_URL}/profissoes/${g.slug}) (atualizado em ${g.atualizado_em.slice(0, 10)}): ${g.resumo}`);
       }
       linhas.push("");
     }

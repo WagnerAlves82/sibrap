@@ -79,6 +79,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       });
     }
+    const { data: guias } = await criarClienteSupabaseAdmin().from("guias_profissoes").select("slug, atualizado_em").eq("status", "publicada");
+    for (const g of guias ?? []) {
+      paginas.push({ url: `${siteUrl}/profissoes/${g.slug}`, lastModified: new Date(g.atualizado_em), changeFrequency: "monthly", priority: 0.7 });
+    }
+    if (guias?.length) {
+      const ultimo = guias.reduce((a, g) => (new Date(g.atualizado_em) > a ? new Date(g.atualizado_em) : a), FIXAS);
+      paginas.push({ url: `${siteUrl}/profissoes`, lastModified: ultimo, changeFrequency: "daily", priority: 0.8 });
+    }
   } catch {
     // sem a chave de serviço (ex.: build local): fica só com as páginas fixas
   }

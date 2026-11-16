@@ -72,6 +72,9 @@ function CabecalhoBase({ logado, next, semLinks, semBusca }: PropsCabecalho) {
               <Link href="/cursos" className={`hidden md:inline ${itemNav}`}>
                 Cursos
               </Link>
+              <Link href="/profissoes" className={`hidden lg:inline ${itemNav}`}>
+                Profissões
+              </Link>
               <Link href="/curriculo" className={`hidden md:inline ${itemNav}`}>
                 Currículo
               </Link>
@@ -151,6 +154,11 @@ export function RodapeSite() {
               <li>
                 <Link href="/cursos" className={linkRodape}>
                   Cursos
+                </Link>
+              </li>
+              <li>
+                <Link href="/profissoes" className={linkRodape}>
+                  Profissões
                 </Link>
               </li>
               <li>
