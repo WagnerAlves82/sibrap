@@ -53,6 +53,11 @@ export function PesquisaSatisfacao({ cursoId, cursoNome }: { cursoId: string; cu
   const mudar = (k: string) => (v: number) => setNotas((n) => ({ ...n, [k]: v }));
   const respondidas = Object.keys(notas).length;
   const [pulou, setPulou] = useState(false);
+  const [confirmou, setConfirmou] = useState(false);
+  // notas que se contradizem (ex.: 1★ na satisfação e 10 na recomendação) costumam ser clique errado
+  const baixas = (["satisfacao", "clareza", "material", "exercicios", "aplicacao"] as const).filter((k) => (notas[k] ?? 5) <= 2);
+  const contraditoria = baixas.length > 0 && baixas.length <= 2 && (notas.recomendacao ?? 0) >= 8;
+  const precisaConfirmar = contraditoria && !confirmou;
   if (pulou) return null;
 
   return (
@@ -125,6 +130,32 @@ export function PesquisaSatisfacao({ cursoId, cursoNome }: { cursoId: string; cu
           </div>
         </fieldset>
 
+        <label className="flex flex-col gap-1.5 border-t border-[#EEF2F6] pt-4">
+          <span className="text-[15px] font-semibold text-[#14213A]">
+            Quer contar o motivo das suas notas? <span className="font-normal text-[#516278]">(opcional)</span>
+          </span>
+          <textarea
+            name="comentario"
+            rows={3}
+            maxLength={1000}
+            placeholder="O que você mais gostou? O que podemos melhorar?"
+            className="border border-[#D7DEE6] bg-white px-3 py-2 text-[14.5px] text-[#14213A] focus:border-brand focus:outline-none"
+          />
+        </label>
+
+        {contraditoria && (
+          <div className="border-l-4 border-accent bg-[#FFF8E6] px-4 py-3 text-[14px] text-[#14213A]">
+            <p>
+              Você deu <strong>{notas[baixas[0]]}★</strong> em uma pergunta, mas recomendaria o curso com nota{" "}
+              <strong>{notas.recomendacao}</strong>. Está certo? Se foi sem querer, é só clicar na nota certa acima.
+            </p>
+            <label className="mt-2 flex cursor-pointer items-center gap-2 font-semibold">
+              <input type="checkbox" checked={confirmou} onChange={(e) => setConfirmou(e.target.checked)} />
+              Sim, minhas notas estão certas
+            </label>
+          </div>
+        )}
+
         {estado?.erro && (
           <Alert variant="erro" claro>
             {estado.erro}
@@ -132,10 +163,16 @@ export function PesquisaSatisfacao({ cursoId, cursoNome }: { cursoId: string; cu
         )}
         <button
           type="submit"
-          disabled={enviando || respondidas < 7}
+          disabled={enviando || respondidas < 7 || precisaConfirmar}
           className="bg-accent px-6 py-3 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105 disabled:opacity-50"
         >
-          {enviando ? "Enviando…" : respondidas < 7 ? `Responda as 7 perguntas (${respondidas}/7)` : "Enviar minhas notas →"}
+          {enviando
+            ? "Enviando…"
+            : respondidas < 7
+              ? `Responda as 7 perguntas (${respondidas}/7)`
+              : precisaConfirmar
+                ? "Confirme suas notas acima"
+                : "Enviar minhas notas →"}
         </button>
       </form>
     </section>
