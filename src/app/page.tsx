@@ -573,7 +573,7 @@ function HeroEscolha({
     <section aria-labelledby={`hero-escolha${sufixo}`} className={`bg-brand-deep text-white ${className}`}>
       <div className="mx-auto max-w-[1180px] px-4 py-7 sm:px-6 sm:py-10">
         <h1 id={`hero-escolha${sufixo}`} className="font-display text-[1.45rem] font-extrabold leading-tight sm:text-[2.1rem]">
-          O que você quer estudar hoje?
+          Clique na opção desejada para continuar.
         </h1>
         <p className="mt-1.5 text-[14px] text-[#C9D6E6] sm:text-[15.5px]">Escolha um caminho e comece agora.</p>
         <ul className="mt-5 grid gap-2.5 sm:mt-6 sm:grid-cols-3 sm:gap-4">
