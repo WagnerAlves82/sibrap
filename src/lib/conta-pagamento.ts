@@ -31,7 +31,8 @@ export function senaproConfigurado(): boolean {
 // janela até 22h ("SIBRAP paga até as 22 horas no site do meu filho"). Lista de e-mails esvaziada: depois das 22h,
 // TUDO volta para o SIBRAP sozinho. Se o PIX na conta do Senapro falhar, pix.ts gera pela conta do SIBRAP.
 // Pedidos criados na conta do Senapro continuam sendo confirmados nela (pedidos.gateway_conta).
-const SENAPRO_LIGADO = true;
+// Wagner, 17/11/2026 ~20h30: "volta pra minha chave" — desligado de novo; tudo na conta do SIBRAP.
+const SENAPRO_LIGADO = false;
 
 export function contaDoEmail(email: string | null | undefined): ContaPagamento {
   if (!SENAPRO_LIGADO || !senaproConfigurado()) return "sibrap";
