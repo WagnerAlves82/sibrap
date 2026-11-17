@@ -16,12 +16,21 @@ export type ContaPagamento = "sibrap" | "senapro";
 // Alunos cobrados pela conta do Senapro (minúsculas). Para incluir alguém, acrescente o e-mail aqui.
 const EMAILS_SENAPRO = new Set<string>(["jusapavine@gmail.com"]);
 
+// Janela em que TODAS as vendas do site são cobradas na conta do Senapro (Cenapro).
+// Wagner, 17/11/2026: "a partir desse horário até 22h". Depois do fim, volta tudo para o SIBRAP sozinho.
+const TODOS_NO_SENAPRO_ATE = new Date("2026-11-17T22:00:00-03:00");
+
+// Aviso de venda com o logo do Cenapro (filho do Wagner), com cópia para o Wagner.
+export const EMAIL_AVISO_SENAPRO = "wagnerneto345@gmail.com";
+
 export function senaproConfigurado(): boolean {
   return !!process.env.ABACATEPAY_API_KEY_SENAPRO;
 }
 
 export function contaDoEmail(email: string | null | undefined): ContaPagamento {
-  if (!email || !senaproConfigurado()) return "sibrap";
+  if (!senaproConfigurado()) return "sibrap";
+  if (Date.now() < TODOS_NO_SENAPRO_ATE.getTime()) return "senapro";
+  if (!email) return "sibrap";
   return EMAILS_SENAPRO.has(email.trim().toLowerCase()) ? "senapro" : "sibrap";
 }
 

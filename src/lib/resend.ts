@@ -375,6 +375,59 @@ export async function enviarAvisoVenda({
   });
 }
 
+/**
+ * Aviso de venda com a marca do Cenapro, para vendas cobradas na conta do AbacatePay do Senapro/Cenapro
+ * (pedidos.gateway_conta = 'senapro'). Vai para o e-mail do Cenapro e uma cópia para o dono do SIBRAP.
+ */
+export async function enviarAvisoVendaCenapro({
+  para,
+  copia,
+  comprador,
+  email,
+  titulo,
+  valorCentavos,
+  pedidoId,
+}: {
+  para: string;
+  copia: string;
+  comprador?: string | null;
+  email?: string | null;
+  titulo: string;
+  valorCentavos: number;
+  pedidoId: string;
+}): Promise<Resultado> {
+  const valor = (valorCentavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  const quando = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
+  const html = `<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>
+<body style="margin:0;padding:0;background-color:#F2F5F8;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F2F5F8;"><tr><td align="center" style="padding:32px 12px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;background-color:#FFFFFF;border:1px solid #D7DEE6;">
+<tr><td align="center" style="padding:26px 30px 18px 30px;border-bottom:3px solid #0B2A4A;">
+<img src="https://cenapro.com.br/marca/logo-email.png" height="56" alt="Cenapro" style="display:block;border:0;height:56px;width:auto;"></td></tr>
+<tr><td style="padding:28px 30px 10px 30px;font-family:Arial,Helvetica,sans-serif;">
+<div style="font-size:14px;line-height:20px;color:#516278;">Venda confirmada</div>
+<h1 style="margin:8px 0 14px 0;font-size:25px;line-height:31px;font-weight:800;color:#14213A;">Você vendeu ${valor}</h1>
+<div style="font-size:15.5px;line-height:24px;color:#3A4A63;">
+<p style="margin:0 0 6px 0;"><strong>Produto:</strong> ${esc(titulo)}</p>
+<p style="margin:0 0 6px 0;"><strong>Aluno:</strong> ${esc(comprador ?? "—")} (${esc(email ?? "sem e-mail")})</p>
+<p style="margin:0 0 6px 0;"><strong>Quando:</strong> ${esc(quando)}</p>
+<p style="margin:0 0 6px 0;"><strong>Pedido:</strong> ${esc(pedidoId.slice(0, 8))}</p>
+<p style="margin:12px 0 0 0;font-size:12.5px;color:#516278;">Pagamento recebido na conta do AbacatePay do Cenapro.</p>
+</div></td></tr>
+<tr><td style="height:18px;"></td></tr>
+<tr><td style="background-color:#F8FAFC;border-top:1px solid #D7DEE6;padding:16px 30px;font-family:Arial,Helvetica,sans-serif;">
+<p style="margin:0;font-size:11.5px;line-height:17px;color:#93A0AF;text-align:center;"><strong style="color:#516278;">Cenapro</strong> &middot; <a href="https://cenapro.com.br" target="_blank" style="color:#516278;text-decoration:underline;">cenapro.com.br</a></p>
+</td></tr>
+</table></td></tr></table></body></html>`;
+  const assunto = `Nova venda Cenapro: ${valor} — ${titulo}`;
+  const [a, b] = await Promise.all([
+    enviarEmail({ para, assunto, html }),
+    enviarEmail({ para: copia, assunto: `[cópia] ${assunto}`, html }),
+  ]);
+  return a.ok ? b : a;
+}
+
 /** Aviso para o dono quando alguém deixa o e-mail no pop-up de saída. */
 export async function enviarAvisoLead({ email, pagina, origem }: { email: string; pagina: string; origem: string }): Promise<Resultado> {
   const quando = new Date().toLocaleString("pt-BR", { timeZone: "America/Cuiaba" });

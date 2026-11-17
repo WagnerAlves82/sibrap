@@ -7,7 +7,8 @@
 // simultâneas (webhook + polling) não geram e-mail duplicado.
 
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
-import { enviarAvisoVenda, enviarEntregaApostila } from "@/lib/resend";
+import { emailDoAdmin, enviarAvisoVenda, enviarAvisoVendaCenapro, enviarEntregaApostila } from "@/lib/resend";
+import { EMAIL_AVISO_SENAPRO } from "@/lib/conta-pagamento";
 import { descreverOrigem, type OrigemVenda } from "@/lib/origem";
 
 export async function entregarPedido(pedidoId: string): Promise<void> {
@@ -15,7 +16,7 @@ export async function entregarPedido(pedidoId: string): Promise<void> {
 
   const { data: pedido } = await admin
     .from("pedidos")
-    .select("id, user_id, produto_id, valor_centavos, status, entrega_enviada_em, origem")
+    .select("id, user_id, produto_id, valor_centavos, status, entrega_enviada_em, origem, gateway_conta")
     .eq("id", pedidoId)
     .maybeSingle();
   if (!pedido || pedido.status !== "aprovado" || pedido.entrega_enviada_em) return;
@@ -52,6 +53,18 @@ export async function entregarPedido(pedidoId: string): Promise<void> {
         })
       : ({ ok: false, erro: "usuário sem e-mail" } as const);
 
+  // venda cobrada na conta do Cenapro: aviso com o logo do Cenapro para o filho do Wagner, com cópia para o Wagner
+  if (pedido.gateway_conta === "senapro") {
+    await enviarAvisoVendaCenapro({
+      para: EMAIL_AVISO_SENAPRO,
+      copia: emailDoAdmin(),
+      comprador: nome,
+      email,
+      titulo: apostila?.titulo ?? produto?.nome ?? "Produto sem nome",
+      valorCentavos: pedido.valor_centavos,
+      pedidoId: pedido.id,
+    }).catch((e) => console.error("Aviso de venda Cenapro não enviado:", e));
+  } else
   // aviso ao dono a cada venda; falha aqui não atrapalha a entrega ao cliente
   await enviarAvisoVenda({
     comprador: nome,
