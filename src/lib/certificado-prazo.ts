@@ -22,9 +22,3 @@ export function dataHoraBR(d: Date): string {
   const hora = d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" });
   return `${data} às ${hora}`;
 }
-
-// Formação continuada (seção Educação): prazo mínimo desde a matrícula conforme a carga do certificado.
-// A regra é conferida no banco (trigger certificados_formacao_continuada e horas_liberadas_certificado).
-export function diasMinimosCarga(horas: number): number {
-  return horas <= 20 ? 5 : horas <= 40 ? 7 : horas <= 60 ? 10 : 12;
-}
