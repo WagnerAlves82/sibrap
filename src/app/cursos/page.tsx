@@ -89,7 +89,7 @@ export default async function CursosPage() {
             <span>
               <span className="font-data text-xs font-semibold uppercase tracking-[0.2em] text-accent">Novo · Cursos profissionalizantes</span>
               <span className="mt-1 block font-display text-xl font-extrabold">Elétrica, Automação e Bombeiro Hidráulico</span>
-              <span className="mt-1 block text-[14.5px] text-[#C9D6E5]">Curso + apostila prática em PDF + certificado, por R$ 59,90.</span>
+              <span className="mt-1 block text-[14.5px] text-[#C9D6E5]">Cursos grátis. Certificado + apostila prática no final, por R$ 54,90.</span>
             </span>
             <span className="btn-pulso-suave brilho shrink-0 bg-accent px-6 py-3 text-[15px] font-extrabold text-accent-ink">Escolher minha área →</span>
           </Link>

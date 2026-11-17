@@ -266,7 +266,7 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
       "11 diagramas de ligação para consultar sempre que precisar",
     ],
     faq: [
-      ["O curso vem com apostila?", "Sim. Você baixa a apostila prática em PDF na área do aluno: o passo a passo dos serviços, os diagramas de ligação e os checklists de segurança."],
+      ["O curso vem com apostila?", "Sim. A apostila prática em PDF vem junto com o certificado e você baixa na área do aluno. Traz o passo a passo dos serviços, os diagramas de ligação e os checklists de segurança."],
       ["Quem é o instrutor?", "O curso tem como instrutor um técnico em eletrotécnica com registro no CRT (Conselho Regional dos Técnicos Industriais). O nome dele aparece no certificado."],
       ["Este curso substitui a NR-10?", "Não. É um curso de entrada na profissão. O treinamento de segurança da NR-10 é outro curso, exigido de quem trabalha com eletricidade em empresas, e a aula final mostra como seguir."],
       ["Depois do curso já posso trabalhar?", "Sim. Você conclui sabendo fazer os serviços básicos com segurança e pode buscar vaga ou atender clientes. Serviços maiores vêm com a prática e novas qualificações."],
@@ -297,7 +297,7 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
       "Projeto final de uma casa inteligente com orçamento",
     ],
     faq: [
-      ["O curso vem com apostila?", "Sim. Você baixa a apostila prática em PDF na área do aluno, com as fichas passo a passo de cada tarefa."],
+      ["O curso vem com apostila?", "Sim. A apostila prática em PDF vem junto com o certificado: você baixa na área do aluno, com as fichas passo a passo de cada tarefa."],
       ["Preciso saber elétrica?", "Não. O curso começa pelo que não exige obra (lâmpadas, tomadas, sensores, Alexa). As ligações em 127/220 V são mostradas como demonstração e ficam com o eletricista."],
       ["Quais marcas o curso usa?", "As explicações valem para qualquer marca e usam como referência a documentação pública de fabricantes conhecidos e do Home Assistant."],
     ],
@@ -327,7 +327,7 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
       "Diagramas de caixa-d'água, sifão, aquecimento solar e banheiro",
     ],
     faq: [
-      ["O curso vem com apostila?", "Sim. Você baixa a apostila prática em PDF na área do aluno, com 11 fichas passo a passo dos serviços mais comuns."],
+      ["O curso vem com apostila?", "Sim. A apostila prática em PDF vem junto com o certificado: você baixa na área do aluno, com 11 fichas passo a passo dos serviços mais comuns."],
       ["Preciso ter experiência?", "Não. O curso começa do zero, com linguagem simples, e você estuda no celular ou no computador."],
       ["Depois do curso já posso trabalhar?", "Sim. Você conclui sabendo fazer os serviços básicos com segurança e pode buscar vaga ou atender clientes. Serviços maiores vêm com a prática e novas qualificações."],
     ],

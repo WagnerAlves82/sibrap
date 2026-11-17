@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { BUCKET_PDFS } from "@/lib/apostilas";
-import { APOSTILA_DO_CURSO } from "@/lib/cursos-apostila";
+import { APOSTILA_DO_CURSO, temApostilaDoCurso } from "@/lib/cursos-apostila";
 
-// Entrega a apostila prática do curso só a quem está matriculado (no curso pago, a matrícula
-// só existe depois do pagamento). Redireciona para um link assinado que expira em 2 minutos.
+// Entrega a apostila prática só a quem está matriculado e comprou o certificado do curso
+// (os cursos são gratuitos desde 17/11/2026; a apostila acompanha o certificado). Redireciona para um link assinado que expira em 2 minutos.
 export async function GET(request: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const base = new URL(request.url);
@@ -26,6 +26,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     ? await supabase.from("matriculas").select("curso_id").eq("curso_id", curso.id).maybeSingle()
     : { data: null };
   if (!matricula) return NextResponse.redirect(new URL(`/minha-area/cursos/${slug}`, base));
+  if (!(await temApostilaDoCurso(supabase, curso!.id, slug)))
+    return NextResponse.redirect(new URL(`/minha-area/cursos/${slug}/certificado#certificado-opcoes`, base));
 
   const { data: assinado, error } = await criarClienteSupabaseAdmin()
     .storage.from(BUCKET_PDFS)

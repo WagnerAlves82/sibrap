@@ -12,7 +12,7 @@ import { formatarReais, produtoDoCursoPago } from "@/lib/curso-pago";
 import { dadosCartaoCompra } from "@/lib/cartao-transparente";
 import { PopupEtapa } from "./certificado/PopupEtapa";
 import { TourEtapas } from "./TourEtapas";
-import { APOSTILA_DO_CURSO } from "@/lib/cursos-apostila";
+import { APOSTILA_DO_CURSO, temApostilaDoCurso } from "@/lib/cursos-apostila";
 import { AREA_SUPORTE_MARCA, CURSO_MARCA } from "@/lib/suporte-marca";
 import { dataHoraBR, diaBR, diasParaCertificado, liberacaoCertificado } from "@/lib/certificado-prazo";
 
@@ -36,7 +36,7 @@ export default async function AreaDoCursoPage({
     .maybeSingle();
   if (!curso) notFound();
 
-  const [{ data: matricula }, { data: modulos }, { data: progresso }, { data: tentativas }, { data: certificado }, { data: etapas }] =
+  const [{ data: matricula }, { data: modulos }, { data: progresso }, { data: tentativas }, { data: certificado }, { data: etapas }, apostilaLiberada] =
     await Promise.all([
       supabase.from("matriculas").select("curso_id, criado_em").eq("curso_id", curso.id).maybeSingle(),
       supabase
@@ -55,6 +55,7 @@ export default async function AreaDoCursoPage({
       supabase.from("certificados").select("codigo").eq("curso_id", curso.id).maybeSingle(),
       // certificado por etapas: situação de cada etapa (20 h, 40 h…) para este aluno
       curso.certificado_por_etapas ? supabase.rpc("minhas_etapas_curso", { p_curso: curso.id }) : Promise.resolve({ data: null }),
+      APOSTILA_DO_CURSO[curso.slug] ? temApostilaDoCurso(supabase, curso.id, curso.slug) : Promise.resolve(false),
     ]);
 
   if (!matricula) {
@@ -214,16 +215,24 @@ export default async function AreaDoCursoPage({
               <p className="mt-4 border-l-4 border-accent bg-[#FFF8EB] px-4 py-3 text-[14.5px] leading-relaxed text-[#14213A]">
                 <strong>Sobre o seu certificado:</strong> ele traz a data de início (matrícula) e a de conclusão do curso e pode ser
                 emitido a partir de <strong>{dataHoraBR(liberacaoCertificado(matricula.criado_em, diasCert))}</strong> ({diasCert} dias
-                após a compra), depois de concluir as aulas e passar na prova final. É o tempo para você estudar com calma e praticar.
+                após a matrícula), depois de concluir as aulas e passar na prova final. É o tempo para você estudar com calma e praticar.
               </p>
             )}
-            {APOSTILA_DO_CURSO[curso.slug] && (
+            {APOSTILA_DO_CURSO[curso.slug] && apostilaLiberada && (
               <a
                 href={`/minha-area/cursos/${curso.slug}/apostila`}
                 className="ml-0 mt-3 inline-flex items-center gap-2 border-2 border-brand px-5 py-2.5 text-[15px] font-bold text-brand transition-colors hover:bg-[#F6F9FC] sm:ml-3"
               >
                 Baixar a apostila prática (PDF) <span aria-hidden>↓</span>
               </a>
+            )}
+            {APOSTILA_DO_CURSO[curso.slug] && !apostilaLiberada && (
+              <p className="mt-3 text-[14.5px] text-[#516278]">
+                A apostila prática em PDF vem junto com o certificado.{" "}
+                <Link href={`/minha-area/cursos/${curso.slug}/certificado#certificado-opcoes`} className="font-bold text-brand underline">
+                  Ver o certificado
+                </Link>
+              </p>
             )}
           </div>
         </Reveal>

@@ -100,7 +100,7 @@ function Oferta({ escuro = false, promo }: { escuro?: boolean; promo: boolean })
 function Separados({ escuro }: { escuro: boolean }) {
   return (
     <p className={`mt-1.5 text-[13.5px] ${escuro ? "text-[#9FB3C8]" : "text-[#8A97A8]"}`}>
-      Comprando os 3 cursos separados: <span className="line-through">{reaisFormacao(PRECO_SEPARADOS_CENTAVOS)}</span>
+      Os 3 certificados separados: <span className="line-through">{reaisFormacao(PRECO_SEPARADOS_CENTAVOS)}</span>
     </p>
   );
 }

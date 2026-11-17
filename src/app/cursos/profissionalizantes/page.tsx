@@ -5,13 +5,13 @@ import { criarClienteSupabasePublico } from "@/lib/supabase-publico";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { Reveal } from "@/components/reveal";
 
-// Página de venda dos cursos profissionalizantes (curso + apostila prática em PDF + certificado).
+// Vitrine dos cursos profissionalizantes: curso gratuito; certificado + apostila prática em PDF pagos ao final (17/11/2026).
 // Igual para todos os visitantes: fica em cache e é refeita no máximo a cada 1 h (sem cookies).
 export const revalidate = 3600;
 
-const TITULO = "Cursos profissionalizantes online: curso, apostila e certificado";
+const TITULO = "Cursos profissionalizantes online grátis, com certificado";
 const DESCRICAO =
-  "Escolha a sua área: Elétrica, Automação ou Bombeiro Hidráulico. Cada curso por R$ 59,90, com apostila prática em PDF e certificado com QR Code. Escolha a área e veja os detalhes de cada curso.";
+  "Cursos gratuitos de Elétrica, Automação e Bombeiro Hidráulico. Estude de graça e, ao terminar, emita o certificado com QR Code e a apostila prática em PDF por R$ 54,90.";
 
 export const metadata: Metadata = {
   title: TITULO,
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 // Cursos independentes: cada pessoa escolhe a área, e cada curso tem o seu certificado (carga horária completa).
 // Aparecem como "em breve" até serem publicados (curso ativo no banco).
 // Salários: Novo CAGED 2026 (carteira assinada), consultado no Portal Salário em 14/11/2026. Atualizar uma vez por ano.
-const PRECO_PADRAO = 5990;
+const PRECO_PADRAO = 5490;
 const CURSOS = [
   {
     slug: "eletricista-residencial-basico",
@@ -83,7 +83,7 @@ const PERGUNTAS = [
   },
   {
     p: "Como é o pagamento?",
-    r: "Cada curso custa R$ 59,90, em pagamento único por PIX ou cartão em até 3 vezes. Sem mensalidade. O curso, a apostila e o certificado dele já estão incluídos.",
+    r: "O curso é gratuito. Ao terminar, se quiser o certificado, ele custa R$ 54,90 (já com a apostila prática em PDF), em pagamento único por PIX ou cartão em até 3 vezes. Sem mensalidade.",
   },
 ];
 
@@ -94,10 +94,10 @@ export default async function CursosProfissionalizantesPage() {
   const slugs = CURSOS.map((t) => t.slug);
   const [{ data: ativos }, { data: produtos }] = await Promise.all([
     supabase.from("cursos").select("slug").eq("ativo", true).in("slug", slugs),
-    supabase.from("produtos").select("slug, preco_centavos").eq("ativo", true).in("slug", slugs.map((s) => `curso-${s}`)),
+    supabase.from("produtos").select("slug, preco_centavos").eq("ativo", true).in("slug", slugs.map((s) => `certificado-${s}`)),
   ]);
   const noAr = new Set((ativos ?? []).map((c) => c.slug));
-  const preco = new Map((produtos ?? []).map((p) => [p.slug.slice("curso-".length), p.preco_centavos]));
+  const preco = new Map((produtos ?? []).map((p) => [p.slug.slice("certificado-".length), p.preco_centavos]));
 
   const jsonLd = [
     {
@@ -129,10 +129,10 @@ export default async function CursosProfissionalizantesPage() {
               Aprenda uma profissão do zero. Saia com certificado.
             </h1>
             <p className="mt-4 max-w-[56ch] text-[17px] leading-relaxed text-[#C9D6E5]">
-              Escolha a sua área. Cada curso vem com apostila prática em PDF e certificado com QR Code, por R$ 59,90.
+              Escolha a sua área e estude de graça. Ao terminar, certificado com QR Code e apostila prática em PDF por R$ 54,90.
             </p>
             <ul className="mt-7 flex flex-wrap gap-2.5 font-data text-[13px] font-semibold">
-              {["Curso online", "Apostila prática em PDF", "Certificado com QR Code"].map((t, i) => (
+              {["Curso grátis", "Certificado com QR Code", "Apostila prática em PDF"].map((t, i) => (
                 <li key={t} className="flex items-center gap-2 border border-white/25 px-3.5 py-2">
                   <span className="text-accent">{i + 1}</span> {t}
                 </li>
@@ -205,8 +205,8 @@ export default async function CursosProfissionalizantesPage() {
 
                       <div className="mt-auto flex items-center justify-between gap-3 border-t border-[#EEF2F6] pt-5">
                         <span className="text-[#14213A]">
-                          <strong className="font-display text-2xl">{reais(centavos)}</strong>
-                          <span className="block text-[12.5px] text-[#516278]">curso + apostila + certificado de {c.horas} h</span>
+                          <strong className="font-display text-2xl">Grátis</strong>
+                          <span className="block text-[12.5px] text-[#516278]">certificado de {c.horas} h + apostila: {reais(centavos)}</span>
                         </span>
                         {ativo ? (
                           <Link href={`/cursos/${c.slug}`} className="btn-pulso-suave brilho shrink-0 bg-accent px-5 py-2.5 text-[14.5px] font-extrabold text-accent-ink">
@@ -271,8 +271,8 @@ export default async function CursosProfissionalizantesPage() {
             ))}
           </div>
           <div className="mt-10 border-2 border-accent bg-white p-7 text-center">
-            <p className="font-display text-2xl font-extrabold text-[#14213A]">Curso + apostila + certificado</p>
-            <p className="mt-1 text-[15.5px] text-[#516278]">R$ 59,90 por curso, em pagamento único. Você escolhe a área e estuda no celular.</p>
+            <p className="font-display text-2xl font-extrabold text-[#14213A]">Curso grátis, certificado no final</p>
+            <p className="mt-1 text-[15.5px] text-[#516278]">Estude de graça no celular. Certificado + apostila por R$ 54,90, só se quiser.</p>
             <a href="#cursos" className="btn-pulso brilho mt-5 inline-flex items-center gap-2 bg-accent px-7 py-4 text-[16px] font-extrabold text-accent-ink">
               Escolher minha área →
             </a>

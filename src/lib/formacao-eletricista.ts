@@ -8,15 +8,15 @@ export const FORMACAO_ELETRICISTA = {
   nome: "Formação Inicial para Eletricista",
   titulo: "Curso de Eletricista com NR-10 e Certificado | Formação Inicial",
   descricao:
-    "Curso profissionalizante de eletricista online: Eletricista Residencial Básico (40 h), NR-10 (40 h) e preparatório NR-35 (8 h). 3 certificados válidos em todo o Brasil, assinados por técnico em eletrotécnica. R$ 129,90 no PIX até 31/12.",
+    "Curso profissionalizante de eletricista online: Eletricista Residencial Básico (40 h), NR-10 (40 h) e preparatório NR-35 (8 h). 3 certificados válidos em todo o Brasil, assinados por técnico em eletrotécnica. Por R$ 89,00.",
   // Resumo direto (primeiro parágrafo da página e do llms.txt): responde "o que é, quanto custa, o que recebo".
   resumo:
-    "A Formação Inicial para Eletricista do SIBRAP é um curso profissionalizante online de 88 horas com 3 certificados: Eletricista Residencial Básico (40 h), NR-10 (40 h) e preparatório NR-35 (8 h). Os certificados têm QR Code, valem em todo o Brasil e são assinados por instrutor técnico em Eletrotécnica registrado no Conselho Federal dos Técnicos Industriais. Custa R$ 129,90 no PIX até 31/12/2026, ou R$ 149,90 em até 3x sem juros no cartão.",
+    "A Formação Inicial para Eletricista do SIBRAP é um curso profissionalizante online de 88 horas com 3 certificados: Eletricista Residencial Básico (40 h), NR-10 (40 h) e preparatório NR-35 (8 h). Os certificados têm QR Code, valem em todo o Brasil e são assinados por instrutor técnico em Eletrotécnica registrado no Conselho Federal dos Técnicos Industriais. Custa R$ 89,00 no PIX ou em até 3x sem juros no cartão.",
   horasTotais: 88,
-  precoPixPromoCentavos: 12990,
-  precoNormalCentavos: 14990,
-  parcela: "3x de R$ 49,97 sem juros",
-  fimPromocao: "2026-12-31T23:59:59-03:00",
+  precoPixPromoCentavos: 8900,
+  precoNormalCentavos: 8900,
+  parcela: "3x de R$ 29,67 sem juros",
+  fimPromocao: "2026-11-17T00:00:00-03:00", // promoção de fim de ano encerrada em 17/11: preço único de R$ 89,00 (Wagner)
   fimPromocaoData: "2026-12-31",
   palavrasChave: [
     "curso de eletricista",
@@ -41,8 +41,8 @@ export const FORMACAO_ELETRICISTA = {
 export const PRODUTO_FORMACAO_PIX = "formacao-eletricista";
 export const PRODUTO_FORMACAO_CARTAO = "formacao-eletricista-cartao";
 export const CURSOS_SLUGS_FORMACAO = ["eletricista-residencial-basico", "nr-10-basico", "seguranca-trabalho-em-altura"] as const;
-// preço dos 3 cursos comprados separados (Eletricista R$ 59,90 + NR-10 R$ 59,90 + NR-35 R$ 45,90), para comparar com a formação
-export const PRECO_SEPARADOS_CENTAVOS = 5990 + 5990 + 4590;
+// os cursos são gratuitos desde 17/11/2026; separados, os 3 certificados custam Eletricista R$ 54,90 + NR-10 R$ 49,90 + NR-35 R$ 35,90
+export const PRECO_SEPARADOS_CENTAVOS = 5490 + 4990 + 3590;
 export const AREA_FORMACAO = "/minha-area/formacao-eletricista";
 
 export function promocaoFormacaoAtiva(agora = new Date()): boolean {
@@ -118,7 +118,7 @@ export const PERGUNTAS_FORMACAO = [
   },
   {
     p: "Quanto custa o curso de eletricista com NR-10?",
-    r: "R$ 129,90 no PIX até 31/12/2026 (promoção de fim de ano). Depois, ou no cartão, R$ 149,90 em até 3x de R$ 49,97 sem juros. Pagamento único, sem mensalidade, com os 3 cursos e os 3 certificados.",
+    r: "R$ 89,00 no PIX ou em até 3x de R$ 29,67 sem juros no cartão. Pagamento único, sem mensalidade, com os 3 certificados e a apostila prática do Eletricista. Os cursos em si são gratuitos: separados, os 3 certificados custariam R$ 140,70.",
   },
   {
     p: "Preciso ter experiência ou estudo?",

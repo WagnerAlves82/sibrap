@@ -15,3 +15,20 @@ export const APOSTILA_DO_CURSO: Record<string, { caminho: string; arquivo: strin
     arquivo: "SIBRAP-Apostila-Pratica-Bombeiro-Hidraulico.pdf",
   },
 };
+
+// Desde 17/11/2026 os cursos profissionalizantes são gratuitos: a apostila vai junto com o certificado pago
+// (qualquer produto 'certificado-<slug>…' liberado ao aluno, inclusive pela Formação Inicial para Eletricista).
+// Recebe o cliente do usuário logado (RLS: acessos só do próprio aluno).
+export async function temApostilaDoCurso(
+  supabase: { from: (t: string) => any },
+  cursoId: string,
+  cursoSlug: string
+): Promise<boolean> {
+  const { data } = await supabase
+    .from("acessos")
+    .select("id, produtos!inner(slug, curso_id)")
+    .eq("produtos.curso_id", cursoId)
+    .like("produtos.slug", `certificado-${cursoSlug}%`)
+    .limit(1);
+  return (data?.length ?? 0) > 0;
+}
