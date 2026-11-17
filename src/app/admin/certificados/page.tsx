@@ -26,6 +26,7 @@ type Cert = {
   data_inicio: string | null;
   data_conclusao: string | null;
   hash_conferencia: string | null;
+  matriculado_em: string | null;
 };
 
 type Matricula = {
@@ -36,6 +37,7 @@ type Matricula = {
   curso_nome: string;
   carga_horaria_horas: number;
   matriculado_em: string;
+  tem_ajuste: boolean;
   nome_completo: string | null;
   cpf: string | null;
   data_inicio: string | null;
@@ -66,7 +68,7 @@ export default async function AdminCertificadosPage({
     const admin = criarClienteSupabaseAdmin() as unknown as SupabaseClient;
     const [r1, r2] = await Promise.all([
       admin.rpc("admin_buscar_certificados", porCpf ? { p_cpf: soDigitos } : { p_email: busca }),
-      porCpf ? Promise.resolve({ data: [], error: null }) : admin.rpc("admin_matriculas_sem_certificado", { p_email: busca }),
+      admin.rpc("admin_matriculas_sem_certificado", porCpf ? { p_cpf: soDigitos } : { p_email: busca }),
     ]);
     if (r1.error) falha = r1.error.message;
     if (r2.error) falha = r2.error.message;
@@ -103,7 +105,9 @@ export default async function AdminCertificadosPage({
         {certs.length > 0 && <h2 className="mb-3 text-lg font-bold text-zinc-900">Certificados emitidos ({certs.length})</h2>}
         <div className="flex flex-col gap-5">
           {certs.map((c) => {
-            const comPeriodo = c.curso_slug === "assistente-administrativo" && c.carga_horaria_horas === 80;
+            // período: o do certificado, ou sugestão (matrícula até a emissão)
+            const inicioPadrao = c.data_inicio ?? (c.matriculado_em ? dia(c.matriculado_em) : dia(c.emitido_em));
+            const terminoPadrao = c.data_conclusao ?? dia(c.emitido_em);
             return (
               <section key={c.id} id={`c-${c.id}`} className="border border-zinc-200 bg-white p-5">
                 <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
@@ -142,25 +146,18 @@ export default async function AdminCertificadosPage({
                     <input name="emitido_em" type="date" defaultValue={dia(c.emitido_em)} required className={campo} />
                   </label>
                   <div />
-                  {comPeriodo ? (
-                    <>
-                      <label>
-                        <span className={rotulo}>Início do curso</span>
-                        <input name="data_inicio" type="date" defaultValue={c.data_inicio ?? ""} required className={campo} />
-                      </label>
-                      <label>
-                        <span className={rotulo}>Término do curso</span>
-                        <input name="data_conclusao" type="date" defaultValue={c.data_conclusao ?? ""} required className={campo} />
-                      </label>
-                      <p className="text-xs text-zinc-500 sm:col-span-2">O certificado vai dizer &quot;realizado de [início] a [término]&quot;.</p>
-                    </>
-                  ) : (
-                    <p className="text-xs text-zinc-500 sm:col-span-2">
-                      {c.data_inicio && c.data_conclusao
-                        ? `Período no certificado (automático, não muda pelo painel): ${br(c.data_inicio)} a ${br(c.data_conclusao)}.`
-                        : "O período (início e término) só é editado pelo painel no Assistente Administrativo de 80 h."}
-                    </p>
-                  )}
+                  <label>
+                    <span className={rotulo}>Início do curso</span>
+                    <input name="data_inicio" type="date" defaultValue={inicioPadrao} required className={campo} />
+                  </label>
+                  <label>
+                    <span className={rotulo}>Término do curso</span>
+                    <input name="data_conclusao" type="date" defaultValue={terminoPadrao} required className={campo} />
+                  </label>
+                  <p className="text-xs text-zinc-500 sm:col-span-2">
+                    Ao salvar, o certificado diz &quot;realizado de [início] a [término]&quot;.
+                    {!c.data_inicio ? " Hoje ele mostra só a data de emissão; as datas acima são sugestão (matrícula e emissão)." : ""}
+                  </p>
                   <div className="flex items-center justify-between gap-3 sm:col-span-2">
                     <p className="text-xs text-zinc-500">Ao salvar, o código de conferência é recalculado e a alteração fica registrada.</p>
                     <button className="shrink-0 bg-zinc-900 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-700">Salvar</button>
@@ -182,8 +179,7 @@ export default async function AdminCertificadosPage({
         <div className="flex flex-col gap-5">
           {matriculas.map((m) => {
             const ancora = `m-${m.user_id}-${m.curso_id}`;
-            const comPeriodo = m.curso_slug === "assistente-administrativo";
-            const salvo = Boolean(m.nome_completo || m.cpf || m.data_inicio);
+            const salvo = m.tem_ajuste;
             return (
               <section key={ancora} id={ancora} className="border border-dashed border-zinc-300 bg-white p-5">
                 <div className="mb-4">
@@ -210,21 +206,19 @@ export default async function AdminCertificadosPage({
                     <input name="cpf" defaultValue={cpfFormatado(m.cpf)} inputMode="numeric" className={campo} />
                   </label>
                   <div />
-                  {comPeriodo ? (
-                    <>
-                      <label>
-                        <span className={rotulo}>Início do curso</span>
-                        <input name="data_inicio" type="date" defaultValue={m.data_inicio ?? ""} required className={campo} />
-                      </label>
-                      <label>
-                        <span className={rotulo}>Término do curso</span>
-                        <input name="data_conclusao" type="date" defaultValue={m.data_conclusao ?? ""} required className={campo} />
-                      </label>
-                      <p className="text-xs text-zinc-500 sm:col-span-2">O período entra no certificado se ele for emitido com 80 h.</p>
-                    </>
-                  ) : (
-                    <p className="text-xs text-zinc-500 sm:col-span-2">O período (início e término) só é editado pelo painel no Assistente Administrativo de 80 h.</p>
-                  )}
+                  <label>
+                    <span className={rotulo}>Início do curso</span>
+                    <input name="data_inicio" type="date" defaultValue={m.data_inicio ?? ""} required className={campo} />
+                  </label>
+                  <label>
+                    <span className={rotulo}>Término do curso</span>
+                    <input name="data_conclusao" type="date" defaultValue={m.data_conclusao ?? ""} required className={campo} />
+                  </label>
+                  <p className="text-xs text-zinc-500 sm:col-span-2">
+                    {salvo
+                      ? "Dados salvos por você."
+                      : "Dados sugeridos: nome do cadastro, CPF de outro certificado do aluno, início na matrícula e término na última aula ou prova. Confira e salve."}
+                  </p>
                   <div className="flex justify-end sm:col-span-2">
                     <button className="bg-zinc-900 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-700">Salvar ajuste</button>
                   </div>

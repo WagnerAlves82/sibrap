@@ -10,8 +10,8 @@ import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 
 // Edição de certificado pelo painel. O gatilho certificados_hash recalcula o hash de conferência
 // quando nome, CPF, carga ou data de emissão mudam. Cada edição fica registrada em certificados_edicoes.
-// Wagner (17/11/2026): pelo painel, o período ("realizado de [início] a [término]") vale só para o
-// certificado de 80 h do Assistente Administrativo, e nele é obrigatório. Nos outros, as datas não mudam.
+// Wagner (17/11/2026): todo certificado salvo pelo painel tem início e término (obrigatórios, em qualquer curso).
+// Isso só vale para o que é salvo aqui; a emissão automática do site segue igual.
 // Ajustes antes da emissão ficam em certificados_ajustes e são aplicados pelo gatilho certificados_zz_ajuste.
 
 function cpfValido(cpf: string): boolean {
@@ -25,7 +25,6 @@ function cpfValido(cpf: string): boolean {
   return dig(9) === Number(cpf[9]) && dig(10) === Number(cpf[10]);
 }
 
-const periodoNoPainel = (cursoSlug: string, carga: number) => cursoSlug === "assistente-administrativo" && carga === 80;
 const dataValida = (v: string) => /^\d{4}-\d{2}-\d{2}$/.test(v) && !Number.isNaN(new Date(`${v}T12:00:00Z`).getTime());
 
 async function exigirAdmin() {
@@ -61,13 +60,10 @@ export async function salvarCertificadoAction(formData: FormData) {
 
   const cursoRel = (atual as unknown as { cursos: { slug: string } | { slug: string }[] | null }).cursos;
   const cursoSlug = (Array.isArray(cursoRel) ? cursoRel[0]?.slug : cursoRel?.slug) ?? "";
-  let inicio = atual!.data_inicio ?? "";
-  let conclusao = atual!.data_conclusao ?? "";
-  if (periodoNoPainel(cursoSlug, carga)) {
-    inicio = String(formData.get("data_inicio") ?? "");
-    conclusao = String(formData.get("data_conclusao") ?? "");
-    if (!dataValida(inicio) || !dataValida(conclusao)) voltar({ erro: "Preencha a data de início e a de término do curso.", id });
-  }
+  void cursoSlug;
+  const inicio = String(formData.get("data_inicio") ?? "");
+  const conclusao = String(formData.get("data_conclusao") ?? "");
+  if (!dataValida(inicio) || !dataValida(conclusao)) voltar({ erro: "Preencha a data de início e a de término do curso.", id });
 
   // a data de emissão é guardada com hora; só muda se o dia mudou (mantém a hora original)
   const diaAtual = new Date(atual!.emitido_em).toLocaleDateString("sv-SE", { timeZone: "America/Sao_Paulo" });
@@ -111,8 +107,9 @@ export async function salvarAjusteAction(formData: FormData) {
 
   if (nome && nome.length < 5) voltar({ erro: "Nome muito curto.", id: ancora });
   if (cpfBruto && !cpfValido(cpfBruto)) voltar({ erro: "CPF inválido.", id: ancora });
-  const comPeriodo = cursoSlug === "assistente-administrativo";
-  if (comPeriodo && (!dataValida(inicio) || !dataValida(conclusao))) {
+  void cursoSlug;
+  const comPeriodo = true;
+  if (!dataValida(inicio) || !dataValida(conclusao)) {
     voltar({ erro: "Preencha a data de início e a de término do curso.", id: ancora });
   }
 
