@@ -65,8 +65,17 @@ export async function gerarPixParaPedido({
       return { erro: MSG_GATEWAY_INSTAVEL };
     }
     try {
-      const conta = contaDoEmail(email);
-      const cobranca = await criarCobrancaPix({ valorCentavos, descricao: produtoNome, pedidoId, conta });
+      let conta = contaDoEmail(email);
+      let cobranca;
+      try {
+        cobranca = await criarCobrancaPix({ valorCentavos, descricao: produtoNome, pedidoId, conta });
+      } catch (e) {
+        // conta do Cenapro falhou: cobra pela conta do SIBRAP para o aluno não ficar sem pagar
+        if (conta !== "senapro") throw e;
+        console.error("PIX na conta do Cenapro falhou; gerando pela conta do SIBRAP", pedidoId, e);
+        conta = "sibrap";
+        cobranca = await criarCobrancaPix({ valorCentavos, descricao: produtoNome, pedidoId, conta });
+      }
       // o id da cobrança (e a conta em que ela foi criada) é gravado com a chave de serviço, só por aqui
       await criarClienteSupabaseAdmin()
         .from("pedidos")

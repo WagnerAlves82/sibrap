@@ -14,7 +14,7 @@
 export type ContaPagamento = "sibrap" | "senapro";
 
 // Alunos cobrados pela conta do Senapro (minúsculas). Para incluir alguém, acrescente o e-mail aqui.
-const EMAILS_SENAPRO = new Set<string>(["jusapavine@gmail.com"]);
+const EMAILS_SENAPRO = new Set<string>([]);
 
 // Janela em que TODAS as vendas do site são cobradas na conta do Senapro (Cenapro).
 // Wagner, 17/11/2026: "a partir desse horário até 22h". Depois do fim, volta tudo para o SIBRAP sozinho.
@@ -27,11 +27,11 @@ export function senaproConfigurado(): boolean {
   return !!process.env.ABACATEPAY_API_KEY_SENAPRO;
 }
 
-// DESLIGADO (Wagner, 17/11/2026, fim da tarde): "volta os pagamentos do SIBRAP para o modo original".
-// Com false, TODA cobrança (PIX e cartão) sai pela conta do SIBRAP, inclusive dos e-mails da lista.
-// Pedidos já criados na conta do Senapro continuam sendo confirmados nela (pedidos.gateway_conta).
-// Para testar de novo: true (e conferir a janela e a lista acima).
-const SENAPRO_LIGADO = false;
+// Histórico (Wagner, 17/11/2026): desligado no fim da tarde ("volta como era antes") e RELIGADO à noite só para a
+// janela até 22h ("SIBRAP paga até as 22 horas no site do meu filho"). Lista de e-mails esvaziada: depois das 22h,
+// TUDO volta para o SIBRAP sozinho. Se o PIX na conta do Senapro falhar, pix.ts gera pela conta do SIBRAP.
+// Pedidos criados na conta do Senapro continuam sendo confirmados nela (pedidos.gateway_conta).
+const SENAPRO_LIGADO = true;
 
 export function contaDoEmail(email: string | null | undefined): ContaPagamento {
   if (!SENAPRO_LIGADO || !senaproConfigurado()) return "sibrap";
