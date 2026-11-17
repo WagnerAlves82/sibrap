@@ -64,6 +64,8 @@ export default async function AdminCertificadosPage({
   let certs: Cert[] = [];
   let matriculas: Matricula[] = [];
   let falha = "";
+  // cursos com certificado por etapas (Assistente Adm.): período só na carga completa
+  const cargaCompletaEtapas = new Map<string, number>();
   if (busca) {
     const admin = criarClienteSupabaseAdmin() as unknown as SupabaseClient;
     const [r1, r2] = await Promise.all([
@@ -74,6 +76,13 @@ export default async function AdminCertificadosPage({
     if (r2.error) falha = r2.error.message;
     certs = (r1.data ?? []) as Cert[];
     matriculas = (r2.data ?? []) as Matricula[];
+    const slugs = [...new Set([...certs, ...matriculas].map((x) => x.curso_slug))];
+    if (slugs.length) {
+      const { data: cursos } = await admin.from("cursos").select("slug, certificado_por_etapas, carga_horaria_horas").in("slug", slugs);
+      for (const cu of (cursos ?? []) as { slug: string; certificado_por_etapas: boolean; carga_horaria_horas: number }[]) {
+        if (cu.certificado_por_etapas) cargaCompletaEtapas.set(cu.slug, cu.carga_horaria_horas);
+      }
+    }
   }
 
   const campo = "mt-1 w-full border border-zinc-300 bg-white px-2.5 py-1.5 text-sm text-zinc-900";
@@ -108,6 +117,8 @@ export default async function AdminCertificadosPage({
             // período: o do certificado, ou sugestão (matrícula até a emissão)
             const inicioPadrao = c.data_inicio ?? (c.matriculado_em ? dia(c.matriculado_em) : dia(c.emitido_em));
             const terminoPadrao = c.data_conclusao ?? dia(c.emitido_em);
+            const cargaCompleta = cargaCompletaEtapas.get(c.curso_slug);
+            const comPeriodo = cargaCompleta === undefined || c.carga_horaria_horas === cargaCompleta;
             return (
               <section key={c.id} id={`c-${c.id}`} className="border border-zinc-200 bg-white p-5">
                 <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
@@ -146,18 +157,26 @@ export default async function AdminCertificadosPage({
                     <input name="emitido_em" type="date" defaultValue={dia(c.emitido_em)} required className={campo} />
                   </label>
                   <div />
-                  <label>
-                    <span className={rotulo}>Início do curso</span>
-                    <input name="data_inicio" type="date" defaultValue={inicioPadrao} required className={campo} />
-                  </label>
-                  <label>
-                    <span className={rotulo}>Término do curso</span>
-                    <input name="data_conclusao" type="date" defaultValue={terminoPadrao} required className={campo} />
-                  </label>
-                  <p className="text-xs text-zinc-500 sm:col-span-2">
-                    Ao salvar, o certificado diz &quot;realizado de [início] a [término]&quot;.
-                    {!c.data_inicio ? " Hoje ele mostra só a data de emissão; as datas acima são sugestão (matrícula e emissão)." : ""}
-                  </p>
+                  {comPeriodo ? (
+                    <>
+                      <label>
+                        <span className={rotulo}>Início do curso</span>
+                        <input name="data_inicio" type="date" defaultValue={inicioPadrao} required className={campo} />
+                      </label>
+                      <label>
+                        <span className={rotulo}>Término do curso</span>
+                        <input name="data_conclusao" type="date" defaultValue={terminoPadrao} required className={campo} />
+                      </label>
+                      <p className="text-xs text-zinc-500 sm:col-span-2">
+                        Ao salvar, o certificado diz &quot;realizado de [início] a [término]&quot;.
+                        {!c.data_inicio ? " Hoje ele mostra só a data de emissão; as datas acima são sugestão (matrícula e emissão)." : ""}
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-xs text-zinc-500 sm:col-span-2">
+                      Certificado por etapas: o período (início e término) só entra no de {cargaCompleta} h. Para incluir, mude a carga para {cargaCompleta} h e salve; os campos aparecem em seguida.
+                    </p>
+                  )}
                   <div className="flex items-center justify-between gap-3 sm:col-span-2">
                     <p className="text-xs text-zinc-500">Ao salvar, o código de conferência é recalculado e a alteração fica registrada.</p>
                     <button className="shrink-0 bg-zinc-900 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-700">Salvar</button>
@@ -218,6 +237,9 @@ export default async function AdminCertificadosPage({
                     {salvo
                       ? "Dados salvos por você."
                       : "Dados sugeridos: nome do cadastro, CPF de outro certificado do aluno, início na matrícula e término na última aula ou prova. Confira e salve."}
+                    {cargaCompletaEtapas.has(m.curso_slug)
+                      ? ` Certificado por etapas: o período só entra se for emitido com ${cargaCompletaEtapas.get(m.curso_slug)} h.`
+                      : ""}
                   </p>
                   <div className="flex justify-end sm:col-span-2">
                     <button className="bg-zinc-900 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-700">Salvar ajuste</button>

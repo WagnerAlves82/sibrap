@@ -10,7 +10,8 @@ import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 
 // Edição de certificado pelo painel. O gatilho certificados_hash recalcula o hash de conferência
 // quando nome, CPF, carga ou data de emissão mudam. Cada edição fica registrada em certificados_edicoes.
-// Wagner (17/11/2026): todo certificado salvo pelo painel tem início e término (obrigatórios, em qualquer curso).
+// Wagner (17/11/2026): todo certificado salvo pelo painel tem início e término (obrigatórios, qualquer curso e carga);
+// no certificado por etapas (Assistente Administrativo), só na carga completa (80 h).
 // Isso só vale para o que é salvo aqui; a emissão automática do site segue igual.
 // Ajustes antes da emissão ficam em certificados_ajustes e são aplicados pelo gatilho certificados_zz_ajuste.
 
@@ -53,17 +54,24 @@ export async function salvarCertificadoAction(formData: FormData) {
   const admin = criarClienteSupabaseAdmin();
   const { data: atual } = await admin
     .from("certificados")
-    .select("codigo, nome_completo, cpf, carga_horaria_horas, emitido_em, data_inicio, data_conclusao, cursos(slug)")
+    .select("codigo, nome_completo, cpf, carga_horaria_horas, emitido_em, data_inicio, data_conclusao, cursos(slug, certificado_por_etapas, carga_horaria_horas)")
     .eq("id", id)
     .maybeSingle();
   if (!atual) voltar({ erro: "Certificado não encontrado.", id });
 
-  const cursoRel = (atual as unknown as { cursos: { slug: string } | { slug: string }[] | null }).cursos;
-  const cursoSlug = (Array.isArray(cursoRel) ? cursoRel[0]?.slug : cursoRel?.slug) ?? "";
-  void cursoSlug;
-  const inicio = String(formData.get("data_inicio") ?? "");
-  const conclusao = String(formData.get("data_conclusao") ?? "");
-  if (!dataValida(inicio) || !dataValida(conclusao)) voltar({ erro: "Preencha a data de início e a de término do curso.", id });
+  type CursoInfo = { slug: string; certificado_por_etapas: boolean; carga_horaria_horas: number };
+  const cursoRel = (atual as unknown as { cursos: CursoInfo | CursoInfo[] | null }).cursos;
+  const curso = Array.isArray(cursoRel) ? cursoRel[0] : cursoRel;
+  // período em qualquer carga; no certificado por etapas (Assistente Adm.), só na carga completa
+  const comPeriodo = !curso?.certificado_por_etapas || carga === curso.carga_horaria_horas;
+  let inicio = atual!.data_inicio ?? "";
+  let conclusao = atual!.data_conclusao ?? "";
+  // se a tela não mostrou os campos (ex.: acabou de mudar a carga para a completa), mantém as datas e mostra no próximo passo
+  if (comPeriodo && formData.has("data_inicio")) {
+    inicio = String(formData.get("data_inicio") ?? "");
+    conclusao = String(formData.get("data_conclusao") ?? "");
+    if (!dataValida(inicio) || !dataValida(conclusao)) voltar({ erro: "Preencha a data de início e a de término do curso.", id });
+  }
 
   // a data de emissão é guardada com hora; só muda se o dia mudou (mantém a hora original)
   const diaAtual = new Date(atual!.emitido_em).toLocaleDateString("sv-SE", { timeZone: "America/Sao_Paulo" });
@@ -107,7 +115,7 @@ export async function salvarAjusteAction(formData: FormData) {
 
   if (nome && nome.length < 5) voltar({ erro: "Nome muito curto.", id: ancora });
   if (cpfBruto && !cpfValido(cpfBruto)) voltar({ erro: "CPF inválido.", id: ancora });
-  void cursoSlug;
+  void cursoSlug; // o período fica salvo; no certificado por etapas ele só entra se sair com a carga completa (gatilho)
   const comPeriodo = true;
   if (!dataValida(inicio) || !dataValida(conclusao)) {
     voltar({ erro: "Preencha a data de início e a de término do curso.", id: ancora });

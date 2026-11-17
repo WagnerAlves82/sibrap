@@ -96,3 +96,28 @@ as $$
 $$;
 revoke execute on function public.admin_buscar_certificados(text, text) from public, anon, authenticated;
 grant execute on function public.admin_buscar_certificados(text, text) to service_role;
+
+-- Ajuste do Wagner (17/11): período em qualquer carga, mas nos cursos com certificado por etapas
+-- (Assistente Administrativo) só na carga completa (80 h).
+create or replace function public.certificados_aplicar_ajuste()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare a record; v_etapas boolean; v_carga integer;
+begin
+  select * into a from certificados_ajustes where user_id = new.user_id and curso_id = new.curso_id;
+  if not found then return new; end if;
+  if nullif(btrim(coalesce(a.nome_completo, '')), '') is not null then new.nome_completo := btrim(a.nome_completo); end if;
+  if a.cpf ~ '^[0-9]{11}$' then new.cpf := a.cpf; end if;
+  select certificado_por_etapas, carga_horaria_horas into v_etapas, v_carga from cursos where id = new.curso_id;
+  if a.data_inicio is not null and a.data_conclusao is not null
+     and (not coalesce(v_etapas, false) or new.carga_horaria_horas = v_carga) then
+    new.data_inicio := a.data_inicio;
+    new.data_conclusao := a.data_conclusao;
+  end if;
+  new.hash_conferencia := certificado_hash(new.codigo, new.nome_completo, new.cpf, new.curso_id, new.carga_horaria_horas, new.emitido_em);
+  return new;
+end $$;
+revoke execute on function public.certificados_aplicar_ajuste() from public, anon, authenticated;
