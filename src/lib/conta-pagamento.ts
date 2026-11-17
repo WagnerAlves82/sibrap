@@ -27,8 +27,14 @@ export function senaproConfigurado(): boolean {
   return !!process.env.ABACATEPAY_API_KEY_SENAPRO;
 }
 
+// DESLIGADO (Wagner, 17/11/2026, fim da tarde): "volta os pagamentos do SIBRAP para o modo original".
+// Com false, TODA cobrança (PIX e cartão) sai pela conta do SIBRAP, inclusive dos e-mails da lista.
+// Pedidos já criados na conta do Senapro continuam sendo confirmados nela (pedidos.gateway_conta).
+// Para testar de novo: true (e conferir a janela e a lista acima).
+const SENAPRO_LIGADO = false;
+
 export function contaDoEmail(email: string | null | undefined): ContaPagamento {
-  if (!senaproConfigurado()) return "sibrap";
+  if (!SENAPRO_LIGADO || !senaproConfigurado()) return "sibrap";
   if (Date.now() < TODOS_NO_SENAPRO_ATE.getTime()) return "senapro";
   if (!email) return "sibrap";
   return EMAILS_SENAPRO.has(email.trim().toLowerCase()) ? "senapro" : "sibrap";
