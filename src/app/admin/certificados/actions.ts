@@ -46,7 +46,6 @@ export async function salvarCertificadoAction(formData: FormData) {
   if (!dataValida(emissao)) voltar({ erro: "Data de emissão inválida.", id });
   if (inicio && !dataValida(inicio)) voltar({ erro: "Data de início inválida.", id });
   if (conclusao && !dataValida(conclusao)) voltar({ erro: "Data de conclusão inválida.", id });
-  if (inicio && conclusao && inicio > conclusao) voltar({ erro: "O início não pode ser depois da conclusão.", id });
 
   const admin = criarClienteSupabaseAdmin();
   const { data: atual } = await admin
