@@ -11,7 +11,7 @@ export const revalidate = 3600;
 
 const TITULO = "Cursos profissionalizantes online grátis, com certificado";
 const DESCRICAO =
-  "Cursos gratuitos de Elétrica, Automação e Bombeiro Hidráulico. Estude de graça e, ao terminar, emita o certificado com QR Code e a apostila prática em PDF por R$ 54,90.";
+  "Cursos gratuitos de Elétrica, Automação e Bombeiro Hidráulico. Estude de graça e, ao terminar, emita se quiser o certificado opcional com QR Code e a apostila prática em PDF.";
 
 export const metadata: Metadata = {
   title: TITULO,
@@ -23,7 +23,6 @@ export const metadata: Metadata = {
 // Cursos independentes: cada pessoa escolhe a área, e cada curso tem o seu certificado (carga horária completa).
 // Aparecem como "em breve" até serem publicados (curso ativo no banco).
 // Salários: Novo CAGED 2026 (carteira assinada), consultado no Portal Salário em 14/11/2026. Atualizar uma vez por ano.
-const PRECO_PADRAO = 5490;
 const CURSOS = [
   {
     slug: "eletricista-residencial-basico",
@@ -83,21 +82,17 @@ const PERGUNTAS = [
   },
   {
     p: "Como é o pagamento?",
-    r: "O curso é gratuito. Ao terminar, se quiser o certificado, ele custa R$ 54,90 (já com a apostila prática em PDF), em pagamento único por PIX ou cartão em até 3 vezes. Sem mensalidade.",
+    r: "O curso é gratuito. O certificado é opcional: ao terminar, se quiser, você vê o valor na hora de emitir. Ele já vem com a apostila prática em PDF, em pagamento único, sem mensalidade.",
   },
 ];
 
-const reais = (c: number) => (c / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 export default async function CursosProfissionalizantesPage() {
   const supabase = criarClienteSupabasePublico();
   const slugs = CURSOS.map((t) => t.slug);
-  const [{ data: ativos }, { data: produtos }] = await Promise.all([
-    supabase.from("cursos").select("slug").eq("ativo", true).in("slug", slugs),
-    supabase.from("produtos").select("slug, preco_centavos").eq("ativo", true).in("slug", slugs.map((s) => `certificado-${s}`)),
-  ]);
+  // sem preço na vitrine (Wagner, 17/11/2026): o valor do certificado aparece só na hora de emitir
+  const { data: ativos } = await supabase.from("cursos").select("slug").eq("ativo", true).in("slug", slugs);
   const noAr = new Set((ativos ?? []).map((c) => c.slug));
-  const preco = new Map((produtos ?? []).map((p) => [p.slug.slice("certificado-".length), p.preco_centavos]));
 
   const jsonLd = [
     {
@@ -129,7 +124,7 @@ export default async function CursosProfissionalizantesPage() {
               Aprenda uma profissão do zero. Saia com certificado.
             </h1>
             <p className="mt-4 max-w-[56ch] text-[17px] leading-relaxed text-[#C9D6E5]">
-              Escolha a sua área e estude de graça. Ao terminar, certificado com QR Code e apostila prática em PDF por R$ 54,90.
+              Escolha a sua área e estude de graça. Ao terminar, certificado opcional com QR Code e apostila prática em PDF.
             </p>
             <ul className="mt-7 flex flex-wrap gap-2.5 font-data text-[13px] font-semibold">
               {["Curso grátis", "Certificado com QR Code", "Apostila prática em PDF"].map((t, i) => (
@@ -186,7 +181,6 @@ export default async function CursosProfissionalizantesPage() {
             <div className="mt-7 grid grid-cols-1 gap-5 lg:grid-cols-3">
               {CURSOS.map((c) => {
                 const ativo = noAr.has(c.slug);
-                const centavos = preco.get(c.slug) ?? PRECO_PADRAO;
                 return (
                   <article key={c.slug} className="flex h-full flex-col overflow-hidden border border-[#D7DEE6] bg-white">
                     <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-2">
@@ -206,7 +200,7 @@ export default async function CursosProfissionalizantesPage() {
                       <div className="mt-auto flex items-center justify-between gap-3 border-t border-[#EEF2F6] pt-5">
                         <span className="text-[#14213A]">
                           <strong className="font-display text-2xl">Grátis</strong>
-                          <span className="block text-[12.5px] text-[#516278]">certificado de {c.horas} h + apostila: {reais(centavos)}</span>
+                          <span className="block text-[12.5px] text-[#516278]">certificado opcional de {c.horas} h</span>
                         </span>
                         {ativo ? (
                           <Link href={`/cursos/${c.slug}`} className="btn-pulso-suave brilho shrink-0 bg-accent px-5 py-2.5 text-[14.5px] font-extrabold text-accent-ink">
@@ -272,7 +266,7 @@ export default async function CursosProfissionalizantesPage() {
           </div>
           <div className="mt-10 border-2 border-accent bg-white p-7 text-center">
             <p className="font-display text-2xl font-extrabold text-[#14213A]">Curso grátis, certificado no final</p>
-            <p className="mt-1 text-[15.5px] text-[#516278]">Estude de graça no celular. Certificado + apostila por R$ 54,90, só se quiser.</p>
+            <p className="mt-1 text-[15.5px] text-[#516278]">Estude de graça no celular. Certificado opcional no final, só se quiser.</p>
             <a href="#cursos" className="btn-pulso brilho mt-5 inline-flex items-center gap-2 bg-accent px-7 py-4 text-[16px] font-extrabold text-accent-ink">
               Escolher minha área →
             </a>
