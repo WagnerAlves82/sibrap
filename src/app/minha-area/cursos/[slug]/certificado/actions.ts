@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { gerarPixParaPedido, type EstadoPix } from "@/lib/pix";
 import { cpfValido, normalizarCpf } from "@/lib/cpf";
 import { enviarCertificadoEmitido } from "@/lib/resend";
@@ -96,10 +97,19 @@ export async function conferirCupomCertificadoAction(
   formato: "online" | "impresso",
   produtoEscolhido: string | undefined,
   codigo: string
-): Promise<{ erro: string } | { codigo: string; valorCentavos: number; percentual: number }> {
+): Promise<{ erro: string } | { codigo: string; valorCentavos: number; percentual: number; soPix: boolean }> {
   const cupom = codigo.trim().toLowerCase().slice(0, 40);
   if (!cupom) return { erro: "Digite o cupom." };
   const admin = criarClienteSupabaseAdmin();
+  // cupom pessoal (coluna email): só para a conta desse e-mail
+  const { data: dono } = await (admin as unknown as SupabaseClient).from("cupons").select("email, so_pix").eq("codigo", cupom).maybeSingle();
+  if (dono?.email) {
+    const supabase = await criarClienteSupabaseServer();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user?.email?.toLowerCase() !== String(dono.email).toLowerCase()) return { erro: "Cupom inválido ou expirado" };
+  }
   const { data: produto } = await admin
     .from("produtos")
     .select("id, preco_centavos")
@@ -110,7 +120,31 @@ export async function conferirCupomCertificadoAction(
   const { data: pct, error } = await admin.rpc("percentual_cupom", { p_cupom: cupom, p_produto: produto.id });
   const percentual = Number(pct);
   if (error || !Number.isFinite(percentual)) return { erro: error?.message ?? "Cupom inválido ou expirado" };
-  return { valorCentavos: Math.round((produto.preco_centavos * (100 - percentual)) / 100), percentual, codigo: cupom };
+  return { valorCentavos: Math.round((produto.preco_centavos * (100 - percentual)) / 100), percentual, codigo: cupom, soPix: Boolean(dono?.so_pix) };
+}
+
+// Cupom pessoal do aluno logado (cupons.email = e-mail da conta), aplicado sozinho na tela de compra.
+export async function cupomPessoalCertificadoAction(
+  cursoSlug: string,
+  formato: "online" | "impresso",
+  produtoEscolhido: string | undefined
+): Promise<{ codigo: string; valorCentavos: number; percentual: number; soPix: boolean } | null> {
+  const supabase = await criarClienteSupabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user?.email) return null;
+  const hoje = new Date().toLocaleDateString("sv-SE", { timeZone: "America/Sao_Paulo" });
+  const { data: cupons } = await (criarClienteSupabaseAdmin() as unknown as SupabaseClient)
+    .from("cupons")
+    .select("codigo, valido_ate")
+    .ilike("email", user.email)
+    .eq("ativo", true)
+    .eq("escopo", "certificados");
+  const valido = (cupons ?? []).find((c: { valido_ate: string | null }) => !c.valido_ate || c.valido_ate >= hoje);
+  if (!valido) return null;
+  const r = await conferirCupomCertificadoAction(cursoSlug, formato, produtoEscolhido, valido.codigo);
+  return "erro" in r ? null : r;
 }
 
 export async function criarPagamentoCertificadoAction(

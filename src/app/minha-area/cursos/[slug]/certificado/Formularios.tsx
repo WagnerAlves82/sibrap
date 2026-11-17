@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useActionState, useState } from "react";
+import { startTransition, useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Alert } from "@/components/alert";
 import { EscolherPagamento } from "@/components/escolher-pagamento";
@@ -9,6 +9,7 @@ import { CLASSE_INPUT } from "@/components/auth-shell";
 import { formatarCpf } from "@/lib/cpf";
 import {
   conferirCupomCertificadoAction,
+  cupomPessoalCertificadoAction,
   criarPagamentoCertificadoAction,
   emitirCertificadoAction,
   enviarComprovanteAction,
@@ -114,11 +115,22 @@ export function PagamentoCertificado({
   const router = useRouter();
   const [cupomAberto, setCupomAberto] = useState(false);
   const [codigo, setCodigo] = useState("");
-  const [cupom, setCupom] = useState<{ codigo: string; valorCentavos: number } | null>(null);
+  const [cupom, setCupom] = useState<{ codigo: string; valorCentavos: number; soPix?: boolean } | null>(null);
   const [erroCupom, setErroCupom] = useState("");
   const [conferindo, setConferindo] = useState(false);
   const valor = cupom?.valorCentavos ?? valorCentavos;
   const real = (c: number) => (c / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+  // desconto pessoal: se houver cupom ligado ao e-mail do aluno, ele já aparece aplicado
+  useEffect(() => {
+    let ativo = true;
+    cupomPessoalCertificadoAction(cursoSlug, formato, produtoSlug).then((r) => {
+      if (ativo && r) setCupom((atual) => atual ?? r);
+    });
+    return () => {
+      ativo = false;
+    };
+  }, [cursoSlug, formato, produtoSlug]);
 
   async function aplicarCupom() {
     setConferindo(true);
@@ -136,7 +148,7 @@ export function PagamentoCertificado({
       {cupom ? (
         <p className="mb-2 border border-[#A9D7CC] bg-[#EAF6F2] px-3 py-2 text-[13.5px] text-[#0B5A4D]">
           Cupom <strong className="uppercase">{cupom.codigo}</strong> aplicado: de <s>{real(valorCentavos)}</s> por{" "}
-          <strong>{real(cupom.valorCentavos)}</strong>.{" "}
+          <strong>{real(cupom.valorCentavos)}</strong>{cupom.soPix ? " no PIX" : ""}.{" "}
           <button type="button" onClick={() => setCupom(null)} className="underline">
             Remover
           </button>
@@ -172,10 +184,11 @@ export function PagamentoCertificado({
       <EscolherPagamento
         key={cupom?.codigo ?? "sem-cupom"}
         valorCentavos={valor}
-        rotuloComprar={cupom ? `${rotulo} por ${real(valor)}` : rotulo}
+        valorCartaoCentavos={cupom?.soPix ? valorCentavos : undefined}
+        rotuloComprar={cupom ? `${rotulo} por ${real(valor)}${cupom.soPix ? " no PIX" : ""}` : rotulo}
         criarPix={() => criarPagamentoCertificadoAction(cursoSlug, formato, produtoSlug, cupom?.codigo)}
         conversaoAds
-        cartao={cartao ? { ...cartao, cupom: cupom?.codigo } : cartao}
+        cartao={cartao ? { ...cartao, cupom: cupom?.soPix ? undefined : cupom?.codigo } : cartao}
         aoAprovar={() => router.refresh()}
       />
     </div>
