@@ -11,7 +11,7 @@ import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 // Edição de certificado pelo painel. O gatilho certificados_hash recalcula o hash de conferência
 // quando nome, CPF, carga ou data de emissão mudam. Cada edição fica registrada em certificados_edicoes.
 // Wagner (17/11/2026): todo certificado salvo pelo painel tem início e término (obrigatórios, qualquer curso e carga);
-// no certificado por etapas (Assistente Administrativo), só na carga completa (80 h).
+// no certificado por etapas (Assistente Administrativo), só no de 60 h e no de 80 h.
 // Isso só vale para o que é salvo aqui; a emissão automática do site segue igual.
 // Ajustes antes da emissão ficam em certificados_ajustes e são aplicados pelo gatilho certificados_zz_ajuste.
 
@@ -25,6 +25,9 @@ function cpfValido(cpf: string): boolean {
   };
   return dig(9) === Number(cpf[9]) && dig(10) === Number(cpf[10]);
 }
+
+// cursos com certificado por etapas: o período entra no de 60 h e na carga completa
+const CARGA_MINIMA_PERIODO_ETAPAS = 60;
 
 const dataValida = (v: string) => /^\d{4}-\d{2}-\d{2}$/.test(v) && !Number.isNaN(new Date(`${v}T12:00:00Z`).getTime());
 
@@ -63,7 +66,8 @@ export async function salvarCertificadoAction(formData: FormData) {
   const cursoRel = (atual as unknown as { cursos: CursoInfo | CursoInfo[] | null }).cursos;
   const curso = Array.isArray(cursoRel) ? cursoRel[0] : cursoRel;
   // período em qualquer carga; no certificado por etapas (Assistente Adm.), só na carga completa
-  const comPeriodo = !curso?.certificado_por_etapas || carga === curso.carga_horaria_horas;
+  // por etapas (Assistente Adm.): período no de 60 h e no de 80 h (Wagner, 17/11/2026)
+  const comPeriodo = !curso?.certificado_por_etapas || carga === curso.carga_horaria_horas || carga === CARGA_MINIMA_PERIODO_ETAPAS;
   let inicio = atual!.data_inicio ?? "";
   let conclusao = atual!.data_conclusao ?? "";
   // se a tela não mostrou os campos (ex.: acabou de mudar a carga para a completa), mantém as datas e mostra no próximo passo

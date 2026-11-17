@@ -118,7 +118,7 @@ export default async function AdminCertificadosPage({
             const inicioPadrao = c.data_inicio ?? (c.matriculado_em ? dia(c.matriculado_em) : dia(c.emitido_em));
             const terminoPadrao = c.data_conclusao ?? dia(c.emitido_em);
             const cargaCompleta = cargaCompletaEtapas.get(c.curso_slug);
-            const comPeriodo = cargaCompleta === undefined || c.carga_horaria_horas === cargaCompleta;
+            const comPeriodo = cargaCompleta === undefined || c.carga_horaria_horas === cargaCompleta || c.carga_horaria_horas === 60;
             return (
               <section key={c.id} id={`c-${c.id}`} className="border border-zinc-200 bg-white p-5">
                 <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
@@ -174,7 +174,7 @@ export default async function AdminCertificadosPage({
                     </>
                   ) : (
                     <p className="text-xs text-zinc-500 sm:col-span-2">
-                      Certificado por etapas: o período (início e término) só entra no de {cargaCompleta} h. Para incluir, mude a carga para {cargaCompleta} h e salve; os campos aparecem em seguida.
+                      Certificado por etapas: o período (início e término) só entra no de 60 h ou no de {cargaCompleta} h. Para incluir, mude a carga para 60 ou {cargaCompleta} h e salve; os campos aparecem em seguida.
                     </p>
                   )}
                   <div className="flex items-center justify-between gap-3 sm:col-span-2">
@@ -238,7 +238,7 @@ export default async function AdminCertificadosPage({
                       ? "Dados salvos por você."
                       : "Dados sugeridos: nome do cadastro, CPF de outro certificado do aluno, início na matrícula e término na última aula ou prova. Confira e salve."}
                     {cargaCompletaEtapas.has(m.curso_slug)
-                      ? ` Certificado por etapas: o período só entra se for emitido com ${cargaCompletaEtapas.get(m.curso_slug)} h.`
+                      ? ` Certificado por etapas: o período só entra se for emitido com 60 h ou ${cargaCompletaEtapas.get(m.curso_slug)} h.`
                       : ""}
                   </p>
                   <div className="flex justify-end sm:col-span-2">

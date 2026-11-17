@@ -113,7 +113,7 @@ begin
   if a.cpf ~ '^[0-9]{11}$' then new.cpf := a.cpf; end if;
   select certificado_por_etapas, carga_horaria_horas into v_etapas, v_carga from cursos where id = new.curso_id;
   if a.data_inicio is not null and a.data_conclusao is not null
-     and (not coalesce(v_etapas, false) or new.carga_horaria_horas = v_carga) then
+     and (not coalesce(v_etapas, false) or new.carga_horaria_horas = v_carga or new.carga_horaria_horas = 60) then
     new.data_inicio := a.data_inicio;
     new.data_conclusao := a.data_conclusao;
   end if;
@@ -121,3 +121,4 @@ begin
   return new;
 end $$;
 revoke execute on function public.certificados_aplicar_ajuste() from public, anon, authenticated;
+-- (17/11, depois) por etapas: período também no de 60 h.
