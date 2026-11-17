@@ -137,7 +137,13 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     alt: "Secretária atendendo ao telefone no escritório enquanto o gestor passa com um tablet",
     largura: 1376,
     altura: 768,
-  },  "arquivo-gestao-de-documentos": {
+  },  "redacao-oficial-documentos-publicos": {
+    src: "/cursos/redacao-oficial/hero.webp",
+    alt: "Servidores revisando documentos oficiais no balcão de protocolo da Secretaria de Administração",
+    largura: 1376,
+    altura: 768,
+  },
+  "arquivo-gestao-de-documentos": {
     src: "/cursos/arquivo-gestao/hero.webp",
     alt: "Funcionário digitalizando documentos em um arquivo organizado com caixas em estantes de metal",
     largura: 1376,
