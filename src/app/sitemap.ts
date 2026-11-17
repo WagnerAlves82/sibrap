@@ -99,6 +99,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/cursos`, lastModified: ultimoCurso, changeFrequency: "weekly", priority: 0.9 },
     { url: `${siteUrl}/cursos/profissionalizantes`, lastModified: ultimoCurso, changeFrequency: "weekly", priority: 0.9 },
     { url: `${siteUrl}/empresas`, lastModified: FIXAS, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${siteUrl}/classificador-de-marcas`, lastModified: FIXAS, changeFrequency: "monthly", priority: 0.7 },
     ...(FORMACAO_ELETRICISTA.vendaAberta
       ? [{ url: `${siteUrl}${FORMACAO_ELETRICISTA.caminho}`, lastModified: ultimoCurso, changeFrequency: "weekly" as const, priority: 0.9 }]
       : []),

@@ -14,6 +14,32 @@ export type PaginaCurso = {
 };
 
 export const PAGINA_CURSO: Record<string, PaginaCurso> = {
+  "registro-de-marca-inpi": {
+    paraQuem: [
+      "MEI e pequenas empresas que querem registrar a própria marca",
+      "Quem vai abrir um negócio e quer proteger o nome antes de investir",
+      "Quem recebeu orçamento de R$ 800 a R$ 2.000 para registrar e quer fazer sozinho",
+      "Artesãos, prestadores de serviço e lojas virtuais",
+    ],
+    ganhos: [
+      { titulo: "Tela por tela no e-INPI", texto: "Cadastro, GRU com desconto de MEI, formulário do e-Marcas e protocolo, no registro real de uma marca." },
+      { titulo: "Classificador de classes", texto: "Digite o seu negócio e veja a classe principal e o que buscar na lista do INPI." },
+      { titulo: "Depois do protocolo", texto: "RPI, oposição, exigência, concessão e renovação, com os prazos que não podem ser perdidos." },
+      { titulo: "Certificado de 20 horas", texto: "Com QR Code de validação, incluso no valor do curso." },
+    ],
+    destaques: [
+      "Busca de marcas parecidas antes de pagar a taxa",
+      "Nominativa ou mista: qual protege mais o seu caso",
+      "Checklist da imagem do logotipo e Classificação de Viena",
+      "Modelo de notificação para quem copiar a sua marca",
+    ],
+    faq: [
+      ["Preciso de advogado ou despachante?", "Não. A lei permite que o próprio titular faça o pedido no INPI, e o curso mostra cada tela. Para casos complexos, como oposição de empresa grande, vale consultar um profissional."],
+      ["As taxas do INPI estão incluídas?", "Não. As taxas (GRU) são pagas à União, direto ao INPI. MEI, ME e pessoa física têm redução de até 60%, e o curso mostra como pedir."],
+      ["E se eu travar no pedido?", "Você pode tirar dúvidas com o professor. Se mesmo assim não conseguir, existe o Suporte Especializado (R$ 59,90): fazemos o pedido com você por acesso remoto, em até 24 horas corridas."],
+      ["O curso garante o registro?", "Não. Quem decide é o INPI. O curso ensina a escolher um nome registrável, a classe certa e a preencher o pedido sem erros, o que aumenta muito as chances."],
+    ],
+  },
   "agente-de-portaria": {
     video: "fc2JnU9UlV4",
     paraQuem: [

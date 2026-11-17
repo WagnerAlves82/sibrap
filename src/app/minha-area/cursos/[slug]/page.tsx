@@ -13,6 +13,7 @@ import { dadosCartaoCompra } from "@/lib/cartao-transparente";
 import { PopupEtapa } from "./certificado/PopupEtapa";
 import { TourEtapas } from "./TourEtapas";
 import { APOSTILA_DO_CURSO } from "@/lib/cursos-apostila";
+import { AREA_SUPORTE_MARCA, CURSO_MARCA } from "@/lib/suporte-marca";
 import { dataHoraBR, diaBR, diasParaCertificado, liberacaoCertificado } from "@/lib/certificado-prazo";
 
 export const metadata: Metadata = {
@@ -395,6 +396,20 @@ export default async function AreaDoCursoPage({
             </Reveal>
           ))}
         </div>
+
+        {curso.slug === CURSO_MARCA && (
+          <section className="mt-8 flex flex-col gap-4 border-l-4 border-accent bg-white p-6 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="font-display text-[1.15rem] font-extrabold text-[#14213A]">Não conseguiu fazer o pedido sozinho?</h2>
+              <p className="mt-1 text-[14.5px] leading-relaxed text-[#516278]">
+                Suporte Especializado: fazemos o pedido com você, por acesso remoto, em até 24 horas corridas. R$ 59,90.
+              </p>
+            </div>
+            <Link prefetch={false} href={AREA_SUPORTE_MARCA} className="shrink-0 bg-accent px-5 py-3 text-center font-extrabold text-accent-ink transition-all hover:brightness-110">
+              Suporte Especializado →
+            </Link>
+          </section>
+        )}
       </main>
 
       <RodapeSite />

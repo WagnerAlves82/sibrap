@@ -28,6 +28,7 @@ export async function GET() {
   linhas.push(`- [Notícias](${SITE_URL}/noticias): notícias sobre concursos públicos (vagas efetivas) e processos seletivos (contratações temporárias).`);
   linhas.push(`- [Profissões](${SITE_URL}/profissoes): guias de profissões (o que faz, quanto ganha, o que diz a lei e como começar).`);
   linhas.push(`- [Para empresas](${SITE_URL}/empresas): treinamentos online para equipes (informática, Excel, rotinas administrativas, atendimento, NR-10 e NR-35), com certificado e controle de estudo; proposta sob consulta.`);
+  linhas.push(`- [Classificador de marcas](${SITE_URL}/classificador-de-marcas): ferramenta grátis que indica a classe de Nice (INPI) para registrar a marca de cada tipo de negócio, com o que buscar no e-Marcas.`);
   linhas.push(`- [Versão completa deste resumo](${SITE_URL}/llms-full.txt): todas as apostilas, cursos e perguntas frequentes em um só arquivo.`);
   linhas.push("");
   for (const l of blocoLlmsFormacao(SITE_URL)) linhas.push(l);

@@ -61,6 +61,12 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     largura: 997,
     altura: 746,
   },
+  "registro-de-marca-inpi": {
+    src: "/cursos/registro-de-marca/hero.webp",
+    alt: "Dono de um pequeno comércio sorrindo enquanto confere um documento no tablet, no balcão da loja",
+    largura: 1376,
+    altura: 768,
+  },
   "tbo-treinamento-basico-operacional": {
     src: "/cursos/tbo/hero.webp",
     alt: "Líder de produção com capacete e colete conversando com três operadores uniformizados ao lado de uma máquina com proteções amarelas",
