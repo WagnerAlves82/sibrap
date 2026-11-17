@@ -20,4 +20,5 @@ export const FOTOS_POR_CURSO: Record<string, string> = {
   "registro-de-marca-inpi": "/cursos/registro-de-marca/card.webp",
   "nr-10-basico": "/cursos/formacao-eletricista/nr10-card.webp",
   "seguranca-trabalho-em-altura": "/cursos/formacao-eletricista/nr35-card.webp",
+  secretariado: "/cursos/secretariado/card.webp",
 };

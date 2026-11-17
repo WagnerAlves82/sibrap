@@ -132,6 +132,11 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     alt: "Mulher e homem conversando em Libras, a Língua Brasileira de Sinais, numa sala de aula iluminada",
     largura: 1200,
     altura: 896,
+  },  secretariado: {
+    src: "/cursos/secretariado/hero.webp",
+    alt: "Secretária atendendo ao telefone no escritório enquanto o gestor passa com um tablet",
+    largura: 1376,
+    altura: 768,
   },
 };
 
