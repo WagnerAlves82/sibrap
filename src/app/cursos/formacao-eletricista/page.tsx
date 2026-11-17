@@ -11,6 +11,7 @@ import {
   CURSOS_FORMACAO,
   FORMACAO_ELETRICISTA,
   PERGUNTAS_FORMACAO,
+  descontoPromoPct,
   promocaoFormacaoAtiva,
   reaisFormacao,
 } from "@/lib/formacao-eletricista";
@@ -74,7 +75,7 @@ function Oferta({ escuro = false, promo }: { escuro?: boolean; promo: boolean })
       <p
         className={`font-data text-[13px] font-semibold uppercase tracking-wider ${escuro ? "text-accent" : "text-accent-2"}`}
       >
-        Promoção de fim de ano · PIX
+        Cupom {F.cupom} · {descontoPromoPct()}% OFF no PIX
       </p>
       <p className="mt-1 flex flex-wrap items-baseline gap-x-3">
         <span
@@ -188,7 +189,7 @@ export default function FormacaoEletricistaPage() {
           <span className="whitespace-nowrap">
             <span className="bg-accent-ink px-1.5 text-accent">{PRECO_PIX_PROMO}</span> no PIX
           </span>{" "}
-          <span className="whitespace-nowrap">só até 31 de dezembro</span>
+          <span className="whitespace-nowrap">cupom {F.cupom}, só até 30 de novembro</span>
         </div>
       )}
 
@@ -405,7 +406,7 @@ export default function FormacaoEletricistaPage() {
 
       <BarraCompraFixa
         preco={promo ? PRECO_PIX_PROMO : PRECO_NORMAL}
-        detalhe={promo ? `no PIX até 31/12 · ou ${PRECO_NORMAL} em ${PARCELA}` : `no PIX ou em ${PARCELA}`}
+        detalhe={promo ? `no PIX até 30/11 (cupom ${F.cupom}) · ou ${PRECO_NORMAL} em ${PARCELA}` : `no PIX ou em ${PARCELA}`}
         href={CHECKOUT}
         rotulo="Quero minha formação →"
       />

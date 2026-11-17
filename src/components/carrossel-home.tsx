@@ -273,7 +273,7 @@ function Formacao({ prioridade }: { prioridade: boolean }) {
             {promo ? (
               <>
                 <span className="mr-1.5 text-[13px] font-semibold text-[#9FB3C8] line-through">{reaisFormacao(F.precoNormalCentavos)}</span>
-                <span className="text-accent">{reaisFormacao(F.precoPixPromoCentavos)}</span> no PIX até 31/12
+                <span className="text-accent">{reaisFormacao(F.precoPixPromoCentavos)}</span> no PIX até 30/11
               </>
             ) : (
               <>{reaisFormacao(F.precoNormalCentavos)} · 3 certificados</>

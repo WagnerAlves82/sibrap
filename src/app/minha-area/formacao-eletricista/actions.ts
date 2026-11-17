@@ -4,7 +4,7 @@ import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { gerarPixParaPedido, type EstadoPix } from "@/lib/pix";
 import { produtoPixFormacao } from "@/lib/formacao-eletricista";
 
-// Formação Inicial para Eletricista: cria o pedido do produto do PIX (promocional até 31/12) e gera o PIX.
+// Formação Inicial para Eletricista: cria o pedido do produto do PIX (promocional até 30/11, cupom FORMACAO2027) e gera o PIX.
 // Ao aprovar, o banco libera os 3 cursos (já matriculando) e os 3 certificados.
 export async function criarPagamentoFormacaoAction(): Promise<EstadoPix> {
   const supabase = await criarClienteSupabaseServer();
