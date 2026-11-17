@@ -37,13 +37,16 @@ export async function salvarCertificadoAction(formData: FormData) {
   const cpfBruto = String(formData.get("cpf") ?? "").replace(/\D/g, "");
   const carga = Number(formData.get("carga_horaria_horas"));
   const emissao = String(formData.get("emitido_em") ?? "");
-  const inicio = String(formData.get("data_inicio") ?? "");
-  const conclusao = String(formData.get("data_conclusao") ?? "");
+  // período no certificado ("realizado de … a …"): só aparece com as duas datas preenchidas
+  const mostrarPeriodo = formData.get("mostrar_periodo") === "on";
+  const inicio = mostrarPeriodo ? String(formData.get("data_inicio") ?? "") : "";
+  const conclusao = mostrarPeriodo ? String(formData.get("data_conclusao") ?? "") : "";
 
   if (nome.length < 5) voltar({ erro: "Nome muito curto.", id });
   if (cpfBruto && !cpfValido(cpfBruto)) voltar({ erro: "CPF inválido.", id });
   if (!Number.isInteger(carga) || carga < 1 || carga > 2000) voltar({ erro: "Carga horária inválida.", id });
   if (!dataValida(emissao)) voltar({ erro: "Data de emissão inválida.", id });
+  if (mostrarPeriodo && (!inicio || !conclusao)) voltar({ erro: "Para incluir o período, preencha a data de início e a de término.", id });
   if (inicio && !dataValida(inicio)) voltar({ erro: "Data de início inválida.", id });
   if (conclusao && !dataValida(conclusao)) voltar({ erro: "Data de conclusão inválida.", id });
 

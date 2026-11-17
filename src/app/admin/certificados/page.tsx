@@ -120,14 +120,25 @@ export default async function AdminCertificadosPage({
                   <input name="emitido_em" type="date" defaultValue={dia(c.emitido_em)} required className={campo} />
                 </label>
                 <div />
-                <label>
-                  <span className={rotulo}>Início do curso</span>
-                  <input name="data_inicio" type="date" defaultValue={c.data_inicio ?? ""} className={campo} />
-                </label>
-                <label>
-                  <span className={rotulo}>Conclusão do curso</span>
-                  <input name="data_conclusao" type="date" defaultValue={c.data_conclusao ?? ""} className={campo} />
-                </label>
+                <fieldset className="border border-zinc-200 bg-zinc-50 p-3 sm:col-span-2">
+                  <label className="flex items-center gap-2 text-sm font-semibold text-zinc-800">
+                    <input type="checkbox" name="mostrar_periodo" defaultChecked={Boolean(c.data_inicio && c.data_conclusao)} />
+                    Incluir no certificado o período do curso (início e término)
+                  </label>
+                  <p className="mt-1 text-xs text-zinc-500">
+                    Marcado: o certificado diz &quot;realizado de [início] a [término]&quot;. Desmarcado: diz só &quot;em [data de emissão]&quot;.
+                  </p>
+                  <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <label>
+                      <span className={rotulo}>Início do curso</span>
+                      <input name="data_inicio" type="date" defaultValue={c.data_inicio ?? ""} className={campo} />
+                    </label>
+                    <label>
+                      <span className={rotulo}>Término do curso</span>
+                      <input name="data_conclusao" type="date" defaultValue={c.data_conclusao ?? ""} className={campo} />
+                    </label>
+                  </div>
+                </fieldset>
                 <div className="flex items-center justify-between gap-3 sm:col-span-2">
                   <p className="text-xs text-zinc-500">Ao salvar, o código de conferência é recalculado e a alteração fica registrada.</p>
                   <button className="shrink-0 bg-zinc-900 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-700">Salvar</button>
