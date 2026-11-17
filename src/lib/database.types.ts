@@ -1030,6 +1030,7 @@ export type Database = {
           carga_horaria_horas: number
           certificado_por_etapas: boolean
           profissionalizante: boolean
+          formacao_continuada: boolean
           tempo_min_aula_pct: number | null
           minutos_dia_max: number | null
           dias_minimos_prova: number | null
@@ -1067,6 +1068,7 @@ export type Database = {
           carga_horaria_horas?: number
           certificado_por_etapas?: boolean
           profissionalizante?: boolean
+          formacao_continuada?: boolean
           tempo_min_aula_pct?: number | null
           minutos_dia_max?: number | null
           dias_minimos_prova?: number | null
@@ -2178,6 +2180,10 @@ export type Database = {
       minhas_etapas_curso: {
         Args: { p_curso: string }
         Returns: { aprovado: boolean; aulas_exigidas: number; horas: number; melhor_nota: number | null; tem_questionario: boolean }[]
+      }
+      sincronizar_meu_certificado: {
+        Args: { p_curso: string }
+        Returns: undefined
       }
       minha_etapa_certificado: {
         Args: { p_curso: string }

@@ -14,7 +14,7 @@ import { PopupEtapa } from "./certificado/PopupEtapa";
 import { TourEtapas } from "./TourEtapas";
 import { APOSTILA_DO_CURSO } from "@/lib/cursos-apostila";
 import { AREA_SUPORTE_MARCA, CURSO_MARCA } from "@/lib/suporte-marca";
-import { dataHoraBR, diaBR, diasParaCertificado, liberacaoCertificado } from "@/lib/certificado-prazo";
+import { dataHoraBR, diaBR, diasMinimosCarga, diasParaCertificado, liberacaoCertificado } from "@/lib/certificado-prazo";
 
 export const metadata: Metadata = {
   title: "Meu curso",
@@ -31,7 +31,7 @@ export default async function AreaDoCursoPage({
 
   const { data: curso } = await supabase
     .from("cursos")
-    .select("id, slug, nome, carga_horaria_horas, nota_minima, ordem_obrigatoria, certificado_por_etapas, profissionalizante, tempo_min_aula_pct, minutos_dia_max, dias_minimos_prova")
+    .select("id, slug, nome, carga_horaria_horas, nota_minima, ordem_obrigatoria, certificado_por_etapas, profissionalizante, formacao_continuada, tempo_min_aula_pct, minutos_dia_max, dias_minimos_prova")
     .eq("slug", slug)
     .maybeSingle();
   if (!curso) notFound();
@@ -209,6 +209,17 @@ export default async function AreaDoCursoPage({
                   ) : null}
                 </ul>
               </div>
+            )}
+            {curso.formacao_continuada && !certificado && (
+              <p className="mt-4 border-l-4 border-accent bg-[#FFF8EB] px-4 py-3 text-[14.5px] leading-relaxed text-[#14213A]">
+                <strong>Sobre o seu certificado:</strong> ele traz a carga horária, a data de início (matrícula) e a de conclusão.{" "}
+                {curso.certificado_por_etapas
+                  ? [20, 40, 60, 80]
+                      .filter((h) => h <= curso.carga_horaria_horas)
+                      .map((h) => `${h} h a partir de ${dataHoraBR(liberacaoCertificado(matricula.criado_em, diasMinimosCarga(h))).split(" às")[0]}`)
+                      .join("; ") + "."
+                  : `Pode ser emitido a partir de ${dataHoraBR(liberacaoCertificado(matricula.criado_em, diasMinimosCarga(curso.carga_horaria_horas)))}.`}
+              </p>
             )}
             {curso.profissionalizante && !certificado && (
               <p className="mt-4 border-l-4 border-accent bg-[#FFF8EB] px-4 py-3 text-[14.5px] leading-relaxed text-[#14213A]">
