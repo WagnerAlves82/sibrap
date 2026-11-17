@@ -8,6 +8,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/database.types";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { abacatePayAtivo, criarCobrancaPix } from "@/lib/abacatepay";
+import { contaDoEmail } from "@/lib/conta-pagamento";
 import { dentroDoLimite, hash } from "@/lib/limite";
 import { vendasPausadas } from "@/lib/vigia";
 import { gravarOrigemPedido } from "@/lib/origem";
@@ -64,11 +65,12 @@ export async function gerarPixParaPedido({
       return { erro: MSG_GATEWAY_INSTAVEL };
     }
     try {
-      const cobranca = await criarCobrancaPix({ valorCentavos, descricao: produtoNome, pedidoId });
-      // o id da cobrança é gravado com a chave de serviço, só por aqui
+      const conta = contaDoEmail(email);
+      const cobranca = await criarCobrancaPix({ valorCentavos, descricao: produtoNome, pedidoId, conta });
+      // o id da cobrança (e a conta em que ela foi criada) é gravado com a chave de serviço, só por aqui
       await criarClienteSupabaseAdmin()
         .from("pedidos")
-        .update({ gateway: "abacatepay", gateway_charge_id: cobranca.id })
+        .update({ gateway: "abacatepay", gateway_charge_id: cobranca.id, gateway_conta: conta })
         .eq("id", pedidoId)
         .eq("status", "pendente")
         .is("gateway_charge_id", null);

@@ -10,6 +10,7 @@ import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { cartaoLiberado, confirmarPagamentoAbacate, criarCobrancaCartao } from "@/lib/abacatepay";
 import { maxParcelas } from "@/lib/apostilas";
 import { cpfValido, normalizarCpf } from "@/lib/cpf";
+import { chavePublicaDaConta, contaDoEmail } from "@/lib/conta-pagamento";
 import { dentroDoLimite, hash } from "@/lib/limite";
 import { vendasPausadas } from "@/lib/vigia";
 import { gravarOrigemPedido } from "@/lib/origem";
@@ -36,8 +37,11 @@ export function dadosCartaoCompra(
   produtoSlug: string,
   user: { email?: string | null; user_metadata?: unknown } | null | undefined
 ): { chavePublica: string; produtoSlug: string; email: string; nome?: string } | null {
-  const chavePublica = chavePublicaCartao();
-  if (!chavePublica || !user?.email) return null;
+  if (!user?.email) return null;
+  // aluno cobrado pela conta do Senapro: cartão só com a chave pública dessa conta (senão, só PIX)
+  const conta = contaDoEmail(user.email);
+  const chavePublica = conta === "senapro" ? chavePublicaDaConta("senapro") : chavePublicaCartao();
+  if (!chavePublica) return null;
   return { chavePublica, produtoSlug, email: user.email, nome: (user.user_metadata as { nome?: string } | undefined)?.nome };
 }
 
@@ -60,7 +64,10 @@ export async function pagarPedidoComCartao({
   email: string;
   dados: DadosCartao;
 }): Promise<EstadoCartao> {
-  if (!chavePublicaCartao()) return { erro: "Pagamento por cartão ainda não está disponível." };
+  const conta = contaDoEmail(email);
+  if (!(conta === "senapro" ? chavePublicaDaConta("senapro") : chavePublicaCartao())) {
+    return { erro: "Pagamento por cartão ainda não está disponível." };
+  }
   if ((await vendasPausadas()).pausada) {
     return { erro: "As vendas estão temporariamente pausadas por manutenção de segurança. Tente novamente em breve." };
   }
@@ -93,6 +100,7 @@ export async function pagarPedidoComCartao({
       parcelas,
       cliente: { name: nome, email, taxId: cpf, cellphone: celular },
       pedidoId,
+      conta,
     });
   } catch (e) {
     await descartarPedidoSemCobranca(pedidoId);
@@ -107,7 +115,7 @@ export async function pagarPedidoComCartao({
   // id da cobrança gravado com a chave de serviço, só se o pedido ainda estiver pendente e sem cobrança
   await criarClienteSupabaseAdmin()
     .from("pedidos")
-    .update({ gateway: "abacatepay", gateway_charge_id: cobranca.id })
+    .update({ gateway: "abacatepay", gateway_charge_id: cobranca.id, gateway_conta: conta })
     .eq("id", pedidoId)
     .eq("status", "pendente")
     .is("gateway_charge_id", null);

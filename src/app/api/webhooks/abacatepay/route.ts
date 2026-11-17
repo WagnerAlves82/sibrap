@@ -26,8 +26,10 @@ type Payload = {
 export async function POST(request: NextRequest) {
   const corpo = await request.text();
 
+  // ?conta=senapro: webhook cadastrado na conta do Senapro (senha própria); sem o parâmetro, conta do SIBRAP
+  const conta = request.nextUrl.searchParams.get("conta") === "senapro" ? "senapro" : "sibrap";
   if (
-    !segredoDaUrlValido(request.nextUrl.searchParams.get("webhookSecret")) ||
+    !segredoDaUrlValido(request.nextUrl.searchParams.get("webhookSecret"), conta) ||
     !assinaturaValida(corpo, request.headers.get("x-webhook-signature"))
   ) {
     return NextResponse.json({ erro: "não autorizado" }, { status: 401 });

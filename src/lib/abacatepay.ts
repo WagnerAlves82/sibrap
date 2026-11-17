@@ -10,6 +10,7 @@ import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { entregarPedido } from "@/lib/entrega";
 import type { StatusPedido } from "@/lib/mercadopago";
 import { erroDeBloqueio } from "@/lib/gateway-instavel";
+import { chaveApi, segredoWebhook, type ContaPagamento } from "@/lib/conta-pagamento";
 
 const BASE = "https://api.abacatepay.com/v2";
 
@@ -47,9 +48,9 @@ export function cartaoLiberado(): boolean {
 
 type Envelope<T> = { data: T | null; error: string | null; success: boolean };
 
-async function chamar<T>(caminho: string, init?: RequestInit): Promise<T> {
-  const chave = process.env.ABACATEPAY_API_KEY;
-  if (!chave) throw new Error("ABACATEPAY_API_KEY não configurada");
+async function chamar<T>(caminho: string, init?: RequestInit, conta: ContaPagamento = "sibrap"): Promise<T> {
+  const chave = chaveApi(conta);
+  if (!chave) throw new Error(`Chave do AbacatePay não configurada (${conta})`);
   const resposta = await fetch(`${BASE}${caminho}`, {
     ...init,
     headers: {
@@ -90,10 +91,12 @@ export async function criarCobrancaPix({
   valorCentavos,
   descricao,
   pedidoId,
+  conta = "sibrap",
 }: {
   valorCentavos: number;
   descricao: string;
   pedidoId: string;
+  conta?: ContaPagamento;
 }): Promise<CobrancaPix> {
   return chamar<CobrancaPix>("/transparents/create", {
     method: "POST",
@@ -106,7 +109,7 @@ export async function criarCobrancaPix({
         metadata: { pedidoId },
       },
     }),
-  });
+  }, conta);
 }
 
 export type ClienteCartao = { name: string; email: string; taxId: string; cellphone: string };
@@ -123,12 +126,14 @@ export async function criarCobrancaCartao({
   parcelas,
   cliente,
   pedidoId,
+  conta = "sibrap",
 }: {
   valorCentavos: number;
   token: string;
   parcelas: number;
   cliente: ClienteCartao;
   pedidoId: string;
+  conta?: ContaPagamento;
 }): Promise<CobrancaCartao> {
   return chamar<CobrancaCartao>("/transparents/create", {
     method: "POST",
@@ -147,7 +152,7 @@ export async function criarCobrancaCartao({
         metadata: { pedidoId },
       },
     }),
-  });
+  }, conta);
 }
 
 function mapStatus(status: string): StatusPedido {
@@ -168,17 +173,19 @@ export async function confirmarPagamentoAbacate(
   const admin = criarClienteSupabaseAdmin();
   const { data: pedido } = await admin
     .from("pedidos")
-    .select("id, status")
+    .select("id, status, gateway_conta")
     .eq("gateway", "abacatepay")
     .eq("gateway_charge_id", chargeId)
     .maybeSingle();
   if (!pedido) return { erro: "Pedido não encontrado para esta cobrança" };
+  // consulta na mesma conta em que a cobrança foi criada (SIBRAP ou Senapro)
+  const conta: ContaPagamento = pedido.gateway_conta === "senapro" ? "senapro" : "sibrap";
 
   let statusRemoto: string;
   try {
     // cobrança de cartão (id "card_...") é consultada pelo /get; PIX pelo /check
     const rota = chargeId.startsWith("card_") ? "get" : "check";
-    statusRemoto = (await chamar<{ status: string }>(`/transparents/${rota}?id=${encodeURIComponent(chargeId)}`)).status;
+    statusRemoto = (await chamar<{ status: string }>(`/transparents/${rota}?id=${encodeURIComponent(chargeId)}`, undefined, conta)).status;
   } catch (e) {
     return { erro: e instanceof Error ? e.message : "Erro ao consultar cobrança" };
   }
@@ -351,9 +358,9 @@ function iguais(a: string, b: string): boolean {
   return x.length === y.length && crypto.timingSafeEqual(x, y);
 }
 
-/** O segredo que cadastramos na URL do webhook (?webhookSecret=...). */
-export function segredoDaUrlValido(recebido: string | null): boolean {
-  const segredo = process.env.ABACATEPAY_WEBHOOK_SECRET;
+/** O segredo que cadastramos na URL do webhook (?webhookSecret=...), da conta indicada. */
+export function segredoDaUrlValido(recebido: string | null, conta: ContaPagamento = "sibrap"): boolean {
+  const segredo = segredoWebhook(conta);
   if (!segredo || !recebido) return false;
   return iguais(recebido, segredo);
 }

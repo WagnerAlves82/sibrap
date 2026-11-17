@@ -1414,6 +1414,7 @@ export type Database = {
           entrega_enviada_em: string | null
           gateway: string
           gateway_charge_id: string | null
+          gateway_conta: string
           id: string
           mercadopago_order_id: string | null
           mercadopago_payment_id: string | null
@@ -1431,6 +1432,7 @@ export type Database = {
           entrega_enviada_em?: string | null
           gateway?: string
           gateway_charge_id?: string | null
+          gateway_conta?: string
           id?: string
           mercadopago_order_id?: string | null
           mercadopago_payment_id?: string | null
@@ -1448,6 +1450,7 @@ export type Database = {
           entrega_enviada_em?: string | null
           gateway?: string
           gateway_charge_id?: string | null
+          gateway_conta?: string
           id?: string
           mercadopago_order_id?: string | null
           mercadopago_payment_id?: string | null
