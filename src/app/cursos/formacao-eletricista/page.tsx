@@ -15,7 +15,7 @@ import {
   reaisFormacao,
 } from "@/lib/formacao-eletricista";
 
-// Formação Inicial para Eletricista: Eletricista Residencial Básico +
+// Formação Inicial para Eletricista: Eletricista Residencial Básico – Baixa Tensão +
 // NR-10 + preparatório NR-35. 3 certificados de
 // curso livre assinados eletronicamente pelo instrutor (nome só no certificado, nunca nas páginas).
 // NR-35 fica como preparatório (Portaria MTE nº 1.259/2026: treinamento de NR-35 só presencial).
@@ -118,7 +118,7 @@ export default function FormacaoEletricistaPage() {
       inLanguage: "pt-BR",
       keywords: F.palavrasChave.join(", "),
       educationalCredentialAwarded:
-        "3 certificados de curso livre: Eletricista Residencial Básico (40 h), NR-10 (40 h) e NR-35: Segurança no Trabalho em Altura (8 h)",
+        "3 certificados de curso livre: Eletricista Residencial Básico – Baixa Tensão (40 h), NR-10 (40 h) e NR-35: Segurança no Trabalho em Altura (8 h)",
       timeRequired: `PT${F.horasTotais}H`,
       provider: { "@type": "Organization", name: "SIBRAP", sameAs: SITE },
       hasCourseInstance: {

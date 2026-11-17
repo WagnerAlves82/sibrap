@@ -28,7 +28,7 @@ const CURSOS = [
     slug: "eletricista-residencial-basico",
     foto: "/cursos/profissionalizantes/eletrica.webp",
     area: "Elétrica",
-    nome: "Eletricista Residencial Básico",
+    nome: "Eletricista Residencial Básico – Baixa Tensão",
     horas: 40,
     resumo: "Segurança, tomadas, interruptores, three-way, iluminação, quadro, DR e aterramento. Para quem nunca mexeu com elétrica.",
     onde: ["Construtoras e obras", "Empresas de instalação e manutenção predial", "Condomínios, hotéis, hospitais e shoppings", "Por conta própria, atendendo casas e comércios"],

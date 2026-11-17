@@ -8,10 +8,10 @@ export const FORMACAO_ELETRICISTA = {
   nome: "Formação Inicial para Eletricista",
   titulo: "Curso de Eletricista com NR-10 e Certificado | Formação Inicial",
   descricao:
-    "Curso profissionalizante de eletricista online: Eletricista Residencial Básico (40 h), NR-10 (40 h) e preparatório NR-35 (8 h). 3 certificados válidos em todo o Brasil, assinados por técnico em eletrotécnica. Por R$ 89,00.",
+    "Curso profissionalizante de eletricista online: Eletricista Residencial Básico – Baixa Tensão (40 h), NR-10 (40 h) e preparatório NR-35 (8 h). 3 certificados válidos em todo o Brasil, assinados por técnico em eletrotécnica. Por R$ 89,00.",
   // Resumo direto (primeiro parágrafo da página e do llms.txt): responde "o que é, quanto custa, o que recebo".
   resumo:
-    "A Formação Inicial para Eletricista do SIBRAP é um curso profissionalizante online de 88 horas com 3 certificados: Eletricista Residencial Básico (40 h), NR-10 (40 h) e preparatório NR-35 (8 h). Os certificados têm QR Code, valem em todo o Brasil e são assinados por instrutor técnico em Eletrotécnica registrado no Conselho Federal dos Técnicos Industriais. Custa R$ 89,00 no PIX ou em até 3x sem juros no cartão.",
+    "A Formação Inicial para Eletricista do SIBRAP é um curso profissionalizante online de 88 horas com 3 certificados: Eletricista Residencial Básico – Baixa Tensão (40 h), NR-10 (40 h) e preparatório NR-35 (8 h). Os certificados têm QR Code, valem em todo o Brasil e são assinados por instrutor técnico em Eletrotécnica registrado no Conselho Federal dos Técnicos Industriais. Custa R$ 89,00 no PIX ou em até 3x sem juros no cartão.",
   horasTotais: 88,
   precoPixPromoCentavos: 8900,
   precoNormalCentavos: 8900,
@@ -65,7 +65,7 @@ export type CursoFormacao = {
 export const CURSOS_FORMACAO: readonly CursoFormacao[] = [
   {
     n: "1",
-    nome: "Eletricista Residencial Básico",
+    nome: "Eletricista Residencial Básico – Baixa Tensão",
     foto: "/cursos/formacao-eletricista/card-eletricista.webp",
     alt: "Eletricista de óculos de proteção instalando uma tomada na parede de uma sala",
     horas: 40,

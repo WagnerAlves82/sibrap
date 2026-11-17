@@ -31,7 +31,7 @@ const TRILHAS = [
   {
     area: "Segurança do trabalho",
     titulo: "NR-10 e NR-35",
-    itens: ["NR-10: Segurança em Instalações e Serviços em Eletricidade (40 h)", "NR-35: Segurança no Trabalho em Altura (8 h, parte teórica)", "Eletricista Residencial Básico (40 h)"],
+    itens: ["NR-10: Segurança em Instalações e Serviços em Eletricidade (40 h)", "NR-35: Segurança no Trabalho em Altura (8 h, parte teórica)", "Eletricista Residencial Básico – Baixa Tensão (40 h)"],
     para: "Construtoras, manutenção predial, condomínios, indústrias e prestadores de serviço.",
   },
   {

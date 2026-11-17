@@ -262,7 +262,7 @@ function Formacao({ prioridade }: { prioridade: boolean }) {
         </p>
         <Itens
           itens={[
-            { t: "Eletricista Residencial Básico", d: "40 h: tomadas, interruptores, quadro, DR e aterramento", c: "40 h" },
+            { t: "Eletricista Residencial Básico – Baixa Tensão", d: "40 h: tomadas, interruptores, quadro, DR e aterramento", c: "40 h" },
             { t: "NR-10", d: "40 h de segurança em instalações e serviços em eletricidade", c: "40 h" },
             { t: "NR-35", d: "8 h de segurança no trabalho em altura", c: "8 h" },
           ]}
