@@ -13,8 +13,6 @@ import {
   dataCurta,
   responsavelTecnico,
   baseLegalVerso,
-  CNDB_URL,
-  TEXTO_CNDB,
 } from "@/lib/emissor";
 import { SeloAbed } from "@/components/selo-abed";
 import { BotaoImprimir } from "./BotaoImprimir";
@@ -92,13 +90,6 @@ export default async function CertificadoPage({
     type: "svg",
     margin: 0,
     errorCorrectionLevel: "M",
-    color: { dark: NAVY, light: "#FFFFFF" },
-  });
-
-  const qrCndbSvg = await QRCode.toString(CNDB_URL, {
-    type: "svg",
-    margin: 0,
-    errorCorrectionLevel: "L",
     color: { dark: NAVY, light: "#FFFFFF" },
   });
 
@@ -587,18 +578,9 @@ export default async function CertificadoPage({
             <div
               style={{
                 marginTop: rt?.assinaturaNoVerso ? cq(1.2) : "auto",
-                display: "flex",
-                alignItems: "flex-end",
-                justifyContent: "space-between",
-                gap: cq(2.5),
-              }}
-            >
-            <div
-              style={{
                 fontSize: cq(1.05),
                 lineHeight: 1.6,
                 color: "#516278",
-                minWidth: 0,
               }}
             >
               <p>
@@ -610,33 +592,6 @@ export default async function CertificadoPage({
                 <strong style={{ color: NAVY }}>{codigo.toUpperCase()}</strong>.
               </p>
               <p style={{ marginTop: cq(0.6) }}>{AVISO_CURSO_LIVRE}</p>
-            </div>
-            <a
-              href={CNDB_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                flexShrink: 0,
-                width: cq(19),
-                display: "flex",
-                alignItems: "center",
-                gap: cq(0.9),
-                color: "#516278",
-                textDecoration: "none",
-              }}
-            >
-              <span
-                aria-label="QR Code da Carteira Nacional Docente do Brasil"
-                style={{ width: cq(7), height: cq(7), flexShrink: 0, display: "block" }}
-                dangerouslySetInnerHTML={{ __html: qrCndbSvg }}
-              />
-              <span style={{ fontSize: cq(0.72), lineHeight: 1.4 }}>
-                <strong style={{ display: "block", color: NAVY, fontSize: cq(0.85) }}>
-                  Professor habilitado
-                </strong>
-                {TEXTO_CNDB}
-              </span>
-            </a>
             </div>
           </div>
         </div>

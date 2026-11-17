@@ -7,12 +7,6 @@ export const EMISSOR = {
 // Quem assina eletronicamente os certificados pela instituição (Lei 14.063/2020).
 export const ASSINATURA_CERTIFICADO = "Wagner A. de S. Jr";
 export const ASSINATURA_CARGO = "Professor Habilitado";
-// Carteira Nacional Docente do Brasil (MEC, Lei 15.202/2025) de quem assina: QR no verso de todos os certificados.
-// O código do link é um identificador da carteira (não é CPF).
-export const CNDB_URL =
-  "https://maisprofessores.mec.gov.br/validacndb?codeValidate=ZDNlZmMxZDYyZmIwYzU4MDViZTA4MjVmM2NmZDcyZDdjNjY3OWM1Yjk2MmUwNjI3YzYzODE4NmU0NmI1MGNlNi03Nzk1MjEwMzI1Mw==";
-export const TEXTO_CNDB =
-  "Habilitação docente do signatário conferível na Carteira Nacional Docente do Brasil (MEC, Lei nº 15.202/2025).";
 
 // Instrutor habilitado por curso (aparece no certificado como "Instrutor") (ex.: curso de eletricista com técnico em eletrotécnica registrado no CRT).
 // Só entra no certificado com o consentimento por escrito do profissional. Chave = slug do curso.

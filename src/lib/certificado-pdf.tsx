@@ -28,8 +28,6 @@ import {
   dataCurta,
   type ResponsavelTecnico,
   baseLegalVerso,
-  CNDB_URL,
-  TEXTO_CNDB,
 } from "@/lib/emissor";
 
 Font.registerHyphenationCallback((palavra) => [palavra]);
@@ -470,11 +468,9 @@ function Frente({
 function Verso({
   d,
   redonda,
-  qrCndb,
 }: {
   d: DadosCertificadoPdf;
   redonda: Buffer | null;
-  qrCndb: string;
 }) {
   // duas colunas equilibradas pelo número de linhas (título do módulo + aulas)
   const peso = (m: { aulas: string[] }) => m.aulas.length + 2;
@@ -612,17 +608,8 @@ function Verso({
             </View>
           ) : null}
           <View
-            wrap={false}
             style={{
               marginTop: d.responsavel?.assinaturaNoVerso ? cq(1) : "auto",
-              flexDirection: "row",
-              alignItems: "flex-end",
-              justifyContent: "space-between",
-            }}
-          >
-          <View
-            style={{
-              width: cq(66),
               fontSize: cq(0.9),
               color: CINZA,
               lineHeight: 1.45,
@@ -641,19 +628,6 @@ function Verso({
             </Text>
             <Text style={{ marginTop: cq(0.5) }}>{AVISO_CURSO_LIVRE}</Text>
           </View>
-          <View style={{ width: cq(18.5), flexDirection: "row", alignItems: "center" }}>
-            {/* eslint-disable-next-line jsx-a11y/alt-text */}
-            <Image src={qrCndb} style={{ width: cq(7), height: cq(7), flexShrink: 0 }} />
-            <View style={{ marginLeft: cq(0.9), width: cq(10.6) }}>
-              <Text style={{ fontFamily: "Helvetica-Bold", color: NAVY, fontSize: cq(0.75) }}>
-                Professor habilitado
-              </Text>
-              <Text style={{ fontSize: cq(0.7), color: CINZA, lineHeight: 1.35 }}>
-                {TEXTO_CNDB}
-              </Text>
-            </View>
-          </View>
-          </View>
         </View>
       </Moldura>
     </Page>
@@ -669,12 +643,6 @@ export async function gerarPdfCertificado(
     errorCorrectionLevel: "M",
     color: { dark: NAVY, light: "#FFFFFF" },
   });
-  const qrCndb = await QRCode.toDataURL(CNDB_URL, {
-    margin: 0,
-    width: 400,
-    errorCorrectionLevel: "L",
-    color: { dark: NAVY, light: "#FFFFFF" },
-  });
   const [logo, abed, redonda] = await Promise.all([
     imagemPublica("logo-horizontal.png", d.siteUrl),
     imagemPublica("abed.png", d.siteUrl),
@@ -687,7 +655,7 @@ export async function gerarPdfCertificado(
       subject={d.curso}
     >
       <Frente d={d} qr={qr} img={{ logo, abed, redonda }} />
-      <Verso d={d} redonda={redonda} qrCndb={qrCndb} />
+      <Verso d={d} redonda={redonda} />
     </Document>,
   );
 }
