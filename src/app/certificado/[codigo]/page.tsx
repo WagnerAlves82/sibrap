@@ -83,6 +83,8 @@ export default async function CertificadoPage({
         .order("ordem")
         .order("ordem", { referencedTable: "aulas" })
     : { data: [] };
+  // mesmo critério do PDF: com mais de 30 tópicos, o verso fica compacto para caber na moldura
+  const compacto = (modulos ?? []).reduce((s, m) => s + m.aulas.length, 0) > 30;
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sibrap.tec.br";
   const urlValidacao = `${siteUrl}/validar/${codigo.toUpperCase()}`;
@@ -463,7 +465,7 @@ export default async function CertificadoPage({
           </div>
         </div>
 
-        {/* Verso: conteúdo programático */}
+        {/* Verso: conteúdo programático (compacto em cursos com muitos tópicos, como no PDF: mais de 30 aulas) */}
         <div
           className="folha shadow-[0_20px_45px_-20px_rgba(11,42,74,0.35)]"
           style={folha}
@@ -514,7 +516,7 @@ export default async function CertificadoPage({
                     <div
                       key={m.ordem}
                       style={{
-                        marginBottom: cq(1.1),
+                        marginBottom: compacto ? cq(0.7) : cq(1.1),
                         border: "1px solid #000000",
                         boxSizing: "border-box",
                       }}
@@ -523,8 +525,9 @@ export default async function CertificadoPage({
                         style={{
                           background: "#000000",
                           color: "#FFFFFF",
-                          padding: `${cq(0.4)} ${cq(0.7)}`,
-                          fontSize: cq(1.15),
+                          padding: compacto ? `${cq(0.3)} ${cq(0.7)}` : `${cq(0.4)} ${cq(0.7)}`,
+                          fontSize: compacto ? cq(1.05) : cq(1.15),
+                          lineHeight: 1.25,
                           fontWeight: 800,
                         }}
                       >
@@ -534,9 +537,10 @@ export default async function CertificadoPage({
                         <div
                           key={a.ordem}
                           style={{
-                            padding: `${cq(0.3)} ${cq(0.7)}`,
+                            padding: compacto ? `${cq(0.18)} ${cq(0.7)}` : `${cq(0.3)} ${cq(0.7)}`,
                             borderTop: j > 0 ? "1px solid #B9B9B9" : "none",
-                            fontSize: cq(0.95),
+                            fontSize: compacto ? cq(0.85) : cq(0.95),
+                            lineHeight: 1.25,
                             color: "#1A1A1A",
                           }}
                         >
