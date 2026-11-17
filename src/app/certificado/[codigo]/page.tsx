@@ -193,7 +193,7 @@ export default async function CertificadoPage({
         <div className="flex flex-wrap items-center gap-3">
           {/* PDF pronto em A4 paisagem, gerado no servidor: no celular o "imprimir" saía em retrato e cortado */}
           <a
-            href={`/certificado/${codigo.toUpperCase()}/pdf`}
+            href={`/certificado/${codigo.toUpperCase()}/pdf${cert.hash_conferencia ? `?v=${cert.hash_conferencia.slice(0, 8)}` : ""}`}
             className="bg-accent px-5 py-2.5 text-[14px] font-bold text-accent-ink transition-colors hover:brightness-105"
           >
             Baixar certificado em PDF

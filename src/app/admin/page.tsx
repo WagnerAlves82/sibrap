@@ -55,6 +55,9 @@ export default async function AdminPage() {
           <Link href="/admin/comprovantes" className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 font-medium text-zinc-700 hover:bg-zinc-100">
             Comprovantes CadÚnico
           </Link>
+          <Link href="/admin/certificados" className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 font-medium text-zinc-700 hover:bg-zinc-100">
+            Certificados
+          </Link>
           <Link href="/admin/seguranca" className="rounded-md border border-amber-300 bg-amber-50 px-3 py-1.5 font-medium text-amber-900 hover:bg-amber-100">
             Segurança
           </Link>
