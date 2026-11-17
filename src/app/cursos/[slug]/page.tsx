@@ -137,6 +137,41 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     alt: "Secretária atendendo ao telefone no escritório enquanto o gestor passa com um tablet",
     largura: 1376,
     altura: 768,
+  },  "arquivo-gestao-de-documentos": {
+    src: "/cursos/arquivo-gestao/hero.webp",
+    alt: "Funcionário digitalizando documentos em um arquivo organizado com caixas em estantes de metal",
+    largura: 1376,
+    altura: 768,
+  },
+  "metodologia-educacao-fisica-educacao-infantil": {
+    src: "/cursos/ef-educacao-infantil/hero.webp",
+    alt: "Professor conduzindo crianças pequenas em um circuito motor com bancos, túnel e colchonetes",
+    largura: 1376,
+    altura: 768,
+  },
+  "metodologia-ensino-voleibol": {
+    src: "/cursos/ef-voleibol/hero.webp",
+    alt: "Alunos jogando voleibol na quadra da escola com a rede montada",
+    largura: 1376,
+    altura: 768,
+  },
+  "treinador-de-futsal-criancas-e-adolescentes": {
+    src: "/cursos/ef-futsal/hero.webp",
+    alt: "Treino de futsal de crianças em quadra coberta com cones e o treinador observando",
+    largura: 1376,
+    altura: 768,
+  },
+  "treinador-de-basquetebol-criancas-e-adolescentes": {
+    src: "/cursos/ef-basquete/hero.webp",
+    alt: "Treino de basquete de crianças e adolescentes em quadra coberta, com a professora observando",
+    largura: 1376,
+    altura: 768,
+  },
+  "treinador-de-atletismo-criancas-e-adolescentes": {
+    src: "/cursos/ef-atletismo/hero.webp",
+    alt: "Crianças correndo em uma pista de terra da escola, com a professora acompanhando",
+    largura: 1376,
+    altura: 768,
   },
 };
 

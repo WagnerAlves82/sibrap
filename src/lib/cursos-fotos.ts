@@ -21,4 +21,10 @@ export const FOTOS_POR_CURSO: Record<string, string> = {
   "nr-10-basico": "/cursos/formacao-eletricista/nr10-card.webp",
   "seguranca-trabalho-em-altura": "/cursos/formacao-eletricista/nr35-card.webp",
   secretariado: "/cursos/secretariado/card.webp",
+  "arquivo-gestao-de-documentos": "/cursos/arquivo-gestao/card.webp",
+  "metodologia-educacao-fisica-educacao-infantil": "/cursos/ef-educacao-infantil/card.webp",
+  "metodologia-ensino-voleibol": "/cursos/ef-voleibol/card.webp",
+  "treinador-de-futsal-criancas-e-adolescentes": "/cursos/ef-futsal/card.webp",
+  "treinador-de-basquetebol-criancas-e-adolescentes": "/cursos/ef-basquete/card.webp",
+  "treinador-de-atletismo-criancas-e-adolescentes": "/cursos/ef-atletismo/card.webp",
 };
