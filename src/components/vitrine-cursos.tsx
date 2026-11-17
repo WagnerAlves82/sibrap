@@ -23,6 +23,7 @@ export const ORDEM_CATEGORIAS = [
   "Serviços e hotelaria",
   "Indústria e logística",
   "Construção e manutenção",
+  "Educação: formação continuada",
 ];
 const OUTROS = "Outros cursos";
 
