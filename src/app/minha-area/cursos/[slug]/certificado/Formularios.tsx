@@ -1,5 +1,6 @@
 "use client";
 
+import { nomeProprio } from "@/lib/nome-proprio";
 import { startTransition, useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Alert } from "@/components/alert";
@@ -286,7 +287,10 @@ export function FormEmitir({
         id="nome"
         name="nome"
         type="text"
-        defaultValue={nomeSugerido}
+        defaultValue={nomeProprio(nomeSugerido)}
+        onBlur={(e) => {
+          e.currentTarget.value = nomeProprio(e.currentTarget.value);
+        }}
         required
         minLength={5}
         autoComplete="name"

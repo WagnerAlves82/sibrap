@@ -1,5 +1,6 @@
 "use server";
 
+import { nomeProprio } from "@/lib/nome-proprio";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
@@ -188,7 +189,8 @@ export async function emitirCertificadoAction(
   formData: FormData
 ): Promise<EstadoEmissao> {
   const cursoId = String(formData.get("curso_id") ?? "");
-  const nome = String(formData.get("nome") ?? "");
+  // maiúsculas ajustadas sozinhas ("tiago francisco dos santos" → "Tiago Francisco dos Santos")
+  const nome = nomeProprio(String(formData.get("nome") ?? ""));
   const cpf = normalizarCpf(String(formData.get("cpf") ?? ""));
 
   if (!cpfValido(cpf)) {
