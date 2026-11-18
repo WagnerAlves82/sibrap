@@ -5,7 +5,6 @@ import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { dadosCartaoCompra } from "@/lib/cartao-transparente";
 import { formatarReais } from "@/lib/curso-pago";
-import { WHATSAPP_NUMERO } from "@/lib/emissor";
 import { ANYDESK_DOWNLOAD, AREA_SUPORTE_MARCA, CURSO_MARCA, PRODUTO_SUPORTE_MARCA, TERMOS_SUPORTE } from "@/lib/suporte-marca";
 import { ComprarSuporte } from "./ComprarSuporte";
 
@@ -15,7 +14,7 @@ const dataHora = (d: Date) =>
   d.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
 
 // Suporte Especializado do curso de registro de marca: termos + aceite + pagamento; depois do pagamento,
-// instruções do AnyDesk e agendamento pelo WhatsApp, com o prazo de 24 h corridas.
+// instruções do AnyDesk e agendamento por e-mail, com o prazo de 24 h corridas.
 export default async function SuporteMarcaPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   if (slug !== CURSO_MARCA) notFound();
@@ -43,7 +42,8 @@ export default async function SuporteMarcaPage({ params }: { params: Promise<{ s
   if (acesso) {
     const pago = new Date(acesso.concedido_em);
     const limite = new Date(pago.getTime() + 24 * 60 * 60 * 1000);
-    const zap = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(
+    // sem WhatsApp no SIBRAP (Wagner, 18/11/2026): agendamento por e-mail para o contato@ (cai no Gmail do Wagner)
+    const zap = `mailto:contato@sibrap.tec.br?subject=${encodeURIComponent("Agendar Suporte Especializado (registro de marca)")}&body=${encodeURIComponent(
       `Olá! Contratei o Suporte Especializado de registro de marca e quero agendar o atendimento.\nNome: ${nome ?? ""}\nE-mail: ${user.email ?? ""}\nMarca: \nMelhores horários: `
     )}`;
     return (
@@ -69,12 +69,12 @@ export default async function SuporteMarcaPage({ params }: { params: Promise<{ s
             </li>
             <li className="border-l-4 border-accent bg-white p-5">
               <span className="font-data text-[12px] font-bold text-accent-2">PASSO 2</span>
-              <h2 className="mt-1 font-display text-[1.1rem] font-extrabold text-[#14213A]">Agende pelo WhatsApp</h2>
+              <h2 className="mt-1 font-display text-[1.1rem] font-extrabold text-[#14213A]">Agende por e-mail</h2>
               <p className="mt-1 text-[14.5px] leading-relaxed text-[#516278]">
                 Envie a mensagem com o nome da marca e os melhores horários. Se preferir, aguarde: entramos em contato pelo seu e-mail.
               </p>
-              <a href={zap} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block bg-accent px-5 py-2.5 text-[14.5px] font-extrabold text-accent-ink hover:brightness-110">
-                Agendar pelo WhatsApp
+              <a href={zap} className="mt-3 inline-block bg-accent px-5 py-2.5 text-[14.5px] font-extrabold text-accent-ink hover:brightness-110">
+                Agendar por e-mail
               </a>
             </li>
             <li className="border-l-4 border-accent bg-white p-5">

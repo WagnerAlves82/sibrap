@@ -4,7 +4,7 @@ import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
 import { EMAIL_CONTATO, EMISSOR } from "@/lib/emissor";
 
 // Treinamentos para empresas (in company), pedido do Wagner em 16/11/2026: foco em administrativo, informática e NRs.
-// Sem preço na página: a empresa pede proposta pelo WhatsApp ou por e-mail.
+// Sem preço na página: a empresa pede proposta pelo formulário de solicitação ou por e-mail.
 const DESCRICAO =
   "Treinamentos para empresas: informática, Excel, rotinas administrativas, atendimento, NR-10 e NR-35. Turmas online com controle de estudo e certificado com QR Code.";
 

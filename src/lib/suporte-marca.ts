@@ -30,7 +30,7 @@ export const TERMOS_SUPORTE: { titulo: string; itens: string[] }[] = [
     titulo: "Prazo de atendimento",
     itens: [
       "O atendimento começa em até 24 horas corridas (inclusive sábados, domingos e feriados) após a confirmação do pagamento.",
-      "Entramos em contato pelo WhatsApp ou e-mail para combinar o horário dentro desse prazo.",
+      "Entramos em contato por e-mail para combinar o horário dentro desse prazo.",
       "Se você não responder ou não estiver disponível no horário combinado, o prazo se considera cumprido e um novo horário é combinado conforme a agenda.",
     ],
   },
