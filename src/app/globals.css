@@ -184,3 +184,18 @@ html,
 body {
   overflow-x: clip;
 }
+
+/* SIBRAP IA (robô do canto da tela): brilho dourado/elétrico de vez em quando, não o tempo todo (Wagner, 18/11/2026) */
+@keyframes robo-brilho {
+  0%, 78%, 100% { filter: drop-shadow(0 8px 14px rgba(1, 73, 175, 0.35)); }
+  82% { filter: drop-shadow(0 0 6px #ffe27a) drop-shadow(0 0 16px #ffc400) drop-shadow(0 0 28px rgba(255, 196, 0, 0.55)); }
+  85% { filter: drop-shadow(0 8px 14px rgba(1, 73, 175, 0.35)); }
+  88% { filter: drop-shadow(0 0 8px #fff3b0) drop-shadow(0 0 20px #ffd200) drop-shadow(0 0 34px rgba(80, 160, 255, 0.6)); }
+  93% { filter: drop-shadow(0 8px 14px rgba(1, 73, 175, 0.35)); }
+}
+.robo-brilho {
+  animation: robo-brilho 8s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .robo-brilho { animation: none; filter: drop-shadow(0 8px 14px rgba(1, 73, 175, 0.35)); }
+}

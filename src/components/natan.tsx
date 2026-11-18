@@ -26,6 +26,11 @@ const INICIO: Msg = {
   texto: "Oi! Eu sou o SIBRAP IA, o assistente virtual do SIBRAP. Qual curso você quer fazer?",
   sugestoes: ["Curso gratuito", "Apostila de concurso", "Curso profissionalizante", "Já sou aluno"],
 };
+const VOLTAR_AREAS = "← Voltar às áreas";
+const LIMPAR = "🧹 Limpar conversa";
+const ESCREVER = "✍️ Escrever minha dúvida";
+const AREAS_LISTA = AREAS.filter((a) => a.valor !== "nao-sei");
+const rotuloArea = (a: (typeof AREAS)[number]) => `${a.icone} ${a.rotulo}`;
 const CHAVE = "sibrap_natan";
 
 function registrar(tipo: string, extra: Record<string, unknown> = {}) {
@@ -160,7 +165,7 @@ export function Natan() {
     const comUsuario: Msg[] = [...msgs, { role: "user", texto: t }];
     setMsgs(comUsuario);
 
-    if (t === "Recomeçar") {
+    if (t === "Recomeçar" || t === LIMPAR) {
       setPerfil({});
       setFunil(null);
       setMsgs([INICIO]);
@@ -168,6 +173,44 @@ export function Natan() {
     }
     if (funil) {
       await responderFunil(t);
+      return;
+    }
+
+    // filtros sem IA: listam TODOS os itens da escolha, para a pessoa rolar e tocar no dela (Wagner, 18/11/2026)
+    if (t === "Curso gratuito" || t === VOLTAR_AREAS || t === "Ver cursos por área") {
+      setMsgs((m) => [
+        ...m,
+        { role: "assistant", texto: "Escolha a área e eu mostro todos os cursos dela:", sugestoes: [...AREAS_LISTA.map(rotuloArea), ESCREVER] },
+      ]);
+      return;
+    }
+    if (t === ESCREVER) {
+      setMsgs((m) => [...m, { role: "assistant", texto: "Pode escrever: conte o que você procura e eu indico o melhor curso para você." }]);
+      return;
+    }
+    const area = AREAS_LISTA.find((a) => rotuloArea(a) === t || a.rotulo === t || a.valor === t);
+    if (area || t === "Apostila de concurso" || t === "Curso profissionalizante") {
+      const itens = await carregarCatalogo();
+      let lista: ItemCatalogo[];
+      let titulo: string;
+      if (t === "Apostila de concurso") {
+        lista = itens.filter((i) => i.tipo === "apostila");
+        titulo = `Apostilas de concurso (${lista.length}). Role a lista e toque na sua:`;
+      } else if (t === "Curso profissionalizante") {
+        lista = itens.filter((i) => i.tipo === "formacao" || i.area === "Construção e manutenção" || i.id === "conserto-e-manutencao-de-celulares");
+        titulo = `Cursos profissionalizantes (${lista.length}). Role a lista e toque no seu:`;
+      } else {
+        lista = itens.filter((i) => (i.tipo === "curso-gratis" || i.tipo === "curso-pago" || i.tipo === "formacao") && i.area === area!.valor);
+        lista.sort((a, b) => Number(a.tipo !== "curso-gratis") - Number(b.tipo !== "curso-gratis"));
+        titulo = `${area!.rotulo}: ${lista.length} cursos. Role a lista e toque no seu:`;
+      }
+      registrar("perfil", { perfil: { area: area?.valor ?? t }, alvo: `lista:${lista.length}` });
+      setMsgs((m) => [
+        ...m,
+        lista.length
+          ? { role: "assistant", texto: titulo, opcoes: lista, sugestoes: [VOLTAR_AREAS, LIMPAR] }
+          : { role: "assistant", texto: "Ainda não temos itens nessa opção. Escreva o que procura que eu te ajudo.", sugestoes: [VOLTAR_AREAS] },
+      ]);
       return;
     }
 
@@ -195,28 +238,36 @@ export function Natan() {
 
   const ultima = msgs[msgs.length - 1];
 
+  // o balão abre em cima do robô, como a fala dele; o robô continua à vista (Wagner, 18/11/2026)
+  const posBalao = comBarraSempre
+    ? "bottom-[222px] sm:bottom-[262px]"
+    : comBarraCelular
+      ? "bottom-[222px] sm:bottom-[186px]"
+      : "bottom-[138px] sm:bottom-[186px]";
+  const altBalao = comBarraSempre || comBarraCelular ? "calc(100dvh - 250px)" : "calc(100dvh - 170px)";
+
   return (
     <>
       {aberto && (
         <div
           role="dialog"
           aria-label="SIBRAP IA, assistente virtual"
-          className={`fixed right-0 z-[60] flex h-[78vh] max-h-[620px] w-full flex-col border border-[#D7DEE6] bg-[#F4F6F9] shadow-[0_18px_40px_-12px_rgba(0,0,0,0.45)] sm:right-5 sm:w-[370px] ${
-            comBarraSempre ? "bottom-0 sm:bottom-24" : "bottom-0 sm:bottom-5"
-          }`}
+          className={`fixed left-2 right-2 z-[60] flex h-[540px] flex-col border-2 border-[#0149AF] bg-[#F4F6F9] shadow-[0_18px_40px_-12px_rgba(1,73,175,0.45)] sm:left-auto sm:right-4 sm:w-[380px] ${posBalao}`}
+          style={{ maxHeight: altBalao }}
         >
-          <div className="flex items-center justify-between bg-[#0149AF] px-4 py-3 text-white">
-            <div className="flex items-center gap-2.5">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/sibrap-ia/avatar.webp" alt="" width={40} height={40} className="h-10 w-10" />
-              <span>
-                <span className="block font-display text-[15px] font-extrabold leading-tight">SIBRAP IA</span>
-                <span className="block text-[12px] text-[#D6E4FA]">Assistente virtual · responde na hora</span>
-              </span>
-            </div>
-            <button type="button" onClick={() => setAberto(false)} aria-label="Fechar" className="px-2 text-[22px] leading-none text-[#C9D6E5] hover:text-white">
-              ×
-            </button>
+          <div className="flex items-center justify-between bg-[#0149AF] px-4 py-2.5 text-white">
+            <span>
+              <span className="block font-display text-[15px] font-extrabold leading-tight">SIBRAP IA</span>
+              <span className="block text-[12px] text-[#D6E4FA]">Assistente virtual · responde na hora</span>
+            </span>
+            <span className="flex items-center gap-1">
+              <button type="button" onClick={() => void enviar(LIMPAR)} className="px-2 py-1 text-[12px] font-semibold text-[#D6E4FA] underline underline-offset-2 hover:text-white">
+                Limpar
+              </button>
+              <button type="button" onClick={() => setAberto(false)} aria-label="Fechar" className="px-2 text-[22px] leading-none text-[#D6E4FA] hover:text-white">
+                ×
+              </button>
+            </span>
           </div>
 
           <div className="flex-1 overflow-y-auto px-3 py-3">
@@ -279,24 +330,24 @@ export function Natan() {
           >
             Falar com a equipe (resposta por e-mail)
           </a>
+          <span aria-hidden className="absolute -bottom-[10px] right-[38px] h-4 w-4 rotate-45 border-b-2 border-r-2 border-[#0149AF] bg-white sm:right-[54px]" />
         </div>
       )}
 
-      {!aberto && (
-        <button
-          type="button"
-          onClick={() => {
-            setAberto(true);
-            registrar("abriu");
-          }}
-          aria-label="Abrir o SIBRAP IA, assistente virtual"
-          className={`fixed right-2 z-50 drop-shadow-[0_8px_14px_rgba(1,73,175,0.35)] transition-transform hover:-translate-y-1 sm:right-4 ${baixo}`}
-        >
-          {/* ilustração 3D do SIBRAP IA feita pelo Wagner (adesivo "Posso ajudar?") */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/sibrap-ia/adesivo.webp" alt="SIBRAP IA: posso ajudar?" width={220} height={262} className="h-[96px] w-auto sm:h-[124px]" />
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={() => {
+          if (!aberto) registrar("abriu");
+          setAberto((a) => !a);
+        }}
+        aria-label={aberto ? "Fechar o SIBRAP IA" : "Abrir o SIBRAP IA, assistente virtual"}
+        aria-expanded={aberto}
+        className={`robo-brilho fixed right-2 z-50 transition-transform hover:-translate-y-1 sm:right-4 ${baixo}`}
+      >
+        {/* ilustração 3D do SIBRAP IA feita pelo Wagner (adesivo "Posso ajudar?") */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/sibrap-ia/adesivo.webp" alt="SIBRAP IA: posso ajudar?" width={340} height={405} className="h-[118px] w-auto sm:h-[158px]" />
+      </button>
     </>
   );
 }
