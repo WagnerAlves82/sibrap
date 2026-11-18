@@ -49,10 +49,16 @@ export default function PrivacidadePage() {
         <p>Não vendemos os seus dados. Se você permitir cookies de publicidade, parceiros como o Google poderão usá-los para exibir anúncios (veja o item 10).</p>
       </Secao>
 
-      <Secao titulo="4. Documentos pessoais">
+      <Secao titulo="4. O comprovante do CadÚnico">
         <p>
-          Não pedimos cópia de documentos pessoais para emitir certificados: basta o nome completo e o CPF informados
-          na emissão. Não há mais isenção do certificado pelo CadÚnico, e não recebemos esse comprovante.
+          Quem pede a isenção do certificado envia, por e-mail, o comprovante de inscrição no CadÚnico. Sabemos que esse
+          documento traz informações pessoais e socioeconômicas, por isso ele é usado apenas para conferir a inscrição,
+          com acesso restrito à nossa equipe, e o tratamento se baseia no <em>seu consentimento</em> (LGPD, art. 7º, I),
+          dado ao enviar o documento.
+        </p>
+        <p>
+          <strong>Assim que a análise termina, o documento é apagado.</strong> Guardamos somente o registro do pedido
+          (nome, curso, data e resultado), que usamos para controlar o limite mensal de isenções e comprovar o atendimento.
         </p>
       </Secao>
 
@@ -89,6 +95,7 @@ export default function PrivacidadePage() {
           itens={[
             <>Conta e progresso: enquanto a conta existir ou até você pedir a exclusão.</>,
             <>Currículo: até você excluí-lo (botão &quot;Excluir meu currículo&quot; no gerador) ou, no máximo, 12 meses depois do último acesso, quando é apagado automaticamente.</>,
+            <>Comprovante do CadÚnico: apagado ao fim da análise; fica só o registro do pedido (veja o item 4).</>,
             <>Certificados: mantidos para que possam ser validados; você pode pedir a remoção.</>,
             <>Pedidos e pagamentos: pelo prazo exigido pela legislação fiscal e de defesa do consumidor.</>,
           ]}

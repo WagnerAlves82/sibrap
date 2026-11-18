@@ -742,30 +742,36 @@ export type Database = {
       comprovantes_cadunico: {
         Row: {
           analisado_em: string | null
+          curso_id: string | null
           enviado_em: string
           id: string
           motivo_recusa: string | null
           nome_arquivo: string | null
+          observacao: string | null
           status: string
           storage_path: string | null
           user_id: string
         }
         Insert: {
           analisado_em?: string | null
+          curso_id?: string | null
           enviado_em?: string
           id?: string
           motivo_recusa?: string | null
           nome_arquivo?: string | null
+          observacao?: string | null
           status?: string
           storage_path?: string | null
           user_id: string
         }
         Update: {
           analisado_em?: string | null
+          curso_id?: string | null
           enviado_em?: string
           id?: string
           motivo_recusa?: string | null
           nome_arquivo?: string | null
+          observacao?: string | null
           status?: string
           storage_path?: string | null
           user_id?: string

@@ -74,7 +74,8 @@ export default async function CertificadoAreaPage({
       .not("finalizado_em", "is", null),
     supabase
       .from("comprovantes_cadunico")
-      .select("status, motivo_recusa")
+      .select("status, motivo_recusa, curso_id")
+      .or(`curso_id.eq.${curso.id},curso_id.is.null`)
       .order("enviado_em", { ascending: false })
       .limit(1)
       .maybeSingle(),
@@ -120,7 +121,9 @@ export default async function CertificadoAreaPage({
   const provaOk = melhorNota >= curso.nota_minima;
 
   const permiteCadunico = curso.permite_isencao_cadunico;
-  const cadunicoAprovado = permiteCadunico && comprovante?.status === "aprovado";
+  // isenção aprovada por e-mail para este curso (desde 18/11/2026) ou a antiga, geral, nos cursos que permitiam
+  const cadunicoAprovado =
+    comprovante?.status === "aprovado" && (comprovante.curso_id === curso.id || (comprovante.curso_id == null && permiteCadunico));
   const pagoImpresso = (acessos ?? []).some((a) => a.produtos.slug === `certificado-impresso-${slug}`);
   const pagoOnline = (acessos ?? []).some((a) => a.produtos.slug.startsWith(`certificado-${slug}`));
   const pago = pagoOnline || pagoImpresso;
@@ -323,7 +326,7 @@ export default async function CertificadoAreaPage({
                 </Item>
                 <Item ok={elegivel}>
                   {cadunicoAprovado
-                    ? "Comprovante do CadÚnico aprovado (certificado gratuito)"
+                    ? "Certificado liberado"
                     : pago
                       ? "Pagamento do certificado confirmado"
                       : permiteCadunico

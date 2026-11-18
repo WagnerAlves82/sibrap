@@ -61,9 +61,10 @@ export default function TermosPage() {
         <Lista
           itens={[
             "Para emitir o certificado é preciso concluir todas as aulas e obter, na prova final, a nota mínima informada no curso.",
-            <>O valor do certificado é informado na emissão e pago uma única vez. O curso e as aulas continuam gratuitos.</>,
+            <>O certificado pode ser <strong>gratuito</strong> para quem está inscrito no Cadastro Único (CadÚnico), dentro do limite mensal de isenções (atualmente, 30 certificados por mês, por ordem de pedido). O pedido é feito por e-mail para contato@sibrap.tec.br, com o comprovante de inscrição e o nome do curso, e é analisado pela nossa equipe. Podemos recusar documentos ilegíveis, incompletos ou que não comprovem a inscrição.</>,
+            <>Fora da isenção, o valor do certificado é informado na emissão e pago uma única vez. O curso e as aulas continuam gratuitos.</>,
             "O certificado traz um código e um QR Code de validação, e qualquer pessoa pode conferir a sua autenticidade no site.",
-            "Dados falsos ou adulterados na emissão resultam no cancelamento do certificado e podem gerar responsabilização civil e criminal.",
+            "Dados ou comprovantes falsos ou adulterados resultam no cancelamento do certificado e podem gerar responsabilização civil e criminal.",
           ]}
         />
       </Secao>
