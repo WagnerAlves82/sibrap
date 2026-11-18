@@ -57,13 +57,12 @@ function buscar(texto: string): Negocio[] {
     .map((r) => r.item.n);
 }
 
-export function Classificador({ whatsapp }: { whatsapp: string }) {
+export function Classificador() {
   const [texto, setTexto] = useState("");
   const resultados = useMemo(() => buscar(texto), [texto]);
   const pesquisou = normalizar(texto).length >= 3;
-  const zap = `https://wa.me/${whatsapp}?text=${encodeURIComponent(
-    `Olá, professor! Usei o classificador de marcas e não achei a classe do meu negócio: ${texto || "(descreva aqui)"}`
-  )}`;
+  // sem WhatsApp no site (Wagner, 18/11/2026): dúvida vira solicitação por e-mail
+  const zap = "/solicitacao?tipo=outro&origem=classificador-marcas";
 
   return (
     <div>
@@ -113,7 +112,7 @@ export function Classificador({ whatsapp }: { whatsapp: string }) {
 
       <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-[14.5px] text-[#516278]">
         <span>Ficou em dúvida?</span>
-        <a href={zap} target="_blank" rel="noopener noreferrer" className="bg-brand px-5 py-2.5 font-bold text-white transition-all hover:brightness-125">
+        <a href={zap} className="bg-brand px-5 py-2.5 font-bold text-white transition-all hover:brightness-125">
           Falar com o professor
         </a>
       </div>

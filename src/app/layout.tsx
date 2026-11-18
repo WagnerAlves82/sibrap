@@ -5,7 +5,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import { AvisoCookies } from "@/components/cookies-consentimento";
 import { MetaPixel } from "@/components/meta-pixel";
 import { PopupSaida } from "@/components/popup-saida";
-import { BotaoWhatsApp } from "@/components/botao-whatsapp";
+import { Natan } from "@/components/natan";
 import { CapturarOrigem } from "@/components/capturar-origem";
 import { ContarVisita } from "@/components/contar-visita";
 import "./globals.css";
@@ -128,7 +128,8 @@ oaiq("init",{pixelId:"1JMhzWQcs1S6KtpCGWSfuy",debug:true});`}
         </Script>
         {children}
         <AvisoCookies />
-        <BotaoWhatsApp />
+        {/* Wagner, 18/11/2026: sem botão de WhatsApp; atendimento pelo Natan e, em último caso, formulário por e-mail */}
+        <Natan />
         <PopupSaida />
         <MetaPixel />
         <CapturarOrigem />

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
-import { WHATSAPP_NUMERO } from "@/lib/emissor";
 import dados from "@/lib/classificador-marcas.json";
 import { Classificador } from "./Classificador";
 
@@ -70,7 +69,7 @@ export default function ClassificadorPage() {
 
         <section className="py-10 sm:py-12">
           <div className="mx-auto max-w-[820px] px-4 sm:px-6">
-            <Classificador whatsapp={WHATSAPP_NUMERO} />
+            <Classificador />
             <p className="mt-6 text-[13px] text-[#516278]">
               {dados.negocios.length} tipos de negócio cadastrados. Orientação geral: a decisão do pedido é do INPI.
             </p>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
-import { EMAIL_CONTATO, EMISSOR, WHATSAPP_NUMERO } from "@/lib/emissor";
+import { EMAIL_CONTATO, EMISSOR } from "@/lib/emissor";
 
 // Treinamentos para empresas (in company), pedido do Wagner em 16/11/2026: foco em administrativo, informática e NRs.
 // Sem preço na página: a empresa pede proposta pelo WhatsApp ou por e-mail.
@@ -57,7 +57,8 @@ const PERGUNTAS = [
 ];
 
 export default function EmpresasPage() {
-  const zap = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent("Olá! Quero uma proposta de treinamento para a minha empresa.")}`;
+  // sem WhatsApp no site (Wagner, 18/11/2026): proposta pelo formulário de solicitação (chega por e-mail)
+  const zap = "/solicitacao?tipo=empresa&origem=empresas";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.sibrap.tec.br";
   const dados = {
     "@context": "https://schema.org",
@@ -93,8 +94,8 @@ export default function EmpresasPage() {
               Informática, rotinas administrativas, atendimento, NR-10 e NR-35, em turmas online para a sua equipe.
             </p>
             <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3">
-              <a href={zap} target="_blank" rel="noopener noreferrer" className="bg-accent px-7 py-4 text-[16px] font-extrabold text-accent-ink transition-all hover:brightness-110">
-                Pedir proposta pelo WhatsApp →
+              <a href={zap} className="bg-accent px-7 py-4 text-[16px] font-extrabold text-accent-ink transition-all hover:brightness-110">
+                Pedir proposta →
               </a>
               <a href={`mailto:${EMAIL_CONTATO}?subject=Proposta%20de%20treinamento%20para%20empresa`} className="text-sm font-semibold text-white underline underline-offset-4">
                 ou por e-mail
@@ -166,7 +167,7 @@ export default function EmpresasPage() {
               ))}
             </div>
             <div className="mt-8 text-center">
-              <a href={zap} target="_blank" rel="noopener noreferrer" className="inline-block bg-brand px-7 py-4 text-[15.5px] font-extrabold text-white transition-all hover:brightness-125">
+              <a href={zap} className="inline-block bg-brand px-7 py-4 text-[15.5px] font-extrabold text-white transition-all hover:brightness-125">
                 Pedir proposta para a minha empresa →
               </a>
             </div>

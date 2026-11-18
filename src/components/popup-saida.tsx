@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { capturarEmailSaida } from "@/app/saida/actions";
-import { WHATSAPP_NUMERO } from "@/lib/emissor";
 
 // Pop-up de "não vá embora": no computador, quando o mouse sobe em direção à barra
 // do navegador (para fechar a aba), mostra um convite para deixar o e-mail.
@@ -158,16 +157,6 @@ export function PopupSaida() {
               </button>
             </form>
 
-            {WHATSAPP_NUMERO && (
-              <a
-                href={`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent("Olá! Vim pelo site da SIBRAP e preciso de ajuda.")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 block text-center text-[13.5px] font-semibold text-brand underline underline-offset-4"
-              >
-                Prefiro falar agora no WhatsApp
-              </a>
-            )}
             <p className="mt-4 text-[11.5px] leading-snug text-[#7A8797]">
               Ao enviar, você aceita receber o nosso contato por e-mail. Veja a{" "}
               <a href="/privacidade" className="underline">Política de Privacidade</a>.
