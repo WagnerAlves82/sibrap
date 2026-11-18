@@ -1,6 +1,6 @@
 "use client";
 
-// Natan, assistente virtual do site (Wagner, 18/11/2026). Substitui o botão do WhatsApp: conversa com a IA (Haiku 5.5)
+// SIBRAP IA, assistente virtual do site (Wagner, 18/11/2026; antes "Natan"). Cores da logo redonda: azul #0149AF e branco. Substitui o botão do WhatsApp: conversa com a IA (Haiku 5.5)
 // e, se ela não responder, cai num funil de perguntas rápidas. Último caso: "Falar com a equipe" (formulário por e-mail).
 // Só carrega dados quando a pessoa abre o balão: não pesa nas páginas.
 
@@ -23,7 +23,7 @@ type EtapaFunil = "objetivo" | "area" | "idade" | "experiencia" | null;
 
 const INICIO: Msg = {
   role: "assistant",
-  texto: "Oi! Sou o Natan, assistente virtual do SIBRAP. Qual curso você quer fazer?",
+  texto: "Oi! Eu sou o SIBRAP IA, o assistente virtual do SIBRAP. Qual curso você quer fazer?",
   sugestoes: ["Curso gratuito", "Apostila de concurso", "Curso profissionalizante", "Já sou aluno"],
 };
 const CHAVE = "sibrap_natan";
@@ -47,10 +47,10 @@ function Cartao({ item, perfil }: { item: ItemCatalogo; perfil?: Perfil }) {
     <a
       href={item.url}
       onClick={() => registrar(item.tipo === "apostila" ? "clique-apostila" : "clique-curso", { alvo: item.id, perfil })}
-      className="mt-2 block border border-[#D7DEE6] border-l-4 bg-white p-3 hover:border-brand"
-      style={{ borderLeftColor: gratis ? "#1F9D55" : "#F2B705" }}
+      className="mt-2 block border border-[#D7DEE6] border-l-4 bg-white p-3 hover:border-[#0149AF]"
+      style={{ borderLeftColor: gratis ? "#1F9D55" : "#0149AF" }}
     >
-      <span className={`font-data text-[11.5px] font-bold uppercase tracking-wide ${gratis ? "text-[#1F9D55]" : "text-[#8A6A00]"}`}>
+      <span className={`font-data text-[11.5px] font-bold uppercase tracking-wide ${gratis ? "text-[#1F9D55]" : "text-[#0149AF]"}`}>
         {rotuloTipo(item)}
       </span>
       <span className="mt-0.5 block font-display text-[15px] font-extrabold leading-snug text-[#14213A]">{item.nome}</span>
@@ -60,7 +60,7 @@ function Cartao({ item, perfil }: { item: ItemCatalogo; perfil?: Perfil }) {
           {item.detalhe.slice(0, 110)}
         </span>
       )}
-      <span className="mt-1.5 inline-block text-[13px] font-bold text-brand">{gratis ? "Começar grátis →" : "Ver detalhes →"}</span>
+      <span className="mt-1.5 inline-block text-[13px] font-bold text-[#0149AF]">{gratis ? "Começar grátis →" : "Ver detalhes →"}</span>
     </a>
   );
 }
@@ -200,17 +200,18 @@ export function Natan() {
       {aberto && (
         <div
           role="dialog"
-          aria-label="Natan, assistente virtual"
+          aria-label="SIBRAP IA, assistente virtual"
           className={`fixed right-0 z-[60] flex h-[78vh] max-h-[620px] w-full flex-col border border-[#D7DEE6] bg-[#F4F6F9] shadow-[0_18px_40px_-12px_rgba(0,0,0,0.45)] sm:right-5 sm:w-[370px] ${
             comBarraSempre ? "bottom-0 sm:bottom-24" : "bottom-0 sm:bottom-5"
           }`}
         >
-          <div className="flex items-center justify-between bg-[#0B2A4A] px-4 py-3 text-white">
+          <div className="flex items-center justify-between bg-[#0149AF] px-4 py-3 text-white">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center bg-accent font-display text-[17px] font-extrabold text-accent-ink">N</span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo-redonda.webp" alt="" width={36} height={36} className="h-9 w-9 rounded-full bg-white" />
               <span>
-                <span className="block font-display text-[15px] font-extrabold leading-tight">Natan</span>
-                <span className="block text-[12px] text-[#C9D6E5]">Assistente virtual · responde na hora</span>
+                <span className="block font-display text-[15px] font-extrabold leading-tight">SIBRAP IA</span>
+                <span className="block text-[12px] text-[#D6E4FA]">Assistente virtual · responde na hora</span>
               </span>
             </div>
             <button type="button" onClick={() => setAberto(false)} aria-label="Fechar" className="px-2 text-[22px] leading-none text-[#C9D6E5] hover:text-white">
@@ -221,13 +222,13 @@ export function Natan() {
           <div className="flex-1 overflow-y-auto px-3 py-3">
             {msgs.map((m, i) => (
               <div key={i} className={`mb-2.5 flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[88%] ${m.role === "user" ? "bg-[#0B2A4A] text-white" : "border border-[#D7DEE6] bg-white text-[#14213A]"} px-3 py-2 text-[14px] leading-snug`}>
+                <div className={`max-w-[88%] ${m.role === "user" ? "bg-[#0149AF] text-white" : "border border-[#D7DEE6] bg-white text-[#14213A]"} px-3 py-2 text-[14px] leading-snug`}>
                   {m.texto}
                   {m.opcoes?.map((o) => <Cartao key={o.id} item={o} perfil={perfil} />)}
                 </div>
               </div>
             ))}
-            {pensando && <p className="text-[13px] text-[#8A97A8]">Natan está digitando…</p>}
+            {pensando && <p className="text-[13px] text-[#8A97A8]">SIBRAP IA está digitando…</p>}
             {!pensando && ultima?.role === "assistant" && ultima.sugestoes?.length ? (
               <div className="mt-1 flex flex-wrap gap-1.5">
                 {ultima.sugestoes.map((s) => (
@@ -242,7 +243,7 @@ export function Natan() {
                       }
                       void enviar(s);
                     }}
-                    className="border border-brand bg-white px-2.5 py-1.5 text-[13px] font-semibold text-brand hover:bg-brand hover:text-white"
+                    className="border border-[#0149AF] bg-white px-2.5 py-1.5 text-[13px] font-semibold text-[#0149AF] hover:bg-[#0149AF] hover:text-white"
                   >
                     {s}
                   </button>
@@ -267,14 +268,14 @@ export function Natan() {
               disabled={Boolean(funil) || pensando}
               className="min-w-0 flex-1 px-3 py-3 text-[14px] text-[#14213A] outline-none placeholder:text-[#93A0AF]"
             />
-            <button type="submit" disabled={!texto.trim() || pensando} className="bg-accent px-4 text-[14px] font-extrabold text-accent-ink disabled:opacity-50">
+            <button type="submit" disabled={!texto.trim() || pensando} className="bg-[#0149AF] px-4 text-[14px] font-extrabold text-white disabled:opacity-50">
               Enviar
             </button>
           </form>
           <a
             href="/solicitacao?origem=natan"
             onClick={() => registrar("cadastro", { alvo: "falar-com-equipe" })}
-            className="bg-white pb-2 text-center text-[12.5px] font-semibold text-[#516278] underline underline-offset-2 hover:text-brand"
+            className="bg-white pb-2 text-center text-[12.5px] font-semibold text-[#516278] underline underline-offset-2 hover:text-[#0149AF]"
           >
             Falar com a equipe (resposta por e-mail)
           </a>
@@ -288,12 +289,13 @@ export function Natan() {
             setAberto(true);
             registrar("abriu");
           }}
-          aria-label="Abrir o Natan, assistente virtual"
-          className={`fixed right-3 z-50 flex items-center gap-2 bg-[#0B2A4A] p-1.5 pr-3 text-[13.5px] font-extrabold text-white shadow-[0_10px_24px_-10px_rgba(0,0,0,0.5)] transition-transform hover:-translate-y-0.5 sm:right-5 ${baixo}`}
+          aria-label="Abrir o SIBRAP IA, assistente virtual"
+          className={`fixed right-3 z-50 flex items-center gap-2 bg-[#0149AF] p-1.5 pr-3 text-[13.5px] font-extrabold text-white shadow-[0_10px_24px_-10px_rgba(0,0,0,0.5)] transition-transform hover:-translate-y-0.5 sm:right-5 ${baixo}`}
         >
-          <span className="flex h-8 w-8 items-center justify-center bg-accent font-display text-[16px] text-accent-ink">N</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo-redonda.webp" alt="" width={32} height={32} className="h-8 w-8 rounded-full bg-white" />
           <span>
-            Natan<span className="hidden font-semibold text-[#C9D6E5] sm:inline"> · Posso ajudar?</span>
+            SIBRAP IA<span className="hidden font-semibold text-[#D6E4FA] sm:inline"> · Posso ajudar?</span>
           </span>
         </button>
       )}

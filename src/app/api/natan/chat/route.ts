@@ -1,4 +1,4 @@
-// Natan, assistente virtual do site (Wagner, 18/11/2026): a pessoa diz o que procura e o Haiku 5.5 responde curto,
+// SIBRAP IA (antes "Natan"), assistente virtual do site (Wagner, 18/11/2026): a pessoa diz o que procura e o Haiku 5.5 responde curto,
 // com UMA opção do catálogo (duas só se o pedido for ambíguo), indicando o que é gratuito e o que é pago.
 // Se a IA falhar ou o limite do dia acabar, o navegador cai no funil de botões (fallback: true).
 import Anthropic from "@anthropic-ai/sdk";
@@ -23,7 +23,7 @@ const Saida = z.object({
   sugestoes: z.array(z.string()),
 });
 
-const REGRAS = `Você é o Natan, assistente virtual do SIBRAP (sibrap.tec.br), escola online brasileira de cursos livres e apostilas para concursos. Fale em português do Brasil, com "você", tom simpático e direto.
+const REGRAS = `Você é o SIBRAP IA, assistente virtual do SIBRAP (sibrap.tec.br), escola online brasileira de cursos livres e apostilas para concursos. Fale em português do Brasil, com "você", tom simpático e direto.
 
 Seu trabalho: entender o que a pessoa procura e indicar UMA opção do catálogo abaixo. Só indique DUAS se o pedido for realmente ambíguo. Nunca mais de duas.
 - Se não der para saber o que ela quer, faça UMA pergunta curta (área de interesse, objetivo, se já trabalha na área) e devolva "opcoes" vazio, com 2 a 4 "sugestoes" de resposta rápida.
