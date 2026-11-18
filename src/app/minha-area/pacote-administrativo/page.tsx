@@ -31,7 +31,7 @@ export default async function PacoteAdministrativoAreaPage() {
         <main className="mx-auto flex w-full max-w-[640px] flex-1 items-center px-6 py-14">
           <div className="w-full border border-[#D7DEE6] bg-white p-8">
             <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent-2">
-              5 cursos · 5 certificados · {HORAS_PACOTE_ADM} h
+              4 cursos · 4 certificados · {HORAS_PACOTE_ADM} h
             </p>
             <h1 className="mt-2 font-display text-3xl font-extrabold text-[#14213A]">{PACOTE_ADM.nome}</h1>
             <ul className="mt-4 flex flex-col gap-2 text-[15px] text-[#2B3A52]">
@@ -46,7 +46,7 @@ export default async function PacoteAdministrativoAreaPage() {
             </ul>
             <p className="mt-4 text-[15px] leading-relaxed text-[#516278]">
               Pagamento único de <strong className="text-[#14213A]">{formatarReais(valor)}</strong> no PIX. Assim que o
-              pagamento cair, os 5 certificados ficam garantidos nesta página.
+              pagamento cair, os 4 certificados ficam garantidos nesta página.
             </p>
             <div className="mt-6">
               <ComprarPacote preco={formatarReais(valor)} valorCentavos={valor} />
@@ -64,7 +64,7 @@ export default async function PacoteAdministrativoAreaPage() {
         <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent-2">Compra confirmada</p>
         <h1 className="mt-2 font-display text-3xl font-extrabold text-[#14213A]">{PACOTE_ADM.nome}</h1>
         <p className="mt-2 text-[15.5px] text-[#516278]">
-          Seus 5 certificados estão pagos. Conclua as aulas e a prova de cada curso para emitir.
+          Seus 4 certificados estão pagos. Conclua as aulas e a prova de cada curso para emitir.
         </p>
         <div className="mt-7 flex flex-col gap-3">
           {CURSOS_PACOTE_ADM.map((c, i) => (

@@ -11,7 +11,7 @@ import {
   reaisPacote,
 } from "@/lib/pacote-administrativo";
 
-// Pacote Administrativo: 5 cursos gratuitos + os 5 certificados de 20 h num pagamento só (Wagner, 18/11/2026).
+// Pacote Administrativo: 4 cursos gratuitos + os 4 certificados de 20 h num pagamento só (Wagner, 18/11/2026).
 // Página pública em ISR, sem cookies; o pagamento fica na área do aluno.
 export const revalidate = 3600;
 
@@ -41,7 +41,7 @@ function Oferta({ escuro = false }: { escuro?: boolean }) {
       <strong className="font-display text-5xl font-extrabold leading-none">{PRECO}</strong>
       <p className={`mt-2 text-[14.5px] ${escuro ? "text-[#C9D6E5]" : "text-[#516278]"}`}>no PIX, pagamento único</p>
       <p className={`mt-1.5 text-[13.5px] ${escuro ? "text-[#9FB3C8]" : "text-[#8A97A8]"}`}>
-        Os 5 certificados separados: <span className="line-through">{reaisPacote(SEPARADOS_PACOTE_ADM)}</span>
+        Os 4 certificados separados: <span className="line-through">{reaisPacote(SEPARADOS_PACOTE_ADM)}</span>
       </p>
     </div>
   );
@@ -59,10 +59,10 @@ export default function PacoteAdministrativoPage() {
                 {P.nome}
               </p>
               <h1 className="mt-3 max-w-[18ch] font-display text-4xl font-extrabold leading-tight sm:text-5xl">
-                5 cursos de escritório, 5 certificados.
+                4 cursos de escritório, 4 certificados.
               </h1>
               <p className="mt-4 max-w-[52ch] text-[17px] leading-relaxed text-[#C9D6E5]">
-                Redação Oficial, Arquivo, Departamento Pessoal, Auxiliar de RH e IA. Certificados de 20 h cada.
+                Redação Oficial, Arquivo, Auxiliar de RH e IA. Certificados de 20 h cada.
               </p>
               <div className="mt-6">
                 <Oferta escuro />
@@ -91,7 +91,7 @@ export default function PacoteAdministrativoPage() {
         <section className="mx-auto w-full max-w-[1180px] px-6 py-14">
           <Reveal>
             <h2 className="font-display text-3xl font-extrabold text-[#14213A]">O que vem no pacote</h2>
-            <div className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {CURSOS_PACOTE_ADM.map((c, i) => (
                 <article key={c.slug} className="flex flex-col overflow-hidden border border-[#D7DEE6] border-t-4 border-t-accent bg-white">
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-2">
@@ -140,12 +140,12 @@ export default function PacoteAdministrativoPage() {
 
         <section id="oferta" className="scroll-mt-24 bg-[#0B2A4A] text-white">
           <div className="mx-auto flex w-full max-w-[820px] flex-col items-center px-6 py-14 text-center">
-            <h2 className="font-display text-3xl font-extrabold">Os 5 certificados num pagamento só</h2>
+            <h2 className="font-display text-3xl font-extrabold">Os 4 certificados num pagamento só</h2>
             <div className="mt-7">
               <Oferta escuro />
             </div>
             <p className="mt-4 text-[15px] text-[#C9D6E5]">
-              5 cursos + 5 certificados · {HORAS_PACOTE_ADM} horas
+              4 cursos + 4 certificados · {HORAS_PACOTE_ADM} horas
             </p>
             <a
               href={CHECKOUT}
@@ -156,7 +156,7 @@ export default function PacoteAdministrativoPage() {
           </div>
         </section>
       </main>
-      <BarraCompraFixa preco={PRECO} detalhe="no PIX · 5 certificados" href={CHECKOUT} rotulo="Quero o pacote →" />
+      <BarraCompraFixa preco={PRECO} detalhe="no PIX · 4 certificados" href={CHECKOUT} rotulo="Quero o pacote →" />
       <RodapeSite />
     </div>
   );

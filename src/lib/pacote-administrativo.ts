@@ -9,9 +9,9 @@ export const PACOTE_ADM = {
   area: "/minha-area/pacote-administrativo",
   produto: "pacote-administrativo",
   nome: "Pacote Administrativo",
-  titulo: "Pacote ADM: 5 cursos de escritório com certificado",
+  titulo: "Pacote ADM: 4 cursos de escritório com certificado",
   descricao:
-    "Redação Oficial, Arquivo, Departamento Pessoal, Auxiliar de RH e IA para o Trabalho Administrativo. Cursos grátis e os 5 certificados de 20 h num pagamento único no PIX.",
+    "Redação Oficial, Arquivo, Auxiliar de RH e IA para o Trabalho Administrativo. Cursos grátis e os 4 certificados de 20 h num pagamento único no PIX.",
   precoCentavos: 4499,
 } as const;
 
@@ -34,15 +34,6 @@ export const CURSOS_PACOTE_ADM: readonly CursoPacote[] = [
     nome: "Arquivo e Gestão de Documentos",
     horas: 20,
     texto: "Três idades, métodos de arquivamento, tabela de temporalidade, protocolo, digitalização e LGPD.",
-    certificadoCentavos: 2990,
-  },
-  {
-    slug: "auxiliar-de-departamento-pessoal",
-    foto: "/cursos/auxiliar-de-departamento-pessoal/pacote.webp",
-    alt: "Holerite impresso, calculadora e carteira de trabalho digital no celular sobre a mesa",
-    nome: "Auxiliar de Departamento Pessoal",
-    horas: 20,
-    texto: "Folha com INSS e IRRF, FGTS Digital, eSocial, férias, 13º, rescisão e rotina mensal do DP.",
     certificadoCentavos: 2990,
   },
   {
