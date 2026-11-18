@@ -5,7 +5,7 @@ import { enviarSolicitacao, type EstadoSolicitacao } from "./actions";
 import { TIPOS_SOLICITACAO } from "./tipos";
 
 const INPUT =
-  "w-full border border-[#C4CEDA] bg-white px-4 py-3 text-[15px] text-[#14213A] outline-none placeholder:text-[#93A0AF] focus:border-brand focus:ring-2 focus:ring-brand/15";
+  "w-full border border-[#C4CEDA] bg-white px-4 py-3 text-[15px] text-[#14213A] outline-none placeholder:text-[#93A0AF] focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10";
 const ROTULO = "mb-1 block text-[14px] font-semibold text-[#14213A]";
 
 export function FormSolicitacao({ tipoInicial, origem }: { tipoInicial?: string; origem?: string }) {
@@ -13,7 +13,7 @@ export function FormSolicitacao({ tipoInicial, origem }: { tipoInicial?: string;
 
   if (estado?.enviado) {
     return (
-      <div className="border-l-4 border-accent bg-white p-6">
+      <div className="border border-[#D7DEE6] border-l-4 border-l-zinc-900 bg-white p-6">
         <p className="font-display text-xl font-extrabold text-[#14213A]">Pedido recebido!</p>
         <p className="mt-2 text-[15px] leading-relaxed text-[#516278]">
           Vamos analisar e responder no seu e-mail (ou WhatsApp, se você informou) em até 2 dias úteis.
@@ -68,13 +68,13 @@ export function FormSolicitacao({ tipoInicial, origem }: { tipoInicial?: string;
         <p className="mt-1 text-[13px] text-[#8A97A8]">Quanto mais detalhes (cursos, cargas horárias, prazos), mais rápida a resposta.</p>
       </div>
       <label className="flex gap-3 text-[14px] leading-snug text-[#2B3A52]">
-        <input type="checkbox" name="aceite" required className="mt-0.5 h-4 w-4 shrink-0 accent-[#0B2A4A]" />
-        Autorizo o SIBRAP a usar estes dados só para responder a este pedido.
+        <input type="checkbox" name="aceite" required className="mt-0.5 h-4 w-4 shrink-0 accent-zinc-900" />
+        Autorizo o uso destes dados só para responder a este pedido.
       </label>
       <button
         type="submit"
         disabled={pending}
-        className="bg-accent px-6 py-3.5 text-[15px] font-extrabold text-accent-ink hover:brightness-105 disabled:opacity-60"
+        className="bg-zinc-900 px-6 py-3.5 text-[15px] font-bold text-white hover:bg-zinc-700 disabled:opacity-60"
       >
         {pending ? "Enviando..." : "Enviar pedido"}
       </button>

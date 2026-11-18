@@ -39,7 +39,7 @@ function canalDoCookie(): string {
 export function BotaoWhatsApp() {
   const caminho = usePathname() ?? "";
   if (!WHATSAPP_NUMERO) return null;
-  if (caminho.startsWith("/admin") || caminho.startsWith("/minha-area") || caminho.startsWith("/certificado")) return null;
+  if (caminho.startsWith("/admin") || caminho.startsWith("/minha-area") || caminho.startsWith("/certificado") || caminho.startsWith("/solicitacao")) return null;
 
   const link = (canal: string) =>
     `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(`Olá! ${assunto(caminho)}${canal ? ` (origem: ${canal})` : ""}`)}`;

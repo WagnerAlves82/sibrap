@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 const CHAVE = "sibrap_cookies";
 
@@ -27,6 +28,7 @@ function gravar(valor: "aceito" | "recusado") {
 }
 
 export function AvisoCookies() {
+  const caminho = usePathname() ?? "";
   const [visivel, setVisivel] = useState(false);
 
   useEffect(() => {
@@ -47,7 +49,8 @@ export function AvisoCookies() {
     };
   }, []);
 
-  if (!visivel) return null;
+  // /solicitacao é neutra (sem marca): sem aviso; sem aceite, só cookies essenciais
+  if (!visivel || caminho.startsWith("/solicitacao")) return null;
 
   function escolher(aceito: boolean) {
     gravar(aceito ? "aceito" : "recusado");
