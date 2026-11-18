@@ -208,7 +208,7 @@ export function Natan() {
           <div className="flex items-center justify-between bg-[#0149AF] px-4 py-3 text-white">
             <div className="flex items-center gap-2.5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo-redonda.webp" alt="" width={36} height={36} className="h-9 w-9 rounded-full bg-white" />
+              <img src="/sibrap-ia/avatar.webp" alt="" width={40} height={40} className="h-10 w-10" />
               <span>
                 <span className="block font-display text-[15px] font-extrabold leading-tight">SIBRAP IA</span>
                 <span className="block text-[12px] text-[#D6E4FA]">Assistente virtual · responde na hora</span>
@@ -290,13 +290,11 @@ export function Natan() {
             registrar("abriu");
           }}
           aria-label="Abrir o SIBRAP IA, assistente virtual"
-          className={`fixed right-3 z-50 flex items-center gap-2 bg-[#0149AF] p-1.5 pr-3 text-[13.5px] font-extrabold text-white shadow-[0_10px_24px_-10px_rgba(0,0,0,0.5)] transition-transform hover:-translate-y-0.5 sm:right-5 ${baixo}`}
+          className={`fixed right-2 z-50 drop-shadow-[0_8px_14px_rgba(1,73,175,0.35)] transition-transform hover:-translate-y-1 sm:right-4 ${baixo}`}
         >
+          {/* ilustração 3D do SIBRAP IA feita pelo Wagner (adesivo "Posso ajudar?") */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo-redonda.webp" alt="" width={32} height={32} className="h-8 w-8 rounded-full bg-white" />
-          <span>
-            SIBRAP IA<span className="hidden font-semibold text-[#D6E4FA] sm:inline"> · Posso ajudar?</span>
-          </span>
+          <img src="/sibrap-ia/adesivo.webp" alt="SIBRAP IA: posso ajudar?" width={220} height={262} className="h-[96px] w-auto sm:h-[124px]" />
         </button>
       )}
     </>
