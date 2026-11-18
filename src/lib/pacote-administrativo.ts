@@ -9,9 +9,9 @@ export const PACOTE_ADM = {
   area: "/minha-area/pacote-administrativo",
   produto: "pacote-administrativo",
   nome: "Pacote Administrativo",
-  titulo: "Pacote Administrativo: 4 cursos de escritório com certificado",
+  titulo: "Pacote ADM: 5 cursos de escritório com certificado",
   descricao:
-    "Redação Oficial, Arquivo e Gestão de Documentos, Auxiliar de Departamento Pessoal e Auxiliar de RH. Cursos grátis e os 4 certificados num pagamento único no PIX.",
+    "Redação Oficial, Arquivo, Departamento Pessoal, Auxiliar de RH e IA para o Trabalho Administrativo. Cursos grátis e os 5 certificados de 20 h num pagamento único no PIX.",
   precoCentavos: 4499,
 } as const;
 
@@ -41,18 +41,27 @@ export const CURSOS_PACOTE_ADM: readonly CursoPacote[] = [
     foto: "/cursos/auxiliar-de-departamento-pessoal/pacote.webp",
     alt: "Holerite impresso, calculadora e carteira de trabalho digital no celular sobre a mesa",
     nome: "Auxiliar de Departamento Pessoal",
-    horas: 40,
+    horas: 20,
     texto: "Folha com INSS e IRRF, FGTS Digital, eSocial, férias, 13º, rescisão e rotina mensal do DP.",
-    certificadoCentavos: 3990,
+    certificadoCentavos: 2990,
   },
   {
     slug: "auxiliar-de-recursos-humanos",
     foto: "/cursos/auxiliar-de-recursos-humanos/pacote.webp",
     alt: "Mão indicando a linha de assinatura numa ficha de admissão, ao lado de um crachá",
     nome: "Auxiliar de Recursos Humanos",
-    horas: 40,
+    horas: 20,
     texto: "Admissão e eSocial, ponto e horas extras, holerite, férias, 13º, benefícios e desligamento.",
-    certificadoCentavos: 3990,
+    certificadoCentavos: 2990,
+  },
+  {
+    slug: "inteligencia-artificial-trabalho-administrativo",
+    foto: "/cursos/ia-administrativo/card.webp",
+    alt: "Assistente administrativa usando um assistente de IA no notebook",
+    nome: "IA para o Trabalho Administrativo",
+    horas: 20,
+    texto: "Prompts, e-mails e atas, resumos de contratos, fórmulas de planilha e LGPD no uso da IA.",
+    certificadoCentavos: 2990,
   },
 ];
 
