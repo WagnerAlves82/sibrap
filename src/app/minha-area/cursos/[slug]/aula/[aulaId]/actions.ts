@@ -19,7 +19,8 @@ export async function conferirMiniquizAction(
   } = await supabase.auth.getUser();
   if (!user) return { erro: "Você precisa estar logado." };
 
-  if (!(await dentroDoLimite(`miniquiz:conferir:${user.id}`, 120, 3600))) {
+  // 600/h: aluno rápido faz ~200 respostas por hora em cursos longos (Juliene, Secretariado, 18/11/2026: travou com 120/h)
+  if (!(await dentroDoLimite(`miniquiz:conferir:${user.id}`, 600, 3600))) {
     return { erro: MSG_MUITAS_TENTATIVAS };
   }
 
