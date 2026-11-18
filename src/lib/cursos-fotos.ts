@@ -25,6 +25,7 @@ export const FOTOS_POR_CURSO: Record<string, string> = {
   "redacao-oficial-documentos-publicos": "/cursos/redacao-oficial/card.webp",
   "contas-a-pagar-e-receber": "/cursos/contas-pagar-receber/card.webp",
   "auxiliar-de-recursos-humanos": "/cursos/auxiliar-de-recursos-humanos/card.webp",
+  "auxiliar-de-departamento-pessoal": "/cursos/auxiliar-de-departamento-pessoal/card.webp",
   "metodologia-educacao-fisica-educacao-infantil": "/cursos/ef-educacao-infantil/card.webp",
   "metodologia-ensino-voleibol": "/cursos/ef-voleibol/card.webp",
   "treinador-de-futsal-criancas-e-adolescentes": "/cursos/ef-futsal/card.webp",

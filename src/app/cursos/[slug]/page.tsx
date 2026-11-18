@@ -149,6 +149,12 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     largura: 1376,
     altura: 768,
   },
+  "auxiliar-de-departamento-pessoal": {
+    src: "/cursos/auxiliar-de-departamento-pessoal/hero.webp",
+    alt: "Equipe do departamento pessoal conferindo a folha de pagamento em dois monitores, com arquivos ao fundo",
+    largura: 1376,
+    altura: 768,
+  },
   "auxiliar-de-recursos-humanos": {
     src: "/cursos/auxiliar-de-recursos-humanos/hero.webp",
     alt: "Entrevista de emprego no RH: recrutador conversa com uma candidata à mesa",
