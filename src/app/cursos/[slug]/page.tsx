@@ -149,6 +149,12 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     largura: 1376,
     altura: 768,
   },
+  "inteligencia-artificial-trabalho-administrativo": {
+    src: "/cursos/ia-administrativo/hero.webp",
+    alt: "Colega mostrando a uma profissional do escritório como usar um assistente de IA no monitor",
+    largura: 1376,
+    altura: 768,
+  },
   "auxiliar-de-departamento-pessoal": {
     src: "/cursos/auxiliar-de-departamento-pessoal/hero.webp",
     alt: "Equipe do departamento pessoal conferindo a folha de pagamento em dois monitores, com arquivos ao fundo",
