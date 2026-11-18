@@ -252,7 +252,7 @@ export function Natan() {
         <div
           role="dialog"
           aria-label="SIBRAP IA, assistente virtual"
-          className={`fixed left-2 right-2 z-[60] flex h-[540px] flex-col border-2 border-[#0149AF] bg-[#F4F6F9] shadow-[0_18px_40px_-12px_rgba(1,73,175,0.45)] sm:left-auto sm:right-4 sm:w-[380px] ${posBalao}`}
+          className={`fixed right-3 z-[60] flex h-[420px] w-[calc(100vw-56px)] max-w-[330px] flex-col border-2 border-[#0149AF] bg-[#F4F6F9] shadow-[0_18px_40px_-12px_rgba(1,73,175,0.45)] sm:right-4 sm:h-[540px] sm:w-[380px] sm:max-w-none ${posBalao}`}
           style={{ maxHeight: altBalao }}
         >
           <div className="flex items-center justify-between bg-[#0149AF] px-4 py-2.5 text-white">
@@ -330,7 +330,7 @@ export function Natan() {
           >
             Falar com a equipe (resposta por e-mail)
           </a>
-          <span aria-hidden className="absolute -bottom-[10px] right-[38px] h-4 w-4 rotate-45 border-b-2 border-r-2 border-[#0149AF] bg-white sm:right-[54px]" />
+          <span aria-hidden className="absolute -bottom-[10px] right-[34px] h-4 w-4 rotate-45 border-b-2 border-r-2 border-[#0149AF] bg-white sm:right-[54px]" />
         </div>
       )}
 
@@ -342,7 +342,7 @@ export function Natan() {
         }}
         aria-label={aberto ? "Fechar o SIBRAP IA" : "Abrir o SIBRAP IA, assistente virtual"}
         aria-expanded={aberto}
-        className={`robo-brilho fixed right-2 z-50 transition-transform hover:-translate-y-1 sm:right-4 ${baixo}`}
+        className={`robo-brilho fixed right-2 z-50 outline-none transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0149AF] sm:right-4 ${baixo}`}
       >
         {/* ilustração 3D do SIBRAP IA feita pelo Wagner (adesivo "Posso ajudar?") */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
