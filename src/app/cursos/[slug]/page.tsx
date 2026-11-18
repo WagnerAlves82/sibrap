@@ -139,13 +139,19 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     altura: 768,
   },  "redacao-oficial-documentos-publicos": {
     src: "/cursos/redacao-oficial/hero.webp",
-    alt: "Servidores revisando documentos oficiais no balcão de protocolo da Secretaria de Administração",
+    alt: "Servidora e servidor revisando juntos documentos oficiais numa repartição pública",
     largura: 1376,
     altura: 768,
   },
   "arquivo-gestao-de-documentos": {
     src: "/cursos/arquivo-gestao/hero.webp",
-    alt: "Funcionário digitalizando documentos em um arquivo organizado com caixas em estantes de metal",
+    alt: "Arquivista digitalizando documentos numa sala de arquivo com longas estantes de caixas",
+    largura: 1376,
+    altura: 768,
+  },
+  "auxiliar-de-recursos-humanos": {
+    src: "/cursos/auxiliar-de-recursos-humanos/hero.webp",
+    alt: "Entrevista de emprego no RH: recrutador conversa com uma candidata à mesa",
     largura: 1376,
     altura: 768,
   },

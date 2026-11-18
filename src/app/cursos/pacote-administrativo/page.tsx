@@ -62,7 +62,7 @@ export default function PacoteAdministrativoPage() {
                 4 cursos de escritório, 4 certificados.
               </h1>
               <p className="mt-4 max-w-[52ch] text-[17px] leading-relaxed text-[#C9D6E5]">
-                Redação Oficial, Arquivo, Contas a Pagar e Receber e Auxiliar de RH. {HORAS_PACOTE_ADM} horas no seu ritmo.
+                Redação Oficial, Arquivo, Departamento Pessoal e Auxiliar de RH. {HORAS_PACOTE_ADM} horas no seu ritmo.
               </p>
               <div className="mt-6">
                 <Oferta escuro />
@@ -93,7 +93,11 @@ export default function PacoteAdministrativoPage() {
             <h2 className="font-display text-3xl font-extrabold text-[#14213A]">O que vem no pacote</h2>
             <div className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {CURSOS_PACOTE_ADM.map((c, i) => (
-                <article key={c.slug} className="flex flex-col border border-[#D7DEE6] border-t-4 border-t-accent bg-white p-6">
+                <article key={c.slug} className="flex flex-col overflow-hidden border border-[#D7DEE6] border-t-4 border-t-accent bg-white">
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-2">
+                    <Image src={c.foto} alt={c.alt} fill sizes="(min-width: 1024px) 280px, (min-width: 640px) 50vw, 100vw" className="object-cover" />
+                  </div>
+                  <div className="flex flex-1 flex-col p-6">
                   <div className="flex items-start justify-between gap-3">
                     <span className="font-display text-4xl font-extrabold text-accent">{i + 1}</span>
                     <span className="font-display text-2xl font-extrabold text-[#14213A]">
@@ -104,6 +108,7 @@ export default function PacoteAdministrativoPage() {
                   <h3 className="mt-2 font-display text-xl font-extrabold text-[#14213A]">{c.nome}</h3>
                   <p className="mt-2 text-[15px] leading-relaxed text-[#516278]">{c.texto}</p>
                   <p className="mt-auto pt-4 font-data text-[13px] font-semibold text-accent-2">✓ Certificado de {c.horas} h</p>
+                  </div>
                 </article>
               ))}
             </div>
