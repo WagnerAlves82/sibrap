@@ -2292,6 +2292,7 @@ export type Database = {
       }
       percentual_cupom: { Args: { p_cupom: string; p_produto: string }; Returns: number }
       avaliacoes_cursos: { Args: never; Returns: { curso_id: string; media: number; total: number }[] }
+      depoimentos_curso: { Args: { p_curso_id: string }; Returns: { nome: string; texto: string; nota: number; criado_em: string }[] }
       saldo_redacao: { Args: { p_user: string }; Returns: number | null }
       registrar_tentativa: {
         Args: { p_chave: string; p_janela_segundos: number; p_limite: number }

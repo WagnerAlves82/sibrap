@@ -263,7 +263,7 @@ export default async function CursoPublicoPage({ params }: Props) {
   const { supabase, curso } = await carregarCurso(slug);
   if (!curso) notFound();
 
-  const [{ data: modulos }, { data: certificados }, visitas, pago] = await Promise.all([
+  const [{ data: modulos }, { data: certificados }, visitas, pago, { data: depoimentos }] = await Promise.all([
     supabase
       .from("modulos")
       .select("id, titulo, ordem, aulas(id, titulo, ordem, carga_min, youtube_id)")
@@ -280,6 +280,8 @@ export default async function CursoPublicoPage({ params }: Props) {
       .eq("ativo", true),
     visitasDoCurso(supabase, curso.slug),
     produtoDoCursoPago(supabase, curso.slug),
+    // depoimentos REAIS da pesquisa de satisfação: autorizados pelo aluno e aprovados à mão (depoimento_publicado)
+    supabase.rpc("depoimentos_curso", { p_curso_id: curso.id }),
   ]);
   const precoCurso = pago ? formatarReais(pago.preco_centavos) : null;
   // com várias cargas horárias, mostra o menor preço ("a partir de") e as opções
@@ -596,6 +598,34 @@ export default async function CursoPublicoPage({ params }: Props) {
                 )}
               </Reveal>
             )}
+          </div>
+        </section>
+      )}
+
+      {depoimentos && depoimentos.length > 0 && (
+        <section className="border-b border-[#D7DEE6] bg-white py-16">
+          <div className="mx-auto max-w-[1180px] px-6">
+            <Reveal>
+              <h2 className="font-display text-3xl font-extrabold text-[#14213A]">Quem fez, recomenda</h2>
+            </Reveal>
+            <div className="mt-8 grid max-w-4xl grid-cols-1 gap-5 md:grid-cols-2">
+              {depoimentos.map((d) => (
+                <Reveal key={`${d.nome}-${d.criado_em}`}>
+                  <figure className="h-full border border-[#D7DEE6] border-l-4 border-l-accent bg-surface-2 p-6">
+                    <p aria-label={`Nota ${d.nota} de 5`} className="text-[16px] leading-none tracking-[1px] text-[#F2B01E]">
+                      {"★".repeat(d.nota)}
+                      <span className="text-[#D7DEE6]">{"★".repeat(5 - d.nota)}</span>
+                    </p>
+                    <blockquote className="mt-3 font-display text-[20px] font-bold leading-snug text-[#14213A]">
+                      “{d.texto}”
+                    </blockquote>
+                    <figcaption className="mt-3 text-[14px] text-[#516278]">
+                      <strong className="text-[#14213A]">{d.nome || "Aluno"}</strong> · concluiu o curso
+                    </figcaption>
+                  </figure>
+                </Reveal>
+              ))}
+            </div>
           </div>
         </section>
       )}
