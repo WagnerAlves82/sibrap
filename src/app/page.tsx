@@ -1,4 +1,4 @@
-import { blackFridayAtiva, CUPOM_BLACK_FRIDAY } from "@/lib/black-friday";
+import { blackFridayAtiva } from "@/lib/black-friday";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,9 +9,8 @@ import { VitrineApostilas } from "@/components/vitrine-apostilas";
 import { VitrinePosts } from "@/components/vitrine-posts";
 import { IconeSolido, type NomeIconeSolido } from "@/components/icones-solidos";
 import { Reveal } from "@/components/reveal";
-import { diasAte, formatarDataIso, formatarPreco, listarApostilasPublicadas } from "@/lib/apostilas";
+import { formatarPreco, listarApostilasPublicadas } from "@/lib/apostilas";
 import { listarPostsVitrine } from "@/lib/blog";
-import { SLIDES_HOME } from "@/lib/home-slides";
 import { FOTO_CURSO_PADRAO, FOTOS_POR_CURSO } from "@/lib/cursos-fotos";
 import { EMAIL_CONTATO, EMISSOR, RAZAO_SOCIAL } from "@/lib/emissor";
 
@@ -41,11 +40,6 @@ export default async function Home() {
   // no banco e src/app/minha-area/page.tsx) — mesmo campo produtos.ativo
   // controla os dois lugares, reativar é só voltar ele a true.
   const iscaTranspetroAtiva = !!iscaTranspetro?.ativo;
-  // Próxima prova entre as em destaque (barra superior)
-  const proxima = SLIDES_HOME.map((s) => ({ s, dias: diasAte(s.provaIso) }))
-    .filter((x) => x.dias !== null && x.dias >= 0)
-    .sort((a, b) => a.dias! - b.dias!)[0];
-
   // menor preço da vitrine (a primeira da lista é a mais nova, não a mais barata)
   const pmsp = apostilas.find((a) => a.slug === "pmsp-soldado");
   const preco = apostilas.length ? Math.min(...apostilas.map((a) => a.preco_centavos)) : 2990;
@@ -92,29 +86,7 @@ export default async function Home() {
   return (
     <div className="flex flex-1 flex-col bg-white font-body">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizacao) }} />
-      {proxima && (
-        <div className={BLACK_FRIDAY ? "bg-[#0D0D0D] text-[#D9D9D9]" : "bg-brand-deep text-[#C9D6E6]"}>
-          <div className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-2 text-[12.5px] sm:px-6">
-            <span>
-              <span className="mr-2 rounded bg-accent px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide text-accent-ink">
-                Próxima prova
-              </span>
-              {proxima.s.orgao} · {formatarDataIso(proxima.s.provaIso)}
-              <span className="mx-1.5 opacity-40">·</span>
-              {proxima.dias === 0 ? "é hoje" : proxima.dias === 1 ? "falta 1 dia" : `faltam ${proxima.dias} dias`}
-            </span>
-            {BLACK_FRIDAY ? (
-              <Link href="/apostilas" className="hidden sm:inline">
-                <span className="mr-2 bg-accent px-1.5 py-0.5 font-data text-[10.5px] font-bold uppercase tracking-[0.14em] text-black">Black Friday</span>
-                Cupom <strong className="font-data tracking-wider text-accent">{CUPOM_BLACK_FRIDAY}</strong> em todas as apostilas →
-              </Link>
-            ) : (
-              <span className="hidden sm:inline">Apostilas em PDF a partir de {formatarPreco(preco)}</span>
-            )}
-          </div>
-        </div>
-      )}
-
+      {/* Faixa "Próxima prova" removida em 19/11/2026 (Wagner): a home começa direto no cabeçalho do SIBRAP. */}
       <CabecalhoSite semLinks semFaixaBlackFriday />
 
       {/* celular/tablet: as 3 escolhas no topo; desktop: logo abaixo do carrossel */}

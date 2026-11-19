@@ -199,3 +199,21 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .robo-brilho { animation: none; filter: drop-shadow(0 8px 14px rgba(1, 73, 175, 0.35)); }
 }
+
+/* Hero da home no computador (Wagner, 19/11/2026): ocupa exatamente a primeira tela, descontando
+   o cabeçalho (--altura-topo-home, 112 px), e a seção seguinte começa na primeira rolagem.
+   Em telas baixas (monitores 17"/19"/20" wide, notebooks) o slide encolhe por inteiro para caber.
+   Celular e tablet em pé não mudam. */
+@media (min-width: 768px) and (orientation: landscape) {
+  .hero-carrossel { --altura-topo-home: 112px; }
+  .hero-carrossel > .grid { min-height: calc(100svh - var(--altura-topo-home)); }
+}
+@media (min-width: 768px) and (max-height: 900px) {
+  .hero-slide { zoom: 0.86; }
+}
+@media (min-width: 768px) and (max-height: 780px) {
+  .hero-slide { zoom: 0.76; }
+}
+@media (min-width: 768px) and (max-height: 600px) {
+  .hero-slide { zoom: 0.68; }
+}

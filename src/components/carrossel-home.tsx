@@ -77,7 +77,7 @@ export function CarrosselHome({
     <section
       aria-roledescription="carrossel"
       aria-label="Destaques"
-      className="relative overflow-hidden bg-[#2e3192] text-white"
+      className="hero-carrossel relative overflow-hidden bg-[#2e3192] text-white"
       onMouseEnter={() => setPausado(true)}
       onMouseLeave={() => setPausado(false)}
       onFocus={() => setPausado(true)}
@@ -175,7 +175,7 @@ function Slide({
             "radial-gradient(circle, rgba(255,214,102,0.5) 0%, rgba(120,190,255,0.35) 45%, transparent 70%)",
         }}
       />
-      <div className="relative mx-auto grid w-full max-w-[1180px] items-center 2xl:max-w-[1480px] gap-6 px-6 pb-14 pt-8 md:grid-cols-[0.9fr_1.1fr] md:gap-8 md:py-12">
+      <div className="hero-slide relative mx-auto grid w-full max-w-[1180px] items-center 2xl:max-w-[1480px] gap-6 px-6 pb-14 pt-8 md:grid-cols-[0.9fr_1.1fr] md:gap-8 md:py-12">
         {slide.id === "formacao" && <Formacao prioridade={indice === 0} />}
         {slide.id === "blackfriday" && <BlackFriday prioridade={indice === 0} />}
         {slide.id === "pmspRedacao" && precoPmsp && <PmspRedacao preco={precoPmsp} />}
