@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { dataHoraBR, diasParaCertificado, liberacaoCertificado } from "@/lib/certificado-prazo";
 import Link from "next/link";
+import { IconeEmoji } from "@/components/icone-emoji";
 import { notFound, redirect } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite } from "@/components/site-chrome";
@@ -205,7 +206,7 @@ export default async function CertificadoAreaPage({
         {certificado ? (
           <div className="mt-6 rounded-xl border-2 border-accent bg-white p-6">
             <p className="font-display text-xl font-extrabold text-[#14213A]">
-              Seu certificado já foi emitido 🎓
+              Seu certificado já foi emitido <IconeEmoji emoji="bi:mortarboard-fill" cor="#0149AF" />
             </p>
             <p className="mt-2 text-[15px] text-[#516278]">
               Abra, imprima ou salve em PDF. Qualquer pessoa pode conferir se é

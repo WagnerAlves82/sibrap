@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { IconeEmoji } from "@/components/icone-emoji";
 import { notFound, redirect } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite } from "@/components/site-chrome";
@@ -206,7 +207,7 @@ export default async function AulaPage({
                     const atual = a.id === aula.id;
                     const anteriorFeita = i === 0 || concluidas.has(lista[i - 1].id);
                     const liberada = feita || atual || !curso.ordem_obrigatoria || anteriorFeita;
-                    const icone = feita ? "✓" : atual ? "▶" : liberada ? "○" : "🔒";
+                    const icone = feita ? "✓" : atual ? "▶" : liberada ? "○" : <IconeEmoji emoji="bi:lock-fill" cor="currentColor" />;
                     const linha = (
                       <>
                         <span

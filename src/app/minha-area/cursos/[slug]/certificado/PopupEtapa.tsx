@@ -1,4 +1,5 @@
 "use client";
+import { IconeEmoji } from "@/components/icone-emoji";
 
 // Pop-up de etapa liberada (certificado por etapas): aparece uma vez por etapa (guardado no navegador).
 // "Emitir agora" leva às opções de pagamento/emissão; "Continuar" convida a seguir até a próxima carga.
@@ -62,7 +63,7 @@ export function PopupEtapa({
         <div aria-hidden className="relative mx-auto mt-2 h-20 w-20">
           <span className="absolute inset-0 animate-ping bg-[radial-gradient(circle,rgba(185,134,42,0.45),transparent_65%)] motion-reduce:animate-none" />
           <span className="relative flex h-20 w-20 items-center justify-center text-[64px] leading-none drop-shadow-[0_0_14px_rgba(185,134,42,0.9)] motion-safe:animate-[pulse_1.6s_ease-in-out_infinite]">
-            ⭐
+            <IconeEmoji emoji="bi:star-fill" cor="#E3A92B" />
           </span>
         </div>
         <p className="mt-3 font-data text-xs font-semibold uppercase tracking-wide text-accent-2">Etapa concluída!</p>

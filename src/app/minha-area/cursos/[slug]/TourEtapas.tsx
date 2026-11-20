@@ -4,6 +4,7 @@
 // (guardado no navegador) e pode ser reaberto pelo botão "Como funciona o certificado".
 import { useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
+import { IconeEmoji } from "@/components/icone-emoji";
 
 const assinar = (cb: () => void) => {
   window.addEventListener("storage", cb);
@@ -51,17 +52,17 @@ export function TourEtapas({
   const primeira = etapas[0];
   const passos = [
     {
-      icone: "🎓",
+      icone: "bi:mortarboard-fill",
       titulo: "Seu certificado é por etapas",
       texto: `Este curso tem ${totalAulas} aulas e ${cargaTotal} horas. Você não precisa terminar tudo para ter um certificado: cada etapa concluída libera uma carga horária.`,
     },
     {
-      icone: "⭐",
+      icone: "bi:star-fill",
       titulo: "Aulas + questionário de 5 questões",
       texto: `Ao concluir ${primeira?.aulas ?? 0} aulas, abre o questionário da etapa de ${primeira?.horas ?? 0} horas. Acertou pelo menos 70%? O certificado dessa etapa é liberado.`,
     },
     {
-      icone: "🚀",
+      icone: "bi:rocket-takeoff-fill",
       titulo: "Emita agora ou continue a jornada",
       texto: `Etapas: ${etapas.map((e) => `${e.horas} h`).join(", ")} e ${cargaTotal} h (curso completo + prova final). Você pode emitir assim que liberar ou seguir estudando e trocar por um certificado maior, pagando só a diferença.`,
     },
@@ -89,7 +90,7 @@ export function TourEtapas({
               ✕
             </button>
             <p aria-hidden className="text-[44px] leading-none">
-              {passos[passo].icone}
+              <IconeEmoji emoji={passos[passo].icone} indice={passo} />
             </p>
             <p className="mt-3 font-data text-xs font-semibold uppercase tracking-wide text-accent-2">
               Passo {passo + 1} de {passos.length}

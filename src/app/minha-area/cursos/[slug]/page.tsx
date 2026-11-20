@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { IconeEmoji } from "@/components/icone-emoji";
 import { Fragment } from "react";
 import { notFound } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
@@ -267,7 +268,7 @@ export default async function AreaDoCursoPage({
                   return (
                     <li key={e.horas} className={`flex flex-col border p-4 ${ok ? "border-accent-2 bg-[#E6F4F1]" : "border-[#D7DEE6]"}`}>
                       <p className="font-display text-2xl font-extrabold text-[#14213A]">
-                        {e.horas} h {ok && <span aria-hidden>⭐</span>}
+                        {e.horas} h {ok && <IconeEmoji emoji="bi:star-fill" cor="#E3A92B" />}
                       </p>
                       <p className="mt-1 flex-1 text-[13px] text-[#516278]">
                         {ok
@@ -290,7 +291,7 @@ export default async function AreaDoCursoPage({
                 })}
                 <li className={`flex flex-col border p-4 ${aulasOk && provaOk ? "border-accent-2 bg-[#E6F4F1]" : "border-[#D7DEE6]"}`}>
                   <p className="font-display text-2xl font-extrabold text-[#14213A]">
-                    {curso.carga_horaria_horas} h {aulasOk && provaOk && <span aria-hidden>🏆</span>}
+                    {curso.carga_horaria_horas} h {aulasOk && provaOk && <IconeEmoji emoji="bi:trophy-fill" cor="#E3A92B" />}
                   </p>
                   <p className="mt-1 flex-1 text-[13px] text-[#516278]">
                     {aulasOk && provaOk ? "Curso completo!" : aulasOk ? "Falta a prova final" : `Todas as ${total} aulas + prova final`}
@@ -352,7 +353,7 @@ export default async function AreaDoCursoPage({
                                 : "border border-[#C4CEDA] text-[#93A0AF]"
                           }`}
                         >
-                          {feita ? "✓" : disponivel ? "▶" : "🔒"}
+                          {feita ? "✓" : disponivel ? "▶" : <IconeEmoji emoji="bi:lock-fill" cor="currentColor" />}
                         </span>
                         <span className="flex-1 text-[15px] text-[#14213A]">{aula.titulo}</span>
                       </>
@@ -381,13 +382,13 @@ export default async function AreaDoCursoPage({
                           <li className="border-b border-[#F0F4F8] bg-[#FFF8EB] last:border-0">
                             {disponivelQ && !ok ? (
                               <Link prefetch={false} href={`/minha-area/cursos/${curso.slug}/prova?etapa=${e.horas}`} className="flex items-center gap-3 px-5 py-3 font-semibold text-[#14213A] hover:bg-[#FFF1D6]">
-                                <span aria-hidden>⭐</span>
+                                <IconeEmoji emoji="bi:star-fill" cor="#E3A92B" className="text-[18px]" />
                                 <span className="flex-1 text-[15px]">Questionário da etapa de {e.horas} horas (5 questões)</span>
                                 <span className="text-[13px] font-bold text-brand">Fazer →</span>
                               </Link>
                             ) : (
                               <div className={`flex items-center gap-3 px-5 py-3 ${ok ? "" : "opacity-70"}`}>
-                                <span aria-hidden>{ok ? "⭐" : "🔒"}</span>
+                                <IconeEmoji emoji={ok ? "bi:star-fill" : "bi:lock-fill"} cor={ok ? "#E3A92B" : "#93A0AF"} className="text-[18px]" />
                                 <span className="flex-1 text-[15px] text-[#14213A]">
                                   Questionário da etapa de {e.horas} horas{ok ? " · aprovado, certificado liberado" : ""}
                                 </span>

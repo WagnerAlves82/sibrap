@@ -6,6 +6,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 // abas, diálogos, áudios gravados e exercícios. Cada bloco "ativo" conta no placar do topo,
 // para o aluno ver o próprio avanço dentro da aula e não só rolar a página.
 
+import { IconeEmoji } from "./icone-emoji";
 import { JogoBornes, JogoCircuito, type BorneJogo, type FioJogo, type ModeloCircuito } from "./jogos-eletrica";
 
 export type Frase = { en: string; pt: string };
@@ -196,7 +197,7 @@ function BotaoOuvir({ texto }: { texto: string }) {
       aria-label={`Ouvir: ${texto}`}
       className="flex h-8 w-8 shrink-0 items-center justify-center border border-[#D7DEE6] bg-white text-[16.5px] text-brand hover:border-brand"
     >
-      🔊
+      <IconeEmoji emoji="bi:volume-up-fill" cor="currentColor" className="text-[17px]" />
     </button>
   );
 }
@@ -237,7 +238,7 @@ function Frases({ b, id }: { b: Extract<Bloco, { tipo: "frases" }>; id: string }
     <Caixa titulo={b.titulo ?? (b.repetir ? "Speak up: ouça e repita" : "Frases úteis")} intro={b.intro}>
       {b.repetir && (
         <p className="mb-3 text-[15px] text-[#516278]">
-          Toque em 🔊, repita a frase em voz alta e marque ✓. Não precisa acertar de primeira!
+          Toque no alto-falante, repita a frase em voz alta e marque ✓. Não precisa acertar de primeira!
         </p>
       )}
       <ul className="border border-[#D7DEE6] bg-white">
@@ -348,11 +349,7 @@ function Cards({ b, id }: { b: Extract<Bloco, { tipo: "cards" }>; id: string }) 
                 className={`relative block h-full w-full transition-transform duration-500 [transform-style:preserve-3d] motion-reduce:transition-none ${v ? "[transform:rotateY(180deg)]" : ""}`}
               >
                 <span className="absolute inset-0 flex flex-col items-center justify-center gap-1 border border-[#D7DEE6] bg-white p-3 [backface-visibility:hidden]">
-                  {c.icone && (
-                    <span className="text-3xl" aria-hidden>
-                      {c.icone}
-                    </span>
-                  )}
+                  {c.icone && <IconeEmoji emoji={c.icone} indice={i} className="text-3xl" />}
                   <span className="text-center text-[16.5px] font-bold text-[#14213A]">{c.frente}</span>
                 </span>
                 <span className="absolute inset-0 flex flex-col items-center justify-center border border-brand bg-brand p-3 text-white [backface-visibility:hidden] [transform:rotateY(180deg)]">
@@ -483,7 +480,7 @@ function Dialogos({ b, id }: { b: Extract<Bloco, { tipo: "dialogos" }>; id: stri
         </div>
         {!texto && (
           <p className="mb-3 bg-[#F6F9FC] px-3 py-2 text-[15px] text-[#516278]">
-            🎧 Ouça primeiro sem ler. Tente entender as palavras-chave e só depois mostre o texto.
+            <IconeEmoji emoji="bi:headphones" indice={0} className="mr-1.5 text-[1.15em]" />Ouça primeiro sem ler. Tente entender as palavras-chave e só depois mostre o texto.
           </p>
         )}
         <ul className="flex flex-col gap-2.5">
@@ -534,7 +531,7 @@ function Email({ b }: { b: Extract<Bloco, { tipo: "email" }> }) {
     <Caixa titulo={b.titulo} intro={b.intro}>
       <div ref={caixa} className="border border-[#D7DEE6] bg-white">
         <div className="flex items-center gap-2 border-b border-[#D7DEE6] bg-[#F6F9FC] px-4 py-2.5">
-          <span aria-hidden>✉️</span>
+          <IconeEmoji emoji="bi:envelope-fill" indice={0} className="text-[18px]" />
           <p className="text-[15.5px] font-semibold text-[#14213A]">
             {typeof b.linhas[0] === "string" ? "Assunto" : "Subject"}: {b.assunto}
           </p>
@@ -669,7 +666,7 @@ function VerdadeiroFalso({ b, id }: { b: Extract<Bloco, { tipo: "vf" }>; id: str
       {terminou && (
         <p className="mt-3 font-display text-[17.5px] font-extrabold text-[#14213A]">
           Você acertou {acertos} de {b.itens.length}.{" "}
-          {acertos === b.itens.length ? "Excelente! 🎉" : "Revise as explicações e siga em frente."}
+          {acertos === b.itens.length ? <>Excelente! <IconeEmoji emoji="bi:stars" indice={2} className="text-[1.1em]" /></> : "Revise as explicações e siga em frente."}
         </p>
       )}
     </Caixa>
@@ -985,7 +982,7 @@ function Fluxo({ b, id }: { b: Extract<Bloco, { tipo: "fluxo" }>; id: string }) 
               <span className="font-data text-[14px] font-bold text-brand">{i + 1}</span>
               <div>
                 <p className="text-[16.5px] font-bold text-[#14213A]">
-                  {e.icone ? `${e.icone} ` : ""}
+                  {e.icone && <IconeEmoji emoji={e.icone} indice={i} className="mr-1.5 text-[1.15em]" />}
                   {e.titulo}
                 </p>
                 <p className="mt-0.5 text-[16px] leading-relaxed text-[#516278]">{e.texto}</p>
@@ -1045,7 +1042,7 @@ function Simulador({ b, id }: { b: Extract<Bloco, { tipo: "simulador" }>; id: st
       </p>
       <div className="border border-[#14213A] bg-[#F6F9FC]">
         <div className="flex items-center justify-between bg-[#14213A] px-3 py-2 font-data text-[12px] text-white">
-          <span>🖥️ {b.sistema}</span>
+          <span><IconeEmoji emoji="bi:display-fill" cor="currentColor" className="mr-1.5" />{b.sistema}</span>
           <span className="text-[#93A0AF]">simulação · dados fictícios</span>
         </div>
         <div className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2">
@@ -1114,7 +1111,7 @@ function Triagem({ b, id }: { b: Extract<Bloco, { tipo: "triagem" }>; id: string
       <div className="border-2 border-brand bg-white">
         <div className="flex items-center justify-between bg-brand px-4 py-2 font-data text-[13.5px] text-white">
           <span>{fim ? "Resultado" : `Situação ${i + 1} de ${b.casos.length}`}</span>
-          <span>⭐ {acertos} {acertos === 1 ? "acerto" : "acertos"}</span>
+          <span><IconeEmoji emoji="bi:star-fill" cor="#E3A92B" className="mr-1" />{acertos} {acertos === 1 ? "acerto" : "acertos"}</span>
         </div>
         {fim ? (
           <div className="px-5 py-6 text-center">
@@ -1512,10 +1509,10 @@ function BotoesOuvir({ texto }: { texto: string }) {
   return (
     <span className="flex gap-1.5">
       <button type="button" onClick={() => falar(texto, idioma)} className="border-2 border-brand bg-white px-3 py-1.5 text-[14.5px] font-bold text-brand hover:bg-[#EEF3F8]">
-        🔊 Ouvir
+        <IconeEmoji emoji="bi:volume-up-fill" cor="currentColor" className="mr-1" /> Ouvir
       </button>
       <button type="button" onClick={() => falar(texto, idioma, 0.55)} className="border-2 border-[#D7DEE6] bg-white px-3 py-1.5 text-[14.5px] font-semibold text-[#516278] hover:border-brand">
-        🐢 Devagar
+        <IconeEmoji emoji="bi:hourglass-split" cor="currentColor" className="mr-1" /> Devagar
       </button>
     </span>
   );
@@ -1660,7 +1657,11 @@ function Fala({ b, id }: { b: Extract<Bloco, { tipo: "fala" }>; id: string }) {
                     disabled={ouvindo !== null}
                     className={`px-4 py-1.5 text-[15px] font-bold ${ouvindo === i ? "animate-pulse bg-[#C0392B] text-white" : "bg-accent text-accent-ink"} disabled:opacity-70`}
                   >
-                    {ouvindo === i ? "🎙️ Ouvindo… fale agora" : "🎤 Falar"}
+                    {ouvindo === i ? (
+                      <><IconeEmoji emoji="bi:mic-fill" cor="currentColor" className="mr-1" /> Ouvindo… fale agora</>
+                    ) : (
+                      <><IconeEmoji emoji="bi:mic-fill" cor="currentColor" className="mr-1" /> Falar</>
+                    )}
                   </button>
                 ) : (
                   <button
@@ -1722,7 +1723,7 @@ function Render({ b, id }: { b: Bloco; id: string }) {
       return <Texto b={b} />;
     case "dica":
       return (
-        <p className="mt-6 border-l-4 border-accent bg-[#FBF5E4] px-4 py-3 text-[16.5px] leading-relaxed text-[#14213A]">💡 {b.texto}</p>
+        <p className="mt-6 border-l-4 border-accent bg-[#FBF5E4] px-4 py-3 text-[16.5px] leading-relaxed text-[#14213A]"><IconeEmoji emoji="bi:lightbulb-fill" cor="#D9930F" className="mr-1.5 text-[1.15em]" />{b.texto}</p>
       );
     case "imagem":
       return (
@@ -1798,7 +1799,7 @@ export function AulaInterativa({ blocos, idioma = "en-US" }: { blocos: Bloco[]; 
           <div className="sticky top-0 z-10 -mx-1 mb-2 border border-[#D7DEE6] bg-white/95 px-4 py-2.5 backdrop-blur">
             <div className="flex items-center justify-between gap-3 text-[14px]">
               <span className="font-semibold text-[#14213A]">
-                {feitos.size === total ? "🎉 Todas as atividades feitas!" : `Atividades da aula: ${feitos.size} de ${total}`}
+                {feitos.size === total ? <><IconeEmoji emoji="bi:stars" indice={2} className="mr-1.5 text-[1.15em]" />Todas as atividades feitas!</> : `Atividades da aula: ${feitos.size} de ${total}`}
               </span>
               <span className="font-data text-[#516278]">{pct}%</span>
             </div>

@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import Link from "next/link";
+import { IconeEmoji } from "@/components/icone-emoji";
 
 // O MiniQuiz informa quantas questões o aluno já respondeu; a barra só libera "Concluir" depois disso.
 export const QuizAula = createContext<((respondidas: number) => void) | null>(null);
@@ -138,7 +139,7 @@ export function BarraAula({
             <span className="sm:hidden">{pct}%</span>
           </span>
           <Link prefetch={false} href={certificadoHref} className={lado}>
-            <span aria-hidden className="text-[18px]">🎓</span> Certificado
+            <IconeEmoji emoji="bi:mortarboard-fill" cor="currentColor" className="text-[18px]" /> Certificado
           </Link>
         </div>
       </nav>
@@ -186,7 +187,7 @@ function Icone({ a }: { a: ItemLista }) {
       aria-hidden
       className={`flex h-5 w-5 shrink-0 items-center justify-center text-[10px] font-bold ${a.feita ? "bg-accent-2 text-white" : a.atual ? "bg-accent text-accent-ink" : "text-[#93A0AF]"}`}
     >
-      {a.feita ? "✓" : a.atual ? "▶" : a.href ? "○" : "🔒"}
+      {a.feita ? "✓" : a.atual ? "▶" : a.href ? "○" : <IconeEmoji emoji="bi:lock-fill" cor="currentColor" />}
     </span>
   );
 }
