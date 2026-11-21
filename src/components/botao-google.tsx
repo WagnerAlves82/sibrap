@@ -48,6 +48,12 @@ export function BotaoGoogle({ next = "/minha-area", rotulo = "Continuar com Goog
         {indo ? "Abrindo o Google…" : rotulo}
       </button>
       {erro && <p role="alert" className="mt-2 text-[13px] text-[#C0392B]">{erro}</p>}
+      {/* vale como aceite (registrado com data e versão em /auth/callback); aparece no login e no cadastro */}
+      <p className="mt-2 text-center text-[12px] leading-snug text-[#8A97A8]">
+        Ao continuar com o Google, você concorda com os{" "}
+        <a href="/termos" target="_blank" className="underline">Termos de Uso</a> e a{" "}
+        <a href="/privacidade" target="_blank" className="underline">Política de Privacidade</a>.
+      </p>
     </div>
   );
 }

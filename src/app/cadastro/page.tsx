@@ -33,10 +33,6 @@ export default async function CadastroPage({
       }
     >
       <BotaoGoogle next={next || "/minha-area"} rotulo="Cadastrar com Google" />
-      <p className="mt-2 text-center text-[12px] leading-snug text-[#8A97A8]">
-        Ao continuar com o Google, você concorda com os <a href="/termos" target="_blank" className="underline">Termos de Uso</a> e a{" "}
-        <a href="/privacidade" target="_blank" className="underline">Política de Privacidade</a>.
-      </p>
       <DivisorOuEmail />
       <FormCadastro next={next} utmSource={utm_source ?? ""} />
     </AuthShell>
