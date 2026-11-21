@@ -18,7 +18,13 @@ import {
   type Perfil,
 } from "@/lib/natan";
 
-type Msg = { role: "user" | "assistant"; texto: string; opcoes?: ItemCatalogo[]; sugestoes?: string[] };
+type Msg = {
+  role: "user" | "assistant";
+  texto: string;
+  opcoes?: ItemCatalogo[];
+  sugestoes?: string[];
+  links?: { rotulo: string; href: string; principal?: boolean }[];
+};
 type EtapaFunil = "objetivo" | "area" | "idade" | "experiencia" | null;
 
 const INICIO: Msg = {
@@ -188,6 +194,23 @@ export function Natan() {
       setMsgs((m) => [...m, { role: "assistant", texto: "Pode escrever: conte o que você procura e eu indico o melhor curso para você." }]);
       return;
     }
+    // aluno que já tem conta: atalho direto para o login e para a área do aluno (Wagner, 21/11/2026)
+    if (t === "Já sou aluno") {
+      registrar("aluno", { alvo: "ja-sou-aluno" });
+      setMsgs((m) => [
+        ...m,
+        {
+          role: "assistant",
+          texto: "Que bom ter você de volta! Entre na sua conta para continuar seus cursos, abrir suas apostilas e emitir seus certificados.",
+          links: [
+            { rotulo: "Entrar na minha conta", href: "/login?next=%2Fminha-area", principal: true },
+            { rotulo: "Ir para meus cursos", href: "/minha-area" },
+          ],
+          sugestoes: [ESCREVER, LIMPAR],
+        },
+      ]);
+      return;
+    }
     const area = AREAS_LISTA.find((a) => rotuloArea(a) === t || a.rotulo === t || a.valor === t);
     if (area || t === "Apostila de concurso" || t === "Curso profissionalizante") {
       const itens = await carregarCatalogo();
@@ -276,6 +299,22 @@ export function Natan() {
                 <div className={`max-w-[88%] ${m.role === "user" ? "bg-[#0149AF] text-white" : "border border-[#D7DEE6] bg-white text-[#14213A]"} px-3 py-2 text-[14px] leading-snug`}>
                   {m.texto}
                   {m.opcoes?.map((o) => <Cartao key={o.id} item={o} perfil={perfil} />)}
+                  {m.links?.length ? (
+                    <span className="mt-2.5 flex flex-col gap-1.5">
+                      {m.links.map((l) => (
+                        <a
+                          key={l.href}
+                          href={l.href}
+                          onClick={() => registrar("aluno", { alvo: l.href })}
+                          className={`block px-3 py-2 text-center text-[14px] font-bold ${
+                            l.principal ? "bg-[#0149AF] text-white hover:brightness-110" : "border-2 border-[#0149AF] bg-white text-[#0149AF] hover:bg-[#EEF3FC]"
+                          }`}
+                        >
+                          {l.rotulo} →
+                        </a>
+                      ))}
+                    </span>
+                  ) : null}
                 </div>
               </div>
             ))}
