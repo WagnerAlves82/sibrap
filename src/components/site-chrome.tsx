@@ -41,7 +41,7 @@ function FormBusca({ className = "" }: { className?: string }) {
           name="q"
           placeholder={PLACEHOLDER_BUSCA}
           enterKeyHint="search"
-          className="w-full border border-[#C5CFDA] bg-[#F6F8FB] py-2.5 pl-10 pr-3 text-[14.5px] font-normal text-[#14213A] placeholder:text-[#7A8A99] focus:border-brand focus:bg-white focus:outline-none md:py-2 md:text-[13px]"
+          className="w-full rounded-full border border-[#D7DEE6] bg-[#F6F8FB] py-2.5 pl-10 pr-4 text-[14.5px] font-normal text-[#14213A] shadow-[inset_0_1px_2px_rgba(11,42,74,0.05)] transition-[border-color,box-shadow,background-color] placeholder:text-[#7A8A99] focus:border-brand focus:bg-white focus:shadow-[0_0_0_3px_rgba(1,73,175,0.12)] focus:outline-none md:py-2 md:text-[13px]"
         />
       </label>
     </form>
