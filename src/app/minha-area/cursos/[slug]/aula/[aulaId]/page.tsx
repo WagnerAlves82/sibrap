@@ -3,6 +3,7 @@ import Link from "next/link";
 import { IconeEmoji } from "@/components/icone-emoji";
 import { notFound, redirect } from "next/navigation";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
+import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { CabecalhoSite } from "@/components/site-chrome";
 import { TextoSimples } from "@/components/texto-simples";
 import { PlayerAula } from "./PlayerAula";
@@ -61,17 +62,19 @@ export default async function AulaPage({
   if (!itemAula) redirect(cursoHref);
 
   // a regra de ordem também é conferida no banco (abrir_aula); aqui só evita mostrar tela vazia
-  const [{ data: detalhe }, { error: erroAbrir }] = await Promise.all([
-    supabase
-      .from("aulas")
-      .select("youtube_id, carga_min, objetivo, resumo, atividade, conteudo")
-      .eq("id", itemAula.id)
-      .maybeSingle(),
-    supabase.rpc("abrir_aula", { p_aula_id: itemAula.id }),
-  ]);
+  const { error: erroAbrir } = await supabase.rpc("abrir_aula", { p_aula_id: itemAula.id });
   // limite de horas do dia (cursos com ritmo): volta ao painel, que explica quando a próxima aula libera
   if (erroAbrir?.message?.includes("Limite de estudo de hoje")) redirect(`${cursoHref}?ritmo=hoje`);
-  if (erroAbrir || !detalhe) redirect(cursoHref);
+  if (erroAbrir) redirect(cursoHref);
+  // Segurança (21/11/2026): o conteúdo das aulas não é mais legível pela API pública (cursos pagos vazavam).
+  // Só o servidor lê, e só depois de conferir a matrícula (acima) e a liberação da aula (abrir_aula).
+  const { data: detalhe } = await criarClienteSupabaseAdmin()
+    .from("aulas")
+    .select("youtube_id, carga_min, objetivo, resumo, atividade, conteudo")
+    .eq("id", itemAula.id)
+    .eq("curso_id", curso.id)
+    .maybeSingle();
+  if (!detalhe) redirect(cursoHref);
   const aula = { ...itemAula, ...detalhe };
 
   const concluidas = new Set(
