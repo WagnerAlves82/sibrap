@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { SeloAbed } from "@/components/selo-abed";
-import { sairDaConta } from "@/app/login/actions";
 import { AcessoConta } from "@/components/acesso-conta";
 import { BotaoPreferenciasCookies } from "@/components/cookies-consentimento";
 import { EMISSOR } from "@/lib/emissor";
 import { FaixaBlackFriday } from "@/components/black-friday";
 import { MenuCursos } from "@/components/menu-cursos";
+import { BotaoSair } from "@/components/botao-sair";
+import { LinkSoDeslogado } from "@/components/link-so-deslogado";
 
 type PropsCabecalho = { logado?: boolean; next?: string; semLinks?: boolean; semBusca?: boolean };
 
@@ -16,6 +17,29 @@ export function CabecalhoSite({ semFaixaBlackFriday, ...props }: PropsCabecalho 
       {!semFaixaBlackFriday && <FaixaBlackFriday />}
       <CabecalhoBase {...props} />
     </>
+  );
+}
+
+const PLACEHOLDER_BUSCA = "Busque: PM SP, Excel, eletricista…";
+
+function FormBusca({ className = "" }: { className?: string }) {
+  return (
+    <form action="/busca" method="get" role="search" className={className}>
+      <label className="relative block">
+        <span className="sr-only">Buscar apostilas, cursos e notícias</span>
+        <svg aria-hidden width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-brand">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-3.5-3.5" />
+        </svg>
+        <input
+          type="search"
+          name="q"
+          placeholder={PLACEHOLDER_BUSCA}
+          enterKeyHint="search"
+          className="w-full border border-[#C5CFDA] bg-[#F6F8FB] py-2.5 pl-10 pr-3 text-[14.5px] font-normal text-[#14213A] placeholder:text-[#7A8A99] focus:border-brand focus:bg-white focus:outline-none md:py-2 md:text-[13px]"
+        />
+      </label>
+    </form>
   );
 }
 
@@ -36,39 +60,25 @@ function CabecalhoBase({ logado, next, semLinks, semBusca }: PropsCabecalho) {
           />
         </Link>
 
-        {!semBusca && (
-          <>
-            <form action="/busca" method="get" role="search" className="mx-2 hidden min-w-0 max-w-[340px] flex-1 md:block">
-              <label className="relative block">
-                <span className="sr-only">Buscar apostilas e notícias</span>
-                <svg aria-hidden width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#7A8A99]">
-                  <circle cx="11" cy="11" r="7" />
-                  <path d="m20 20-3.5-3.5" />
-                </svg>
-                <input
-                  type="search"
-                  name="q"
-                  placeholder="Buscar apostila ou cidade…"
-                  className="w-full rounded-full border border-[#D7DEE6] bg-[#F6F8FB] py-2 pl-9 pr-3 text-[13px] font-normal text-[#14213A] placeholder:text-[#7A8A99] focus:border-brand focus:bg-white focus:outline-none"
-                />
-              </label>
-            </form>
-            <Link href="/busca" aria-label="Buscar" className="ml-auto mr-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[#33465E] hover:bg-[#F0F4F8] md:hidden">
-              <svg aria-hidden width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <circle cx="11" cy="11" r="7" />
-                <path d="m20 20-3.5-3.5" />
-              </svg>
-            </Link>
-          </>
-        )}
+        {/* home (sem links): busca na mesma linha no computador, para não aumentar o cabeçalho acima do hero de tela cheia */}
+        {!semBusca && semLinks && <FormBusca className="mx-2 hidden min-w-0 max-w-[460px] flex-1 md:block" />}
 
-        <nav className="flex min-w-0 items-center gap-0 text-[13px] font-semibold whitespace-nowrap sm:gap-3 sm:text-sm">
+        <nav className="ml-auto flex min-w-0 items-center gap-0 text-[13px] font-semibold whitespace-nowrap sm:gap-3 sm:text-sm">
           {!semLinks && (
             <>
-              <Link href="/apostilas" className={itemNav}>
-                Apostilas
-              </Link>
-              <Link href="/noticias" className={`${logado ? "hidden sm:inline" : "hidden min-[420px]:inline"} ${itemNav}`}>
+              {/* logado não vê "Apostilas" na barra (espaço à toa); o link continua no menu lateral */}
+              {logado === undefined ? (
+                <LinkSoDeslogado href="/apostilas" className={`hidden sm:inline ${itemNav}`}>
+                  Apostilas
+                </LinkSoDeslogado>
+              ) : (
+                !logado && (
+                  <Link href="/apostilas" className={`hidden sm:inline ${itemNav}`}>
+                    Apostilas
+                  </Link>
+                )
+              )}
+              <Link href="/noticias" className={`hidden md:inline ${itemNav}`}>
                 Notícias
               </Link>
               <Link href="/cursos" className={`hidden md:inline ${itemNav}`}>
@@ -77,7 +87,7 @@ function CabecalhoBase({ logado, next, semLinks, semBusca }: PropsCabecalho) {
               <Link href="/profissoes" className={`hidden lg:inline ${itemNav}`}>
                 Profissões
               </Link>
-              <Link href="/curriculo" className={`hidden md:inline ${itemNav}`}>
+              <Link href="/curriculo" className={`hidden lg:inline ${itemNav}`}>
                 Currículo
               </Link>
               <Link href="/validar" className={`hidden lg:inline ${itemNav}`}>
@@ -89,23 +99,23 @@ function CabecalhoBase({ logado, next, semLinks, semBusca }: PropsCabecalho) {
             <AcessoConta next={next} />
           ) : (
             <>
-            <Link
-              href={logado ? "/minha-area" : next ? `/login?next=${encodeURIComponent(next)}` : "/login"}
-              className="ml-1 whitespace-nowrap rounded-md bg-brand px-3 py-2 sm:px-4 text-white transition-colors hover:brightness-125"
-            >
-              {logado ? "Minha Área" : "Área do aluno"}
-            </Link>
-            {logado && (
-              <form action={sairDaConta}>
-                <button type="submit" className="px-1.5 py-2 sm:px-2 text-[#516278] underline-offset-4 hover:text-brand hover:underline">
-                  Sair
-                </button>
-              </form>
-            )}
+              <Link
+                href={logado ? "/minha-area" : next ? `/login?next=${encodeURIComponent(next)}` : "/login"}
+                className="ml-1 whitespace-nowrap bg-brand px-3 py-2 text-white transition-colors hover:brightness-125 sm:px-4"
+              >
+                {logado ? "Minha Área" : "Área do aluno"}
+              </Link>
+              {logado && <BotaoSair />}
             </>
           )}
         </nav>
       </div>
+      {/* busca numa linha só dela, de ponta a ponta (Wagner, 21/11/2026): no celular sempre; no computador fora da home */}
+      {!semBusca && (
+        <div className={`mx-auto max-w-[1180px] px-3 pb-2.5 sm:px-6 ${semLinks ? "md:hidden" : ""}`}>
+          <FormBusca />
+        </div>
+      )}
     </header>
   );
 }

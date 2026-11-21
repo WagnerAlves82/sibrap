@@ -6,7 +6,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { sairDaConta } from "@/app/login/actions";
+import { BotaoSair } from "@/components/botao-sair";
 import { COOKIE_LOGADO } from "@/lib/marca-logado";
 
 export function AcessoConta({ next }: { next?: string }) {
@@ -20,17 +20,11 @@ export function AcessoConta({ next }: { next?: string }) {
     <>
       <Link
         href={logado ? "/minha-area" : next ? `/login?next=${encodeURIComponent(next)}` : "/login"}
-        className="ml-1 whitespace-nowrap rounded-md bg-brand px-3 py-2 sm:px-4 text-white transition-colors hover:brightness-125"
+        className="ml-1 whitespace-nowrap bg-brand px-3 py-2 sm:px-4 text-white transition-colors hover:brightness-125"
       >
         {logado ? "Minha Área" : "Área do aluno"}
       </Link>
-      {logado && (
-        <form action={sairDaConta}>
-          <button type="submit" className="px-1.5 py-2 sm:px-2 text-[#516278] underline-offset-4 hover:text-brand hover:underline">
-            Sair
-          </button>
-        </form>
-      )}
+      {logado && <BotaoSair />}
     </>
   );
 }

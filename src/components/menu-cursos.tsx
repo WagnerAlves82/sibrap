@@ -9,8 +9,18 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ItemCatalogo } from "@/lib/natan";
 import { ORDEM_CATEGORIAS } from "@/components/vitrine-cursos";
+import { sairDaConta } from "@/app/login/actions";
+import { COOKIE_LOGADO } from "@/lib/marca-logado";
 
 type Categoria = { nome: string; itens: ItemCatalogo[] };
+
+const LINKS_SITE: [string, string][] = [
+  ["Apostilas para concursos", "/apostilas"],
+  ["Notícias de concursos", "/noticias"],
+  ["Profissões", "/profissoes"],
+  ["Currículo grátis", "/curriculo"],
+  ["Validar certificado", "/validar"],
+];
 
 function agrupar(itens: ItemCatalogo[]): Categoria[] {
   const mapa = new Map<string, ItemCatalogo[]>();
@@ -51,6 +61,7 @@ export function MenuCursos() {
   const [cats, setCats] = useState<Categoria[] | null>(null);
   const [erro, setErro] = useState(false);
   const [ativa, setAtiva] = useState<string | null>(null);
+  const [logado, setLogado] = useState(false);
   const fechar = useRef<ReturnType<typeof setTimeout> | null>(null);
   const comMouse = useRef(false);
 
@@ -70,6 +81,8 @@ export function MenuCursos() {
   const abrir = useCallback(() => {
     if (fechar.current) clearTimeout(fechar.current);
     carregar();
+    // mesmo cookie-sinal do botão do cabeçalho (páginas em cache não sabem quem está logado)
+    setLogado(document.cookie.split("; ").some((c) => c === `${COOKIE_LOGADO}=1`));
     setAberto(true);
   }, [carregar]);
 
@@ -165,6 +178,36 @@ export function MenuCursos() {
                   );
                 })}
               </ul>
+            </div>
+
+            {/* celular/tablet: o resto do menu do site e a conta, que não cabem no cabeçalho (Wagner, 21/11/2026) */}
+            <div className="border-t-[3px] border-[#EEF2F6] lg:hidden">
+              <p className="px-4 pt-3 font-data text-[11.5px] font-semibold uppercase tracking-wide text-[#8A97A8]">Mais no SIBRAP</p>
+              <ul className="py-1">
+                {LINKS_SITE.map(([rotulo, href]) => (
+                  <li key={href}>
+                    <Link href={href} onClick={() => setAberto(false)} className="block px-4 py-2.5 text-[15px] font-semibold text-[#14213A] hover:bg-[#F6F8FB] hover:text-brand">
+                      {rotulo}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <div className="flex items-center gap-2 border-t border-[#EEF2F6] px-4 py-3">
+                <Link
+                  href={logado ? "/minha-area" : "/login"}
+                  onClick={() => setAberto(false)}
+                  className="flex-1 bg-brand px-3 py-2.5 text-center text-[14.5px] font-bold text-white hover:brightness-125"
+                >
+                  {logado ? "Minha área" : "Entrar · Área do aluno"}
+                </Link>
+                {logado && (
+                  <form action={sairDaConta}>
+                    <button type="submit" className="border-2 border-[#C5CFDA] px-3 py-2 text-[14.5px] font-bold text-[#516278] hover:border-brand hover:text-brand">
+                      Sair
+                    </button>
+                  </form>
+                )}
+              </div>
             </div>
 
             <Link href="/cursos" onClick={() => setAberto(false)} className="block bg-accent px-4 py-3 text-center text-[15px] font-extrabold text-accent-ink hover:brightness-105">
