@@ -54,9 +54,7 @@ export async function BarraAluno() {
           <BotaoSair />
         </div>
       </div>
-      <div className="md:hidden">
-        <NavAluno links={links} modo="chips" />
-      </div>
+      {/* celular: sem 2ª linha de botões; os atalhos viraram sanfonas na Minha área (Wagner, 21/11/2026) */}
     </header>
   );
 }

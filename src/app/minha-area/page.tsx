@@ -8,6 +8,9 @@ import { enviarApostilaGratisPorEmail } from "@/lib/resend";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { formatarDataIso } from "@/lib/apostilas";
 import { FOTO_CURSO_PADRAO, FOTOS_POR_CURSO } from "@/lib/cursos-fotos";
+import { Sanfona } from "@/components/sanfona";
+import { ListaCertificados, dadosCertificados } from "./certificados/ListaCertificados";
+import { FormMeusDados } from "./meus-dados/FormMeusDados";
 
 export default async function MinhaAreaPage() {
   const supabase = await criarClienteSupabaseServer();
@@ -42,6 +45,8 @@ export default async function MinhaAreaPage() {
         .order("data_prova")
     : { data: [] };
 
+  const hojeBr = new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+  const temRedacao = (minhasApostilas ?? []).some((a) => a.tem_redacao && (!a.data_prova || a.data_prova >= hojeBr));
   const temPremium = acessos?.some((a) => a.produtos?.slug === "premium") ?? false;
   const meta = user?.user_metadata as { nome?: string; origem?: string } | undefined;
   const nome = meta?.nome;
@@ -67,12 +72,15 @@ export default async function MinhaAreaPage() {
     }
   }
 
-  const [{ data: cursos }, { data: matriculas }, { data: aulas }, { data: progresso }] =
+  const [{ data: cursos }, { data: matriculas }, { data: aulas }, { data: progresso }, certificados, { data: perfil }, { data: redacoes }] =
     await Promise.all([
       supabase.from("cursos").select("id, slug, nome, subtitulo, carga_horaria_horas").order("criado_em"),
       supabase.from("matriculas").select("curso_id"),
       supabase.from("aulas").select("id, curso_id"),
       supabase.from("progresso_aulas").select("aula_id").not("concluida_em", "is", null),
+      dadosCertificados(),
+      supabase.from("profiles").select("nome, profissao, foto_url").eq("id", user!.id).maybeSingle(),
+      supabase.from("redacoes").select("id, tema, status, nota, nota_max, criado_em").order("criado_em", { ascending: false }).limit(3),
     ]);
 
   const matriculados = new Set((matriculas ?? []).map((m) => m.curso_id));
@@ -107,54 +115,23 @@ export default async function MinhaAreaPage() {
           </Alert>
         )}
 
-        {(minhasApostilas?.length ?? 0) > 0 && (
-          <section className="mt-8">
-            <h2 className="mb-3 font-display text-xl font-extrabold text-[#14213A]">Minhas apostilas</h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {minhasApostilas!.map((a) => (
-                <Link prefetch={false}
-                  key={a.slug}
-                  href={`/minha-area/apostilas/${a.slug}`}
-                  className={`${cartao} block transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)]`}
-                >
-                  <p className="font-data text-xs font-semibold text-accent-2">
-                    {a.uf}
-                    {a.cidade ? ` · ${a.cidade}` : ""}
-                    {a.data_prova ? ` · prova ${formatarDataIso(a.data_prova)}` : ""}
-                  </p>
-                  <p className="mt-1 font-display text-lg font-extrabold text-[#14213A]">{a.titulo}</p>
-                  <span className="mt-4 block text-[13.5px] font-bold text-brand">Abrir e baixar →</span>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {minhasApostilas?.some(
-          (a) => a.tem_redacao && (!a.data_prova || a.data_prova >= new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" }))
-        ) && (
-          <Link prefetch={false}
-            href="/minha-area/redacao"
-            className="mt-6 flex flex-wrap items-center justify-between gap-3 border-l-[4px] border-accent bg-brand px-6 py-5 text-white"
-          >
-            <span>
-              <span className="block font-display text-lg font-extrabold">Treino de Redação com correção</span>
-              <span className="block text-[14px] text-white/80">Dicas enquanto você escreve e nota pela grade da banca.</span>
-            </span>
-            <span className="bg-accent px-4 py-2 text-[14px] font-bold text-accent-ink">Escrever agora →</span>
-          </Link>
-        )}
-
-        {meusCursos.length > 0 && (
-          <section className="mt-8">
-            <h2 className="mb-3 font-display text-xl font-extrabold text-[#14213A]">Meus cursos</h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {meusCursos.map((curso, i) => {
-                const pct = percentualDe(curso.id);
-                return (
-                  <Reveal key={curso.id} delay={i * 80}>
-                    {/* card horizontal: foto à esquerda, título e texto à direita, cantos suaves (Wagner, 21/11/2026) */}
+        {/* Minha área em sanfonas (Wagner, 21/11/2026): cada bloco abre e mostra o conteúdo ali mesmo */}
+        <div className="mt-8 flex flex-col gap-3">
+          {meusCursos.length > 0 && (
+            <Sanfona
+              id="cursos"
+              titulo="Meus cursos"
+              contador={meusCursos.length}
+              resumo={`${meusCursos.filter((c) => percentualDe(c.id) >= 100).length} concluído(s) · continue de onde parou`}
+              aberta
+            >
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {meusCursos.map((curso) => {
+                  const pct = percentualDe(curso.id);
+                  return (
+                    // card horizontal: foto à esquerda, título e texto à direita, cantos suaves (Wagner, 21/11/2026)
                     <Link prefetch={false}
+                      key={curso.id}
                       href={`/minha-area/cursos/${curso.slug}`}
                       className="group flex h-full overflow-hidden rounded-xl border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)]"
                     >
@@ -185,12 +162,86 @@ export default async function MinhaAreaPage() {
                         </span>
                       </div>
                     </Link>
-                  </Reveal>
-                );
-              })}
-            </div>
-          </section>
-        )}
+                  );
+                })}
+              </div>
+            </Sanfona>
+          )}
+
+          {(minhasApostilas?.length ?? 0) > 0 && (
+            <Sanfona id="apostilas" titulo="Minhas apostilas" contador={minhasApostilas!.length} resumo="PDF, simulado e plano de estudos" aberta={meusCursos.length === 0}>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {minhasApostilas!.map((a) => (
+                  <Link prefetch={false}
+                    key={a.slug}
+                    href={`/minha-area/apostilas/${a.slug}`}
+                    className="block rounded-xl border border-[#D7DEE6] bg-white p-5 transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)]"
+                  >
+                    <p className="font-data text-xs font-semibold text-accent-2">
+                      {a.uf}
+                      {a.cidade ? ` · ${a.cidade}` : ""}
+                      {a.data_prova ? ` · prova ${formatarDataIso(a.data_prova)}` : ""}
+                    </p>
+                    <p className="mt-1 font-display text-lg font-extrabold text-[#14213A]">{a.titulo}</p>
+                    <span className="mt-4 block text-[13.5px] font-bold text-brand">Abrir e baixar →</span>
+                  </Link>
+                ))}
+              </div>
+            </Sanfona>
+          )}
+
+          <Sanfona
+            id="certificados"
+            titulo="Certificados"
+            contador={certificados.emitidos.length}
+            resumo={
+              certificados.prontos.length
+                ? `${certificados.prontos.length} pronto(s) para emitir`
+                : certificados.emitidos.length
+                  ? "Ver, baixar o PDF e validar"
+                  : "Conclua um curso para emitir"
+            }
+            aberta={certificados.prontos.length > 0}
+          >
+            <ListaCertificados dados={certificados} titulos={certificados.prontos.length > 0 && certificados.emitidos.length > 0} />
+          </Sanfona>
+
+          {temRedacao && (
+            <Sanfona id="redacao" titulo="Treino de Redação" contador={redacoes?.length ? redacoes.length : undefined} resumo="Dicas enquanto você escreve e nota pela grade da banca">
+              {redacoes?.length ? (
+                <ul className="mb-4 flex flex-col gap-2">
+                  {redacoes.map((r) => (
+                    <li key={r.id}>
+                      <Link prefetch={false} href={`/minha-area/redacao/${r.id}`} className="flex items-center justify-between gap-3 rounded-lg border border-[#D7DEE6] px-4 py-3 hover:border-brand">
+                        <span className="min-w-0">
+                          <span className="block truncate text-[14.5px] font-semibold text-[#14213A]">{r.tema}</span>
+                          <span className="font-data text-[11.5px] text-[#8A97A8]">{formatarDataIso(r.criado_em.slice(0, 10))}</span>
+                        </span>
+                        <span className="shrink-0 font-data text-[13px] font-bold text-brand">
+                          {r.status === "rascunho" ? "Rascunho" : r.nota != null ? `Nota ${r.nota}/${r.nota_max}` : "Corrigida"}
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mb-4 text-[15px] text-[#516278]">Você ainda não escreveu nenhuma redação. Escolha o tema e comece agora.</p>
+              )}
+              <Link prefetch={false} href="/minha-area/redacao" className="inline-block bg-accent px-5 py-2.5 text-[14.5px] font-extrabold text-accent-ink hover:brightness-105">
+                Escrever uma redação →
+              </Link>
+            </Sanfona>
+          )}
+
+          <Sanfona id="meus-dados" titulo="Meus dados" resumo="Nome do certificado, profissão e foto">
+            <FormMeusDados
+              nome={/\d/.test(perfil?.nome ?? nome ?? "") ? "" : (perfil?.nome ?? nome ?? "")}
+              profissao={perfil?.profissao ?? ""}
+              foto={perfil?.foto_url ?? null}
+              email={user?.email ?? ""}
+            />
+          </Sanfona>
+        </div>
 
         {(temPremium || iscaTranspetroAtiva) && (
         <section className="mt-8">
