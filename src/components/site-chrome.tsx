@@ -6,6 +6,7 @@ import { AcessoConta } from "@/components/acesso-conta";
 import { BotaoPreferenciasCookies } from "@/components/cookies-consentimento";
 import { EMISSOR } from "@/lib/emissor";
 import { FaixaBlackFriday } from "@/components/black-friday";
+import { MenuCursos } from "@/components/menu-cursos";
 
 type PropsCabecalho = { logado?: boolean; next?: string; semLinks?: boolean; semBusca?: boolean };
 
@@ -23,6 +24,7 @@ function CabecalhoBase({ logado, next, semLinks, semBusca }: PropsCabecalho) {
   return (
     <header className="border-b-[3px] border-accent bg-white">
       <div className="mx-auto flex max-w-[1180px] items-center justify-between gap-2 px-3 py-2 sm:gap-3 sm:px-6">
+        <MenuCursos />
         <Link href="/" aria-label="SIBRAP — página inicial" className="shrink-0">
           <Image
             src="/logo-sibrap.png"
