@@ -1,3 +1,4 @@
+import { BotaoGoogle, DivisorOuEmail } from "@/components/botao-google";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AuthShell } from "@/components/auth-shell";
@@ -22,6 +23,8 @@ export default async function LoginPage({
 
   return (
     <AuthShell titulo="Entre na sua conta" subtitulo="Continue de onde parou.">
+      <BotaoGoogle next={caminhoSeguro(next, "/minha-area")} />
+      <DivisorOuEmail />
       <FormLogin next={caminhoSeguro(next, "/minha-area")} linkInvalido={erro === "link"} emailConfirmado={erro === "confirmado"} />
     </AuthShell>
   );
