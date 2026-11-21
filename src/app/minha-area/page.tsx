@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { criarClienteSupabaseServer } from "@/lib/supabase-server";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
@@ -6,6 +7,7 @@ import { BarraProgresso, Reveal } from "@/components/reveal";
 import { enviarApostilaGratisPorEmail } from "@/lib/resend";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { formatarDataIso } from "@/lib/apostilas";
+import { FOTO_CURSO_PADRAO, FOTOS_POR_CURSO } from "@/lib/cursos-fotos";
 
 export default async function MinhaAreaPage() {
   const supabase = await criarClienteSupabaseServer();
@@ -67,7 +69,7 @@ export default async function MinhaAreaPage() {
 
   const [{ data: cursos }, { data: matriculas }, { data: aulas }, { data: progresso }] =
     await Promise.all([
-      supabase.from("cursos").select("id, slug, nome, carga_horaria_horas").order("criado_em"),
+      supabase.from("cursos").select("id, slug, nome, subtitulo, carga_horaria_horas").order("criado_em"),
       supabase.from("matriculas").select("curso_id"),
       supabase.from("aulas").select("id, curso_id"),
       supabase.from("progresso_aulas").select("aula_id").not("concluida_em", "is", null),
@@ -151,27 +153,36 @@ export default async function MinhaAreaPage() {
                 const pct = percentualDe(curso.id);
                 return (
                   <Reveal key={curso.id} delay={i * 80}>
+                    {/* card horizontal: foto à esquerda, título e texto à direita, cantos suaves (Wagner, 21/11/2026) */}
                     <Link prefetch={false}
                       href={`/minha-area/cursos/${curso.slug}`}
-                      className="block overflow-hidden rounded-xl border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)]"
+                      className="group flex h-full overflow-hidden rounded-xl border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_20px_45px_-24px_rgba(11,42,74,0.3)]"
                     >
-                      <div className="flex items-center gap-2 bg-brand px-6 py-3">
-                        <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                        <span className="font-data text-[11px] font-bold uppercase tracking-[0.15em] text-white">
-                          SIBRAP
-                        </span>
+                      <div className="relative w-[34%] shrink-0 overflow-hidden bg-surface-2 sm:w-[38%]">
+                        <Image
+                          src={FOTOS_POR_CURSO[curso.slug] ?? FOTO_CURSO_PADRAO}
+                          alt=""
+                          fill
+                          sizes="(min-width: 640px) 180px, 34vw"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
                       </div>
-                      <div className="p-6">
-                      <p className="font-data text-xs font-semibold text-accent-2">
-                        {curso.carga_horaria_horas}h · {Math.round(pct)}% concluído
-                      </p>
-                      <p className="mt-1 font-display text-lg font-extrabold text-[#14213A]">
-                        {curso.nome}
-                      </p>
-                      <BarraProgresso percentual={pct} className="mt-4" />
-                      <span className="mt-4 block text-[13.5px] font-bold text-brand">
-                        Continuar →
-                      </span>
+                      <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
+                        <p className="font-data text-[11.5px] font-semibold text-accent-2">
+                          {curso.carga_horaria_horas} h · {Math.round(pct)}% concluído
+                        </p>
+                        <p className="mt-1 font-display text-[16.5px] font-extrabold leading-snug text-[#14213A] sm:text-lg">
+                          {curso.nome}
+                        </p>
+                        {curso.subtitulo && (
+                          <p className="mt-1 line-clamp-2 text-[13.5px] leading-snug text-[#516278]">{curso.subtitulo}</p>
+                        )}
+                        <div className="mt-auto pt-3">
+                          <BarraProgresso percentual={pct} />
+                        </div>
+                        <span className="mt-3 block text-[13.5px] font-bold text-brand">
+                          {pct >= 100 ? "Ver certificado →" : pct > 0 ? "Continuar →" : "Começar →"}
+                        </span>
                       </div>
                     </Link>
                   </Reveal>
