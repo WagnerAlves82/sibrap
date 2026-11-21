@@ -1,5 +1,6 @@
 import { NotaCertame } from "@/components/concurso-ou-processo";
 import type { Metadata } from "next";
+import { imagemParaCompartilhar } from "@/lib/carregador-imagem";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { criarClienteSupabasePublico } from "@/lib/supabase-publico";
@@ -75,13 +76,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       modifiedTime: post.atualizado_em,
       authors: [post.autor || "SIBRAP"],
       section: post.categoria,
-      images: capa ? [{ url: capa, alt: post.titulo }] : undefined,
+      images: capa ? [{ url: imagemParaCompartilhar(capa)!, alt: post.titulo }] : undefined,
     },
     twitter: {
       card: "summary_large_image",
       title: post.titulo,
       description: descricao,
-      images: capa ? [capa] : undefined,
+      images: capa ? [imagemParaCompartilhar(capa)!] : undefined,
     },
   };
 }

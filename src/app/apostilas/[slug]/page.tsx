@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { imagemParaCompartilhar } from "@/lib/carregador-imagem";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -72,9 +73,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: tituloSeo,
       description: descricao,
       type: "website",
-      images: capa ? [{ url: capa }] : undefined,
+      images: capa ? [{ url: imagemParaCompartilhar(capa)! }] : undefined,
     },
-    twitter: { card: "summary_large_image", title: tituloSeo, description: descricao, images: capa ? [capa] : undefined },
+    twitter: { card: "summary_large_image", title: tituloSeo, description: descricao, images: capa ? [imagemParaCompartilhar(capa)!] : undefined },
   };
 }
 
