@@ -1717,19 +1717,28 @@ export type Database = {
       profiles: {
         Row: {
           apostila_enviada_em: string | null
+          atualizado_em: string | null
           criado_em: string
+          foto_url: string | null
           id: string
           nome: string | null
+          profissao: string | null
         }
         Insert: {
           apostila_enviada_em?: string | null
+          atualizado_em?: string | null
           criado_em?: string
+          foto_url?: string | null
+          profissao?: string | null
           id: string
           nome?: string | null
         }
         Update: {
           apostila_enviada_em?: string | null
+          atualizado_em?: string | null
           criado_em?: string
+          foto_url?: string | null
+          profissao?: string | null
           id?: string
           nome?: string | null
         }

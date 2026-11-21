@@ -100,7 +100,7 @@ export default async function AulaPage({
 
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
-      <CabecalhoSite logado />
+      <CabecalhoSite aluno logado />
       <main className="mx-auto grid w-full max-w-[1180px] flex-1 grid-cols-1 gap-8 px-6 pt-8 pb-28 lg:grid-cols-[minmax(0,1fr)_320px]">
         <article className="min-w-0">
           <div className="flex flex-wrap items-center justify-between gap-2">

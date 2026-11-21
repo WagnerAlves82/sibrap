@@ -8,14 +8,19 @@ import { FaixaBlackFriday } from "@/components/black-friday";
 import { MenuCursos } from "@/components/menu-cursos";
 import { BotaoSair } from "@/components/botao-sair";
 import { LinkSoDeslogado } from "@/components/link-so-deslogado";
+import { BarraAluno } from "@/components/barra-aluno";
 
 type PropsCabecalho = { logado?: boolean; next?: string; semLinks?: boolean; semBusca?: boolean };
 
-export function CabecalhoSite({ semFaixaBlackFriday, ...props }: PropsCabecalho & { semFaixaBlackFriday?: boolean }) {
+/**
+ * `aluno`: páginas da Minha área. Com login, mostram a barra do aluno (atalhos, foto, sem busca)
+ * em vez da barra do site (Wagner, 21/11/2026).
+ */
+export function CabecalhoSite({ semFaixaBlackFriday, aluno, ...props }: PropsCabecalho & { semFaixaBlackFriday?: boolean; aluno?: boolean }) {
   return (
     <>
-      {!semFaixaBlackFriday && <FaixaBlackFriday />}
-      <CabecalhoBase {...props} />
+      {!semFaixaBlackFriday && !aluno && <FaixaBlackFriday />}
+      {aluno && props.logado ? <BarraAluno /> : <CabecalhoBase {...props} />}
     </>
   );
 }

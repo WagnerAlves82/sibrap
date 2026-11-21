@@ -67,7 +67,7 @@ export default async function AreaDoCursoPage({
     } = await supabase.auth.getUser();
     return (
       <div className="flex min-h-screen flex-col bg-surface-2 font-body">
-        <CabecalhoSite logado />
+        <CabecalhoSite aluno logado />
         <main className="mx-auto flex w-full max-w-[640px] flex-1 items-center px-6 py-14">
           <div className="w-full rounded-xl border border-[#D7DEE6] bg-white p-8">
             <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent-2">
@@ -155,7 +155,7 @@ export default async function AreaDoCursoPage({
 
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
-      <CabecalhoSite logado />
+      <CabecalhoSite aluno logado />
 
       <main className="mx-auto w-full max-w-[900px] flex-1 px-6 py-10">
         <Reveal>

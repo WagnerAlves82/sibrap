@@ -193,7 +193,7 @@ export default async function CertificadoAreaPage({
 
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
-      <CabecalhoSite logado />
+      <CabecalhoSite aluno logado />
       <main className="mx-auto w-full max-w-[720px] flex-1 px-6 py-10">
         <Link prefetch={false} href={cursoHref} className="text-[13px] font-semibold text-brand underline underline-offset-4">
           ← Voltar ao curso

@@ -90,7 +90,7 @@ export default async function MinhaAreaPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
-      <CabecalhoSite logado />
+      <CabecalhoSite aluno logado />
 
       <main className="mx-auto w-full max-w-[900px] flex-1 px-6 py-10">
         <Reveal>

@@ -48,7 +48,7 @@ export default async function SuporteMarcaPage({ params }: { params: Promise<{ s
     )}`;
     return (
       <div className="flex min-h-screen flex-col bg-surface-2 font-body">
-        <CabecalhoSite logado />
+        <CabecalhoSite aluno logado />
         <main className="mx-auto w-full max-w-[720px] flex-1 px-6 py-12">
           {voltar}
           <p className="mt-6 font-data text-xs font-semibold uppercase tracking-wide text-accent-2">Pagamento confirmado</p>
@@ -101,7 +101,7 @@ export default async function SuporteMarcaPage({ params }: { params: Promise<{ s
   const preco = formatarReais(valor);
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
-      <CabecalhoSite logado />
+      <CabecalhoSite aluno logado />
       <main className="mx-auto w-full max-w-[720px] flex-1 px-6 py-12">
         {voltar}
         <p className="mt-6 font-data text-xs font-semibold uppercase tracking-wide text-accent-2">Travou no pedido?</p>

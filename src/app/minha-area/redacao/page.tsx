@@ -41,7 +41,7 @@ export default async function RedacaoPage({ searchParams }: { searchParams: Prom
 
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
-      <CabecalhoSite logado />
+      <CabecalhoSite aluno logado />
       <main className="mx-auto w-full max-w-[900px] flex-1 px-4 py-10 sm:px-6">
         <Link prefetch={false} href="/minha-area" className="text-[13.5px] font-bold text-brand">← Minha área</Link>
         <h1 className="mt-2 font-display text-3xl font-extrabold text-[#14213A] sm:text-4xl">Treino de Redação</h1>

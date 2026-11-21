@@ -77,7 +77,7 @@ export default async function CronogramaPage({
     const dataProva = formatarDataIso(apostila.data_prova);
     return (
       <div className="flex min-h-screen flex-col bg-surface-2 font-body">
-        <CabecalhoSite logado />
+        <CabecalhoSite aluno logado />
         <main className="mx-auto w-full max-w-[820px] flex-1 px-4 py-10 sm:px-6">
           <Link prefetch={false} href={`/minha-area/apostilas/${slug}`} className="text-[13px] font-semibold text-brand underline underline-offset-4">
             ← Voltar pra apostila
@@ -154,7 +154,7 @@ export default async function CronogramaPage({
 
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
-      <CabecalhoSite logado />
+      <CabecalhoSite aluno logado />
       <main className="mx-auto w-full max-w-[820px] flex-1 px-4 py-10 sm:px-6">
         <Link prefetch={false}
           href={`/minha-area/apostilas/${slug}`}

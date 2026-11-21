@@ -32,7 +32,7 @@ export default async function RedacaoEditorPage({ params }: { params: Promise<{ 
 
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
-      <CabecalhoSite logado />
+      <CabecalhoSite aluno logado />
       <main className="mx-auto w-full max-w-[1280px] flex-1 px-3 py-6 sm:px-6">
         <Link prefetch={false} href="/minha-area/redacao" className="text-[13.5px] font-bold text-brand">← Minhas redações</Link>
         {r.status === "corrigida" && r.avaliacao ? (

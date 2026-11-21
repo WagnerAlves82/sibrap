@@ -99,7 +99,7 @@ export default async function ApostilaAreaPage({
 
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
-      <CabecalhoSite logado={!!user} next={`/minha-area/apostilas/${apostila.slug}`} />
+      <CabecalhoSite aluno logado={!!user} next={`/minha-area/apostilas/${apostila.slug}`} />
       <main className="mx-auto w-full max-w-[860px] flex-1 px-4 py-10 sm:px-6">
         <Link prefetch={false} href="/minha-area" className="text-[13px] font-semibold text-brand underline underline-offset-4">
           ← Minha área

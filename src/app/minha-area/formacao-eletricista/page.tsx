@@ -41,7 +41,7 @@ export default async function FormacaoEletricistaAreaPage() {
     return (
       <div className="flex min-h-screen flex-col bg-surface-2 font-body">
         <PixelFormacao />
-        <CabecalhoSite logado />
+        <CabecalhoSite aluno logado />
         <main className="mx-auto flex w-full max-w-[640px] flex-1 items-center px-6 py-14">
           <div className="w-full border border-[#D7DEE6] bg-white p-8">
             <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent-2">
@@ -88,7 +88,7 @@ export default async function FormacaoEletricistaAreaPage() {
   const lista = [...(cursos ?? [])].sort((a, b) => ordem(a.slug) - ordem(b.slug));
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
-      <CabecalhoSite logado />
+      <CabecalhoSite aluno logado />
       <main className="mx-auto w-full max-w-[820px] flex-1 px-6 py-14">
         <p className="font-data text-xs font-semibold uppercase tracking-wide text-accent-2">Compra confirmada</p>
         <h1 className="mt-2 font-display text-3xl font-extrabold text-[#14213A]">{FORMACAO_ELETRICISTA.nome}</h1>

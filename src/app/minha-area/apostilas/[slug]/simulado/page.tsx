@@ -73,7 +73,7 @@ export default async function SimuladoApostilaPage({
 
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
-      <CabecalhoSite logado />
+      <CabecalhoSite aluno logado />
       <main className="mx-auto w-full max-w-[720px] flex-1 px-4 py-10 sm:px-6">
         <SimuladoApostilaApp
           produtoId={apostila.produto_id}
