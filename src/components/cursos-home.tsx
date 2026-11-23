@@ -44,12 +44,12 @@ export function CursosHome({ destaques, cursos }: { destaques: CursoHome[]; curs
         opcoes={[{ valor: MAIS, rotulo: MAIS }, ...areas.map(([cat, n]) => ({ valor: cat, rotulo: cat, qtd: n }))]}
       />
 
-      <div className="mt-4 grid grid-cols-2 items-start gap-3 sm:gap-5 lg:grid-cols-3">
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
         {lista.map((curso) => (
           <Link
             key={curso.slug}
             href={`/cursos/${curso.slug}`}
-            className="group flex flex-col overflow-hidden border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_16px_36px_-22px_rgba(11,42,74,0.35)]"
+            className="group flex h-full flex-col overflow-hidden border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_16px_36px_-22px_rgba(11,42,74,0.35)]"
           >
             <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-2">
               <Image
@@ -60,15 +60,15 @@ export function CursosHome({ destaques, cursos }: { destaques: CursoHome[]; curs
                 className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
               />
             </div>
-            <div className="flex flex-col p-3.5 sm:p-5">
+            <div className="flex flex-1 flex-col p-3.5 sm:p-5">
               <span className="font-data text-[11px] font-semibold text-accent-2 sm:text-xs">
                 {curso.carga_horaria_horas}h · {curso.preco ?? "Grátis"}
               </span>
               <p className="mt-1 font-display text-[14.5px] font-bold leading-snug text-[#14213A] sm:text-[17px]">{curso.nome}</p>
-              <p className="mt-1.5 line-clamp-3 text-[12.5px] leading-snug text-[#516278] sm:text-[14.5px] sm:leading-relaxed">
+              <p className="mt-1.5 line-clamp-3 flex-1 text-[12.5px] leading-snug text-[#516278] sm:text-[14.5px] sm:leading-relaxed">
                 {curso.texto}
               </p>
-              <span className="mt-2.5 inline-flex items-center gap-1.5 self-end text-[13px] font-bold text-brand transition-transform group-hover:translate-x-1 sm:text-[14px]">
+              <span className="mt-3 inline-flex items-center gap-1.5 self-end text-[13px] font-bold text-brand transition-transform group-hover:translate-x-1 sm:text-[14px]">
                 Saiba mais <span aria-hidden className="text-accent">→</span>
               </span>
             </div>
