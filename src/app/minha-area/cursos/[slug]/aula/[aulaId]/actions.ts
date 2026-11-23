@@ -41,3 +41,13 @@ export async function concluirAulaAction(
   if (error) return { erro: error.message };
   return { ok: true };
 }
+
+// Tempo de estudo (cursos com controle de tempo). Roda no servidor: desde 21/11/2026 a sessão fica em
+// cookies httpOnly e o cliente do navegador chamava o banco como anônimo (401), então o relógio nunca
+// somava e a tela voltava para o tempo cheio a cada 30 s (Kauã, Formação Eletricista, 23/11/2026).
+export async function registrarTempoAulaAction(aulaId: string): Promise<number | null> {
+  const supabase = await criarClienteSupabaseServer();
+  const { data, error } = await supabase.rpc("registrar_tempo_aula", { p_aula_id: aulaId });
+  if (error || typeof data !== "number") return null;
+  return data;
+}

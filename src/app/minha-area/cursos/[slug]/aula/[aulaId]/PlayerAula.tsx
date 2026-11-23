@@ -4,8 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Alert } from "@/components/alert";
-import { concluirAulaAction } from "./actions";
-import { criarClienteSupabaseBrowser } from "@/lib/supabase-browser";
+import { concluirAulaAction, registrarTempoAulaAction } from "./actions";
 import { BarraAula, QuizAula, type ItemLista } from "./BarraAula";
 
 type YTPlayer = {
@@ -256,11 +255,10 @@ function useCronometroAula(aulaId: string, minSeg: number | null, inicial: numbe
 
   useEffect(() => {
     if (!ativo) return;
-    const supabase = criarClienteSupabaseBrowser();
     let ultimoSinal = Date.now();
     const sinal = async () => {
       if (document.visibilityState !== "visible") return;
-      const { data } = await supabase.rpc("registrar_tempo_aula", { p_aula_id: aulaId });
+      const data = await registrarTempoAulaAction(aulaId).catch(() => null);
       ultimoSinal = Date.now();
       if (typeof data === "number") {
         setServidor(data);
