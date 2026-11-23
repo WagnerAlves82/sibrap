@@ -41,8 +41,8 @@ export function CursosHome({ destaques, cursos }: { destaques: CursoHome[]; curs
 
   return (
     <div className="mt-6">
-      <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0" role="group" aria-label="Filtrar cursos por área">
-        <div className="flex gap-2 pb-1 sm:flex-wrap">
+      <div role="group" aria-label="Filtrar cursos por área">
+        <div className="flex flex-wrap gap-2">
           <button type="button" onClick={() => setArea(MAIS)} className={chip(area === MAIS)} aria-pressed={area === MAIS}>
             {MAIS}
           </button>

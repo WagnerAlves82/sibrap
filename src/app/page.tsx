@@ -10,6 +10,7 @@ import { VitrinePosts } from "@/components/vitrine-posts";
 import { IconeSolido, type NomeIconeSolido } from "@/components/icones-solidos";
 import { Reveal } from "@/components/reveal";
 import { CursosHome, type CursoHome } from "@/components/cursos-home";
+import { MenuInferior } from "@/components/menu-inferior";
 import { formatarPreco, listarApostilasPublicadas } from "@/lib/apostilas";
 import { listarPostsVitrine } from "@/lib/blog";
 import { EMAIL_CONTATO, EMISSOR, RAZAO_SOCIAL } from "@/lib/emissor";
@@ -96,7 +97,7 @@ export default async function Home() {
   const BLACK_FRIDAY = blackFridayAtiva();
 
   return (
-    <div className="flex flex-1 flex-col bg-white font-body">
+    <div id="topo" className="flex flex-1 flex-col bg-white pb-16 font-body md:pb-0">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizacao) }} />
       {/* Faixa "Próxima prova" removida em 19/11/2026 (Wagner): a home começa direto no cabeçalho do SIBRAP. */}
       <CabecalhoSite semLinks semFaixaBlackFriday />
@@ -447,6 +448,7 @@ export default async function Home() {
       </div>
 
       <RodapeSite />
+      <MenuInferior />
     </div>
   );
 }
@@ -557,7 +559,7 @@ function HeroEscolha({
 
 function MenuAncora() {
   return (
-    <nav aria-label="Seções da página" className="sticky top-0 z-30 border-b border-[#D7DEE6] bg-white/95 backdrop-blur">
+    <nav aria-label="Seções da página" className="sticky top-0 z-30 hidden border-b md:block border-[#D7DEE6] bg-white/95 backdrop-blur">
       <ul className="mx-auto flex max-w-[1180px] items-center gap-1 overflow-x-auto px-3 py-1 text-[13px] font-semibold whitespace-nowrap sm:gap-3 sm:px-6 sm:text-sm">
         {ANCORAS.map(([rotulo, href]) => (
           <li key={href}>

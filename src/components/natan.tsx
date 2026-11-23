@@ -105,6 +105,16 @@ export function Natan() {
     fim.current?.scrollIntoView({ block: "end" });
   }, [msgs, aberto]);
 
+  // o menu de rodapé da home abre/fecha o SIBRAP IA e acende enquanto ele está aberto
+  useEffect(() => {
+    const alternar = () => setAberto((a) => !a);
+    window.addEventListener("sibrap-ia:alternar", alternar);
+    return () => window.removeEventListener("sibrap-ia:alternar", alternar);
+  }, []);
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("sibrap-ia:estado", { detail: aberto }));
+  }, [aberto]);
+
   if (
     caminho.startsWith("/admin") ||
     caminho.startsWith("/minha-area") ||
@@ -116,6 +126,8 @@ export function Natan() {
 
   const comBarraCelular = caminho.startsWith("/apostilas/") || caminho.startsWith("/combos/");
   const comBarraSempre = /^\/cursos\/(?!profissionalizantes\/?$)[^/]+\/?$/.test(caminho);
+  // home no celular: o SIBRAP IA fica no menu de rodapé (rosto do robô), sem o robô flutuante (Wagner, 23/11/2026)
+  const naHome = caminho === "/";
   const baixo = comBarraSempre ? "bottom-24" : comBarraCelular ? "bottom-24 sm:bottom-5" : "bottom-3 sm:bottom-5";
 
   async function carregarCatalogo(): Promise<ItemCatalogo[]> {
@@ -262,7 +274,9 @@ export function Natan() {
   const ultima = msgs[msgs.length - 1];
 
   // o balão abre em cima do robô, como a fala dele; o robô continua à vista (Wagner, 18/11/2026)
-  const posBalao = comBarraSempre
+  const posBalao = naHome
+    ? "bottom-[80px] md:bottom-[186px]"
+    : comBarraSempre
     ? "bottom-[222px] sm:bottom-[262px]"
     : comBarraCelular
       ? "bottom-[222px] sm:bottom-[186px]"
@@ -381,7 +395,7 @@ export function Natan() {
         }}
         aria-label={aberto ? "Fechar o SIBRAP IA" : "Abrir o SIBRAP IA, assistente virtual"}
         aria-expanded={aberto}
-        className={`robo-brilho fixed right-2 z-50 outline-none transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0149AF] sm:right-4 ${baixo}`}
+        className={`robo-brilho fixed right-2 z-50 outline-none ${naHome ? "max-md:hidden" : ""} transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0149AF] sm:right-4 ${baixo}`}
       >
         {/* ilustração 3D do SIBRAP IA feita pelo Wagner (adesivo "Posso ajudar?") */}
         {/* eslint-disable-next-line @next/next/no-img-element */}

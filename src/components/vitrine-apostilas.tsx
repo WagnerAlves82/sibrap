@@ -115,8 +115,8 @@ export function VitrineApostilas({
   return (
     <div>
       {porEstado && estados.length > 1 && (
-        <nav aria-label="Apostilas por estado" className="-mx-4 mb-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-          <div className="flex gap-2 pb-1 sm:flex-wrap">
+        <nav aria-label="Apostilas por estado" className="mb-4">
+          <div className="flex flex-wrap gap-2">
             <button type="button" onClick={() => escolherUf("")} className={estadoChip(!uf)} aria-pressed={!uf}>
               Todos os estados {conta(apostilas.length, !uf)}
             </button>
