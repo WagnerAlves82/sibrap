@@ -149,12 +149,14 @@ export default async function Home() {
       <section id="cursos-gratuitos" className="scroll-mt-14 overflow-hidden bg-surface-2 py-14 sm:py-16">
         <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
           <Reveal>
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-brand shadow-sm">
-              <span className="relative inline-flex h-2 w-2" aria-hidden>
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-2 opacity-60 motion-reduce:hidden" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-2" />
+            <span className="inline-flex items-center gap-2 rounded-full bg-[#0E7C6B]/10 py-1.5 pr-3.5 pl-1.5 text-[12px] font-bold uppercase tracking-[0.08em] text-[#0A6151] ring-1 ring-[#0E7C6B]/15">
+              <span className="grid h-6 w-6 place-items-center rounded-full bg-[#0E7C6B] text-white" aria-hidden>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M2 9l10-5 10 5-10 5z" />
+                  <path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5" />
+                </svg>
               </span>
-              Cursos livres para o mercado de trabalho
+              Cursos livres · mercado de trabalho
             </span>
             <h2 className="mt-3.5 font-display text-[1.7rem] font-extrabold text-[#14213A] sm:text-[2.2rem]">
               Comece gratuitamente. Aprenda no seu ritmo.

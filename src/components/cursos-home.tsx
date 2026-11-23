@@ -44,12 +44,12 @@ export function CursosHome({ destaques, cursos }: { destaques: CursoHome[]; curs
         opcoes={[{ valor: MAIS, rotulo: MAIS }, ...areas.map(([cat, n]) => ({ valor: cat, rotulo: cat, qtd: n }))]}
       />
 
-      <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
+      <div className="mt-4 grid grid-cols-2 items-start gap-3 sm:gap-5 lg:grid-cols-3">
         {lista.map((curso) => (
           <Link
             key={curso.slug}
             href={`/cursos/${curso.slug}`}
-            className="group flex h-full flex-col overflow-hidden border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_16px_36px_-22px_rgba(11,42,74,0.35)]"
+            className="group flex flex-col overflow-hidden border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_16px_36px_-22px_rgba(11,42,74,0.35)]"
           >
             <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-2">
               <Image
@@ -60,7 +60,7 @@ export function CursosHome({ destaques, cursos }: { destaques: CursoHome[]; curs
                 className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
               />
             </div>
-            <div className="flex flex-1 flex-col p-3.5 sm:p-5">
+            <div className="flex flex-col p-3.5 sm:p-5">
               <span className="font-data text-[11px] font-semibold text-accent-2 sm:text-xs">
                 {curso.carga_horaria_horas}h · {curso.preco ?? "Grátis"}
               </span>
