@@ -4,6 +4,7 @@ import "bootstrap-icons/font/bootstrap-icons.min.css";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { rolarSuave } from "@/lib/rolagem-suave";
 
 // Menu de rodapé estilo app, só no celular, em todo o site público (Wagner, 23/11/2026).
 // Na home os itens rolam até os produtos; nas outras páginas levam às vitrines. O rosto do robô
@@ -33,6 +34,25 @@ export function MenuInferior() {
     const aoMudarIa = (e: Event) => setIaAberta(!!(e as CustomEvent<boolean>).detail);
     window.addEventListener("sibrap-ia:estado", aoMudarIa);
     return () => window.removeEventListener("sibrap-ia:estado", aoMudarIa);
+  }, []);
+
+  // toda âncora da página (#...) rola devagar, sem o salto brusco do navegador
+  useEffect(() => {
+    const aoClicar = (e: MouseEvent) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+      const a = (e.target as HTMLElement).closest?.("a[href^='#']") as HTMLAnchorElement | null;
+      if (!a) return;
+      const id = decodeURIComponent(a.getAttribute("href")!.slice(1));
+      const alvo = id ? document.getElementById(id) : null;
+      if (id && !alvo) return;
+      e.preventDefault();
+      rolarSuave(alvo, !id || id === "topo");
+      try {
+        history.replaceState(null, "", id && id !== "topo" ? `#${id}` : location.pathname + location.search);
+      } catch {}
+    };
+    document.addEventListener("click", aoClicar);
+    return () => document.removeEventListener("click", aoClicar);
   }, []);
 
   // na home, o item da seção visível fica aceso
@@ -111,7 +131,7 @@ export function MenuInferior() {
                 <li key={item.id}>
                   <a
                     href={item.ancora}
-                    onClick={item.id === "topo" ? (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); } : undefined}
+                    
                     aria-current={marcado ? "page" : undefined}
                     className={classe}
                   >

@@ -273,9 +273,22 @@ export function Natan() {
 
   const ultima = msgs[msgs.length - 1];
 
-  // o SIBRAP IA abre pelo menu de rodapé (rosto do robô, 4º item); o robô flutuante saiu do site (Wagner, 23/11/2026)
-  const posBalao = "bottom-[80px]";
-  const altBalao = "calc(100dvh - 110px)";
+  // Celular: o SIBRAP IA abre pelo rosto do robô no menu de rodapé (src/components/menu-inferior.tsx);
+  // nas páginas de produto (barra de compra, sem o menu) o robô flutuante continua. Computador: tudo
+  // como antes, com o robô flutuante (Wagner, 23/11/2026: "as mudanças são apenas pra celular").
+  const comBarraCelular = /^\/(apostilas\/(?!estado\/)[^/]+|combos\/[^/]+)\/?$/.test(caminho);
+  const comBarraSempre = /^\/cursos\/(?!profissionalizantes\/?$)[^/]+\/?$/.test(caminho);
+  const comMenuCelular = !comBarraCelular && !comBarraSempre;
+  const baixo = comBarraSempre ? "bottom-24" : comBarraCelular ? "bottom-24 md:bottom-5" : "bottom-3 md:bottom-5";
+  const posBalao = comBarraSempre
+    ? "bottom-[222px] md:bottom-[262px]"
+    : comBarraCelular
+      ? "bottom-[222px] md:bottom-[186px]"
+      : "bottom-[80px] md:bottom-[186px]";
+  const altBalao = comMenuCelular ? "calc(100dvh - 200px)" : "calc(100dvh - 250px)";
+  const posSeta = comMenuCelular
+    ? "right-[calc(30vw-20px)] sm:right-[calc(30vw-24px)] md:right-[54px]"
+    : "right-[34px] sm:right-[54px]";
 
   return (
     <>
@@ -377,10 +390,24 @@ export function Natan() {
           >
             Falar com a equipe (resposta por e-mail)
           </a>
-          <span aria-hidden className="absolute -bottom-[10px] right-[calc(30vw-20px)] h-4 w-4 rotate-45 border-b-2 border-r-2 border-[#0149AF] bg-white sm:right-[calc(30vw-24px)]" />
+          <span aria-hidden className={`absolute -bottom-[10px] h-4 w-4 rotate-45 border-b-2 border-r-2 border-[#0149AF] bg-white ${posSeta}`} />
         </div>
       )}
 
+      <button
+        type="button"
+        onClick={() => {
+          if (!aberto) registrar("abriu");
+          setAberto((a) => !a);
+        }}
+        aria-label={aberto ? "Fechar o SIBRAP IA" : "Abrir o SIBRAP IA, assistente virtual"}
+        aria-expanded={aberto}
+        className={`robo-brilho fixed right-2 z-50 outline-none transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0149AF] sm:right-4 ${comMenuCelular ? "max-md:hidden" : ""} ${baixo}`}
+      >
+        {/* ilustração 3D do SIBRAP IA feita pelo Wagner (adesivo "Posso ajudar?") */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/sibrap-ia/adesivo.webp" alt="SIBRAP IA: posso ajudar?" width={340} height={405} className="h-[118px] w-auto sm:h-[158px]" />
+      </button>
     </>
   );
 }
