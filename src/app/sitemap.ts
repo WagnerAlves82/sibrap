@@ -46,8 +46,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
     const { data: apostilas } = await criarClienteSupabaseAdmin()
       .from("apostilas")
-      .select("slug, atualizado_em")
+      .select("slug, atualizado_em, uf")
       .eq("status", "publicada");
+    for (const uf of new Set((apostilas ?? []).map((a) => a.uf))) {
+      paginas.push({ url: `${siteUrl}/apostilas/estado/${uf.toLowerCase()}`, lastModified: FIXAS, changeFrequency: "weekly", priority: 0.8 });
+    }
     const bancasVistas = new Set<string>();
     const { data: comBanca } = await criarClienteSupabaseAdmin().from("apostilas").select("banca").eq("status", "publicada");
     for (const a of comBanca ?? []) {

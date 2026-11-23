@@ -29,6 +29,8 @@ const nextConfig: NextConfig = {
     return [
       { source: "/blog", destination: "/noticias", permanent: true },
       { source: "/blog/:slug", destination: "/noticias/:slug", permanent: true },
+      // links antigos de anúncios (/apostilas?uf=SC) vão para a página do estado
+      { source: "/apostilas", has: [{ type: "query", key: "uf", value: "(?<uf>[A-Za-z]{2})" }], destination: "/apostilas/estado/:uf", permanent: false },
     ];
   },
   async headers() {

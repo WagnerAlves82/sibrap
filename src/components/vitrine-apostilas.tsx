@@ -5,7 +5,12 @@ import type { ApostilaVitrine } from "@/lib/apostilas";
 import { CardApostila } from "@/components/card-apostila";
 import { CardDestaqueVitrine } from "@/components/destaque-vitrine";
 import { DESTAQUES_VITRINE, POSICOES_DESTAQUE } from "@/lib/destaques-vitrine";
-import { casaComTermos, termosDaBusca, textoDaApostila } from "@/lib/busca";
+import { casaComTermos, termosDaBusca, textoDaApostila, UF_NOMES } from "@/lib/busca";
+
+/** "BR" = concurso nacional (IBGE etc.) */
+export function nomeEstado(uf: string): string {
+  return uf === "BR" ? "Nacional" : (UF_NOMES[uf] ?? uf);
+}
 
 // Vitrine com filtros (categoria, estado e busca). A lista é pequena e
 // já vem completa do servidor — filtrar no navegador evita ida e volta.
@@ -15,6 +20,7 @@ export function VitrineApostilas({
   limite,
   limiteInicial,
   ufInicial = "",
+  porEstado = false,
 }: {
   apostilas: ApostilaVitrine[];
   comBusca?: boolean;
@@ -22,6 +28,8 @@ export function VitrineApostilas({
   /** mostra só as N mais recentes até o visitante pedir mais (filtro ou busca mostram tudo) */
   limiteInicial?: number;
   ufInicial?: string;
+  /** página /apostilas: estados em botões (com contagem) e lista separada por estado; troca a URL sem recarregar */
+  porEstado?: boolean;
 }) {
   const [categoria, setCategoria] = useState("Todas");
   const [uf, setUf] = useState(ufInicial);
@@ -36,6 +44,22 @@ export function VitrineApostilas({
     () => Array.from(new Set(apostilas.map((a) => a.uf))).sort(),
     [apostilas]
   );
+  // estados com contagem: Nacional primeiro, depois quem tem mais apostilas
+  const estados = useMemo(() => {
+    const n = new Map<string, number>();
+    for (const a of apostilas) n.set(a.uf, (n.get(a.uf) ?? 0) + 1);
+    return Array.from(n.entries()).sort(
+      (x, y) => Number(y[0] === "BR") - Number(x[0] === "BR") || y[1] - x[1] || nomeEstado(x[0]).localeCompare(nomeEstado(y[0]))
+    );
+  }, [apostilas]);
+  function escolherUf(u: string) {
+    setUf(u);
+    if (porEstado) {
+      try {
+        window.history.replaceState(null, "", u ? `/apostilas/estado/${u.toLowerCase()}` : "/apostilas");
+      } catch {}
+    }
+  }
 
   const filtradas = useMemo(() => {
     const termos = termosDaBusca(busca);
@@ -69,8 +93,41 @@ export function VitrineApostilas({
         : "border-[#D7DEE6] bg-white text-[#516278] hover:border-brand hover:text-brand"
     }`;
 
+  const estadoChip = (ativo: boolean) =>
+    `inline-flex shrink-0 items-center gap-1.5 border px-3 py-1.5 text-[13px] font-semibold transition-colors ${
+      ativo
+        ? "border-[#14213A] bg-[#14213A] text-white"
+        : "border-[#D7DEE6] bg-white text-[#3A4A63] hover:border-[#14213A]"
+    }`;
+  const conta = (n: number, ativo: boolean) => (
+    <span className={`text-[11.5px] font-bold ${ativo ? "text-white/70" : "text-[#8A97A8]"}`}>{n}</span>
+  );
+  // sem filtro nenhum, a página /apostilas mostra uma seção por estado
+  const agrupar = porEstado && semFiltro;
+  const secoes = agrupar ? estados.map(([u, n]) => ({ uf: u, n, lista: filtradas.filter((a) => a.uf === u) })) : [];
+  const destaquesSoltos = agrupar
+    ? DESTAQUES_VITRINE.flatMap((d) => {
+        const a = apostilas.find((x) => x.slug === d.slug);
+        return a ? [{ d, a }] : [];
+      })
+    : [];
+
   return (
     <div>
+      {porEstado && estados.length > 1 && (
+        <nav aria-label="Apostilas por estado" className="-mx-4 mb-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+          <div className="flex gap-2 pb-1 sm:flex-wrap">
+            <button type="button" onClick={() => escolherUf("")} className={estadoChip(!uf)} aria-pressed={!uf}>
+              Todos os estados {conta(apostilas.length, !uf)}
+            </button>
+            {estados.map(([u, n]) => (
+              <button key={u} type="button" onClick={() => escolherUf(u)} className={estadoChip(uf === u)} aria-pressed={uf === u}>
+                {nomeEstado(u)} {conta(n, uf === u)}
+              </button>
+            ))}
+          </div>
+        </nav>
+      )}
       {(categorias.length > 2 || ufs.length > 1 || comBusca) && (
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap gap-2" role="group" aria-label="Filtrar por categoria">
@@ -81,11 +138,11 @@ export function VitrineApostilas({
             ))}
           </div>
           <div className="flex gap-2">
-            {ufs.length > 1 && (
+            {ufs.length > 1 && !porEstado && (
               <select
                 aria-label="Filtrar por estado"
                 value={uf}
-                onChange={(e) => setUf(e.target.value)}
+                onChange={(e) => escolherUf(e.target.value)}
                 className="rounded-lg border border-[#D7DEE6] bg-white px-3 py-2 text-[13.5px] text-[#14213A]"
               >
                 <option value="">Todos os estados</option>
@@ -110,7 +167,36 @@ export function VitrineApostilas({
         </div>
       )}
 
-      {filtradas.length === 0 ? (
+      {agrupar ? (
+        <div className="space-y-12">
+          {secoes.map((sec, i) => (
+            <Fragment key={sec.uf}>
+              <section aria-labelledby={`estado-${sec.uf}`}>
+                <div className="mb-4 flex items-baseline justify-between gap-3 border-b border-[#D7DEE6] pb-2">
+                  <h2 id={`estado-${sec.uf}`} className="font-display text-[1.3rem] font-extrabold text-[#14213A] sm:text-[1.5rem]">
+                    {sec.uf === "BR" ? "Concursos nacionais" : nomeEstado(sec.uf)}
+                  </h2>
+                  {sec.uf !== "BR" && sec.n > 1 && (
+                    <button type="button" onClick={() => { escolherUf(sec.uf); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="shrink-0 text-[13px] font-semibold text-brand hover:underline">
+                      Ver só {sec.uf} ({sec.n})
+                    </button>
+                  )}
+                </div>
+                <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
+                  {sec.lista.map((a) => (
+                    <CardApostila key={a.id} apostila={a} />
+                  ))}
+                </div>
+              </section>
+              {destaquesSoltos[i] && (
+                <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
+                  <CardDestaqueVitrine destaque={destaquesSoltos[i].d} apostila={destaquesSoltos[i].a} />
+                </div>
+              )}
+            </Fragment>
+          ))}
+        </div>
+      ) : filtradas.length === 0 ? (
         <p className="rounded-xl border border-dashed border-[#C4CEDA] bg-white px-6 py-12 text-center text-[15px] text-[#516278]">
           {apostilas.length === 0
             ? "As primeiras apostilas estão sendo finalizadas. Volte em breve!"
@@ -130,7 +216,7 @@ export function VitrineApostilas({
         </div>
       )}
 
-      {recolhida && (
+      {!agrupar && recolhida && (
         <div className="mt-8 text-center">
           <button
             type="button"
