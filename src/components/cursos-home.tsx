@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { FOTO_CURSO_PADRAO, FOTOS_POR_CURSO } from "@/lib/cursos-fotos";
 import { ORDEM_CATEGORIAS } from "@/components/vitrine-cursos";
+import { FiltroSuspenso } from "@/components/filtro-suspenso";
 
 export type CursoHome = {
   slug: string;
@@ -34,28 +35,16 @@ export function CursosHome({ destaques, cursos }: { destaques: CursoHome[]; curs
 
   const lista = area === MAIS ? destaques : cursos.filter((c) => c.categoria === area);
 
-  const chip = (ativo: boolean) =>
-    `inline-flex shrink-0 items-center gap-1.5 border px-3 py-1.5 text-[13px] font-semibold transition-colors ${
-      ativo ? "border-brand bg-brand text-white" : "border-[#D7DEE6] bg-white text-[#3A4A63] hover:border-brand hover:text-brand"
-    }`;
-
   return (
-    <div className="mt-6">
-      <div role="group" aria-label="Filtrar cursos por área">
-        <div className="flex flex-wrap gap-2">
-          <button type="button" onClick={() => setArea(MAIS)} className={chip(area === MAIS)} aria-pressed={area === MAIS}>
-            {MAIS}
-          </button>
-          {areas.map(([cat, n]) => (
-            <button key={cat} type="button" onClick={() => setArea(cat)} className={chip(area === cat)} aria-pressed={area === cat}>
-              {cat}
-              <span className={`text-[11.5px] font-bold ${area === cat ? "text-white/70" : "text-[#8A97A8]"}`}>{n}</span>
-            </button>
-          ))}
-        </div>
-      </div>
+    <div id="cursos-produtos" className="mt-6 scroll-mt-16">
+      <FiltroSuspenso
+        rotulo="Cursos por área"
+        valor={area}
+        aoEscolher={setArea}
+        opcoes={[{ valor: MAIS, rotulo: MAIS }, ...areas.map(([cat, n]) => ({ valor: cat, rotulo: cat, qtd: n }))]}
+      />
 
-      <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
         {lista.map((curso) => (
           <Link
             key={curso.slug}

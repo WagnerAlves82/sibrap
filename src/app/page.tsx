@@ -133,7 +133,9 @@ export default async function Home() {
             </p>
           </Reveal>
 
-          <VitrineApostilas apostilas={apostilas} comBusca limiteInicial={10} />
+          <div id="apostilas-produtos" className="scroll-mt-16">
+            <VitrineApostilas apostilas={apostilas} comBusca compacto limiteInicial={10} />
+          </div>
 
           <div className="mt-8 text-center">
             <Link href="/apostilas" className="text-sm font-semibold text-brand underline underline-offset-4">
@@ -473,8 +475,8 @@ const RECURSOS_SIMULADO: [NomeIconeSolido, string, string][] = [
 ];
 
 const ANCORAS: [string, string][] = [
-  ["Apostilas", "#apostilas"],
-  ["Cursos gratuitos", "#cursos-gratuitos"],
+  ["Apostilas", "#apostilas-produtos"],
+  ["Cursos gratuitos", "#cursos-produtos"],
   ["Profissionalizantes", "#profissionalizantes"],
   ["Notícias", "#noticias"],
   ["Simulado online", "#simulado-online"],
@@ -502,14 +504,14 @@ function HeroEscolha({
 }) {
   const opcoes = [
     {
-      href: "#apostilas",
+      href: "#apostilas-produtos",
       rotulo: "Concursos",
       titulo: "Apostilas para concurso",
       texto: `${totalApostilas} apostilas em PDF, a partir de ${precoApostila}.`,
       icone: "livro" as NomeIconeSolido,
     },
     {
-      href: "#cursos-gratuitos",
+      href: "#cursos-produtos",
       rotulo: "Grátis",
       titulo: "Cursos gratuitos",
       texto: "Estude de graça. Certificado opcional.",

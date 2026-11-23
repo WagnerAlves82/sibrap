@@ -5,6 +5,7 @@ import type { ApostilaVitrine } from "@/lib/apostilas";
 import { CardApostila } from "@/components/card-apostila";
 import { CardDestaqueVitrine } from "@/components/destaque-vitrine";
 import { DESTAQUES_VITRINE, POSICOES_DESTAQUE } from "@/lib/destaques-vitrine";
+import { FiltroSuspenso } from "@/components/filtro-suspenso";
 import { casaComTermos, termosDaBusca, textoDaApostila, UF_NOMES } from "@/lib/busca";
 
 /** "BR" = concurso nacional (IBGE etc.) */
@@ -21,6 +22,7 @@ export function VitrineApostilas({
   limiteInicial,
   ufInicial = "",
   porEstado = false,
+  compacto = false,
 }: {
   apostilas: ApostilaVitrine[];
   comBusca?: boolean;
@@ -30,6 +32,8 @@ export function VitrineApostilas({
   ufInicial?: string;
   /** página /apostilas: estados em botões (com contagem) e lista separada por estado; troca a URL sem recarregar */
   porEstado?: boolean;
+  /** home: filtros num botão "Apostilas por estado ▾" (e área), sem a parede de botões */
+  compacto?: boolean;
 }) {
   const [categoria, setCategoria] = useState("Todas");
   const [uf, setUf] = useState(ufInicial);
@@ -128,7 +132,37 @@ export function VitrineApostilas({
           </div>
         </nav>
       )}
-      {(categorias.length > 2 || ufs.length > 1 || comBusca) && (
+      {compacto && (
+        <div className="mb-5 flex flex-wrap items-center gap-2">
+          {estados.length > 1 && (
+            <FiltroSuspenso
+              rotulo="Por estado"
+              valor={uf}
+              aoEscolher={escolherUf}
+              opcoes={[{ valor: "", rotulo: "Todos os estados", qtd: apostilas.length }, ...estados.map(([u, n]) => ({ valor: u, rotulo: nomeEstado(u), qtd: n }))]}
+            />
+          )}
+          {categorias.length > 2 && (
+            <FiltroSuspenso
+              rotulo="Por área"
+              valor={categoria}
+              aoEscolher={setCategoria}
+              opcoes={categorias.map((c) => ({ valor: c, rotulo: c === "Todas" ? "Todas as áreas" : c }))}
+            />
+          )}
+          {comBusca && (
+            <input
+              type="search"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              placeholder="Buscar: cidade, cargo…"
+              aria-label="Buscar apostila"
+              className="min-h-[40px] w-full min-w-0 border border-[#D7DEE6] bg-white px-3 py-2 text-[13.5px] text-[#14213A] sm:ml-auto sm:w-64"
+            />
+          )}
+        </div>
+      )}
+      {!compacto && (categorias.length > 2 || ufs.length > 1 || comBusca) && (
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap gap-2" role="group" aria-label="Filtrar por categoria">
             {categorias.map((c) => (

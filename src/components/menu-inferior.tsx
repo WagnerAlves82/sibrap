@@ -9,8 +9,8 @@ import { useEffect, useState } from "react";
 type Item = { id: string; href: string; rotulo: string; icone?: string; iconeAtivo?: string };
 const ITENS: Item[] = [
   { id: "topo", href: "#topo", rotulo: "Início", icone: "house-door", iconeAtivo: "house-door-fill" },
-  { id: "apostilas", href: "#apostilas", rotulo: "Apostilas", icone: "journal-text", iconeAtivo: "journal-text" },
-  { id: "cursos-gratuitos", href: "#cursos-gratuitos", rotulo: "Cursos", icone: "mortarboard", iconeAtivo: "mortarboard-fill" },
+  { id: "apostilas", href: "#apostilas-produtos", rotulo: "Apostilas", icone: "journal-text", iconeAtivo: "journal-text" },
+  { id: "cursos-gratuitos", href: "#cursos-produtos", rotulo: "Cursos", icone: "mortarboard", iconeAtivo: "mortarboard-fill" },
   { id: "ia", href: "#", rotulo: "SIBRAP IA" },
   { id: "minha-area", href: "/minha-area", rotulo: "Minha área", icone: "person-circle", iconeAtivo: "person-circle" },
 ];
