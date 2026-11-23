@@ -47,7 +47,7 @@ export function FiltroSuspenso({
         onClick={() => setAberto((a) => !a)}
         aria-expanded={aberto}
         aria-controls={id}
-        className={`inline-flex min-h-[40px] items-center gap-2 border px-3.5 py-2 text-[13.5px] font-semibold transition-colors ${
+        className={`inline-flex min-h-[40px] items-center gap-2 rounded-md border px-3.5 py-2 text-[13.5px] font-semibold transition-colors ${
           filtrando ? "border-brand bg-brand text-white" : "border-[#D7DEE6] bg-white text-[#14213A] hover:border-brand"
         }`}
       >
@@ -62,7 +62,7 @@ export function FiltroSuspenso({
       {aberto && (
         <ul
           id={id}
-          className="absolute left-0 top-full z-30 mt-1 max-h-[60vh] w-[min(300px,calc(100vw-32px))] overflow-y-auto border border-[#D7DEE6] bg-white py-1 shadow-[0_20px_45px_-24px_rgba(11,42,74,0.45)]"
+          className="absolute left-0 top-full z-30 mt-1 max-h-[60vh] rounded-md w-[min(300px,calc(100vw-32px))] overflow-y-auto border border-[#D7DEE6] bg-white py-1 shadow-[0_20px_45px_-24px_rgba(11,42,74,0.45)]"
         >
           {opcoes.map((o) => {
             const marcado = o.valor === valor;

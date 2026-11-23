@@ -65,10 +65,10 @@ export function CursosHome({ destaques, cursos }: { destaques: CursoHome[]; curs
                 {curso.carga_horaria_horas}h · {curso.preco ?? "Grátis"}
               </span>
               <p className="mt-1 font-display text-[14.5px] font-bold leading-snug text-[#14213A] sm:text-[17px]">{curso.nome}</p>
-              <p className="mt-1.5 line-clamp-3 flex-1 text-[12.5px] leading-snug text-[#516278] sm:text-[14.5px] sm:leading-relaxed">
+              <p className="mt-1.5 line-clamp-3 text-[12.5px] leading-snug text-[#516278] sm:text-[14.5px] sm:leading-relaxed">
                 {curso.texto}
               </p>
-              <span className="mt-3 inline-flex items-center gap-1.5 self-end text-[13px] font-bold text-brand transition-transform group-hover:translate-x-1 sm:text-[14px]">
+              <span className="mt-2.5 inline-flex items-center gap-1.5 self-end text-[13px] font-bold text-brand transition-transform group-hover:translate-x-1 sm:text-[14px]">
                 Saiba mais <span aria-hidden className="text-accent">→</span>
               </span>
             </div>

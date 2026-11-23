@@ -157,7 +157,7 @@ export function VitrineApostilas({
               onChange={(e) => setBusca(e.target.value)}
               placeholder="Buscar: cidade, cargo…"
               aria-label="Buscar apostila"
-              className="min-h-[40px] w-full min-w-0 border border-[#D7DEE6] bg-white px-3 py-2 text-[13.5px] text-[#14213A] sm:ml-auto sm:w-64"
+              className="min-h-[40px] w-full min-w-0 rounded-md border border-[#D7DEE6] bg-white px-3 py-2 text-[13.5px] text-[#14213A] sm:ml-auto sm:w-64"
             />
           )}
         </div>
