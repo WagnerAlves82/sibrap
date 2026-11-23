@@ -118,9 +118,14 @@ export default async function Home() {
       <section id="apostilas" className="md:scroll-mt-14 bg-[#F6F8FB] py-14 sm:py-16">
         <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
           <Reveal className="mb-8 max-w-[60ch]">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-brand">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent-2" />
-              Apostilas
+            <span className="inline-flex items-center gap-2 rounded-full bg-[#0E7C6B]/10 py-1.5 pr-3.5 pl-1.5 text-[12px] font-bold uppercase tracking-[0.08em] text-[#0A6151] ring-1 ring-[#0E7C6B]/15">
+              <span className="grid h-6 w-6 place-items-center rounded-full bg-[#0E7C6B] text-white" aria-hidden>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 4h10a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4z" />
+                  <path d="M8 8h6M8 12h6" />
+                </svg>
+              </span>
+              Apostilas · concursos públicos
             </span>
             <h2 className="mt-3.5 font-display text-[1.7rem] font-extrabold text-[#14213A] sm:text-[2.3rem]">
               Escolha a apostila do seu concurso.
