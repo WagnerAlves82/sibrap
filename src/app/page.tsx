@@ -115,7 +115,7 @@ export default async function Home() {
       <HeroEscolha totalApostilas={apostilas.length} precoApostila={formatarPreco(preco)} className="hidden lg:block" sufixo="-desktop" titulo="h2" />
 
       {/* Vitrine de apostilas */}
-      <section id="apostilas" className="scroll-mt-14 bg-[#F6F8FB] py-14 sm:py-16">
+      <section id="apostilas" className="md:scroll-mt-14 bg-[#F6F8FB] py-14 sm:py-16">
         <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
           <Reveal className="mb-8 max-w-[60ch]">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#D7DEE6] bg-white px-3 py-1.5 font-data text-xs font-semibold text-brand">
@@ -145,7 +145,7 @@ export default async function Home() {
       </section>
 
       {/* Comece de graça */}
-      <section id="cursos-gratuitos" className="scroll-mt-14 overflow-hidden bg-surface-2 py-14 sm:py-16">
+      <section id="cursos-gratuitos" className="md:scroll-mt-14 overflow-hidden bg-surface-2 py-14 sm:py-16">
         <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
           <Reveal>
             <span className="inline-flex items-center gap-2 rounded-full bg-[#0E7C6B]/10 py-1.5 pr-3.5 pl-1.5 text-[12px] font-bold uppercase tracking-[0.08em] text-[#0A6151] ring-1 ring-[#0E7C6B]/15">
@@ -478,8 +478,8 @@ const RECURSOS_SIMULADO: [NomeIconeSolido, string, string][] = [
 ];
 
 const ANCORAS: [string, string][] = [
-  ["Apostilas", "#apostilas-produtos"],
-  ["Cursos gratuitos", "#cursos-produtos"],
+  ["Apostilas", "#apostilas"],
+  ["Cursos gratuitos", "#cursos-gratuitos"],
   ["Profissionalizantes", "#profissionalizantes"],
   ["Notícias", "#noticias"],
   ["Simulado online", "#simulado-online"],
@@ -507,14 +507,14 @@ function HeroEscolha({
 }) {
   const opcoes = [
     {
-      href: "#apostilas-produtos",
+      href: "#apostilas",
       rotulo: "Concursos",
       titulo: "Apostilas para concurso",
       texto: `${totalApostilas} apostilas em PDF, a partir de ${precoApostila}.`,
       icone: "livro" as NomeIconeSolido,
     },
     {
-      href: "#cursos-produtos",
+      href: "#cursos-gratuitos",
       rotulo: "Grátis",
       titulo: "Cursos gratuitos",
       texto: "Estude de graça. Certificado opcional.",

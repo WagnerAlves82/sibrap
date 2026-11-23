@@ -18,8 +18,8 @@ const COM_BARRA_COMPRA = /^\/(apostilas\/(?!estado\/)[^/]+|combos\/[^/]+|cursos\
 type Item = { id: string; rotulo: string; ancora?: string; rota?: string; icone?: string; iconeAtivo?: string };
 const ITENS: Item[] = [
   { id: "topo", rotulo: "Início", ancora: "#topo", rota: "/", icone: "house-door", iconeAtivo: "house-door-fill" },
-  { id: "apostilas", rotulo: "Apostilas", ancora: "#apostilas-produtos", rota: "/apostilas", icone: "journal-text", iconeAtivo: "journal-text" },
-  { id: "cursos-gratuitos", rotulo: "Cursos", ancora: "#cursos-produtos", rota: "/cursos", icone: "mortarboard", iconeAtivo: "mortarboard-fill" },
+  { id: "apostilas", rotulo: "Apostilas", ancora: "#apostilas", rota: "/apostilas", icone: "journal-text", iconeAtivo: "journal-text" },
+  { id: "cursos-gratuitos", rotulo: "Cursos", ancora: "#cursos-gratuitos", rota: "/cursos", icone: "mortarboard", iconeAtivo: "mortarboard-fill" },
   { id: "ia", rotulo: "SIBRAP IA" },
   { id: "minha-area", rotulo: "Minha área", rota: "/minha-area", icone: "person-circle", iconeAtivo: "person-circle" },
 ];
