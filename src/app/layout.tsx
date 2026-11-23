@@ -6,6 +6,7 @@ import { AvisoCookies } from "@/components/cookies-consentimento";
 import { MetaPixel } from "@/components/meta-pixel";
 import { PopupSaida } from "@/components/popup-saida";
 import { Natan } from "@/components/natan";
+import { MenuInferior } from "@/components/menu-inferior";
 import { CapturarOrigem } from "@/components/capturar-origem";
 import { ContarVisita } from "@/components/contar-visita";
 import "./globals.css";
@@ -130,6 +131,8 @@ oaiq("init",{pixelId:"1JMhzWQcs1S6KtpCGWSfuy",debug:true});`}
         <AvisoCookies />
         {/* Wagner, 18/11/2026: sem botão de WhatsApp; atendimento pelo Natan e, em último caso, formulário por e-mail */}
         <Natan />
+        {/* menu de rodapé estilo app no celular, em todo o site público (23/11/2026) */}
+        <MenuInferior />
         <PopupSaida />
         <MetaPixel />
         <CapturarOrigem />

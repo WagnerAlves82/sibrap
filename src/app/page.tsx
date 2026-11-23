@@ -10,7 +10,6 @@ import { VitrinePosts } from "@/components/vitrine-posts";
 import { IconeSolido, type NomeIconeSolido } from "@/components/icones-solidos";
 import { Reveal } from "@/components/reveal";
 import { CursosHome, type CursoHome } from "@/components/cursos-home";
-import { MenuInferior } from "@/components/menu-inferior";
 import { formatarPreco, listarApostilasPublicadas } from "@/lib/apostilas";
 import { listarPostsVitrine } from "@/lib/blog";
 import { EMAIL_CONTATO, EMISSOR, RAZAO_SOCIAL } from "@/lib/emissor";
@@ -97,7 +96,7 @@ export default async function Home() {
   const BLACK_FRIDAY = blackFridayAtiva();
 
   return (
-    <div id="topo" className="flex flex-1 flex-col bg-white pb-16 font-body md:pb-0">
+    <div id="topo" className="flex flex-1 flex-col bg-white font-body">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizacao) }} />
       {/* Faixa "Próxima prova" removida em 19/11/2026 (Wagner): a home começa direto no cabeçalho do SIBRAP. */}
       <CabecalhoSite semLinks semFaixaBlackFriday />
@@ -455,7 +454,6 @@ export default async function Home() {
       </div>
 
       <RodapeSite />
-      <MenuInferior />
     </div>
   );
 }
