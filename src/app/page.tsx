@@ -9,9 +9,9 @@ import { VitrineApostilas } from "@/components/vitrine-apostilas";
 import { VitrinePosts } from "@/components/vitrine-posts";
 import { IconeSolido, type NomeIconeSolido } from "@/components/icones-solidos";
 import { Reveal } from "@/components/reveal";
+import { CursosHome, type CursoHome } from "@/components/cursos-home";
 import { formatarPreco, listarApostilasPublicadas } from "@/lib/apostilas";
 import { listarPostsVitrine } from "@/lib/blog";
-import { FOTO_CURSO_PADRAO, FOTOS_POR_CURSO } from "@/lib/cursos-fotos";
 import { EMAIL_CONTATO, EMISSOR, RAZAO_SOCIAL } from "@/lib/emissor";
 
 // Página igual para todos os visitantes: a Vercel guarda em cache e refaz no máximo a cada 1 h
@@ -27,14 +27,26 @@ export default async function Home() {
     listarApostilasPublicadas(supabase),
     listarPostsVitrine(supabase),
     supabase.from("produtos").select("ativo").eq("slug", "simulado-gratis").maybeSingle(),
-    supabase.from("cursos").select("slug, nome, carga_horaria_horas").in("slug", CURSOS_MAIS_VENDIDOS.map((c) => c.slug)),
+    supabase.from("cursos").select("slug, nome, descricao, carga_horaria_horas, categoria").eq("ativo", true).order("criado_em"),
     supabase.from("produtos").select("slug, preco_centavos").like("slug", "curso-%").eq("ativo", true),
   ]);
   // vitrine de cursos: os mais vendidos, na ordem da lista
   const precoCurso = new Map((cursosPagos ?? []).map((p) => [p.slug.slice("curso-".length), p.preco_centavos]));
-  const vitrineCursos = CURSOS_MAIS_VENDIDOS.flatMap(({ slug, chamada }) => {
+  const paraHome = (c: NonNullable<typeof cursosHome>[number], texto?: string): CursoHome => {
+    const centavos = precoCurso.get(c.slug);
+    return {
+      slug: c.slug,
+      nome: c.nome,
+      texto: texto ?? c.descricao ?? "",
+      carga_horaria_horas: c.carga_horaria_horas,
+      categoria: c.categoria,
+      preco: centavos ? formatarPreco(centavos) : null,
+    };
+  };
+  const todosCursos = (cursosHome ?? []).map((c) => paraHome(c));
+  const destaquesCursos = CURSOS_MAIS_VENDIDOS.flatMap(({ slug, chamada }) => {
     const curso = (cursosHome ?? []).find((c) => c.slug === slug);
-    return curso ? [{ ...curso, chamada }] : [];
+    return curso ? [paraHome(curso, chamada)] : [];
   });
   // Isca gratuita do Transpetro desativada por ora (ver handle_new_user()
   // no banco e src/app/minha-area/page.tsx) — mesmo campo produtos.ativo
@@ -127,6 +139,46 @@ export default async function Home() {
               Ver todas as apostilas
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Comece de graça */}
+      <section id="cursos-gratuitos" className="scroll-mt-14 overflow-hidden bg-surface-2 py-14 sm:py-16">
+        <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
+          <Reveal>
+            <span className="inline-flex items-center gap-2 border border-[#D7DEE6] bg-white px-3.5 py-2 font-data text-[13.5px] font-semibold text-brand sm:px-4 sm:text-[17px]">
+              <span className="h-2 w-2 rounded-full bg-accent-2" />
+              Cursos livres para o mercado de trabalho
+            </span>
+            <h2 className="mt-3.5 font-display text-[1.7rem] font-extrabold text-[#14213A] sm:text-[2.2rem]">
+              Comece gratuitamente. Aprenda no seu ritmo.
+            </h2>
+            {iscaTranspetroAtiva && (
+              <ul className="mt-4 flex flex-col gap-3 text-[15.5px] leading-relaxed text-[#516278]">
+                <li className="flex gap-2">
+                  <span className="mt-0.5 text-accent-2" aria-hidden>✓</span>
+                  <span>
+                    <strong className="text-[#14213A]">Apostila e simulado grátis do concurso Transpetro</strong>{" "}
+                    — Conhecimentos Básicos e um teste de 10 questões, no estilo da banca.
+                  </span>
+                </li>
+              </ul>
+            )}
+            <CursosHome destaques={destaquesCursos} cursos={todosCursos} />
+            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-4">
+              {iscaTranspetroAtiva && (
+                <Link
+                  href="/cadastro"
+                  className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3.5 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"
+                >
+                  Fazer simulado grátis <span aria-hidden>→</span>
+                </Link>
+              )}
+              <Link href="/cursos" className="text-sm font-semibold text-brand underline underline-offset-4">
+                Ver todos os cursos
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -289,81 +341,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Comece de graça */}
-      <section id="cursos-gratuitos" className="scroll-mt-14 overflow-hidden bg-surface-2 py-14 sm:py-16">
-        <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
-          <Reveal>
-            <span className="inline-flex items-center gap-2 border border-[#D7DEE6] bg-white px-3.5 py-2 font-data text-[13.5px] font-semibold text-brand sm:px-4 sm:text-[17px]">
-              <span className="h-2 w-2 rounded-full bg-accent-2" />
-              Cursos livres para o mercado de trabalho
-            </span>
-            <h2 className="mt-3.5 font-display text-[1.7rem] font-extrabold text-[#14213A] sm:text-[2.2rem]">
-              Comece gratuitamente. Aprenda no seu ritmo.
-            </h2>
-            {iscaTranspetroAtiva && (
-              <ul className="mt-4 flex flex-col gap-3 text-[15.5px] leading-relaxed text-[#516278]">
-                <li className="flex gap-2">
-                  <span className="mt-0.5 text-accent-2" aria-hidden>✓</span>
-                  <span>
-                    <strong className="text-[#14213A]">Apostila e simulado grátis do concurso Transpetro</strong>{" "}
-                    — Conhecimentos Básicos e um teste de 10 questões, no estilo da banca.
-                  </span>
-                </li>
-              </ul>
-            )}
-            <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
-              {vitrineCursos.map((curso) => {
-                const preco = precoCurso.get(curso.slug);
-                return (
-                  <Link
-                    key={curso.slug}
-                    href={`/cursos/${curso.slug}`}
-                    className="group flex h-full flex-col overflow-hidden border border-[#D7DEE6] bg-white transition-shadow hover:shadow-[0_16px_36px_-22px_rgba(11,42,74,0.35)]"
-                  >
-                    <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-2">
-                      <Image
-                        src={FOTOS_POR_CURSO[curso.slug] ?? FOTO_CURSO_PADRAO}
-                        alt=""
-                        fill
-                        sizes="(min-width: 1024px) 380px, 50vw"
-                        className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
-                      />
-                    </div>
-                    <div className="flex flex-1 flex-col p-3.5 sm:p-5">
-                      <span className="font-data text-[11px] font-semibold text-accent-2 sm:text-xs">
-                        {curso.carga_horaria_horas}h · {preco ? formatarPreco(preco) : "Grátis"}
-                      </span>
-                      <p className="mt-1 font-display text-[14.5px] font-bold leading-snug text-[#14213A] sm:text-[17px]">
-                        {curso.nome}
-                      </p>
-                      <p className="mt-1.5 line-clamp-4 flex-1 text-[12.5px] leading-snug text-[#516278] sm:line-clamp-3 sm:text-[14.5px] sm:leading-relaxed">
-                        {curso.chamada}
-                      </p>
-                      <span className="mt-3 inline-flex items-center gap-1.5 self-end text-[13px] font-bold text-brand transition-transform group-hover:translate-x-1 sm:text-[14px]">
-                        Saiba mais <span aria-hidden className="text-accent">→</span>
-                      </span>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-4">
-              {iscaTranspetroAtiva && (
-                <Link
-                  href="/cadastro"
-                  className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3.5 text-[15px] font-bold text-accent-ink transition-colors hover:brightness-105"
-                >
-                  Fazer simulado grátis <span aria-hidden>→</span>
-                </Link>
-              )}
-              <Link href="/cursos" className="text-sm font-semibold text-brand underline underline-offset-4">
-                Ver todos os cursos
-              </Link>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
       {/* Gerador de currículo */}
       <section id="curriculo" className="scroll-mt-14 border-t border-[#D7DEE6] bg-white py-14 sm:py-16">
         <div className="mx-auto grid max-w-[1180px] items-center gap-10 px-4 sm:px-6 md:grid-cols-[minmax(0,1fr)_260px]">
@@ -495,10 +472,10 @@ const RECURSOS_SIMULADO: [NomeIconeSolido, string, string][] = [
 
 const ANCORAS: [string, string][] = [
   ["Apostilas", "#apostilas"],
+  ["Cursos gratuitos", "#cursos-gratuitos"],
   ["Profissionalizantes", "#profissionalizantes"],
   ["Notícias", "#noticias"],
   ["Simulado online", "#simulado-online"],
-  ["Cursos gratuitos", "#cursos-gratuitos"],
   ["Currículo grátis", "#curriculo"],
   ["Sobre", "#sobre"],
   ["Validar certificado", "/validar"],
@@ -530,7 +507,7 @@ function HeroEscolha({
       icone: "livro" as NomeIconeSolido,
     },
     {
-      href: "/cursos",
+      href: "#cursos-gratuitos",
       rotulo: "Grátis",
       titulo: "Cursos gratuitos",
       texto: "Estude de graça. Certificado opcional.",
