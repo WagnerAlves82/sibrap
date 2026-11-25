@@ -24,7 +24,7 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
     ],
     ganhos: [
       { titulo: "Não é culpa sua", texto: "Você entende o vírus que abre os sites sozinho e por que o endereço muda a cada vez." },
-      { titulo: "Ache a linha escondida", texto: "Gerenciador de Tarefas, Autoruns e registro do Windows, com prints reais de cada tela." },
+      { titulo: "Análise forense na prática", texto: "Ache a linha escondida com Gerenciador de Tarefas, Autoruns e registro do Windows, com prints reais." },
       { titulo: "Remova sem formatar", texto: "Backup, remoção segura e varredura com ferramentas gratuitas e oficiais, sem perder arquivos." },
       { titulo: "Família protegida", texto: "Filtros gratuitos, hábitos e checklist para isso não voltar. Certificado de 20 h incluso." },
     ],
