@@ -51,7 +51,7 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
     ganhos: [
       { titulo: "Do CSV ao painel", texto: "Importe, limpe e ligue as tabelas no Power Query, com a pegadinha da vírgula brasileira resolvida." },
       { titulo: "O gráfico certo", texto: "Cartão, colunas, barras, rosca, mapa, treemap, dispersão e indicador: quando usar cada um e por quê." },
-      { titulo: "Medidas DAX", texto: "Faturamento, lucro, margem e indicadores com condição, usando SUM, SUMX, RELATED e CALCULATE." },
+      { titulo: "Medidas DAX e KPIs", texto: "Faturamento, lucro e margem em DAX, e como criar seus próprios KPIs com meta, tendência e semáforo." },
       { titulo: "Três projetos reais", texto: "Vendas, RH e financeiro, e educação, com bases para baixar e os prints de cada passo." },
     ],
     destaques: [
