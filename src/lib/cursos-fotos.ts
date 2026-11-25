@@ -19,6 +19,7 @@ export const FOTOS_POR_CURSO: Record<string, string> = {
   "bombeiro-hidraulico": "/cursos/bombeiro-hidraulico/card.webp",
   "registro-de-marca-inpi": "/cursos/registro-de-marca/card.webp",
   "seguranca-digital-na-pratica": "/cursos/seguranca-digital/card.webp",
+  "dashboards-power-bi": "/cursos/dashboards-power-bi/card.webp",
   "nr-10-basico": "/cursos/formacao-eletricista/nr10-card.webp",
   "seguranca-trabalho-em-altura": "/cursos/formacao-eletricista/nr35-card.webp",
   secretariado: "/cursos/secretariado/card.webp",

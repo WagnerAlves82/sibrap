@@ -67,6 +67,12 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     largura: 1376,
     altura: 768,
   },
+  "dashboards-power-bi": {
+    src: "/cursos/dashboards-power-bi/hero.webp",
+    alt: "Dashboard de vendas no Power BI com cartões de faturamento, gráfico de colunas por mês, rosca por categoria e ranking de vendedores",
+    largura: 682,
+    altura: 378,
+  },
   "registro-de-marca-inpi": {
     src: "/cursos/registro-de-marca/hero.webp",
     alt: "Dono de um pequeno comércio sorrindo enquanto confere um documento no tablet, no balcão da loja",

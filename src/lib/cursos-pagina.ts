@@ -41,6 +41,32 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
       ["Funciona no Mac ou no celular?", "Não. O curso é para computadores com Windows 10 ou 11."],
     ],
   },
+  "dashboards-power-bi": {
+    paraQuem: [
+      "Quem trabalha com planilhas e quer apresentar resultados que todo mundo entende",
+      "Assistentes, analistas, gestores e professores que precisam de indicadores",
+      "Quem quer colocar Power BI no currículo com projetos para mostrar",
+      "Iniciantes: o curso começa do zero, no navegador, sem instalar nada",
+    ],
+    ganhos: [
+      { titulo: "Do CSV ao painel", texto: "Importe, limpe e ligue as tabelas no Power Query, com a pegadinha da vírgula brasileira resolvida." },
+      { titulo: "O gráfico certo", texto: "Cartão, colunas, barras, rosca, mapa, treemap, dispersão e indicador: quando usar cada um e por quê." },
+      { titulo: "Medidas DAX", texto: "Faturamento, lucro, margem e indicadores com condição, usando SUM, SUMX, RELATED e CALCULATE." },
+      { titulo: "Três projetos reais", texto: "Vendas, RH e financeiro, e educação, com bases para baixar e os prints de cada passo." },
+    ],
+    destaques: [
+      "Instrutor certificado Microsoft em Power BI",
+      "Prints reais de cada passo, explicando o que foi feito e por quê",
+      "Bases de dados prontas para praticar (CSV e planilhas)",
+      "Mesmos caminhos no Power BI online e no Desktop",
+    ],
+    faq: [
+      ["Preciso instalar o Power BI?", "Não. As aulas usam o Power BI no navegador. Quem preferir pode usar o Power BI Desktop, gratuito para Windows: os caminhos são os mesmos."],
+      ["Preciso saber Excel?", "Ajuda, mas não é obrigatório. Cada passo tem o print da tela e a explicação do porquê."],
+      ["Uso meu Gmail para entrar?", "O Power BI online pede conta de trabalho ou de estudante. Com conta pessoal, use o Power BI Desktop, que é gratuito."],
+      ["O curso é gratuito?", "Sim. O certificado é opcional, de 40 ou 60 horas, com QR Code de validação."],
+    ],
+  },
   "registro-de-marca-inpi": {
     paraQuem: [
       "MEI e pequenas empresas que querem registrar a própria marca",
