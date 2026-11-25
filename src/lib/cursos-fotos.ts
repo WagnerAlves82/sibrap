@@ -11,6 +11,8 @@ export const FOTOS_POR_CURSO: Record<string, string> = {
   "agente-de-portaria": "/agp.webp",
   "atendente-de-call-center": "/cursos/call-center/card.webp",
   "operador-de-caixa": "/cursos/operador-de-caixa/card.webp",
+  "lgpd-na-pratica": "/cursos/lgpd-na-pratica/card.webp",
+  "informatica-para-portaria-e-condominios": "/cursos/informatica-portaria/card.webp",
   camareira: "/cursos/camareira/card.webp",
   "excel-basico-ao-intermediario": "/cursos/excel/card.webp",
   "tbo-treinamento-basico-operacional": "/cursos/tbo/card.webp",

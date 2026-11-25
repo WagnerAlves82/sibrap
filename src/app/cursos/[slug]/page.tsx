@@ -61,6 +61,18 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     largura: 997,
     altura: 746,
   },
+  "lgpd-na-pratica": {
+    src: "/cursos/lgpd-na-pratica/hero.webp",
+    alt: "Porteiro uniformizado conversando com uma moradora na recepção de um prédio residencial moderno",
+    largura: 1376,
+    altura: 768,
+  },
+  "informatica-para-portaria-e-condominios": {
+    src: "/cursos/informatica-portaria/hero.webp",
+    alt: "Recepcionista de condomínio sorrindo com um tablet na mão ao receber uma encomenda de um entregador",
+    largura: 1376,
+    altura: 768,
+  },
   "operador-de-caixa": {
     src: "/cursos/operador-de-caixa/hero.webp",
     alt: "Operador de caixa sorrindo ao entregar o cupom fiscal a um cliente no checkout de um supermercado",
