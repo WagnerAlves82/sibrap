@@ -14,6 +14,33 @@ export type PaginaCurso = {
 };
 
 export const PAGINA_CURSO: Record<string, PaginaCurso> = {
+  // Pitch aprovado pelo Wagner (25/11/2026): termos suaves, sem nomear os sites; suporte é serviço à parte
+  "seguranca-digital-na-pratica": {
+    paraQuem: [
+      "Quem liga o computador e vê sites impróprios abrindo sozinhos",
+      "Quem tem medo de abrir o notebook na frente da família, dos clientes ou na igreja",
+      "Quem já rodou antivírus, reinstalou o Chrome e o site voltou",
+      "Quem preza pela família e pelos seus valores e quer o computador de casa protegido",
+    ],
+    ganhos: [
+      { titulo: "Não é culpa sua", texto: "Você entende o vírus que abre os sites sozinho e por que o endereço muda a cada vez." },
+      { titulo: "Ache a linha escondida", texto: "Gerenciador de Tarefas, Autoruns e registro do Windows, com prints reais de cada tela." },
+      { titulo: "Remova sem formatar", texto: "Backup, remoção segura e varredura com ferramentas gratuitas e oficiais, sem perder arquivos." },
+      { titulo: "Família protegida", texto: "Filtros gratuitos, hábitos e checklist para isso não voltar. Certificado de 20 h incluso." },
+    ],
+    destaques: [
+      "Prints reais da limpeza, tela por tela",
+      "A pegadinha que engana quase todo mundo no Gerenciador de Tarefas",
+      "Chrome limpo: extensões falsas, notificações e página inicial",
+      "Suporte Especializado opcional, por acesso remoto (pago à parte)",
+    ],
+    faq: [
+      ["Preciso saber informática?", "Não. Se você usa o Windows, consegue: cada passo tem o print da tela e o que clicar."],
+      ["Vou perder meus arquivos?", "Não. O curso ensina a remover o vírus sem formatar e mostra como fazer uma cópia de segurança antes."],
+      ["E se eu não conseguir sozinho?", "Existe o Suporte Especializado (R$ 89,90): fazemos a limpeza com você por acesso remoto. É um serviço extra e opcional, pago à parte, que não está incluso no curso."],
+      ["Funciona no Mac ou no celular?", "Não. O curso é para computadores com Windows 10 ou 11."],
+    ],
+  },
   "registro-de-marca-inpi": {
     paraQuem: [
       "MEI e pequenas empresas que querem registrar a própria marca",

@@ -61,6 +61,12 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     largura: 997,
     altura: 746,
   },
+  "seguranca-digital-na-pratica": {
+    src: "/cursos/seguranca-digital/hero.webp",
+    alt: "Antes e depois: homem preocupado diante do notebook com alerta vermelho e, ao lado, o mesmo homem sorrindo com a esposa diante do notebook protegido por um escudo",
+    largura: 1376,
+    altura: 768,
+  },
   "registro-de-marca-inpi": {
     src: "/cursos/registro-de-marca/hero.webp",
     alt: "Dono de um pequeno comércio sorrindo enquanto confere um documento no tablet, no balcão da loja",
