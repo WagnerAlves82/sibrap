@@ -1,4 +1,5 @@
 import { FORMACAO_ELETRICISTA } from "@/lib/formacao-eletricista";
+import { FORMACAO_PORTARIA } from "@/lib/formacao-portaria";
 import type { MetadataRoute } from "next";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 import { slugDaBanca } from "@/lib/bancas";
@@ -105,6 +106,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/classificador-de-marcas`, lastModified: FIXAS, changeFrequency: "monthly", priority: 0.7 },
     ...(FORMACAO_ELETRICISTA.vendaAberta
       ? [{ url: `${siteUrl}${FORMACAO_ELETRICISTA.caminho}`, lastModified: ultimoCurso, changeFrequency: "weekly" as const, priority: 0.9 }]
+      : []),
+    ...(FORMACAO_PORTARIA.vendaAberta
+      ? [{ url: `${siteUrl}${FORMACAO_PORTARIA.caminho}`, lastModified: ultimoCurso, changeFrequency: "weekly" as const, priority: 0.9 }]
       : []),
     { url: `${siteUrl}/bancas`, lastModified: ultimaApostila, changeFrequency: "weekly", priority: 0.6 },
   );
