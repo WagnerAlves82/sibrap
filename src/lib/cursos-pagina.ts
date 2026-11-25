@@ -69,6 +69,31 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
       ["O curso é gratuito?", "Sim. O certificado é opcional, de 40 ou 60 horas, com QR Code de validação."],
     ],
   },
+  "operador-de-caixa": {
+    paraQuem: [
+      "Quem procura o primeiro emprego no comércio",
+      "Quem quer vaga em supermercado, farmácia, loja ou padaria",
+      "Quem já trabalha no caixa e quer certificado para crescer",
+      "Quem vai disputar as vagas de fim de ano",
+    ],
+    ganhos: [
+      { titulo: "Troco sem erro", texto: "O método da contagem para frente e o jeito certo de receber, conferir e entregar." },
+      { titulo: "Cartão e PIX seguros", texto: "Maquininha, recusa com discrição e o golpe do comprovante falso de PIX." },
+      { titulo: "Cliente e lei do seu lado", texto: "Preço divergente, atendimento prioritário, venda a menores e notas falsas." },
+      { titulo: "Abertura ao fechamento", texto: "Fundo de troco, sangria e fechamento sem diferença no fim do turno." },
+    ],
+    destaques: [
+      "Exercícios de troco com valores reais",
+      "Situações do dia a dia para decidir: libera ou não libera",
+      "As leis que aparecem no caixa, explicadas sem juridiquês",
+      "Dicas para o currículo e para crescer no varejo",
+    ],
+    faq: [
+      ["Preciso ter experiência?", "Não. O curso começa do zero e mostra a rotina completa do caixa, passo a passo."],
+      ["O curso é gratuito?", "Sim. O certificado é opcional, de 20 ou 40 horas, com QR Code de validação."],
+      ["Serve para qualquer tipo de loja?", "Sim. Supermercado, farmácia, loja de roupas, padaria, posto e restaurante seguem a mesma base."],
+    ],
+  },
   "registro-de-marca-inpi": {
     paraQuem: [
       "MEI e pequenas empresas que querem registrar a própria marca",
