@@ -93,6 +93,7 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
       ["O curso é gratuito?", "Sim. O certificado é opcional, de 20 ou 40 horas, com QR Code de validação."],
       ["Serve para qualquer tipo de loja?", "Sim. Supermercado, farmácia, loja de roupas, padaria, posto e restaurante seguem a mesma base."],
     ],
+    video: "Pb3vIBj3zuQ",
   },
   "registro-de-marca-inpi": {
     paraQuem: [

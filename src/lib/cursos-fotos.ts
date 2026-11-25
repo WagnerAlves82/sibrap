@@ -10,6 +10,7 @@ export const FOTOS_POR_CURSO: Record<string, string> = {
   "libras-iniciante": "/libras-card.webp",
   "agente-de-portaria": "/agp.webp",
   "atendente-de-call-center": "/cursos/call-center/card.webp",
+  "operador-de-caixa": "/cursos/operador-de-caixa/card.webp",
   camareira: "/cursos/camareira/card.webp",
   "excel-basico-ao-intermediario": "/cursos/excel/card.webp",
   "tbo-treinamento-basico-operacional": "/cursos/tbo/card.webp",

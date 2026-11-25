@@ -54,7 +54,7 @@ const ORDEM: Record<string, { entrada: string[]; avanco: string[] }> = {
     avanco: ["assistente-administrativo", "auxiliar-de-departamento-pessoal", "inteligencia-artificial-trabalho-administrativo", "auxiliar-de-recursos-humanos"],
   },
   "Atendimento e comunicação": {
-    entrada: ["atendimento-ao-cliente", "atendente-de-call-center", "ingles-basico-atendimento-ao-publico"],
+    entrada: ["atendimento-ao-cliente", "operador-de-caixa", "atendente-de-call-center", "ingles-basico-atendimento-ao-publico"],
     avanco: ["ingles-basico-atendimento-ao-publico", "libras-iniciante", "atendimento-ao-cliente"],
   },
   "Construção e manutenção": {
@@ -78,7 +78,7 @@ const ORDEM: Record<string, { entrada: string[]; avanco: string[] }> = {
 
 // quem ainda não sabe a área: sugestão pelo objetivo
 const SEM_AREA: Record<string, string[]> = {
-  primeiro: ["atendimento-ao-cliente", "auxiliar-administrativo", "informatica-basica-ia"],
+  primeiro: ["operador-de-caixa", "atendimento-ao-cliente", "auxiliar-administrativo", "informatica-basica-ia"],
   trocar: ["auxiliar-administrativo", "eletricista-residencial-basico", "atendimento-ao-cliente"],
   crescer: ["excel-basico-ao-intermediario", "inteligencia-artificial-trabalho-administrativo", "assistente-administrativo"],
   curriculo: ["informatica-basica-ia", "excel-basico-ao-intermediario", "atendimento-ao-cliente"],

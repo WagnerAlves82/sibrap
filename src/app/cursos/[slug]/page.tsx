@@ -61,6 +61,12 @@ const FOTOS_HERO_POR_CURSO: Record<string, { src: string; alt: string; largura?:
     largura: 997,
     altura: 746,
   },
+  "operador-de-caixa": {
+    src: "/cursos/operador-de-caixa/hero.webp",
+    alt: "Operador de caixa sorrindo ao entregar o cupom fiscal a um cliente no checkout de um supermercado",
+    largura: 1376,
+    altura: 768,
+  },
   "seguranca-digital-na-pratica": {
     src: "/cursos/seguranca-digital/hero.webp",
     alt: "Antes e depois: homem preocupado diante do notebook com alerta vermelho e, ao lado, o mesmo homem sorrindo com a esposa diante do notebook protegido por um escudo",
