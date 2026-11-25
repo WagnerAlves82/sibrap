@@ -1,0 +1,301 @@
+﻿id_aluno;aluno;id_turma;sexo;bairro
+1;Caio Nunes;7;F;São José
+2;Patrícia Mendes;5;M;São José
+3;Fábio Freitas;5;M;Bela Vista
+4;Juliana Ribeiro;8;F;Centro
+5;Diego Moreira;3;F;Santa Rita
+6;André Moreira;8;F;Bela Vista
+7;Marcelo Carvalho;8;M;Santa Rita
+8;Beatriz Lima;4;M;Jardim América
+9;Lucas Rodrigues;4;F;Vila Nova
+10;Camila Moreira;3;M;Bela Vista
+11;Fábio Araújo;4;F;Bela Vista
+12;Isabela Oliveira;1;M;Vila Nova
+13;Mateus Araújo;8;F;Jardim América
+14;Ana Freitas;4;F;Santa Rita
+15;Camila Ferreira;5;M;São José
+16;Camila Oliveira;6;F;Santa Rita
+17;Patrícia Cardoso;4;F;Centro
+18;Isabela Teixeira;4;M;Centro
+19;Larissa Freitas;5;F;Industrial
+20;Carla Rodrigues;7;F;Centro
+21;Larissa Santos;6;M;Centro
+22;Otávio Moreira;8;F;São José
+23;Larissa Almeida;4;M;Jardim América
+24;Rafael Barbosa;5;M;Bela Vista
+25;Letícia Almeida;7;F;Jardim América
+26;João Oliveira;5;F;Industrial
+27;Natália Almeida;3;F;Centro
+28;Vinícius Silva;5;M;Centro
+29;Eduarda Cardoso;7;M;Centro
+30;Felipe Rocha;1;F;Bela Vista
+31;Patrícia Dias;1;M;Centro
+32;Diego Lima;7;F;Jardim América
+33;Gustavo Almeida;1;F;Bela Vista
+34;Carla Silva;3;F;Santa Rita
+35;Fábio Costa;2;M;Jardim América
+36;Rodrigo Moreira;8;F;Vila Nova
+37;Larissa Freitas;4;F;Santa Rita
+38;Fábio Ferreira;7;F;Bela Vista
+39;Vanessa Silva;4;M;Jardim América
+40;Lucas Rocha;6;M;Santa Rita
+41;Carla Costa;7;F;São José
+42;Vanessa Costa;1;F;Bela Vista
+43;Mariana Silva;8;F;Bela Vista
+44;Débora Ferreira;8;M;Santa Rita
+45;Leonardo Nunes;3;F;Jardim América
+46;Débora Santos;3;F;Santa Rita
+47;Juliana Teixeira;2;F;Centro
+48;Felipe Araújo;1;F;Vila Nova
+49;Vanessa Nunes;5;M;Centro
+50;Aline Souza;7;F;Vila Nova
+51;Thiago Souza;5;F;Centro
+52;João Lima;5;M;Industrial
+53;Camila Souza;1;M;Vila Nova
+54;Natália Mendes;7;M;Santa Rita
+55;Juliana Rocha;5;F;São José
+56;Gustavo Moreira;6;F;Santa Rita
+57;Camila Rocha;4;M;Industrial
+58;João Teixeira;4;M;Vila Nova
+59;Aline Moreira;4;F;Bela Vista
+60;Marcelo Almeida;1;F;Jardim América
+61;Daniel Ferreira;6;F;Jardim América
+62;Vanessa Almeida;7;M;Centro
+63;Eduarda Santos;1;M;Jardim América
+64;Gustavo Dias;1;F;Jardim América
+65;Felipe Freitas;7;F;São José
+66;Carla Teixeira;7;M;Industrial
+67;Juliana Barbosa;8;F;Vila Nova
+68;Carla Rocha;7;F;Jardim América
+69;Vanessa Freitas;8;M;Santa Rita
+70;Marcelo Lima;1;M;Centro
+71;Débora Dias;5;F;Centro
+72;Leonardo Moreira;8;F;São José
+73;Renato Barbosa;5;F;Industrial
+74;Eduarda Martins;4;F;São José
+75;Rodrigo Teixeira;7;M;São José
+76;Fernanda Carvalho;3;M;São José
+77;Leonardo Araújo;3;M;Bela Vista
+78;Mateus Rocha;1;F;Industrial
+79;Gabriela Silva;4;F;Jardim América
+80;Daniel Oliveira;8;F;Jardim América
+81;Bruno Souza;6;M;Industrial
+82;Patrícia Martins;2;M;Santa Rita
+83;Natália Rodrigues;8;M;Vila Nova
+84;Henrique Barbosa;2;F;São José
+85;Mateus Souza;4;M;Bela Vista
+86;Sabrina Freitas;5;F;Santa Rita
+87;Gustavo Martins;6;F;Vila Nova
+88;João Rodrigues;8;F;Vila Nova
+89;Rodrigo Dias;4;M;Vila Nova
+90;Bruno Souza;4;F;Bela Vista
+91;Felipe Barbosa;2;M;Vila Nova
+92;João Almeida;6;F;Santa Rita
+93;Gabriela Souza;8;F;Centro
+94;Débora Oliveira;6;F;Santa Rita
+95;Gustavo Oliveira;4;M;São José
+96;Ana Ferreira;5;M;Bela Vista
+97;Gabriela Ferreira;8;F;Jardim América
+98;Leonardo Teixeira;2;M;São José
+99;Sabrina Pereira;3;F;Jardim América
+100;Juliana Dias;3;F;Centro
+101;Rodrigo Pereira;5;F;São José
+102;Diego Nunes;6;M;Santa Rita
+103;Vinícius Moreira;1;F;Industrial
+104;Leonardo Oliveira;2;M;Vila Nova
+105;Gabriela Costa;1;M;Industrial
+106;Natália Silva;3;F;São José
+107;Carla Teixeira;1;M;Santa Rita
+108;Leonardo Almeida;8;M;Centro
+109;Débora Martins;8;M;Vila Nova
+110;Renato Teixeira;3;F;Centro
+111;Lucas Santos;3;M;Bela Vista
+112;Camila Costa;3;F;Santa Rita
+113;Renato Gomes;8;M;Santa Rita
+114;Daniel Cardoso;4;F;Santa Rita
+115;Renato Souza;2;M;Industrial
+116;André Ribeiro;4;F;Vila Nova
+117;Daniel Ribeiro;1;F;Bela Vista
+118;Daniel Oliveira;1;F;Bela Vista
+119;Daniel Santos;6;M;Santa Rita
+120;Sabrina Moreira;7;F;Jardim América
+121;Rodrigo Barbosa;2;M;Vila Nova
+122;Leonardo Cardoso;6;M;Bela Vista
+123;Mariana Moreira;6;M;São José
+124;Aline Araújo;5;F;Vila Nova
+125;Mariana Teixeira;8;F;Santa Rita
+126;Bruno Ferreira;6;M;Industrial
+127;Paula Moreira;6;F;Santa Rita
+128;Larissa Silva;2;M;São José
+129;Fernanda Dias;6;M;Centro
+130;Larissa Moreira;1;F;Vila Nova
+131;Fábio Freitas;1;F;São José
+132;Daniel Lima;3;M;Vila Nova
+133;Eduarda Barbosa;3;M;Industrial
+134;Larissa Teixeira;8;F;Vila Nova
+135;Mateus Teixeira;6;M;Jardim América
+136;Fernanda Ferreira;3;M;Vila Nova
+137;Henrique Rodrigues;7;F;Bela Vista
+138;André Santos;2;F;São José
+139;Vinícius Rocha;6;M;Centro
+140;Leonardo Rocha;1;F;Industrial
+141;Thiago Costa;7;M;Bela Vista
+142;Caio Santos;4;M;Bela Vista
+143;Aline Lima;5;F;Jardim América
+144;Gabriela Araújo;1;M;Santa Rita
+145;André Almeida;1;F;Industrial
+146;Thiago Freitas;5;F;Centro
+147;Isabela Souza;2;F;Jardim América
+148;Bruno Cardoso;5;M;Bela Vista
+149;Vinícius Rocha;2;M;São José
+150;Camila Gomes;6;M;Santa Rita
+151;Thiago Freitas;8;M;Centro
+152;Paula Araújo;8;M;Jardim América
+153;Ana Santos;1;M;Jardim América
+154;Paula Silva;8;F;Bela Vista
+155;Daniel Oliveira;7;M;Santa Rita
+156;Leonardo Nunes;2;M;Vila Nova
+157;André Rocha;1;F;Industrial
+158;Renato Martins;7;F;Santa Rita
+159;Aline Barbosa;4;M;Jardim América
+160;Natália Ribeiro;8;M;Industrial
+161;Lucas Oliveira;5;M;Jardim América
+162;Felipe Santos;2;M;Vila Nova
+163;Paula Rocha;7;F;Jardim América
+164;Mariana Souza;6;M;Jardim América
+165;Leonardo Barbosa;3;F;Santa Rita
+166;Patrícia Dias;3;F;Bela Vista
+167;Fernanda Ferreira;5;M;Santa Rita
+168;Patrícia Oliveira;3;M;Bela Vista
+169;Juliana Araújo;2;F;São José
+170;Vanessa Santos;6;M;Centro
+171;Caio Teixeira;4;M;Bela Vista
+172;Thiago Oliveira;8;F;Jardim América
+173;Gustavo Silva;8;M;Vila Nova
+174;Gustavo Barbosa;2;F;Santa Rita
+175;Thiago Oliveira;5;M;Bela Vista
+176;Fábio Dias;7;F;Vila Nova
+177;Thiago Silva;3;M;São José
+178;Felipe Santos;6;F;São José
+179;Henrique Martins;2;F;Industrial
+180;João Rocha;3;F;Santa Rita
+181;Felipe Oliveira;8;F;Industrial
+182;Patrícia Oliveira;1;F;Vila Nova
+183;Henrique Pereira;5;F;Bela Vista
+184;Rodrigo Silva;4;M;Vila Nova
+185;Caio Barbosa;8;F;Industrial
+186;Fábio Rodrigues;7;M;Santa Rita
+187;Daniel Barbosa;4;M;Industrial
+188;Aline Rodrigues;4;M;Vila Nova
+189;André Martins;2;F;Vila Nova
+190;Paula Rocha;2;M;Industrial
+191;Yasmin Silva;4;F;Industrial
+192;Thiago Oliveira;3;M;São José
+193;Fábio Araújo;3;M;Santa Rita
+194;Mateus Ferreira;1;F;Vila Nova
+195;Leonardo Carvalho;4;M;São José
+196;Henrique Mendes;8;F;São José
+197;Rodrigo Silva;6;M;Vila Nova
+198;Mateus Carvalho;1;F;Jardim América
+199;Mateus Freitas;7;F;Jardim América
+200;Sabrina Moreira;3;M;Jardim América
+201;Vinícius Dias;3;M;Industrial
+202;Camila Dias;6;M;Jardim América
+203;Gustavo Costa;6;M;Santa Rita
+204;Natália Costa;4;F;Industrial
+205;Bruno Souza;1;M;Bela Vista
+206;Ana Lima;2;F;Santa Rita
+207;Patrícia Freitas;1;M;Santa Rita
+208;Yasmin Teixeira;3;M;Industrial
+209;Vinícius Teixeira;1;F;Jardim América
+210;Diego Rodrigues;2;F;Santa Rita
+211;Gustavo Santos;8;F;Jardim América
+212;Larissa Ferreira;1;M;Industrial
+213;Ana Costa;6;F;Santa Rita
+214;Vinícius Lima;4;M;Centro
+215;Sabrina Souza;5;M;Centro
+216;Bruno Souza;1;F;Bela Vista
+217;Carla Cardoso;8;M;São José
+218;Vanessa Carvalho;8;F;Centro
+219;João Barbosa;7;M;São José
+220;Natália Rocha;1;M;Santa Rita
+221;Fábio Teixeira;6;M;Vila Nova
+222;Larissa Silva;2;F;Industrial
+223;Henrique Freitas;5;M;Industrial
+224;Felipe Nunes;7;M;Santa Rita
+225;Fábio Costa;3;F;Jardim América
+226;Paula Rocha;1;F;Vila Nova
+227;Mariana Nunes;6;F;Centro
+228;Thiago Dias;5;M;São José
+229;Felipe Cardoso;6;M;Bela Vista
+230;Yasmin Lima;2;M;Jardim América
+231;André Rocha;4;M;Jardim América
+232;Beatriz Rocha;8;M;Jardim América
+233;Paula Souza;5;M;São José
+234;Juliana Carvalho;6;F;Santa Rita
+235;Diego Lima;2;F;Vila Nova
+236;Mateus Silva;8;F;São José
+237;Paula Souza;2;M;Santa Rita
+238;Aline Cardoso;8;M;Centro
+239;Vanessa Mendes;8;M;Industrial
+240;Camila Carvalho;2;M;São José
+241;Patrícia Ferreira;8;F;Industrial
+242;Sabrina Lima;8;M;Bela Vista
+243;Aline Moreira;5;M;São José
+244;Rodrigo Carvalho;4;M;Industrial
+245;Larissa Freitas;6;F;Bela Vista
+246;Otávio Rocha;4;M;Bela Vista
+247;Diego Santos;2;M;Vila Nova
+248;Henrique Pereira;7;F;Industrial
+249;Diego Costa;6;M;Bela Vista
+250;Patrícia Barbosa;7;F;São José
+251;Leonardo Freitas;6;F;Vila Nova
+252;Paula Gomes;3;F;Vila Nova
+253;Felipe Cardoso;4;M;Centro
+254;Daniel Santos;3;F;Santa Rita
+255;Isabela Teixeira;4;F;Centro
+256;Bruno Silva;7;F;Industrial
+257;Otávio Souza;5;F;Bela Vista
+258;Bruno Costa;6;M;Industrial
+259;Lucas Ribeiro;5;F;Bela Vista
+260;Eduarda Nunes;8;F;Bela Vista
+261;Mateus Moreira;6;F;São José
+262;Ana Araújo;5;F;Santa Rita
+263;Otávio Rodrigues;2;F;Jardim América
+264;Débora Teixeira;6;F;Vila Nova
+265;Aline Araújo;6;F;São José
+266;Débora Carvalho;3;M;Industrial
+267;Fernanda Dias;7;F;Vila Nova
+268;Daniel Ribeiro;8;M;Centro
+269;Rafael Costa;1;F;Industrial
+270;Vinícius Barbosa;2;F;São José
+271;Vinícius Barbosa;2;F;Vila Nova
+272;Sabrina Pereira;4;F;Jardim América
+273;Camila Rodrigues;5;M;Jardim América
+274;Renato Araújo;8;M;Industrial
+275;Leonardo Ferreira;3;M;São José
+276;Caio Pereira;5;M;Centro
+277;Isabela Ribeiro;7;M;Vila Nova
+278;Débora Barbosa;4;F;São José
+279;Henrique Mendes;6;M;Jardim América
+280;Beatriz Martins;4;F;Vila Nova
+281;Fábio Mendes;7;F;Centro
+282;Patrícia Martins;6;F;Centro
+283;Fábio Barbosa;1;F;Centro
+284;Débora Araújo;5;M;Jardim América
+285;Sabrina Gomes;8;F;Industrial
+286;Diego Lima;2;F;Vila Nova
+287;Ana Rocha;6;M;Jardim América
+288;Thiago Rocha;4;F;Bela Vista
+289;Camila Rocha;5;M;Industrial
+290;Rodrigo Rodrigues;2;M;Santa Rita
+291;Diego Rodrigues;6;F;Bela Vista
+292;Leonardo Santos;8;F;Bela Vista
+293;Bruno Gomes;8;M;Industrial
+294;Carla Santos;8;F;Centro
+295;Débora Costa;1;F;Vila Nova
+296;Sabrina Cardoso;8;M;Industrial
+297;Daniel Rocha;6;F;Bela Vista
+298;Daniel Almeida;2;F;Centro
+299;Felipe Silva;1;M;Centro
+300;Beatriz Ribeiro;3;F;São José

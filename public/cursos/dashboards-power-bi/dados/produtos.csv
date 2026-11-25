@@ -1,0 +1,17 @@
+﻿id_produto;produto;categoria;preco_unitario;custo_unitario
+1;Notebook;Informática;3899,00;2223,41
+2;Monitor 24 polegadas;Informática;899,00;571,25
+3;Teclado sem fio;Informática;149,00;94,91
+4;Mouse sem fio;Informática;89,00;61,96
+5;Impressora;Informática;1099,00;623,63
+6;Smartphone básico;Celulares;1199,00;704,96
+7;Smartphone intermediário;Celulares;1999,00;1303,70
+8;Fone Bluetooth;Celulares;199,00;128,28
+9;Carregador rápido;Celulares;99,00;67,63
+10;Cadeira ergonômica;Escritório;899,00;578,17
+11;Mesa de escritório;Escritório;749,00;504,97
+12;Luminária LED;Escritório;129,00;87,79
+13;Organizador de mesa;Escritório;59,00;39,98
+14;Cafeteira;Eletroportáteis;299,00;194,26
+15;Ventilador;Eletroportáteis;249,00;147,11
+16;Purificador de água;Eletroportáteis;699,00;457,44

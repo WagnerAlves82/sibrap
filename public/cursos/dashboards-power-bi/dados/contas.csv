@@ -1,0 +1,1201 @@
+﻿id_conta;tipo;categoria;vencimento;pagamento;valor;status
+1;Pagar;Internet;18/07/2025;20/07/2025;3569,32;Pago com atraso
+2;Receber;Serviços;04/04/2025;06/04/2025;14198,52;Pago com atraso
+3;Receber;Vendas à vista;15/05/2026;15/05/2026;13149,48;Pago em dia
+4;Pagar;Aluguel;19/01/2025;28/02/2025;7986,58;Pago com atraso
+5;Receber;Vendas à vista;07/12/2025;12/12/2025;1388,17;Pago com atraso
+6;Pagar;Impostos;23/08/2025;02/10/2025;704,13;Pago com atraso
+7;Pagar;Folha de pagamento;16/10/2025;16/10/2025;2337,44;Pago em dia
+8;Receber;Serviços;04/05/2025;;10694,93;Em aberto
+9;Receber;Serviços;19/03/2025;19/03/2025;14099,69;Pago em dia
+10;Receber;Vendas a prazo;27/08/2025;27/08/2025;23636,25;Pago em dia
+11;Receber;Vendas à vista;19/04/2026;19/04/2026;20502,13;Pago em dia
+12;Pagar;Internet;14/01/2026;19/01/2026;16619,32;Pago com atraso
+13;Pagar;Fornecedores;15/02/2026;15/02/2026;13693,32;Pago em dia
+14;Pagar;Energia;04/12/2025;09/12/2025;11409,54;Pago com atraso
+15;Pagar;Aluguel;20/07/2026;;8469,88;Em aberto
+16;Receber;Serviços;20/01/2025;20/01/2025;5351,15;Pago em dia
+17;Pagar;Energia;05/03/2025;07/03/2025;10064,14;Pago com atraso
+18;Receber;Serviços;09/05/2026;09/05/2026;11152,27;Pago em dia
+19;Pagar;Energia;01/09/2025;01/09/2025;12043,54;Pago em dia
+20;Receber;Vendas a prazo;15/11/2025;25/12/2025;24555,55;Pago com atraso
+21;Pagar;Internet;31/03/2026;31/03/2026;4736,73;Pago em dia
+22;Receber;Vendas a prazo;12/09/2025;27/09/2025;12460,73;Pago com atraso
+23;Receber;Vendas à vista;06/10/2026;21/10/2026;16231,34;Pago com atraso
+24;Pagar;Fornecedores;25/06/2025;25/06/2025;7678,56;Pago em dia
+25;Receber;Vendas a prazo;04/09/2026;19/09/2026;5646,03;Pago com atraso
+26;Receber;Vendas a prazo;08/08/2025;13/08/2025;3477,57;Pago com atraso
+27;Pagar;Impostos;23/05/2026;02/07/2026;7592,13;Pago com atraso
+28;Pagar;Marketing;05/11/2025;05/11/2025;11981,11;Pago em dia
+29;Receber;Vendas a prazo;25/04/2025;27/04/2025;23693,30;Pago com atraso
+30;Receber;Vendas a prazo;01/03/2026;01/03/2026;19123,70;Pago em dia
+31;Receber;Serviços;06/10/2026;11/10/2026;14777,60;Pago com atraso
+32;Pagar;Folha de pagamento;22/04/2026;01/06/2026;9845,49;Pago com atraso
+33;Receber;Serviços;13/07/2026;;17516,70;Em aberto
+34;Pagar;Fornecedores;30/05/2026;01/06/2026;1038,82;Pago com atraso
+35;Pagar;Energia;01/03/2025;01/03/2025;10482,51;Pago em dia
+36;Pagar;Energia;08/09/2026;08/09/2026;2510,87;Pago em dia
+37;Receber;Serviços;05/07/2025;20/07/2025;13044,67;Pago com atraso
+38;Pagar;Impostos;01/04/2025;01/04/2025;4209,81;Pago em dia
+39;Receber;Vendas à vista;25/10/2026;30/10/2026;4870,83;Pago com atraso
+40;Pagar;Aluguel;12/04/2025;12/04/2025;8283,86;Pago em dia
+41;Receber;Serviços;24/03/2026;26/03/2026;12136,51;Pago com atraso
+42;Pagar;Folha de pagamento;02/07/2025;02/07/2025;13310,03;Pago em dia
+43;Receber;Serviços;04/04/2026;09/04/2026;7015,18;Pago com atraso
+44;Receber;Serviços;10/11/2025;12/11/2025;818,81;Pago com atraso
+45;Pagar;Aluguel;17/11/2025;19/11/2025;8701,36;Pago com atraso
+46;Pagar;Internet;10/10/2025;15/10/2025;5820,48;Pago com atraso
+47;Receber;Serviços;02/09/2025;02/09/2025;13691,55;Pago em dia
+48;Pagar;Impostos;04/04/2025;14/05/2025;13027,15;Pago com atraso
+49;Pagar;Marketing;03/07/2025;08/07/2025;16003,65;Pago com atraso
+50;Pagar;Energia;08/05/2026;08/05/2026;1783,23;Pago em dia
+51;Pagar;Marketing;02/02/2025;02/02/2025;13944,27;Pago em dia
+52;Receber;Vendas à vista;10/09/2026;;9930,20;Em aberto
+53;Receber;Vendas à vista;01/07/2026;01/07/2026;3484,91;Pago em dia
+54;Pagar;Marketing;11/06/2025;26/06/2025;7863,77;Pago com atraso
+55;Receber;Vendas a prazo;11/02/2026;11/02/2026;17824,58;Pago em dia
+56;Receber;Vendas a prazo;13/05/2025;15/05/2025;6116,25;Pago com atraso
+57;Pagar;Internet;17/03/2025;26/04/2025;10295,23;Pago com atraso
+58;Pagar;Internet;21/10/2026;21/10/2026;5134,21;Pago em dia
+59;Pagar;Aluguel;09/07/2025;14/07/2025;14870,27;Pago com atraso
+60;Pagar;Impostos;06/03/2025;11/03/2025;16433,24;Pago com atraso
+61;Pagar;Impostos;21/05/2026;21/05/2026;639,85;Pago em dia
+62;Pagar;Folha de pagamento;03/09/2026;03/09/2026;15512,85;Pago em dia
+63;Receber;Vendas à vista;12/08/2025;12/08/2025;7324,59;Pago em dia
+64;Pagar;Internet;05/11/2025;10/11/2025;4046,78;Pago com atraso
+65;Pagar;Folha de pagamento;26/02/2025;28/02/2025;6019,40;Pago com atraso
+66;Receber;Serviços;06/03/2026;15/04/2026;5865,83;Pago com atraso
+67;Pagar;Internet;06/06/2026;08/06/2026;4852,36;Pago com atraso
+68;Receber;Serviços;01/07/2026;01/07/2026;7425,20;Pago em dia
+69;Receber;Vendas à vista;24/08/2026;;17109,74;Em aberto
+70;Pagar;Fornecedores;01/11/2025;16/11/2025;16182,17;Pago com atraso
+71;Receber;Serviços;17/04/2026;22/04/2026;2240,22;Pago com atraso
+72;Receber;Vendas a prazo;19/01/2025;03/02/2025;21613,78;Pago com atraso
+73;Pagar;Impostos;18/11/2025;28/12/2025;9987,26;Pago com atraso
+74;Receber;Serviços;16/04/2025;21/04/2025;24394,31;Pago com atraso
+75;Pagar;Marketing;26/09/2025;26/09/2025;3884,49;Pago em dia
+76;Pagar;Aluguel;03/03/2026;03/03/2026;12795,23;Pago em dia
+77;Receber;Vendas a prazo;05/10/2025;;20031,02;Em aberto
+78;Pagar;Folha de pagamento;13/07/2025;13/07/2025;11285,69;Pago em dia
+79;Receber;Serviços;17/04/2025;22/04/2025;5001,19;Pago com atraso
+80;Pagar;Internet;22/03/2026;;10938,56;Em aberto
+81;Receber;Vendas a prazo;06/05/2026;08/05/2026;5653,27;Pago com atraso
+82;Receber;Vendas a prazo;22/10/2026;27/10/2026;23208,47;Pago com atraso
+83;Receber;Vendas a prazo;23/03/2026;23/03/2026;19652,37;Pago em dia
+84;Pagar;Internet;30/07/2026;30/07/2026;14594,87;Pago em dia
+85;Receber;Vendas a prazo;11/06/2026;11/06/2026;7279,79;Pago em dia
+86;Receber;Vendas a prazo;09/09/2025;;10146,94;Em aberto
+87;Receber;Serviços;26/05/2026;28/05/2026;23962,29;Pago com atraso
+88;Pagar;Fornecedores;07/09/2026;22/09/2026;9301,76;Pago com atraso
+89;Receber;Serviços;11/01/2026;11/01/2026;8811,70;Pago em dia
+90;Pagar;Fornecedores;04/09/2026;09/09/2026;6563,57;Pago com atraso
+91;Receber;Vendas a prazo;28/04/2025;30/04/2025;24422,92;Pago com atraso
+92;Receber;Vendas a prazo;11/04/2025;26/04/2025;4339,25;Pago com atraso
+93;Receber;Vendas a prazo;06/04/2025;21/04/2025;7588,54;Pago com atraso
+94;Receber;Vendas a prazo;19/03/2025;;5950,85;Em aberto
+95;Receber;Vendas a prazo;07/06/2026;07/06/2026;3476,00;Pago em dia
+96;Receber;Vendas a prazo;23/12/2025;25/12/2025;19065,07;Pago com atraso
+97;Receber;Vendas à vista;09/12/2025;18/01/2026;18170,06;Pago com atraso
+98;Receber;Serviços;17/03/2026;17/03/2026;7805,34;Pago em dia
+99;Pagar;Internet;06/11/2025;11/11/2025;11514,21;Pago com atraso
+100;Pagar;Impostos;13/09/2025;;8171,95;Em aberto
+101;Receber;Vendas a prazo;04/11/2025;04/11/2025;7427,72;Pago em dia
+102;Receber;Serviços;04/07/2026;04/07/2026;19551,75;Pago em dia
+103;Receber;Vendas a prazo;18/11/2025;18/11/2025;9672,71;Pago em dia
+104;Receber;Serviços;08/07/2025;17/08/2025;18944,32;Pago com atraso
+105;Pagar;Aluguel;21/04/2026;21/04/2026;4773,93;Pago em dia
+106;Receber;Vendas à vista;16/03/2025;16/03/2025;18823,75;Pago em dia
+107;Receber;Serviços;07/07/2026;;19787,14;Em aberto
+108;Pagar;Impostos;10/03/2025;19/04/2025;7256,93;Pago com atraso
+109;Pagar;Impostos;04/07/2026;13/08/2026;5037,24;Pago com atraso
+110;Pagar;Marketing;06/08/2025;11/08/2025;5605,64;Pago com atraso
+111;Pagar;Aluguel;04/02/2025;04/02/2025;1070,02;Pago em dia
+112;Receber;Vendas à vista;19/08/2025;19/08/2025;13799,63;Pago em dia
+113;Pagar;Impostos;10/03/2026;15/03/2026;2968,27;Pago com atraso
+114;Pagar;Aluguel;18/03/2026;02/04/2026;4863,23;Pago com atraso
+115;Receber;Serviços;11/07/2026;16/07/2026;16360,03;Pago com atraso
+116;Receber;Vendas à vista;26/10/2026;26/10/2026;12577,22;Pago em dia
+117;Receber;Vendas a prazo;30/01/2025;11/03/2025;12386,30;Pago com atraso
+118;Receber;Vendas à vista;07/06/2026;09/06/2026;5012,37;Pago com atraso
+119;Receber;Vendas a prazo;25/02/2026;25/02/2026;10853,76;Pago em dia
+120;Receber;Vendas à vista;25/05/2025;25/05/2025;16853,73;Pago em dia
+121;Pagar;Folha de pagamento;24/02/2025;;3054,82;Em aberto
+122;Receber;Serviços;02/04/2025;07/04/2025;14738,50;Pago com atraso
+123;Receber;Serviços;26/02/2026;28/02/2026;15708,00;Pago com atraso
+124;Receber;Serviços;06/05/2025;06/05/2025;15616,11;Pago em dia
+125;Receber;Serviços;12/03/2026;14/03/2026;24494,53;Pago com atraso
+126;Pagar;Impostos;08/07/2025;17/08/2025;11610,73;Pago com atraso
+127;Receber;Vendas a prazo;19/05/2025;21/05/2025;20543,68;Pago com atraso
+128;Pagar;Impostos;18/10/2025;18/10/2025;16181,68;Pago em dia
+129;Pagar;Aluguel;01/03/2026;01/03/2026;7346,49;Pago em dia
+130;Receber;Serviços;23/04/2025;23/04/2025;5309,67;Pago em dia
+131;Pagar;Fornecedores;20/09/2026;20/09/2026;9066,96;Pago em dia
+132;Pagar;Impostos;05/05/2025;10/05/2025;7677,50;Pago com atraso
+133;Receber;Vendas à vista;09/10/2025;;8241,63;Em aberto
+134;Pagar;Energia;24/08/2026;29/08/2026;1685,80;Pago com atraso
+135;Pagar;Internet;23/04/2025;02/06/2025;10744,88;Pago com atraso
+136;Receber;Serviços;14/03/2026;19/03/2026;3670,02;Pago com atraso
+137;Pagar;Fornecedores;24/02/2026;;12524,51;Em aberto
+138;Pagar;Impostos;17/06/2026;17/06/2026;14940,33;Pago em dia
+139;Pagar;Folha de pagamento;21/07/2026;21/07/2026;5261,51;Pago em dia
+140;Pagar;Energia;23/12/2025;25/12/2025;3922,43;Pago com atraso
+141;Receber;Vendas a prazo;05/05/2026;05/05/2026;2218,18;Pago em dia
+142;Receber;Serviços;16/03/2026;16/03/2026;12576,35;Pago em dia
+143;Receber;Vendas à vista;11/10/2025;;4198,45;Em aberto
+144;Pagar;Energia;24/02/2026;11/03/2026;14812,09;Pago com atraso
+145;Pagar;Folha de pagamento;21/07/2025;21/07/2025;10600,59;Pago em dia
+146;Pagar;Fornecedores;26/02/2026;13/03/2026;10133,44;Pago com atraso
+147;Receber;Vendas à vista;03/03/2026;08/03/2026;7813,47;Pago com atraso
+148;Receber;Vendas à vista;10/05/2026;12/05/2026;5467,92;Pago com atraso
+149;Pagar;Aluguel;15/05/2026;15/05/2026;3472,90;Pago em dia
+150;Pagar;Aluguel;10/12/2025;15/12/2025;3825,94;Pago com atraso
+151;Pagar;Fornecedores;10/10/2026;10/10/2026;10394,59;Pago em dia
+152;Pagar;Internet;12/08/2026;27/08/2026;9064,85;Pago com atraso
+153;Pagar;Aluguel;10/04/2026;10/04/2026;4945,45;Pago em dia
+154;Pagar;Fornecedores;24/08/2025;24/08/2025;15815,94;Pago em dia
+155;Pagar;Folha de pagamento;04/04/2026;14/05/2026;13012,89;Pago com atraso
+156;Pagar;Folha de pagamento;27/03/2025;;6680,30;Em aberto
+157;Pagar;Fornecedores;28/07/2025;02/08/2025;13256,06;Pago com atraso
+158;Pagar;Marketing;24/08/2026;24/08/2026;1991,07;Pago em dia
+159;Pagar;Aluguel;11/01/2026;;7228,34;Em aberto
+160;Receber;Serviços;05/06/2026;05/06/2026;9697,03;Pago em dia
+161;Pagar;Energia;24/05/2026;;11254,51;Em aberto
+162;Pagar;Internet;16/10/2026;;14151,03;Em aberto
+163;Receber;Serviços;26/07/2026;26/07/2026;10742,48;Pago em dia
+164;Receber;Vendas à vista;09/09/2026;09/09/2026;9022,31;Pago em dia
+165;Receber;Serviços;18/01/2026;18/01/2026;7009,10;Pago em dia
+166;Pagar;Fornecedores;07/01/2025;22/01/2025;6433,27;Pago com atraso
+167;Pagar;Energia;16/12/2025;21/12/2025;3583,91;Pago com atraso
+168;Pagar;Internet;26/08/2026;31/08/2026;16096,68;Pago com atraso
+169;Receber;Vendas à vista;08/11/2025;;18344,85;Em aberto
+170;Pagar;Aluguel;15/06/2025;15/06/2025;7199,92;Pago em dia
+171;Receber;Vendas a prazo;16/10/2025;16/10/2025;12881,02;Pago em dia
+172;Receber;Vendas a prazo;17/02/2025;22/02/2025;23623,89;Pago com atraso
+173;Receber;Vendas à vista;13/04/2026;15/04/2026;8437,53;Pago com atraso
+174;Pagar;Marketing;25/05/2025;25/05/2025;16757,55;Pago em dia
+175;Pagar;Aluguel;19/09/2026;19/09/2026;13230,61;Pago em dia
+176;Receber;Serviços;31/07/2025;05/08/2025;5225,11;Pago com atraso
+177;Receber;Serviços;04/08/2025;19/08/2025;15499,76;Pago com atraso
+178;Pagar;Internet;29/09/2026;01/10/2026;2470,92;Pago com atraso
+179;Receber;Serviços;08/05/2026;08/05/2026;7374,00;Pago em dia
+180;Receber;Serviços;05/01/2025;05/01/2025;21758,04;Pago em dia
+181;Pagar;Folha de pagamento;16/03/2026;21/03/2026;17602,68;Pago com atraso
+182;Pagar;Aluguel;07/08/2026;;15195,49;Em aberto
+183;Pagar;Marketing;20/04/2026;;11895,39;Em aberto
+184;Receber;Vendas à vista;09/05/2026;24/05/2026;19770,35;Pago com atraso
+185;Receber;Vendas a prazo;01/08/2026;01/08/2026;23626,85;Pago em dia
+186;Receber;Vendas a prazo;30/10/2025;04/11/2025;3512,38;Pago com atraso
+187;Pagar;Fornecedores;01/04/2025;;9423,16;Em aberto
+188;Pagar;Energia;03/09/2026;05/09/2026;4108,52;Pago com atraso
+189;Pagar;Internet;30/01/2025;30/01/2025;14457,44;Pago em dia
+190;Pagar;Marketing;19/05/2026;19/05/2026;1963,66;Pago em dia
+191;Receber;Vendas à vista;27/04/2026;27/04/2026;5850,01;Pago em dia
+192;Receber;Vendas a prazo;18/04/2026;18/04/2026;4740,22;Pago em dia
+193;Receber;Serviços;18/10/2025;;2798,50;Em aberto
+194;Receber;Vendas à vista;05/03/2026;20/03/2026;17818,63;Pago com atraso
+195;Receber;Vendas a prazo;15/01/2026;;23146,02;Em aberto
+196;Pagar;Fornecedores;29/10/2025;29/10/2025;13950,16;Pago em dia
+197;Pagar;Fornecedores;06/09/2025;21/09/2025;10333,70;Pago com atraso
+198;Pagar;Energia;25/12/2025;25/12/2025;9993,98;Pago em dia
+199;Pagar;Aluguel;27/09/2026;06/11/2026;4620,27;Pago com atraso
+200;Pagar;Energia;14/03/2026;29/03/2026;8582,57;Pago com atraso
+201;Pagar;Internet;15/03/2026;;6399,38;Em aberto
+202;Pagar;Aluguel;08/04/2026;08/04/2026;13408,71;Pago em dia
+203;Receber;Vendas à vista;14/02/2025;14/02/2025;24071,00;Pago em dia
+204;Pagar;Fornecedores;06/02/2025;08/02/2025;7754,57;Pago com atraso
+205;Pagar;Fornecedores;19/08/2025;28/09/2025;13639,50;Pago com atraso
+206;Receber;Vendas a prazo;13/04/2025;13/04/2025;19393,95;Pago em dia
+207;Pagar;Aluguel;05/01/2025;20/01/2025;5709,84;Pago com atraso
+208;Receber;Vendas a prazo;16/09/2025;;22667,08;Em aberto
+209;Pagar;Marketing;05/03/2025;14/04/2025;11316,01;Pago com atraso
+210;Receber;Vendas a prazo;22/03/2025;;15585,87;Em aberto
+211;Receber;Vendas a prazo;11/08/2025;;24391,19;Em aberto
+212;Pagar;Folha de pagamento;23/06/2026;02/08/2026;1340,06;Pago com atraso
+213;Pagar;Fornecedores;15/09/2025;17/09/2025;14045,98;Pago com atraso
+214;Pagar;Aluguel;03/09/2026;;8139,89;Em aberto
+215;Receber;Serviços;02/03/2026;;6929,90;Em aberto
+216;Pagar;Aluguel;11/09/2025;21/10/2025;4735,31;Pago com atraso
+217;Pagar;Impostos;28/06/2026;28/06/2026;10295,06;Pago em dia
+218;Pagar;Aluguel;07/04/2025;12/04/2025;1467,50;Pago com atraso
+219;Receber;Vendas à vista;17/07/2025;17/07/2025;6648,58;Pago em dia
+220;Receber;Vendas a prazo;09/03/2026;11/03/2026;19887,39;Pago com atraso
+221;Pagar;Energia;25/06/2026;25/06/2026;11641,04;Pago em dia
+222;Pagar;Aluguel;20/04/2026;20/04/2026;829,95;Pago em dia
+223;Pagar;Energia;31/01/2026;02/02/2026;511,73;Pago com atraso
+224;Receber;Serviços;10/06/2025;25/06/2025;12337,93;Pago com atraso
+225;Receber;Serviços;16/01/2025;16/01/2025;3595,29;Pago em dia
+226;Pagar;Folha de pagamento;22/11/2025;22/11/2025;11592,62;Pago em dia
+227;Pagar;Aluguel;20/08/2025;22/08/2025;6783,74;Pago com atraso
+228;Pagar;Impostos;03/08/2026;03/08/2026;7445,20;Pago em dia
+229;Pagar;Impostos;22/02/2025;24/02/2025;12051,90;Pago com atraso
+230;Pagar;Energia;03/06/2026;03/06/2026;16952,40;Pago em dia
+231;Pagar;Aluguel;12/04/2025;22/05/2025;503,95;Pago com atraso
+232;Pagar;Impostos;14/03/2025;19/03/2025;6739,18;Pago com atraso
+233;Pagar;Folha de pagamento;11/09/2026;;17545,61;Em aberto
+234;Pagar;Internet;11/06/2026;11/06/2026;555,53;Pago em dia
+235;Pagar;Marketing;28/03/2026;28/03/2026;9338,63;Pago em dia
+236;Pagar;Folha de pagamento;13/08/2025;15/08/2025;12805,97;Pago com atraso
+237;Receber;Vendas à vista;14/01/2026;29/01/2026;24549,79;Pago com atraso
+238;Receber;Vendas a prazo;25/10/2025;25/10/2025;5126,48;Pago em dia
+239;Pagar;Energia;31/12/2025;05/01/2026;3303,77;Pago com atraso
+240;Receber;Serviços;09/10/2026;09/10/2026;5029,36;Pago em dia
+241;Receber;Vendas à vista;02/05/2025;07/05/2025;24321,41;Pago com atraso
+242;Receber;Vendas à vista;29/07/2025;29/07/2025;21960,92;Pago em dia
+243;Receber;Serviços;05/08/2025;05/08/2025;4446,07;Pago em dia
+244;Pagar;Internet;07/12/2025;07/12/2025;7070,64;Pago em dia
+245;Pagar;Impostos;30/11/2025;02/12/2025;11462,62;Pago com atraso
+246;Receber;Serviços;21/04/2025;21/04/2025;14710,16;Pago em dia
+247;Receber;Serviços;13/02/2025;15/02/2025;5676,34;Pago com atraso
+248;Pagar;Marketing;07/06/2025;07/06/2025;5378,47;Pago em dia
+249;Receber;Vendas à vista;07/04/2026;07/04/2026;14329,59;Pago em dia
+250;Pagar;Impostos;09/04/2025;09/04/2025;5335,53;Pago em dia
+251;Pagar;Fornecedores;23/04/2026;28/04/2026;3016,76;Pago com atraso
+252;Pagar;Energia;06/09/2025;08/09/2025;13578,86;Pago com atraso
+253;Pagar;Aluguel;09/09/2025;09/09/2025;11160,08;Pago em dia
+254;Receber;Vendas à vista;26/09/2026;11/10/2026;11945,29;Pago com atraso
+255;Pagar;Fornecedores;10/01/2026;10/01/2026;10131,97;Pago em dia
+256;Pagar;Aluguel;20/10/2026;29/11/2026;4492,99;Pago com atraso
+257;Receber;Vendas a prazo;17/06/2025;27/07/2025;13660,64;Pago com atraso
+258;Pagar;Marketing;20/12/2025;20/12/2025;17894,72;Pago em dia
+259;Pagar;Marketing;20/04/2026;20/04/2026;14471,08;Pago em dia
+260;Pagar;Internet;26/05/2026;28/05/2026;15068,32;Pago com atraso
+261;Pagar;Aluguel;15/03/2026;20/03/2026;13477,55;Pago com atraso
+262;Pagar;Folha de pagamento;16/07/2026;31/07/2026;12963,69;Pago com atraso
+263;Pagar;Folha de pagamento;07/05/2026;;1996,18;Em aberto
+264;Receber;Vendas a prazo;25/07/2026;25/07/2026;6689,43;Pago em dia
+265;Pagar;Aluguel;08/11/2025;08/11/2025;10944,01;Pago em dia
+266;Pagar;Internet;18/12/2025;20/12/2025;10031,21;Pago com atraso
+267;Receber;Vendas a prazo;24/09/2025;24/09/2025;19520,90;Pago em dia
+268;Pagar;Energia;25/02/2025;25/02/2025;10999,14;Pago em dia
+269;Pagar;Fornecedores;08/03/2025;10/03/2025;5332,68;Pago com atraso
+270;Receber;Vendas à vista;30/05/2025;14/06/2025;24250,94;Pago com atraso
+271;Pagar;Marketing;29/04/2026;14/05/2026;6061,44;Pago com atraso
+272;Pagar;Aluguel;07/12/2025;07/12/2025;13698,16;Pago em dia
+273;Pagar;Energia;31/01/2025;05/02/2025;12115,08;Pago com atraso
+274;Receber;Vendas à vista;28/01/2025;09/03/2025;4999,77;Pago com atraso
+275;Pagar;Fornecedores;24/07/2026;24/07/2026;4160,21;Pago em dia
+276;Receber;Vendas a prazo;27/11/2025;29/11/2025;21707,06;Pago com atraso
+277;Pagar;Folha de pagamento;20/07/2026;20/07/2026;1217,76;Pago em dia
+278;Receber;Serviços;09/10/2026;11/10/2026;21113,26;Pago com atraso
+279;Pagar;Energia;12/06/2026;;7673,40;Em aberto
+280;Receber;Serviços;15/12/2025;17/12/2025;5820,46;Pago com atraso
+281;Receber;Vendas a prazo;13/01/2025;15/01/2025;20484,66;Pago com atraso
+282;Receber;Serviços;28/08/2026;;4530,97;Em aberto
+283;Pagar;Impostos;18/04/2026;18/04/2026;7014,63;Pago em dia
+284;Pagar;Internet;05/11/2025;20/11/2025;15584,12;Pago com atraso
+285;Pagar;Energia;24/09/2026;24/09/2026;1408,50;Pago em dia
+286;Receber;Vendas a prazo;22/02/2026;03/04/2026;7763,11;Pago com atraso
+287;Receber;Serviços;02/10/2025;02/10/2025;1765,38;Pago em dia
+288;Pagar;Internet;11/09/2026;;3833,68;Em aberto
+289;Receber;Vendas à vista;09/01/2026;18/02/2026;24817,28;Pago com atraso
+290;Pagar;Internet;15/11/2025;15/11/2025;9324,36;Pago em dia
+291;Receber;Vendas à vista;17/11/2025;;16353,13;Em aberto
+292;Pagar;Folha de pagamento;07/03/2026;07/03/2026;6948,32;Pago em dia
+293;Receber;Serviços;25/09/2026;;15602,19;Em aberto
+294;Receber;Serviços;23/05/2026;25/05/2026;18537,34;Pago com atraso
+295;Pagar;Internet;15/09/2025;20/09/2025;879,99;Pago com atraso
+296;Receber;Vendas à vista;26/03/2025;;8452,71;Em aberto
+297;Receber;Vendas a prazo;02/05/2025;02/05/2025;24377,07;Pago em dia
+298;Receber;Vendas à vista;18/11/2025;03/12/2025;7202,54;Pago com atraso
+299;Pagar;Aluguel;28/02/2026;02/03/2026;10633,66;Pago com atraso
+300;Pagar;Marketing;30/08/2026;04/09/2026;4953,64;Pago com atraso
+301;Receber;Vendas a prazo;12/01/2025;27/01/2025;19501,32;Pago com atraso
+302;Receber;Serviços;17/01/2025;19/01/2025;10946,38;Pago com atraso
+303;Pagar;Fornecedores;21/04/2026;06/05/2026;12965,55;Pago com atraso
+304;Pagar;Impostos;02/10/2025;02/10/2025;13115,28;Pago em dia
+305;Receber;Vendas a prazo;02/06/2026;17/06/2026;5534,75;Pago com atraso
+306;Receber;Vendas à vista;02/09/2026;02/09/2026;5264,67;Pago em dia
+307;Receber;Serviços;02/11/2025;04/11/2025;4098,20;Pago com atraso
+308;Pagar;Aluguel;18/06/2025;18/06/2025;1750,01;Pago em dia
+309;Receber;Vendas a prazo;22/10/2025;24/10/2025;22660,24;Pago com atraso
+310;Pagar;Marketing;29/01/2026;13/02/2026;14394,83;Pago com atraso
+311;Receber;Serviços;03/02/2026;03/02/2026;16860,14;Pago em dia
+312;Receber;Serviços;21/04/2025;21/04/2025;13381,86;Pago em dia
+313;Pagar;Fornecedores;07/04/2026;09/04/2026;13455,82;Pago com atraso
+314;Receber;Serviços;09/01/2026;24/01/2026;20653,54;Pago com atraso
+315;Pagar;Folha de pagamento;28/11/2025;28/11/2025;1156,43;Pago em dia
+316;Pagar;Energia;29/01/2026;03/02/2026;17160,88;Pago com atraso
+317;Pagar;Energia;22/03/2025;27/03/2025;1651,50;Pago com atraso
+318;Pagar;Marketing;29/04/2025;01/05/2025;14733,79;Pago com atraso
+319;Pagar;Fornecedores;10/03/2026;19/04/2026;3151,69;Pago com atraso
+320;Pagar;Folha de pagamento;27/04/2026;06/06/2026;15940,23;Pago com atraso
+321;Pagar;Fornecedores;02/08/2025;02/08/2025;14467,87;Pago em dia
+322;Pagar;Aluguel;26/02/2025;26/02/2025;3379,25;Pago em dia
+323;Pagar;Marketing;05/06/2026;07/06/2026;11035,72;Pago com atraso
+324;Pagar;Folha de pagamento;27/09/2025;27/09/2025;17216,67;Pago em dia
+325;Pagar;Energia;29/03/2025;29/03/2025;3447,99;Pago em dia
+326;Pagar;Folha de pagamento;12/04/2025;12/04/2025;6699,15;Pago em dia
+327;Pagar;Folha de pagamento;22/02/2025;03/04/2025;4409,13;Pago com atraso
+328;Pagar;Energia;31/10/2025;31/10/2025;13121,40;Pago em dia
+329;Receber;Vendas a prazo;17/02/2026;17/02/2026;18364,89;Pago em dia
+330;Pagar;Internet;21/08/2025;21/08/2025;13256,55;Pago em dia
+331;Pagar;Fornecedores;17/05/2026;17/05/2026;6593,30;Pago em dia
+332;Receber;Vendas a prazo;18/01/2025;23/01/2025;18705,48;Pago com atraso
+333;Pagar;Impostos;21/02/2026;21/02/2026;17334,24;Pago em dia
+334;Receber;Serviços;12/10/2025;21/11/2025;8911,66;Pago com atraso
+335;Pagar;Aluguel;23/07/2026;01/09/2026;2809,80;Pago com atraso
+336;Receber;Serviços;03/08/2025;18/08/2025;19716,98;Pago com atraso
+337;Pagar;Internet;03/02/2026;08/02/2026;12642,04;Pago com atraso
+338;Pagar;Energia;07/10/2026;07/10/2026;6776,61;Pago em dia
+339;Receber;Vendas a prazo;15/07/2025;24/08/2025;1159,10;Pago com atraso
+340;Pagar;Internet;02/07/2026;07/07/2026;3244,56;Pago com atraso
+341;Receber;Serviços;31/08/2025;10/10/2025;13577,21;Pago com atraso
+342;Pagar;Fornecedores;27/08/2026;29/08/2026;1647,98;Pago com atraso
+343;Receber;Serviços;04/07/2026;19/07/2026;9698,66;Pago com atraso
+344;Receber;Vendas a prazo;11/03/2025;;3686,82;Em aberto
+345;Receber;Serviços;20/09/2026;22/09/2026;7769,41;Pago com atraso
+346;Pagar;Internet;19/07/2025;21/07/2025;2922,79;Pago com atraso
+347;Pagar;Impostos;29/06/2026;08/08/2026;14313,15;Pago com atraso
+348;Pagar;Aluguel;28/12/2025;30/12/2025;5571,34;Pago com atraso
+349;Receber;Vendas à vista;05/04/2026;05/04/2026;5210,61;Pago em dia
+350;Pagar;Fornecedores;07/01/2026;07/01/2026;11177,06;Pago em dia
+351;Receber;Vendas a prazo;18/01/2026;;23647,39;Em aberto
+352;Pagar;Folha de pagamento;15/03/2025;20/03/2025;5265,69;Pago com atraso
+353;Receber;Vendas à vista;11/03/2025;;8882,23;Em aberto
+354;Receber;Vendas a prazo;08/06/2026;23/06/2026;14228,08;Pago com atraso
+355;Receber;Vendas a prazo;30/10/2025;30/10/2025;19050,49;Pago em dia
+356;Receber;Vendas à vista;24/06/2026;29/06/2026;4418,58;Pago com atraso
+357;Receber;Vendas à vista;15/04/2025;20/04/2025;24458,40;Pago com atraso
+358;Pagar;Aluguel;25/02/2026;25/02/2026;14496,19;Pago em dia
+359;Pagar;Energia;07/09/2026;09/09/2026;3567,56;Pago com atraso
+360;Pagar;Internet;17/05/2025;17/05/2025;5099,57;Pago em dia
+361;Pagar;Internet;02/11/2025;17/11/2025;16209,90;Pago com atraso
+362;Pagar;Folha de pagamento;21/02/2026;21/02/2026;11677,71;Pago em dia
+363;Pagar;Marketing;14/02/2026;16/02/2026;12462,81;Pago com atraso
+364;Receber;Vendas à vista;17/10/2026;17/10/2026;4305,38;Pago em dia
+365;Receber;Vendas a prazo;30/09/2026;;3950,39;Em aberto
+366;Receber;Vendas à vista;09/09/2026;11/09/2026;4545,70;Pago com atraso
+367;Receber;Vendas a prazo;07/05/2026;;4992,73;Em aberto
+368;Receber;Vendas à vista;13/10/2026;28/10/2026;20648,83;Pago com atraso
+369;Pagar;Fornecedores;01/01/2026;01/01/2026;15661,45;Pago em dia
+370;Receber;Vendas à vista;28/07/2025;02/08/2025;15500,82;Pago com atraso
+371;Receber;Vendas a prazo;13/04/2026;18/04/2026;12104,53;Pago com atraso
+372;Receber;Vendas a prazo;14/03/2025;;2329,69;Em aberto
+373;Pagar;Impostos;24/04/2025;;17377,27;Em aberto
+374;Pagar;Aluguel;27/07/2026;27/07/2026;14214,03;Pago em dia
+375;Receber;Serviços;05/01/2025;05/01/2025;14825,32;Pago em dia
+376;Receber;Vendas à vista;15/08/2025;24/09/2025;3582,96;Pago com atraso
+377;Receber;Vendas a prazo;01/08/2025;10/09/2025;1354,43;Pago com atraso
+378;Pagar;Marketing;26/05/2026;31/05/2026;7754,82;Pago com atraso
+379;Pagar;Internet;20/06/2025;20/06/2025;5803,89;Pago em dia
+380;Receber;Vendas à vista;21/10/2025;23/10/2025;9898,54;Pago com atraso
+381;Pagar;Energia;12/01/2025;14/01/2025;12250,75;Pago com atraso
+382;Receber;Serviços;29/01/2026;29/01/2026;23061,48;Pago em dia
+383;Receber;Vendas à vista;17/11/2025;27/12/2025;9751,38;Pago com atraso
+384;Receber;Vendas à vista;05/05/2026;05/05/2026;7826,02;Pago em dia
+385;Receber;Vendas à vista;24/05/2025;26/05/2025;14614,69;Pago com atraso
+386;Pagar;Aluguel;26/02/2026;07/04/2026;15440,58;Pago com atraso
+387;Receber;Vendas à vista;22/01/2026;22/01/2026;18210,57;Pago em dia
+388;Pagar;Fornecedores;26/08/2025;05/10/2025;9058,42;Pago com atraso
+389;Receber;Serviços;27/06/2026;02/07/2026;21273,54;Pago com atraso
+390;Pagar;Fornecedores;13/02/2026;25/03/2026;3371,26;Pago com atraso
+391;Pagar;Fornecedores;05/10/2025;05/10/2025;3907,80;Pago em dia
+392;Receber;Serviços;05/01/2025;05/01/2025;21119,21;Pago em dia
+393;Pagar;Folha de pagamento;17/04/2025;17/04/2025;5675,52;Pago em dia
+394;Receber;Serviços;03/02/2025;18/02/2025;19352,69;Pago com atraso
+395;Receber;Serviços;25/05/2026;;1207,09;Em aberto
+396;Pagar;Energia;05/05/2025;;5959,63;Em aberto
+397;Pagar;Internet;08/07/2026;10/07/2026;4780,38;Pago com atraso
+398;Pagar;Folha de pagamento;20/12/2025;25/12/2025;17705,72;Pago com atraso
+399;Receber;Serviços;21/10/2026;21/10/2026;10491,76;Pago em dia
+400;Receber;Vendas à vista;07/08/2026;07/08/2026;23688,55;Pago em dia
+401;Pagar;Energia;09/06/2026;09/06/2026;2563,64;Pago em dia
+402;Receber;Vendas à vista;30/09/2025;09/11/2025;12136,02;Pago com atraso
+403;Pagar;Impostos;22/08/2025;22/08/2025;7367,01;Pago em dia
+404;Receber;Serviços;25/05/2025;25/05/2025;22123,16;Pago em dia
+405;Pagar;Aluguel;03/06/2026;03/06/2026;8836,59;Pago em dia
+406;Receber;Vendas a prazo;07/05/2026;07/05/2026;24942,20;Pago em dia
+407;Receber;Vendas a prazo;06/06/2026;16/07/2026;7847,19;Pago com atraso
+408;Pagar;Energia;31/05/2025;15/06/2025;9109,65;Pago com atraso
+409;Pagar;Energia;06/06/2026;16/07/2026;4821,35;Pago com atraso
+410;Pagar;Marketing;28/06/2025;28/06/2025;16170,86;Pago em dia
+411;Pagar;Marketing;01/12/2025;01/12/2025;10636,22;Pago em dia
+412;Pagar;Folha de pagamento;12/05/2025;27/05/2025;1995,69;Pago com atraso
+413;Pagar;Internet;31/01/2026;02/02/2026;8476,66;Pago com atraso
+414;Receber;Vendas a prazo;06/11/2025;16/12/2025;21474,26;Pago com atraso
+415;Receber;Vendas à vista;04/10/2025;;9030,29;Em aberto
+416;Receber;Serviços;10/05/2025;10/05/2025;24274,05;Pago em dia
+417;Receber;Vendas à vista;25/05/2025;30/05/2025;15805,02;Pago com atraso
+418;Receber;Vendas à vista;10/01/2025;10/01/2025;5598,19;Pago em dia
+419;Receber;Vendas a prazo;30/05/2026;04/06/2026;13931,23;Pago com atraso
+420;Pagar;Internet;28/01/2025;30/01/2025;12925,67;Pago com atraso
+421;Receber;Serviços;14/10/2025;19/10/2025;11790,16;Pago com atraso
+422;Pagar;Impostos;27/02/2026;14/03/2026;5567,53;Pago com atraso
+423;Receber;Vendas à vista;05/08/2026;14/09/2026;5296,23;Pago com atraso
+424;Receber;Vendas a prazo;12/03/2025;21/04/2025;20443,96;Pago com atraso
+425;Pagar;Aluguel;21/07/2025;05/08/2025;10752,97;Pago com atraso
+426;Receber;Vendas a prazo;24/05/2025;24/05/2025;22036,89;Pago em dia
+427;Pagar;Folha de pagamento;27/08/2026;27/08/2026;17904,40;Pago em dia
+428;Receber;Vendas à vista;25/09/2025;04/11/2025;17457,95;Pago com atraso
+429;Pagar;Impostos;26/04/2025;26/04/2025;15875,07;Pago em dia
+430;Receber;Vendas à vista;07/05/2025;12/05/2025;13921,28;Pago com atraso
+431;Receber;Vendas à vista;15/01/2025;15/01/2025;5273,08;Pago em dia
+432;Receber;Serviços;03/11/2025;03/11/2025;1867,24;Pago em dia
+433;Receber;Vendas à vista;16/05/2025;;24717,88;Em aberto
+434;Pagar;Impostos;22/12/2025;27/12/2025;17061,50;Pago com atraso
+435;Pagar;Aluguel;27/06/2026;27/06/2026;11563,84;Pago em dia
+436;Receber;Vendas a prazo;24/02/2026;11/03/2026;11704,89;Pago com atraso
+437;Receber;Serviços;21/03/2026;26/03/2026;22341,89;Pago com atraso
+438;Receber;Serviços;02/02/2026;07/02/2026;10589,03;Pago com atraso
+439;Receber;Serviços;04/10/2026;04/10/2026;18980,62;Pago em dia
+440;Pagar;Internet;13/06/2026;15/06/2026;4702,20;Pago com atraso
+441;Receber;Serviços;29/12/2025;29/12/2025;4923,83;Pago em dia
+442;Receber;Vendas à vista;15/01/2026;15/01/2026;11996,72;Pago em dia
+443;Receber;Serviços;26/06/2025;;11854,49;Em aberto
+444;Receber;Vendas a prazo;08/06/2025;18/07/2025;16054,22;Pago com atraso
+445;Receber;Vendas à vista;15/11/2025;30/11/2025;16151,90;Pago com atraso
+446;Pagar;Impostos;05/05/2026;14/06/2026;4110,32;Pago com atraso
+447;Receber;Vendas a prazo;28/08/2026;28/08/2026;14861,19;Pago em dia
+448;Pagar;Folha de pagamento;27/11/2025;27/11/2025;3094,09;Pago em dia
+449;Receber;Serviços;10/11/2025;;2702,84;Em aberto
+450;Pagar;Fornecedores;22/09/2026;22/09/2026;4553,67;Pago em dia
+451;Receber;Vendas a prazo;21/04/2026;;6325,48;Em aberto
+452;Pagar;Energia;18/08/2025;27/09/2025;4177,57;Pago com atraso
+453;Receber;Serviços;06/06/2026;08/06/2026;3878,91;Pago com atraso
+454;Receber;Vendas à vista;19/01/2026;24/01/2026;23535,92;Pago com atraso
+455;Receber;Vendas à vista;26/08/2026;28/08/2026;3475,48;Pago com atraso
+456;Receber;Vendas à vista;03/03/2026;18/03/2026;20809,79;Pago com atraso
+457;Pagar;Internet;30/05/2026;30/05/2026;14144,17;Pago em dia
+458;Pagar;Energia;23/12/2025;01/02/2026;5813,38;Pago com atraso
+459;Receber;Serviços;16/03/2026;31/03/2026;14822,16;Pago com atraso
+460;Pagar;Folha de pagamento;07/07/2025;16/08/2025;13836,22;Pago com atraso
+461;Pagar;Energia;14/03/2025;19/03/2025;6133,81;Pago com atraso
+462;Receber;Vendas a prazo;26/03/2025;28/03/2025;22581,85;Pago com atraso
+463;Receber;Serviços;25/05/2026;09/06/2026;20843,83;Pago com atraso
+464;Receber;Vendas a prazo;25/02/2026;12/03/2026;927,79;Pago com atraso
+465;Pagar;Fornecedores;07/07/2026;16/08/2026;3274,36;Pago com atraso
+466;Receber;Serviços;14/01/2026;19/01/2026;17846,27;Pago com atraso
+467;Pagar;Fornecedores;10/04/2025;25/04/2025;5457,22;Pago com atraso
+468;Pagar;Aluguel;31/03/2026;05/04/2026;14623,06;Pago com atraso
+469;Pagar;Energia;02/12/2025;02/12/2025;15705,72;Pago em dia
+470;Receber;Vendas a prazo;06/10/2025;15/11/2025;10209,47;Pago com atraso
+471;Receber;Vendas a prazo;29/06/2025;08/08/2025;13908,75;Pago com atraso
+472;Pagar;Internet;26/02/2026;26/02/2026;11806,70;Pago em dia
+473;Pagar;Aluguel;06/03/2025;;16337,02;Em aberto
+474;Receber;Vendas à vista;31/05/2025;31/05/2025;7680,34;Pago em dia
+475;Pagar;Fornecedores;14/04/2025;14/04/2025;5261,82;Pago em dia
+476;Receber;Vendas à vista;06/03/2025;06/03/2025;13929,68;Pago em dia
+477;Receber;Vendas a prazo;20/01/2025;;23212,22;Em aberto
+478;Receber;Vendas a prazo;22/09/2026;27/09/2026;15612,46;Pago com atraso
+479;Pagar;Aluguel;22/07/2025;27/07/2025;7898,16;Pago com atraso
+480;Pagar;Aluguel;17/02/2025;19/02/2025;4625,89;Pago com atraso
+481;Receber;Vendas a prazo;25/06/2025;;18188,28;Em aberto
+482;Receber;Serviços;14/01/2025;23/02/2025;12899,02;Pago com atraso
+483;Pagar;Internet;19/04/2026;21/04/2026;1106,51;Pago com atraso
+484;Receber;Vendas a prazo;26/06/2026;05/08/2026;24205,80;Pago com atraso
+485;Pagar;Internet;19/10/2025;19/10/2025;17258,62;Pago em dia
+486;Receber;Vendas à vista;27/11/2025;;1260,74;Em aberto
+487;Receber;Serviços;09/08/2026;;20838,36;Em aberto
+488;Pagar;Marketing;27/11/2025;12/12/2025;4914,40;Pago com atraso
+489;Receber;Vendas à vista;03/10/2026;08/10/2026;14757,65;Pago com atraso
+490;Receber;Vendas à vista;25/03/2025;;1055,09;Em aberto
+491;Pagar;Marketing;19/04/2026;04/05/2026;7315,45;Pago com atraso
+492;Pagar;Impostos;09/09/2025;24/09/2025;3939,04;Pago com atraso
+493;Receber;Serviços;08/04/2025;;21892,41;Em aberto
+494;Receber;Vendas a prazo;18/09/2025;23/09/2025;12922,45;Pago com atraso
+495;Receber;Vendas à vista;13/08/2025;13/08/2025;22179,44;Pago em dia
+496;Receber;Vendas a prazo;25/02/2026;27/02/2026;11936,56;Pago com atraso
+497;Receber;Vendas à vista;18/11/2025;;19275,94;Em aberto
+498;Receber;Vendas à vista;24/10/2026;24/10/2026;18157,88;Pago em dia
+499;Pagar;Marketing;25/04/2025;25/04/2025;579,71;Pago em dia
+500;Receber;Vendas à vista;26/04/2026;05/06/2026;21804,35;Pago com atraso
+501;Pagar;Fornecedores;12/02/2025;14/02/2025;16623,45;Pago com atraso
+502;Pagar;Aluguel;19/08/2026;28/09/2026;1470,55;Pago com atraso
+503;Receber;Serviços;03/09/2026;;2492,14;Em aberto
+504;Receber;Serviços;30/01/2025;04/02/2025;23783,47;Pago com atraso
+505;Receber;Vendas à vista;27/10/2026;27/10/2026;15364,58;Pago em dia
+506;Pagar;Impostos;09/04/2026;14/04/2026;4944,27;Pago com atraso
+507;Pagar;Internet;29/07/2025;;12138,00;Em aberto
+508;Pagar;Aluguel;05/07/2026;05/07/2026;7505,14;Pago em dia
+509;Pagar;Fornecedores;25/01/2025;;11606,29;Em aberto
+510;Pagar;Aluguel;02/04/2025;;2508,73;Em aberto
+511;Pagar;Marketing;12/07/2025;12/07/2025;4342,12;Pago em dia
+512;Receber;Vendas à vista;14/09/2026;24/10/2026;23235,06;Pago com atraso
+513;Receber;Vendas a prazo;12/05/2025;12/05/2025;7708,96;Pago em dia
+514;Pagar;Folha de pagamento;20/07/2026;;17098,14;Em aberto
+515;Receber;Vendas à vista;16/04/2025;16/04/2025;1412,72;Pago em dia
+516;Receber;Vendas a prazo;29/04/2026;29/04/2026;10965,25;Pago em dia
+517;Receber;Vendas a prazo;09/07/2026;09/07/2026;12208,49;Pago em dia
+518;Pagar;Impostos;04/07/2026;04/07/2026;14480,32;Pago em dia
+519;Receber;Vendas a prazo;27/06/2025;12/07/2025;12128,71;Pago com atraso
+520;Receber;Vendas a prazo;19/09/2025;;20610,62;Em aberto
+521;Pagar;Marketing;14/12/2025;14/12/2025;9223,85;Pago em dia
+522;Receber;Serviços;26/12/2025;26/12/2025;4623,28;Pago em dia
+523;Pagar;Impostos;07/04/2025;12/04/2025;6811,70;Pago com atraso
+524;Pagar;Impostos;21/04/2025;21/04/2025;6411,24;Pago em dia
+525;Receber;Vendas à vista;05/05/2026;10/05/2026;19646,16;Pago com atraso
+526;Pagar;Impostos;15/08/2025;17/08/2025;4118,09;Pago com atraso
+527;Pagar;Energia;08/10/2026;13/10/2026;6128,59;Pago com atraso
+528;Pagar;Folha de pagamento;14/10/2025;16/10/2025;7845,90;Pago com atraso
+529;Pagar;Marketing;06/03/2026;15/04/2026;14997,16;Pago com atraso
+530;Pagar;Fornecedores;31/12/2025;31/12/2025;4435,04;Pago em dia
+531;Receber;Serviços;24/01/2025;24/01/2025;21609,26;Pago em dia
+532;Receber;Serviços;06/02/2025;08/02/2025;18010,84;Pago com atraso
+533;Pagar;Marketing;05/10/2025;05/10/2025;17041,57;Pago em dia
+534;Pagar;Energia;06/01/2026;06/01/2026;13363,43;Pago em dia
+535;Pagar;Aluguel;24/11/2025;09/12/2025;2884,65;Pago com atraso
+536;Receber;Vendas a prazo;09/03/2026;;16177,73;Em aberto
+537;Pagar;Energia;08/12/2025;23/12/2025;5968,91;Pago com atraso
+538;Receber;Vendas a prazo;05/10/2026;14/11/2026;13621,10;Pago com atraso
+539;Pagar;Impostos;18/08/2025;;7229,69;Em aberto
+540;Receber;Serviços;24/09/2025;24/09/2025;23135,16;Pago em dia
+541;Receber;Vendas a prazo;24/05/2025;24/05/2025;23482,85;Pago em dia
+542;Pagar;Folha de pagamento;18/01/2025;02/02/2025;7304,01;Pago com atraso
+543;Receber;Serviços;28/12/2025;02/01/2026;9855,56;Pago com atraso
+544;Pagar;Fornecedores;28/03/2025;28/03/2025;1595,27;Pago em dia
+545;Receber;Vendas à vista;16/02/2025;21/02/2025;3930,58;Pago com atraso
+546;Receber;Vendas à vista;17/10/2025;01/11/2025;3892,15;Pago com atraso
+547;Pagar;Internet;27/01/2025;27/01/2025;7955,87;Pago em dia
+548;Pagar;Aluguel;05/03/2025;07/03/2025;6711,01;Pago com atraso
+549;Receber;Vendas a prazo;22/04/2026;22/04/2026;5802,49;Pago em dia
+550;Pagar;Impostos;28/12/2025;06/02/2026;733,95;Pago com atraso
+551;Pagar;Impostos;11/07/2025;20/08/2025;8995,26;Pago com atraso
+552;Pagar;Marketing;20/05/2025;04/06/2025;13682,04;Pago com atraso
+553;Pagar;Impostos;08/07/2025;13/07/2025;13467,81;Pago com atraso
+554;Receber;Vendas à vista;02/10/2025;17/10/2025;4618,83;Pago com atraso
+555;Pagar;Aluguel;14/04/2026;24/05/2026;10338,97;Pago com atraso
+556;Pagar;Impostos;24/02/2025;26/02/2025;11762,36;Pago com atraso
+557;Pagar;Fornecedores;08/10/2026;10/10/2026;1988,79;Pago com atraso
+558;Pagar;Aluguel;27/03/2026;01/04/2026;5153,28;Pago com atraso
+559;Receber;Vendas à vista;27/06/2026;27/06/2026;23101,48;Pago em dia
+560;Pagar;Internet;02/10/2026;02/10/2026;10909,26;Pago em dia
+561;Receber;Vendas a prazo;17/10/2026;17/10/2026;2629,04;Pago em dia
+562;Pagar;Internet;16/01/2026;18/01/2026;14833,40;Pago com atraso
+563;Pagar;Internet;15/08/2026;15/08/2026;3104,34;Pago em dia
+564;Pagar;Impostos;30/08/2025;30/08/2025;15698,61;Pago em dia
+565;Pagar;Fornecedores;08/05/2025;;17889,92;Em aberto
+566;Receber;Vendas à vista;08/12/2025;08/12/2025;10640,16;Pago em dia
+567;Pagar;Folha de pagamento;08/01/2026;08/01/2026;12682,87;Pago em dia
+568;Pagar;Fornecedores;28/09/2026;;8360,41;Em aberto
+569;Receber;Vendas à vista;16/05/2025;16/05/2025;13406,44;Pago em dia
+570;Pagar;Folha de pagamento;22/05/2026;24/05/2026;7677,48;Pago com atraso
+571;Pagar;Impostos;08/05/2026;10/05/2026;14477,73;Pago com atraso
+572;Receber;Vendas à vista;15/03/2026;17/03/2026;15105,92;Pago com atraso
+573;Receber;Vendas a prazo;30/07/2025;30/07/2025;19554,03;Pago em dia
+574;Pagar;Fornecedores;30/11/2025;15/12/2025;11280,30;Pago com atraso
+575;Pagar;Internet;02/08/2025;;2146,53;Em aberto
+576;Pagar;Fornecedores;08/07/2026;08/07/2026;2181,99;Pago em dia
+577;Receber;Vendas a prazo;05/05/2026;05/05/2026;7493,35;Pago em dia
+578;Pagar;Energia;13/01/2026;18/01/2026;16854,79;Pago com atraso
+579;Receber;Vendas a prazo;26/10/2026;10/11/2026;9090,87;Pago com atraso
+580;Receber;Serviços;05/08/2025;20/08/2025;8372,89;Pago com atraso
+581;Pagar;Marketing;17/01/2025;;6023,15;Em aberto
+582;Pagar;Energia;27/08/2026;27/08/2026;4279,52;Pago em dia
+583;Receber;Vendas à vista;06/10/2026;11/10/2026;16047,57;Pago com atraso
+584;Receber;Vendas a prazo;13/09/2025;13/09/2025;15776,37;Pago em dia
+585;Receber;Serviços;24/10/2026;08/11/2026;21568,16;Pago com atraso
+586;Receber;Vendas à vista;09/03/2026;09/03/2026;1162,83;Pago em dia
+587;Pagar;Aluguel;08/06/2025;18/07/2025;3110,03;Pago com atraso
+588;Receber;Vendas a prazo;02/09/2025;17/09/2025;14691,94;Pago com atraso
+589;Pagar;Impostos;27/10/2025;06/12/2025;7964,59;Pago com atraso
+590;Receber;Serviços;09/03/2026;11/03/2026;11503,88;Pago com atraso
+591;Receber;Vendas à vista;04/05/2025;04/05/2025;13714,60;Pago em dia
+592;Receber;Vendas à vista;18/07/2026;18/07/2026;20749,12;Pago em dia
+593;Receber;Vendas à vista;06/10/2025;;22928,88;Em aberto
+594;Pagar;Aluguel;26/09/2026;26/09/2026;10769,78;Pago em dia
+595;Pagar;Energia;03/09/2026;08/09/2026;8596,58;Pago com atraso
+596;Receber;Serviços;04/04/2025;04/04/2025;22812,97;Pago em dia
+597;Pagar;Fornecedores;05/09/2025;07/09/2025;7366,63;Pago com atraso
+598;Pagar;Energia;06/03/2026;21/03/2026;8820,92;Pago com atraso
+599;Receber;Vendas à vista;10/12/2025;10/12/2025;23444,51;Pago em dia
+600;Pagar;Folha de pagamento;04/12/2025;09/12/2025;16258,11;Pago com atraso
+601;Pagar;Aluguel;13/08/2025;18/08/2025;3539,15;Pago com atraso
+602;Pagar;Marketing;31/08/2025;;12168,42;Em aberto
+603;Pagar;Folha de pagamento;21/06/2026;;9148,94;Em aberto
+604;Receber;Vendas à vista;25/10/2026;;22287,04;Em aberto
+605;Pagar;Energia;29/03/2026;08/05/2026;9686,65;Pago com atraso
+606;Pagar;Energia;29/09/2026;;4953,58;Em aberto
+607;Receber;Vendas a prazo;08/05/2025;08/05/2025;7451,27;Pago em dia
+608;Pagar;Energia;07/05/2026;16/06/2026;7141,49;Pago com atraso
+609;Pagar;Aluguel;01/11/2025;;3266,72;Em aberto
+610;Receber;Vendas a prazo;02/07/2026;17/07/2026;24907,54;Pago com atraso
+611;Receber;Vendas a prazo;03/06/2026;13/07/2026;6306,92;Pago com atraso
+612;Receber;Vendas a prazo;31/01/2026;02/02/2026;20544,70;Pago com atraso
+613;Pagar;Folha de pagamento;25/09/2026;25/09/2026;9075,42;Pago em dia
+614;Receber;Serviços;16/04/2026;16/04/2026;2058,55;Pago em dia
+615;Receber;Vendas à vista;23/08/2025;23/08/2025;16114,80;Pago em dia
+616;Receber;Vendas à vista;26/09/2026;01/10/2026;2860,61;Pago com atraso
+617;Receber;Vendas à vista;15/11/2025;15/11/2025;4874,34;Pago em dia
+618;Receber;Vendas a prazo;14/06/2026;14/06/2026;8648,72;Pago em dia
+619;Pagar;Fornecedores;12/08/2025;12/08/2025;6925,43;Pago em dia
+620;Receber;Vendas a prazo;15/05/2026;15/05/2026;10332,42;Pago em dia
+621;Pagar;Energia;18/08/2025;23/08/2025;5171,66;Pago com atraso
+622;Receber;Vendas a prazo;30/08/2025;09/10/2025;9785,49;Pago com atraso
+623;Pagar;Aluguel;31/12/2025;15/01/2026;12482,77;Pago com atraso
+624;Pagar;Aluguel;29/05/2025;29/05/2025;10484,12;Pago em dia
+625;Pagar;Folha de pagamento;10/07/2025;25/07/2025;10781,44;Pago com atraso
+626;Receber;Vendas à vista;29/07/2025;29/07/2025;1271,28;Pago em dia
+627;Pagar;Folha de pagamento;03/01/2026;03/01/2026;3579,39;Pago em dia
+628;Receber;Vendas a prazo;10/07/2025;10/07/2025;18053,24;Pago em dia
+629;Receber;Vendas a prazo;27/02/2026;14/03/2026;14774,74;Pago com atraso
+630;Pagar;Aluguel;27/11/2025;27/11/2025;8559,00;Pago em dia
+631;Pagar;Folha de pagamento;03/02/2026;18/02/2026;12968,55;Pago com atraso
+632;Pagar;Folha de pagamento;11/05/2025;16/05/2025;771,83;Pago com atraso
+633;Receber;Serviços;03/01/2026;03/01/2026;3318,08;Pago em dia
+634;Pagar;Energia;03/06/2025;03/06/2025;6802,30;Pago em dia
+635;Receber;Vendas à vista;04/06/2025;04/06/2025;2655,09;Pago em dia
+636;Receber;Vendas a prazo;26/04/2025;;13417,45;Em aberto
+637;Pagar;Impostos;10/02/2026;10/02/2026;4914,26;Pago em dia
+638;Receber;Vendas à vista;11/04/2026;11/04/2026;6923,10;Pago em dia
+639;Receber;Serviços;03/02/2025;03/02/2025;22187,17;Pago em dia
+640;Pagar;Folha de pagamento;14/03/2026;;5181,54;Em aberto
+641;Pagar;Marketing;04/05/2025;04/05/2025;13757,21;Pago em dia
+642;Receber;Serviços;29/09/2026;29/09/2026;11914,77;Pago em dia
+643;Receber;Vendas à vista;13/08/2026;13/08/2026;4939,15;Pago em dia
+644;Pagar;Internet;08/04/2025;08/04/2025;14542,25;Pago em dia
+645;Pagar;Internet;07/10/2026;22/10/2026;8076,89;Pago com atraso
+646;Receber;Serviços;22/01/2026;24/01/2026;2304,67;Pago com atraso
+647;Receber;Vendas a prazo;22/10/2026;;6128,39;Em aberto
+648;Receber;Vendas a prazo;10/01/2025;10/01/2025;2083,67;Pago em dia
+649;Receber;Serviços;16/11/2025;26/12/2025;14771,70;Pago com atraso
+650;Pagar;Fornecedores;24/08/2025;29/08/2025;9731,93;Pago com atraso
+651;Pagar;Aluguel;05/06/2025;07/06/2025;13711,21;Pago com atraso
+652;Pagar;Internet;12/06/2026;12/06/2026;8911,32;Pago em dia
+653;Pagar;Aluguel;11/07/2025;11/07/2025;13410,58;Pago em dia
+654;Receber;Vendas à vista;07/03/2026;07/03/2026;17711,08;Pago em dia
+655;Receber;Vendas à vista;21/06/2025;06/07/2025;2145,82;Pago com atraso
+656;Receber;Vendas à vista;22/06/2026;07/07/2026;7753,05;Pago com atraso
+657;Receber;Vendas à vista;19/06/2026;29/07/2026;16835,94;Pago com atraso
+658;Receber;Vendas a prazo;19/08/2025;24/08/2025;23272,08;Pago com atraso
+659;Pagar;Folha de pagamento;24/09/2025;24/09/2025;7640,76;Pago em dia
+660;Receber;Serviços;14/05/2026;14/05/2026;19260,32;Pago em dia
+661;Receber;Serviços;17/10/2026;01/11/2026;16694,66;Pago com atraso
+662;Pagar;Aluguel;18/01/2025;18/01/2025;14775,26;Pago em dia
+663;Receber;Serviços;29/07/2026;29/07/2026;17485,07;Pago em dia
+664;Receber;Vendas à vista;27/11/2025;27/11/2025;8240,48;Pago em dia
+665;Receber;Vendas à vista;05/06/2025;15/07/2025;9049,03;Pago com atraso
+666;Pagar;Marketing;19/02/2025;;13771,77;Em aberto
+667;Pagar;Folha de pagamento;03/10/2026;03/10/2026;9550,33;Pago em dia
+668;Receber;Vendas à vista;23/11/2025;23/11/2025;6752,12;Pago em dia
+669;Pagar;Marketing;07/04/2025;;8946,07;Em aberto
+670;Pagar;Fornecedores;04/08/2025;19/08/2025;16704,75;Pago com atraso
+671;Receber;Serviços;21/07/2025;23/07/2025;19276,32;Pago com atraso
+672;Pagar;Energia;12/12/2025;;3532,36;Em aberto
+673;Receber;Vendas a prazo;07/06/2025;22/06/2025;18359,46;Pago com atraso
+674;Receber;Vendas à vista;06/05/2026;11/05/2026;19985,99;Pago com atraso
+675;Pagar;Internet;26/03/2025;26/03/2025;10804,02;Pago em dia
+676;Pagar;Folha de pagamento;25/06/2026;10/07/2026;10271,38;Pago com atraso
+677;Receber;Vendas à vista;03/09/2026;08/09/2026;19360,48;Pago com atraso
+678;Pagar;Energia;09/04/2025;09/04/2025;9301,09;Pago em dia
+679;Pagar;Energia;07/09/2026;07/09/2026;11163,36;Pago em dia
+680;Pagar;Aluguel;19/02/2025;06/03/2025;9572,96;Pago com atraso
+681;Receber;Vendas à vista;23/03/2025;02/05/2025;2859,63;Pago com atraso
+682;Receber;Vendas a prazo;17/03/2026;;18540,55;Em aberto
+683;Receber;Vendas à vista;26/09/2025;11/10/2025;2522,80;Pago com atraso
+684;Pagar;Marketing;15/07/2026;;15118,35;Em aberto
+685;Pagar;Folha de pagamento;31/10/2025;31/10/2025;11254,73;Pago em dia
+686;Pagar;Folha de pagamento;04/05/2026;09/05/2026;15571,69;Pago com atraso
+687;Receber;Vendas à vista;27/03/2026;29/03/2026;24536,93;Pago com atraso
+688;Receber;Vendas a prazo;15/01/2026;;19937,24;Em aberto
+689;Pagar;Internet;30/10/2026;;2004,86;Em aberto
+690;Receber;Vendas à vista;17/09/2025;19/09/2025;20120,42;Pago com atraso
+691;Receber;Vendas à vista;19/09/2025;19/09/2025;13301,52;Pago em dia
+692;Pagar;Marketing;29/07/2025;29/07/2025;15857,40;Pago em dia
+693;Receber;Serviços;14/12/2025;23/01/2026;3995,05;Pago com atraso
+694;Pagar;Internet;27/07/2025;;14351,72;Em aberto
+695;Pagar;Impostos;25/11/2025;27/11/2025;16230,30;Pago com atraso
+696;Pagar;Impostos;06/02/2025;;3478,79;Em aberto
+697;Receber;Vendas a prazo;16/08/2026;21/08/2026;21524,51;Pago com atraso
+698;Receber;Vendas à vista;04/05/2026;19/05/2026;5658,34;Pago com atraso
+699;Pagar;Internet;06/05/2025;15/06/2025;2679,12;Pago com atraso
+700;Pagar;Fornecedores;13/03/2025;18/03/2025;2702,04;Pago com atraso
+701;Receber;Vendas à vista;30/05/2025;30/05/2025;8837,92;Pago em dia
+702;Receber;Vendas a prazo;21/04/2026;26/04/2026;22739,89;Pago com atraso
+703;Receber;Vendas à vista;30/07/2025;30/07/2025;16249,46;Pago em dia
+704;Receber;Vendas a prazo;05/03/2026;20/03/2026;17228,54;Pago com atraso
+705;Pagar;Folha de pagamento;18/05/2025;02/06/2025;9549,34;Pago com atraso
+706;Pagar;Folha de pagamento;16/10/2025;31/10/2025;7855,20;Pago com atraso
+707;Pagar;Fornecedores;17/07/2026;19/07/2026;13232,32;Pago com atraso
+708;Pagar;Energia;07/09/2026;07/09/2026;8592,85;Pago em dia
+709;Receber;Vendas à vista;26/03/2026;05/05/2026;20232,75;Pago com atraso
+710;Receber;Vendas a prazo;03/06/2026;03/06/2026;12117,07;Pago em dia
+711;Receber;Vendas a prazo;13/12/2025;18/12/2025;3203,24;Pago com atraso
+712;Receber;Vendas à vista;28/05/2026;;24135,29;Em aberto
+713;Pagar;Marketing;06/04/2025;21/04/2025;6241,95;Pago com atraso
+714;Receber;Vendas à vista;11/09/2025;16/09/2025;20887,34;Pago com atraso
+715;Receber;Serviços;23/07/2026;25/07/2026;21831,79;Pago com atraso
+716;Receber;Vendas a prazo;19/06/2026;19/06/2026;11402,34;Pago em dia
+717;Receber;Vendas à vista;22/01/2026;27/01/2026;20069,84;Pago com atraso
+718;Receber;Serviços;10/11/2025;10/11/2025;11401,28;Pago em dia
+719;Pagar;Energia;29/09/2025;;412,97;Em aberto
+720;Receber;Vendas à vista;26/01/2025;26/01/2025;21189,99;Pago em dia
+721;Pagar;Fornecedores;29/01/2025;29/01/2025;4084,35;Pago em dia
+722;Pagar;Folha de pagamento;20/08/2026;22/08/2026;6774,66;Pago com atraso
+723;Receber;Vendas à vista;15/04/2025;15/04/2025;14476,67;Pago em dia
+724;Pagar;Impostos;20/10/2025;20/10/2025;1405,91;Pago em dia
+725;Receber;Vendas à vista;29/04/2025;;4392,83;Em aberto
+726;Receber;Vendas à vista;29/10/2026;29/10/2026;21656,68;Pago em dia
+727;Pagar;Folha de pagamento;05/08/2026;10/08/2026;6127,84;Pago com atraso
+728;Pagar;Internet;25/10/2025;25/10/2025;8119,33;Pago em dia
+729;Pagar;Impostos;04/12/2025;19/12/2025;15715,03;Pago com atraso
+730;Receber;Vendas a prazo;30/06/2026;02/07/2026;11878,56;Pago com atraso
+731;Pagar;Energia;24/04/2026;09/05/2026;10313,45;Pago com atraso
+732;Pagar;Aluguel;31/01/2026;05/02/2026;7933,16;Pago com atraso
+733;Receber;Serviços;04/09/2026;09/09/2026;2946,87;Pago com atraso
+734;Pagar;Fornecedores;19/05/2025;19/05/2025;6773,01;Pago em dia
+735;Pagar;Internet;17/03/2025;22/03/2025;10636,73;Pago com atraso
+736;Pagar;Fornecedores;27/12/2025;01/01/2026;6506,55;Pago com atraso
+737;Pagar;Fornecedores;04/06/2026;06/06/2026;12600,06;Pago com atraso
+738;Pagar;Internet;10/07/2025;25/07/2025;401,18;Pago com atraso
+739;Receber;Vendas a prazo;07/01/2026;07/01/2026;24527,61;Pago em dia
+740;Receber;Serviços;05/08/2026;20/08/2026;19940,28;Pago com atraso
+741;Receber;Serviços;29/05/2025;03/06/2025;11158,81;Pago com atraso
+742;Receber;Vendas a prazo;10/08/2026;15/08/2026;8538,77;Pago com atraso
+743;Receber;Vendas à vista;01/05/2026;16/05/2026;12351,47;Pago com atraso
+744;Receber;Vendas a prazo;30/03/2025;;7018,69;Em aberto
+745;Receber;Serviços;05/04/2026;15/05/2026;14418,94;Pago com atraso
+746;Pagar;Folha de pagamento;15/02/2025;02/03/2025;8474,96;Pago com atraso
+747;Receber;Vendas a prazo;19/03/2025;28/04/2025;2490,73;Pago com atraso
+748;Pagar;Energia;20/12/2025;25/12/2025;8568,99;Pago com atraso
+749;Pagar;Fornecedores;22/03/2026;22/03/2026;17401,03;Pago em dia
+750;Pagar;Fornecedores;07/10/2026;07/10/2026;10849,29;Pago em dia
+751;Receber;Vendas à vista;27/09/2026;12/10/2026;19522,15;Pago com atraso
+752;Receber;Vendas a prazo;20/10/2026;29/11/2026;20669,07;Pago com atraso
+753;Receber;Serviços;30/01/2026;30/01/2026;9868,34;Pago em dia
+754;Receber;Vendas à vista;31/01/2025;31/01/2025;24895,92;Pago em dia
+755;Receber;Vendas a prazo;08/01/2025;;4298,62;Em aberto
+756;Pagar;Aluguel;19/07/2025;28/08/2025;2449,25;Pago com atraso
+757;Receber;Vendas a prazo;30/12/2025;30/12/2025;3784,17;Pago em dia
+758;Receber;Vendas a prazo;21/03/2025;26/03/2025;6607,98;Pago com atraso
+759;Pagar;Energia;06/06/2026;21/06/2026;2254,14;Pago com atraso
+760;Pagar;Internet;19/06/2025;;4336,01;Em aberto
+761;Pagar;Energia;02/05/2025;02/05/2025;2539,87;Pago em dia
+762;Pagar;Aluguel;07/02/2026;09/02/2026;8549,50;Pago com atraso
+763;Receber;Vendas a prazo;02/06/2025;02/06/2025;17736,51;Pago em dia
+764;Receber;Vendas à vista;28/06/2026;28/06/2026;17407,10;Pago em dia
+765;Pagar;Impostos;21/08/2026;21/08/2026;10396,00;Pago em dia
+766;Receber;Vendas a prazo;28/01/2026;30/01/2026;15939,48;Pago com atraso
+767;Pagar;Energia;21/05/2026;05/06/2026;9646,35;Pago com atraso
+768;Receber;Serviços;11/04/2026;21/05/2026;14645,10;Pago com atraso
+769;Pagar;Aluguel;04/09/2025;;11214,06;Em aberto
+770;Pagar;Marketing;17/05/2026;17/05/2026;3011,67;Pago em dia
+771;Pagar;Energia;22/08/2025;24/08/2025;13774,64;Pago com atraso
+772;Pagar;Folha de pagamento;22/11/2025;;6846,46;Em aberto
+773;Receber;Vendas a prazo;10/07/2025;10/07/2025;10776,23;Pago em dia
+774;Receber;Vendas a prazo;13/08/2026;28/08/2026;4668,98;Pago com atraso
+775;Receber;Vendas à vista;10/04/2026;20/05/2026;1048,95;Pago com atraso
+776;Pagar;Aluguel;05/09/2026;20/09/2026;13192,09;Pago com atraso
+777;Receber;Vendas a prazo;08/07/2026;17/08/2026;9704,23;Pago com atraso
+778;Receber;Serviços;06/10/2026;;2596,32;Em aberto
+779;Pagar;Fornecedores;06/03/2025;21/03/2025;3562,69;Pago com atraso
+780;Receber;Vendas à vista;10/05/2025;25/05/2025;6290,72;Pago com atraso
+781;Receber;Serviços;20/03/2026;20/03/2026;24249,18;Pago em dia
+782;Pagar;Impostos;19/01/2026;24/01/2026;10477,43;Pago com atraso
+783;Receber;Vendas à vista;24/09/2025;24/09/2025;11995,91;Pago em dia
+784;Receber;Vendas à vista;09/03/2025;24/03/2025;5232,98;Pago com atraso
+785;Pagar;Folha de pagamento;03/09/2025;08/09/2025;15021,27;Pago com atraso
+786;Pagar;Folha de pagamento;09/02/2025;24/02/2025;5537,30;Pago com atraso
+787;Receber;Vendas a prazo;01/05/2026;01/05/2026;4206,95;Pago em dia
+788;Receber;Vendas a prazo;17/02/2025;17/02/2025;8912,69;Pago em dia
+789;Receber;Serviços;28/01/2026;28/01/2026;13964,73;Pago em dia
+790;Receber;Vendas a prazo;11/09/2026;13/09/2026;4184,91;Pago com atraso
+791;Pagar;Marketing;15/09/2026;25/10/2026;13725,92;Pago com atraso
+792;Pagar;Energia;29/09/2025;14/10/2025;9846,55;Pago com atraso
+793;Receber;Serviços;21/10/2026;30/11/2026;2191,23;Pago com atraso
+794;Pagar;Folha de pagamento;02/10/2026;04/10/2026;7101,97;Pago com atraso
+795;Receber;Vendas à vista;07/07/2026;16/08/2026;21509,78;Pago com atraso
+796;Pagar;Folha de pagamento;14/01/2026;14/01/2026;8334,76;Pago em dia
+797;Receber;Vendas a prazo;14/04/2025;16/04/2025;24957,10;Pago com atraso
+798;Pagar;Aluguel;18/03/2025;20/03/2025;17917,49;Pago com atraso
+799;Receber;Vendas à vista;30/03/2026;04/04/2026;8857,41;Pago com atraso
+800;Receber;Serviços;11/06/2025;11/06/2025;6493,30;Pago em dia
+801;Pagar;Internet;12/06/2026;12/06/2026;832,17;Pago em dia
+802;Receber;Vendas a prazo;17/01/2025;22/01/2025;19046,64;Pago com atraso
+803;Receber;Serviços;19/12/2025;19/12/2025;22337,87;Pago em dia
+804;Receber;Vendas à vista;18/05/2026;02/06/2026;19522,50;Pago com atraso
+805;Receber;Serviços;13/11/2025;;10366,13;Em aberto
+806;Pagar;Aluguel;23/06/2025;23/06/2025;15963,29;Pago em dia
+807;Receber;Vendas à vista;30/09/2025;30/09/2025;14688,95;Pago em dia
+808;Pagar;Folha de pagamento;10/10/2025;10/10/2025;8836,22;Pago em dia
+809;Pagar;Aluguel;26/08/2026;28/08/2026;17731,80;Pago com atraso
+810;Receber;Serviços;28/05/2026;07/07/2026;1158,29;Pago com atraso
+811;Pagar;Aluguel;05/05/2025;05/05/2025;13802,02;Pago em dia
+812;Pagar;Energia;06/02/2026;18/03/2026;8411,65;Pago com atraso
+813;Pagar;Energia;18/05/2026;;17273,73;Em aberto
+814;Receber;Vendas a prazo;16/03/2026;18/03/2026;24146,00;Pago com atraso
+815;Receber;Vendas a prazo;13/02/2025;28/02/2025;10847,21;Pago com atraso
+816;Receber;Vendas a prazo;24/02/2026;24/02/2026;7792,39;Pago em dia
+817;Pagar;Fornecedores;17/04/2025;02/05/2025;5851,65;Pago com atraso
+818;Pagar;Impostos;02/10/2025;02/10/2025;3224,88;Pago em dia
+819;Receber;Serviços;24/10/2026;24/10/2026;21615,75;Pago em dia
+820;Pagar;Energia;06/05/2025;21/05/2025;13189,82;Pago com atraso
+821;Receber;Vendas à vista;28/09/2026;30/09/2026;19424,28;Pago com atraso
+822;Pagar;Impostos;21/08/2025;30/09/2025;15422,98;Pago com atraso
+823;Pagar;Internet;24/03/2026;;10901,71;Em aberto
+824;Receber;Vendas a prazo;01/11/2025;;14336,04;Em aberto
+825;Receber;Vendas a prazo;25/12/2025;30/12/2025;8634,64;Pago com atraso
+826;Receber;Vendas à vista;08/01/2025;;8737,82;Em aberto
+827;Pagar;Folha de pagamento;29/08/2025;13/09/2025;14170,04;Pago com atraso
+828;Receber;Vendas a prazo;21/02/2026;21/02/2026;901,34;Pago em dia
+829;Pagar;Fornecedores;15/09/2026;17/09/2026;6972,90;Pago com atraso
+830;Pagar;Internet;24/06/2025;24/06/2025;5699,41;Pago em dia
+831;Receber;Serviços;03/08/2026;18/08/2026;10083,67;Pago com atraso
+832;Receber;Serviços;19/03/2026;24/03/2026;14072,45;Pago com atraso
+833;Pagar;Energia;19/06/2025;24/06/2025;14762,54;Pago com atraso
+834;Pagar;Aluguel;18/06/2026;03/07/2026;7506,55;Pago com atraso
+835;Receber;Vendas a prazo;29/03/2026;29/03/2026;22430,70;Pago em dia
+836;Receber;Vendas à vista;14/05/2026;;15905,41;Em aberto
+837;Pagar;Energia;16/06/2025;16/06/2025;1252,89;Pago em dia
+838;Pagar;Fornecedores;07/09/2026;;9638,51;Em aberto
+839;Receber;Vendas a prazo;16/06/2026;21/06/2026;12038,18;Pago com atraso
+840;Pagar;Folha de pagamento;07/04/2025;17/05/2025;15818,77;Pago com atraso
+841;Receber;Vendas a prazo;14/10/2025;14/10/2025;5198,18;Pago em dia
+842;Pagar;Aluguel;28/09/2025;30/09/2025;13492,21;Pago com atraso
+843;Pagar;Energia;18/11/2025;18/11/2025;16285,78;Pago em dia
+844;Pagar;Internet;28/02/2026;05/03/2026;17749,97;Pago com atraso
+845;Pagar;Marketing;18/07/2025;18/07/2025;8426,47;Pago em dia
+846;Receber;Vendas a prazo;15/04/2026;15/04/2026;15963,54;Pago em dia
+847;Pagar;Marketing;30/01/2026;30/01/2026;9707,40;Pago em dia
+848;Pagar;Energia;23/08/2025;23/08/2025;3775,19;Pago em dia
+849;Pagar;Marketing;06/01/2025;15/02/2025;3416,80;Pago com atraso
+850;Pagar;Energia;05/01/2025;05/01/2025;14099,38;Pago em dia
+851;Pagar;Aluguel;15/01/2025;15/01/2025;2647,70;Pago em dia
+852;Receber;Vendas à vista;17/09/2026;17/09/2026;21803,41;Pago em dia
+853;Pagar;Impostos;09/01/2026;;11037,10;Em aberto
+854;Receber;Vendas à vista;07/02/2026;22/02/2026;9339,02;Pago com atraso
+855;Pagar;Marketing;13/06/2026;28/06/2026;12166,31;Pago com atraso
+856;Pagar;Folha de pagamento;11/05/2026;26/05/2026;11584,17;Pago com atraso
+857;Receber;Serviços;17/05/2026;;6248,03;Em aberto
+858;Pagar;Marketing;26/09/2026;26/09/2026;5031,52;Pago em dia
+859;Pagar;Internet;02/10/2026;07/10/2026;13879,75;Pago com atraso
+860;Pagar;Impostos;21/07/2025;21/07/2025;14484,78;Pago em dia
+861;Receber;Vendas à vista;30/10/2026;;19746,96;Em aberto
+862;Pagar;Impostos;25/04/2025;25/04/2025;17476,05;Pago em dia
+863;Pagar;Fornecedores;23/01/2025;25/01/2025;1594,17;Pago com atraso
+864;Pagar;Energia;13/08/2026;28/08/2026;16690,72;Pago com atraso
+865;Receber;Vendas a prazo;25/01/2025;25/01/2025;14897,77;Pago em dia
+866;Receber;Vendas a prazo;18/04/2025;03/05/2025;4910,79;Pago com atraso
+867;Pagar;Impostos;13/10/2025;22/11/2025;3633,50;Pago com atraso
+868;Pagar;Internet;28/07/2025;;7244,65;Em aberto
+869;Receber;Serviços;21/07/2025;05/08/2025;10249,56;Pago com atraso
+870;Receber;Serviços;26/07/2025;26/07/2025;12818,86;Pago em dia
+871;Pagar;Energia;04/04/2026;14/05/2026;3479,76;Pago com atraso
+872;Receber;Serviços;29/07/2026;;3618,81;Em aberto
+873;Receber;Serviços;30/05/2026;14/06/2026;6454,52;Pago com atraso
+874;Pagar;Fornecedores;26/02/2025;26/02/2025;7297,87;Pago em dia
+875;Pagar;Internet;28/12/2025;06/02/2026;2168,72;Pago com atraso
+876;Pagar;Marketing;17/07/2026;22/07/2026;2319,78;Pago com atraso
+877;Pagar;Marketing;04/03/2025;09/03/2025;16134,49;Pago com atraso
+878;Receber;Vendas a prazo;06/04/2025;16/05/2025;21029,24;Pago com atraso
+879;Pagar;Folha de pagamento;18/11/2025;;5811,91;Em aberto
+880;Pagar;Impostos;27/02/2026;27/02/2026;8220,84;Pago em dia
+881;Pagar;Fornecedores;06/05/2026;11/05/2026;4336,10;Pago com atraso
+882;Pagar;Marketing;13/03/2025;13/03/2025;5690,48;Pago em dia
+883;Pagar;Aluguel;23/02/2026;23/02/2026;1118,27;Pago em dia
+884;Receber;Vendas à vista;24/10/2025;03/12/2025;4626,85;Pago com atraso
+885;Pagar;Impostos;13/02/2025;13/02/2025;17369,94;Pago em dia
+886;Receber;Serviços;09/12/2025;14/12/2025;5668,82;Pago com atraso
+887;Receber;Vendas à vista;06/04/2025;06/04/2025;7520,51;Pago em dia
+888;Pagar;Internet;06/09/2025;06/09/2025;17454,07;Pago em dia
+889;Pagar;Impostos;17/10/2025;17/10/2025;13529,91;Pago em dia
+890;Receber;Vendas a prazo;25/07/2026;09/08/2026;22097,12;Pago com atraso
+891;Pagar;Aluguel;28/01/2026;09/03/2026;5939,20;Pago com atraso
+892;Receber;Vendas à vista;24/06/2025;03/08/2025;12694,02;Pago com atraso
+893;Pagar;Folha de pagamento;11/03/2026;11/03/2026;9949,97;Pago em dia
+894;Pagar;Folha de pagamento;23/03/2025;23/03/2025;4073,40;Pago em dia
+895;Receber;Vendas à vista;15/02/2025;15/02/2025;19335,84;Pago em dia
+896;Pagar;Internet;27/07/2025;01/08/2025;14033,63;Pago com atraso
+897;Receber;Vendas à vista;15/05/2025;15/05/2025;8285,06;Pago em dia
+898;Pagar;Marketing;29/04/2025;29/04/2025;6362,52;Pago em dia
+899;Receber;Serviços;01/07/2025;03/07/2025;15580,01;Pago com atraso
+900;Pagar;Aluguel;15/01/2026;24/02/2026;1885,30;Pago com atraso
+901;Pagar;Energia;01/07/2025;01/07/2025;17308,98;Pago em dia
+902;Receber;Serviços;15/06/2025;20/06/2025;10141,99;Pago com atraso
+903;Pagar;Aluguel;19/05/2025;28/06/2025;2190,06;Pago com atraso
+904;Pagar;Internet;28/07/2025;28/07/2025;2133,86;Pago em dia
+905;Pagar;Aluguel;03/09/2026;08/09/2026;6712,56;Pago com atraso
+906;Receber;Vendas a prazo;09/05/2026;18/06/2026;8493,56;Pago com atraso
+907;Receber;Vendas a prazo;05/11/2025;05/11/2025;11055,27;Pago em dia
+908;Receber;Vendas à vista;19/04/2026;29/05/2026;12318,04;Pago com atraso
+909;Pagar;Energia;17/02/2025;22/02/2025;10533,70;Pago com atraso
+910;Pagar;Internet;17/03/2026;26/04/2026;14174,82;Pago com atraso
+911;Receber;Vendas a prazo;03/03/2026;03/03/2026;17215,85;Pago em dia
+912;Pagar;Aluguel;14/08/2026;23/09/2026;4248,89;Pago com atraso
+913;Pagar;Impostos;20/07/2026;29/08/2026;7824,13;Pago com atraso
+914;Receber;Serviços;14/12/2025;23/01/2026;8405,56;Pago com atraso
+915;Pagar;Aluguel;10/02/2025;10/02/2025;12106,64;Pago em dia
+916;Pagar;Internet;25/05/2025;30/05/2025;7300,48;Pago com atraso
+917;Receber;Vendas à vista;11/01/2025;;15645,81;Em aberto
+918;Receber;Vendas a prazo;19/03/2025;03/04/2025;9090,98;Pago com atraso
+919;Pagar;Marketing;14/01/2026;;7674,78;Em aberto
+920;Receber;Vendas à vista;02/01/2026;;22047,33;Em aberto
+921;Receber;Serviços;04/09/2026;04/09/2026;4668,81;Pago em dia
+922;Receber;Vendas a prazo;13/01/2025;13/01/2025;19810,83;Pago em dia
+923;Pagar;Folha de pagamento;24/11/2025;24/11/2025;3291,11;Pago em dia
+924;Receber;Vendas a prazo;10/04/2025;12/04/2025;16787,78;Pago com atraso
+925;Pagar;Folha de pagamento;12/03/2025;17/03/2025;12657,68;Pago com atraso
+926;Pagar;Marketing;24/02/2026;;6532,52;Em aberto
+927;Receber;Serviços;23/05/2026;;23064,10;Em aberto
+928;Pagar;Fornecedores;05/09/2025;07/09/2025;14451,61;Pago com atraso
+929;Receber;Vendas à vista;04/07/2026;04/07/2026;13969,04;Pago em dia
+930;Pagar;Aluguel;05/07/2026;07/07/2026;14731,22;Pago com atraso
+931;Pagar;Impostos;20/11/2025;22/11/2025;1431,55;Pago com atraso
+932;Receber;Vendas a prazo;08/05/2026;08/05/2026;23579,53;Pago em dia
+933;Pagar;Folha de pagamento;26/04/2026;01/05/2026;4473,89;Pago com atraso
+934;Pagar;Aluguel;02/02/2026;02/02/2026;7153,37;Pago em dia
+935;Pagar;Aluguel;29/06/2026;;12569,59;Em aberto
+936;Pagar;Folha de pagamento;06/04/2025;08/04/2025;11741,41;Pago com atraso
+937;Pagar;Aluguel;16/05/2026;;6025,41;Em aberto
+938;Receber;Serviços;28/04/2025;28/04/2025;908,02;Pago em dia
+939;Receber;Serviços;26/07/2025;10/08/2025;8864,89;Pago com atraso
+940;Pagar;Internet;26/01/2025;26/01/2025;11179,18;Pago em dia
+941;Pagar;Aluguel;10/02/2025;10/02/2025;5340,73;Pago em dia
+942;Receber;Serviços;21/04/2025;;7608,62;Em aberto
+943;Pagar;Internet;07/06/2025;07/06/2025;11575,92;Pago em dia
+944;Receber;Serviços;07/01/2026;07/01/2026;4602,10;Pago em dia
+945;Pagar;Fornecedores;16/02/2025;16/02/2025;17886,37;Pago em dia
+946;Receber;Serviços;16/06/2025;26/07/2025;2904,80;Pago com atraso
+947;Receber;Vendas à vista;12/05/2026;21/06/2026;17861,74;Pago com atraso
+948;Receber;Vendas à vista;13/05/2026;28/05/2026;4162,63;Pago com atraso
+949;Receber;Vendas à vista;11/12/2025;;13418,70;Em aberto
+950;Pagar;Folha de pagamento;14/03/2026;23/04/2026;4917,46;Pago com atraso
+951;Receber;Vendas à vista;13/08/2025;13/08/2025;11755,62;Pago em dia
+952;Pagar;Internet;09/01/2026;14/01/2026;2386,20;Pago com atraso
+953;Receber;Vendas à vista;15/07/2025;15/07/2025;10520,41;Pago em dia
+954;Pagar;Internet;20/09/2025;22/09/2025;15726,14;Pago com atraso
+955;Pagar;Impostos;08/05/2025;08/05/2025;9382,67;Pago em dia
+956;Pagar;Marketing;02/04/2026;07/04/2026;5567,18;Pago com atraso
+957;Receber;Serviços;12/05/2026;27/05/2026;7103,03;Pago com atraso
+958;Pagar;Fornecedores;07/05/2025;07/05/2025;10094,19;Pago em dia
+959;Receber;Vendas à vista;17/09/2025;02/10/2025;2786,64;Pago com atraso
+960;Pagar;Fornecedores;02/03/2025;02/03/2025;15224,15;Pago em dia
+961;Pagar;Internet;24/08/2025;24/08/2025;12892,35;Pago em dia
+962;Pagar;Marketing;03/07/2026;;10788,04;Em aberto
+963;Receber;Vendas à vista;17/06/2026;22/06/2026;902,54;Pago com atraso
+964;Pagar;Aluguel;09/05/2026;24/05/2026;5570,80;Pago com atraso
+965;Pagar;Aluguel;02/10/2025;07/10/2025;7554,94;Pago com atraso
+966;Pagar;Impostos;05/05/2026;14/06/2026;8379,65;Pago com atraso
+967;Pagar;Fornecedores;30/11/2025;30/11/2025;15086,16;Pago em dia
+968;Receber;Vendas à vista;31/05/2026;05/06/2026;17946,21;Pago com atraso
+969;Receber;Vendas à vista;15/05/2025;;9569,96;Em aberto
+970;Receber;Vendas a prazo;05/07/2026;05/07/2026;23815,76;Pago em dia
+971;Receber;Vendas à vista;09/05/2025;18/06/2025;10656,65;Pago com atraso
+972;Pagar;Marketing;03/07/2025;03/07/2025;13395,19;Pago em dia
+973;Receber;Vendas a prazo;10/09/2025;20/10/2025;22769,76;Pago com atraso
+974;Receber;Vendas a prazo;11/02/2025;11/02/2025;2099,23;Pago em dia
+975;Receber;Serviços;27/06/2025;29/06/2025;18335,49;Pago com atraso
+976;Receber;Vendas a prazo;05/12/2025;05/12/2025;23102,62;Pago em dia
+977;Receber;Vendas à vista;30/01/2026;30/01/2026;24999,96;Pago em dia
+978;Pagar;Fornecedores;03/05/2026;05/05/2026;17988,85;Pago com atraso
+979;Receber;Serviços;31/05/2026;;10241,70;Em aberto
+980;Receber;Serviços;06/09/2025;16/10/2025;3482,12;Pago com atraso
+981;Receber;Vendas a prazo;05/01/2026;05/01/2026;9807,00;Pago em dia
+982;Receber;Vendas à vista;25/06/2025;30/06/2025;18864,99;Pago com atraso
+983;Receber;Vendas a prazo;17/08/2025;19/08/2025;22801,40;Pago com atraso
+984;Receber;Vendas a prazo;16/02/2026;16/02/2026;4661,56;Pago em dia
+985;Receber;Vendas a prazo;11/06/2025;11/06/2025;9822,76;Pago em dia
+986;Receber;Serviços;13/05/2026;13/05/2026;12394,42;Pago em dia
+987;Receber;Serviços;07/04/2025;17/05/2025;12773,87;Pago com atraso
+988;Receber;Serviços;29/05/2025;;17814,92;Em aberto
+989;Pagar;Energia;25/12/2025;03/02/2026;4495,64;Pago com atraso
+990;Pagar;Energia;18/05/2026;18/05/2026;17550,18;Pago em dia
+991;Receber;Vendas à vista;05/11/2025;15/12/2025;9768,21;Pago com atraso
+992;Receber;Serviços;04/03/2026;06/03/2026;6059,88;Pago com atraso
+993;Receber;Vendas a prazo;17/04/2025;17/04/2025;20193,06;Pago em dia
+994;Pagar;Aluguel;14/07/2025;29/07/2025;4408,39;Pago com atraso
+995;Pagar;Impostos;10/05/2025;25/05/2025;2376,73;Pago com atraso
+996;Receber;Vendas à vista;09/07/2025;09/07/2025;11285,08;Pago em dia
+997;Receber;Serviços;02/08/2026;02/08/2026;16250,12;Pago em dia
+998;Pagar;Fornecedores;23/08/2026;23/08/2026;15283,48;Pago em dia
+999;Pagar;Energia;29/01/2025;;9506,11;Em aberto
+1000;Receber;Vendas à vista;12/07/2026;21/08/2026;19240,52;Pago com atraso
+1001;Receber;Vendas à vista;23/07/2026;25/07/2026;8023,95;Pago com atraso
+1002;Receber;Vendas à vista;19/07/2026;;22707,42;Em aberto
+1003;Pagar;Fornecedores;09/06/2025;09/06/2025;13005,46;Pago em dia
+1004;Receber;Vendas a prazo;17/01/2025;01/02/2025;5619,26;Pago com atraso
+1005;Pagar;Folha de pagamento;22/01/2026;03/03/2026;4425,28;Pago com atraso
+1006;Pagar;Folha de pagamento;22/10/2025;22/10/2025;12553,41;Pago em dia
+1007;Pagar;Impostos;27/10/2025;06/12/2025;2314,68;Pago com atraso
+1008;Receber;Vendas a prazo;11/04/2025;11/04/2025;4670,41;Pago em dia
+1009;Pagar;Internet;16/10/2026;16/10/2026;2200,84;Pago em dia
+1010;Receber;Vendas a prazo;02/12/2025;02/12/2025;23305,70;Pago em dia
+1011;Receber;Vendas à vista;11/09/2025;11/09/2025;1976,38;Pago em dia
+1012;Receber;Vendas à vista;01/07/2025;;13686,50;Em aberto
+1013;Pagar;Folha de pagamento;03/03/2026;03/03/2026;10308,37;Pago em dia
+1014;Receber;Serviços;14/10/2026;16/10/2026;5692,86;Pago com atraso
+1015;Receber;Serviços;17/03/2025;17/03/2025;9751,79;Pago em dia
+1016;Receber;Vendas a prazo;29/10/2026;29/10/2026;9743,78;Pago em dia
+1017;Pagar;Energia;05/11/2025;05/11/2025;13329,92;Pago em dia
+1018;Receber;Serviços;13/09/2026;18/09/2026;9747,02;Pago com atraso
+1019;Receber;Vendas à vista;10/01/2025;15/01/2025;6753,24;Pago com atraso
+1020;Receber;Vendas à vista;25/10/2026;04/12/2026;7334,30;Pago com atraso
+1021;Pagar;Fornecedores;10/07/2025;10/07/2025;17206,31;Pago em dia
+1022;Pagar;Fornecedores;31/01/2025;31/01/2025;15280,86;Pago em dia
+1023;Receber;Vendas à vista;30/03/2025;30/03/2025;8038,31;Pago em dia
+1024;Receber;Vendas a prazo;18/05/2026;18/05/2026;3711,51;Pago em dia
+1025;Receber;Vendas à vista;08/11/2025;08/11/2025;19665,17;Pago em dia
+1026;Receber;Vendas à vista;05/02/2026;05/02/2026;10331,89;Pago em dia
+1027;Pagar;Impostos;15/03/2025;24/04/2025;13759,85;Pago com atraso
+1028;Receber;Vendas à vista;27/05/2026;27/05/2026;4630,65;Pago em dia
+1029;Receber;Vendas à vista;27/08/2025;27/08/2025;9287,72;Pago em dia
+1030;Receber;Vendas a prazo;10/09/2025;12/09/2025;19795,69;Pago com atraso
+1031;Receber;Vendas à vista;04/08/2025;13/09/2025;10776,46;Pago com atraso
+1032;Pagar;Fornecedores;16/04/2026;26/05/2026;1268,94;Pago com atraso
+1033;Pagar;Energia;15/08/2026;15/08/2026;3478,10;Pago em dia
+1034;Receber;Vendas à vista;04/06/2026;04/06/2026;17350,24;Pago em dia
+1035;Pagar;Energia;25/02/2026;25/02/2026;10464,52;Pago em dia
+1036;Pagar;Impostos;05/07/2026;05/07/2026;4197,18;Pago em dia
+1037;Pagar;Folha de pagamento;24/10/2026;;12908,83;Em aberto
+1038;Receber;Serviços;04/08/2025;13/09/2025;24163,96;Pago com atraso
+1039;Receber;Vendas a prazo;25/01/2025;27/01/2025;15975,64;Pago com atraso
+1040;Receber;Vendas a prazo;01/08/2025;10/09/2025;22342,38;Pago com atraso
+1041;Receber;Serviços;03/05/2025;12/06/2025;2716,20;Pago com atraso
+1042;Receber;Vendas à vista;12/11/2025;22/12/2025;9974,58;Pago com atraso
+1043;Receber;Vendas a prazo;08/05/2026;10/05/2026;24514,12;Pago com atraso
+1044;Receber;Serviços;07/05/2025;07/05/2025;16619,50;Pago em dia
+1045;Receber;Vendas à vista;15/05/2026;20/05/2026;1706,20;Pago com atraso
+1046;Pagar;Folha de pagamento;10/04/2026;10/04/2026;9570,84;Pago em dia
+1047;Pagar;Aluguel;18/06/2026;28/07/2026;3393,26;Pago com atraso
+1048;Receber;Serviços;18/05/2025;23/05/2025;16265,99;Pago com atraso
+1049;Pagar;Aluguel;21/03/2026;;7653,55;Em aberto
+1050;Pagar;Fornecedores;30/01/2025;;13636,10;Em aberto
+1051;Pagar;Internet;10/07/2025;19/08/2025;2347,78;Pago com atraso
+1052;Pagar;Aluguel;11/02/2026;11/02/2026;16767,98;Pago em dia
+1053;Receber;Vendas a prazo;17/08/2025;;19647,59;Em aberto
+1054;Pagar;Fornecedores;27/07/2025;05/09/2025;9683,81;Pago com atraso
+1055;Pagar;Fornecedores;17/02/2026;22/02/2026;12179,52;Pago com atraso
+1056;Pagar;Folha de pagamento;14/04/2025;14/04/2025;6355,59;Pago em dia
+1057;Receber;Vendas a prazo;14/03/2026;14/03/2026;10895,09;Pago em dia
+1058;Pagar;Energia;26/05/2025;10/06/2025;5403,85;Pago com atraso
+1059;Receber;Vendas à vista;09/02/2026;11/02/2026;15198,19;Pago com atraso
+1060;Receber;Vendas à vista;02/07/2025;02/07/2025;4559,92;Pago em dia
+1061;Pagar;Folha de pagamento;17/03/2026;17/03/2026;1497,22;Pago em dia
+1062;Receber;Vendas à vista;25/03/2025;;2891,39;Em aberto
+1063;Pagar;Impostos;12/05/2025;12/05/2025;4869,28;Pago em dia
+1064;Pagar;Folha de pagamento;09/08/2025;09/08/2025;16729,51;Pago em dia
+1065;Receber;Vendas a prazo;01/08/2026;16/08/2026;10597,77;Pago com atraso
+1066;Receber;Vendas à vista;02/11/2025;07/11/2025;3569,01;Pago com atraso
+1067;Pagar;Folha de pagamento;10/07/2026;12/07/2026;638,48;Pago com atraso
+1068;Receber;Serviços;07/05/2025;12/05/2025;10408,52;Pago com atraso
+1069;Receber;Vendas a prazo;14/04/2026;24/05/2026;13526,01;Pago com atraso
+1070;Pagar;Energia;14/04/2025;14/04/2025;10688,25;Pago em dia
+1071;Receber;Vendas à vista;25/01/2025;27/01/2025;5859,42;Pago com atraso
+1072;Pagar;Folha de pagamento;01/10/2025;01/10/2025;13913,81;Pago em dia
+1073;Receber;Vendas à vista;25/10/2026;25/10/2026;13621,08;Pago em dia
+1074;Receber;Vendas a prazo;19/10/2026;28/11/2026;8425,23;Pago com atraso
+1075;Pagar;Folha de pagamento;01/06/2026;01/06/2026;5577,42;Pago em dia
+1076;Receber;Vendas a prazo;10/05/2026;10/05/2026;22802,40;Pago em dia
+1077;Pagar;Impostos;21/07/2025;26/07/2025;14438,92;Pago com atraso
+1078;Receber;Vendas a prazo;30/11/2025;;11980,82;Em aberto
+1079;Pagar;Marketing;30/05/2026;30/05/2026;10796,15;Pago em dia
+1080;Receber;Vendas a prazo;05/06/2026;05/06/2026;1037,26;Pago em dia
+1081;Receber;Serviços;30/05/2025;04/06/2025;23774,96;Pago com atraso
+1082;Pagar;Impostos;04/08/2026;04/08/2026;15559,54;Pago em dia
+1083;Pagar;Internet;19/07/2026;03/08/2026;8570,70;Pago com atraso
+1084;Receber;Vendas à vista;16/01/2025;16/01/2025;7149,69;Pago em dia
+1085;Pagar;Energia;09/08/2025;24/08/2025;8455,19;Pago com atraso
+1086;Receber;Vendas a prazo;18/01/2025;20/01/2025;2470,55;Pago com atraso
+1087;Receber;Vendas a prazo;07/09/2025;;16808,22;Em aberto
+1088;Receber;Serviços;17/04/2026;17/04/2026;1395,63;Pago em dia
+1089;Pagar;Marketing;09/08/2025;24/08/2025;16413,74;Pago com atraso
+1090;Pagar;Energia;17/12/2025;22/12/2025;5097,10;Pago com atraso
+1091;Pagar;Fornecedores;13/11/2025;;5636,98;Em aberto
+1092;Receber;Vendas à vista;17/08/2025;19/08/2025;24597,31;Pago com atraso
+1093;Receber;Vendas à vista;03/06/2026;;20355,43;Em aberto
+1094;Receber;Serviços;06/08/2025;21/08/2025;22453,54;Pago com atraso
+1095;Receber;Vendas à vista;27/12/2025;05/02/2026;8738,36;Pago com atraso
+1096;Pagar;Fornecedores;20/06/2026;25/06/2026;11613,18;Pago com atraso
+1097;Pagar;Internet;09/01/2025;09/01/2025;13560,68;Pago em dia
+1098;Pagar;Energia;24/08/2025;26/08/2025;4300,75;Pago com atraso
+1099;Pagar;Internet;07/01/2025;;8478,21;Em aberto
+1100;Pagar;Impostos;20/05/2025;;2222,29;Em aberto
+1101;Receber;Vendas à vista;05/06/2026;;20500,58;Em aberto
+1102;Receber;Vendas à vista;09/06/2026;24/06/2026;9315,21;Pago com atraso
+1103;Receber;Vendas à vista;09/05/2025;11/05/2025;15757,60;Pago com atraso
+1104;Pagar;Fornecedores;19/10/2026;21/10/2026;16940,10;Pago com atraso
+1105;Receber;Vendas à vista;12/07/2025;12/07/2025;24976,24;Pago em dia
+1106;Pagar;Folha de pagamento;13/01/2026;22/02/2026;15209,74;Pago com atraso
+1107;Pagar;Energia;06/01/2026;11/01/2026;5104,84;Pago com atraso
+1108;Receber;Serviços;26/06/2025;11/07/2025;20031,10;Pago com atraso
+1109;Receber;Vendas a prazo;24/07/2025;24/07/2025;3457,14;Pago em dia
+1110;Pagar;Folha de pagamento;11/02/2025;;7102,49;Em aberto
+1111;Receber;Serviços;29/09/2025;29/09/2025;16656,23;Pago em dia
+1112;Receber;Vendas à vista;04/03/2026;19/03/2026;21447,56;Pago com atraso
+1113;Pagar;Marketing;26/03/2026;05/05/2026;2625,64;Pago com atraso
+1114;Receber;Vendas a prazo;18/05/2026;27/06/2026;9479,98;Pago com atraso
+1115;Receber;Vendas a prazo;06/04/2026;06/04/2026;12030,16;Pago em dia
+1116;Receber;Vendas a prazo;14/01/2025;19/01/2025;9787,22;Pago com atraso
+1117;Pagar;Aluguel;20/06/2026;30/07/2026;15795,22;Pago com atraso
+1118;Pagar;Impostos;30/03/2025;30/03/2025;13226,55;Pago em dia
+1119;Pagar;Fornecedores;02/02/2025;14/03/2025;1112,49;Pago com atraso
+1120;Pagar;Internet;25/11/2025;30/11/2025;5637,07;Pago com atraso
+1121;Receber;Vendas a prazo;05/06/2026;05/06/2026;6294,05;Pago em dia
+1122;Pagar;Marketing;12/04/2026;17/04/2026;14529,23;Pago com atraso
+1123;Receber;Vendas à vista;15/06/2026;;15592,07;Em aberto
+1124;Receber;Serviços;17/07/2025;01/08/2025;9668,06;Pago com atraso
+1125;Receber;Vendas a prazo;04/06/2025;04/06/2025;8740,02;Pago em dia
+1126;Receber;Serviços;17/07/2025;22/07/2025;24140,22;Pago com atraso
+1127;Receber;Serviços;26/02/2026;03/03/2026;11146,21;Pago com atraso
+1128;Receber;Vendas a prazo;26/10/2026;05/12/2026;4636,42;Pago com atraso
+1129;Pagar;Fornecedores;17/04/2026;17/04/2026;934,16;Pago em dia
+1130;Receber;Serviços;28/07/2025;02/08/2025;9264,48;Pago com atraso
+1131;Receber;Vendas a prazo;02/06/2025;12/07/2025;24012,02;Pago com atraso
+1132;Receber;Vendas à vista;10/03/2026;12/03/2026;1247,38;Pago com atraso
+1133;Receber;Serviços;21/09/2025;21/09/2025;21179,75;Pago em dia
+1134;Receber;Serviços;17/07/2026;;7104,60;Em aberto
+1135;Pagar;Impostos;19/03/2026;19/03/2026;3060,69;Pago em dia
+1136;Receber;Vendas à vista;28/08/2025;28/08/2025;10420,13;Pago em dia
+1137;Pagar;Folha de pagamento;17/04/2026;02/05/2026;4854,44;Pago com atraso
+1138;Pagar;Aluguel;11/05/2025;11/05/2025;3767,90;Pago em dia
+1139;Receber;Vendas a prazo;10/11/2025;15/11/2025;10568,36;Pago com atraso
+1140;Pagar;Fornecedores;20/02/2026;22/02/2026;6740,63;Pago com atraso
+1141;Receber;Vendas a prazo;11/04/2025;;7901,33;Em aberto
+1142;Pagar;Fornecedores;23/07/2026;;8812,25;Em aberto
+1143;Receber;Serviços;07/07/2025;;8993,31;Em aberto
+1144;Pagar;Internet;02/11/2025;02/11/2025;9067,52;Pago em dia
+1145;Receber;Serviços;24/03/2025;24/03/2025;4026,58;Pago em dia
+1146;Receber;Vendas à vista;28/04/2026;30/04/2026;24594,09;Pago com atraso
+1147;Receber;Serviços;02/10/2026;04/10/2026;13972,23;Pago com atraso
+1148;Receber;Vendas à vista;18/02/2025;;2311,80;Em aberto
+1149;Pagar;Energia;05/11/2025;;12290,00;Em aberto
+1150;Receber;Vendas à vista;24/03/2026;08/04/2026;8083,30;Pago com atraso
+1151;Pagar;Marketing;04/09/2025;04/09/2025;6238,35;Pago em dia
+1152;Pagar;Fornecedores;07/08/2026;16/09/2026;1708,02;Pago com atraso
+1153;Pagar;Energia;15/09/2026;25/10/2026;6167,76;Pago com atraso
+1154;Pagar;Aluguel;30/12/2025;;796,39;Em aberto
+1155;Pagar;Marketing;12/01/2026;27/01/2026;11568,55;Pago com atraso
+1156;Pagar;Impostos;07/08/2025;;6708,89;Em aberto
+1157;Pagar;Impostos;15/06/2026;25/07/2026;12240,03;Pago com atraso
+1158;Receber;Serviços;24/07/2026;24/07/2026;2345,20;Pago em dia
+1159;Pagar;Fornecedores;11/01/2025;16/01/2025;8707,36;Pago com atraso
+1160;Pagar;Energia;15/06/2026;15/06/2026;9485,12;Pago em dia
+1161;Receber;Vendas à vista;14/09/2026;16/09/2026;9018,16;Pago com atraso
+1162;Pagar;Aluguel;18/04/2026;23/04/2026;16929,43;Pago com atraso
+1163;Pagar;Impostos;01/08/2026;06/08/2026;10117,33;Pago com atraso
+1164;Receber;Vendas a prazo;29/04/2025;08/06/2025;12994,83;Pago com atraso
+1165;Pagar;Aluguel;11/03/2026;11/03/2026;1138,71;Pago em dia
+1166;Receber;Serviços;07/10/2026;22/10/2026;5445,35;Pago com atraso
+1167;Receber;Vendas a prazo;15/01/2026;15/01/2026;14492,13;Pago em dia
+1168;Pagar;Fornecedores;12/10/2025;27/10/2025;16529,41;Pago com atraso
+1169;Pagar;Internet;28/07/2026;12/08/2026;12973,25;Pago com atraso
+1170;Receber;Vendas à vista;30/10/2026;14/11/2026;11547,59;Pago com atraso
+1171;Receber;Vendas a prazo;03/12/2025;;4355,35;Em aberto
+1172;Pagar;Fornecedores;11/03/2026;16/03/2026;7540,57;Pago com atraso
+1173;Pagar;Fornecedores;15/08/2026;17/08/2026;7482,57;Pago com atraso
+1174;Pagar;Aluguel;04/11/2025;06/11/2025;13488,89;Pago com atraso
+1175;Pagar;Impostos;10/01/2025;;16809,26;Em aberto
+1176;Receber;Vendas à vista;16/01/2025;16/01/2025;12467,99;Pago em dia
+1177;Receber;Vendas à vista;06/06/2025;;19399,51;Em aberto
+1178;Pagar;Marketing;11/04/2025;16/04/2025;8825,15;Pago com atraso
+1179;Receber;Vendas à vista;08/12/2025;08/12/2025;14001,52;Pago em dia
+1180;Pagar;Fornecedores;10/04/2026;;4426,50;Em aberto
+1181;Pagar;Internet;29/03/2026;29/03/2026;17994,13;Pago em dia
+1182;Receber;Vendas à vista;14/09/2025;;5753,03;Em aberto
+1183;Receber;Vendas à vista;25/04/2025;04/06/2025;1843,87;Pago com atraso
+1184;Receber;Vendas a prazo;25/05/2025;25/05/2025;2249,03;Pago em dia
+1185;Receber;Vendas à vista;21/07/2025;21/07/2025;1758,29;Pago em dia
+1186;Pagar;Fornecedores;03/11/2025;;2830,51;Em aberto
+1187;Receber;Vendas a prazo;07/02/2026;19/03/2026;12618,05;Pago com atraso
+1188;Pagar;Marketing;18/07/2025;20/07/2025;7442,04;Pago com atraso
+1189;Pagar;Fornecedores;13/04/2025;18/04/2025;3398,88;Pago com atraso
+1190;Receber;Serviços;16/05/2026;;9077,17;Em aberto
+1191;Receber;Vendas à vista;20/09/2026;05/10/2026;11113,23;Pago com atraso
+1192;Pagar;Marketing;17/09/2025;22/09/2025;14450,13;Pago com atraso
+1193;Receber;Vendas a prazo;21/10/2026;21/10/2026;10300,92;Pago em dia
+1194;Pagar;Marketing;30/07/2026;30/07/2026;1990,35;Pago em dia
+1195;Receber;Serviços;10/04/2025;12/04/2025;11302,84;Pago com atraso
+1196;Receber;Serviços;24/03/2026;29/03/2026;3608,46;Pago com atraso
+1197;Receber;Vendas a prazo;17/04/2026;17/04/2026;4651,77;Pago em dia
+1198;Receber;Serviços;01/10/2025;;12836,27;Em aberto
+1199;Pagar;Marketing;20/01/2026;22/01/2026;12282,67;Pago com atraso
+1200;Pagar;Internet;18/12/2025;23/12/2025;11396,75;Pago com atraso

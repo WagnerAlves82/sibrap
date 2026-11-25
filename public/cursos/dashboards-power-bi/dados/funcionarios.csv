@@ -1,0 +1,181 @@
+﻿id_funcionario;nome;sexo;setor;cargo;data_admissao;data_desligamento;salario;cidade
+1;Vinícius Araújo;M;Comercial;Supervisor de vendas;17/06/2019;;4381,72;Curitiba
+2;Rodrigo Ferreira;M;Administrativo;Assistente administrativo;29/10/2024;;2412,10;Curitiba
+3;Daniel Almeida;M;Logística;Conferente;30/03/2026;;2530,35;Florianópolis
+4;Fernanda Santos;F;Financeiro;Auxiliar financeiro;20/04/2026;;1942,48;Recife
+5;Débora Barbosa;M;Comercial;Vendedor;02/02/2025;;2635,32;Goiânia
+6;Bruno Rocha;M;TI;Técnico de suporte;31/12/2019;27/04/2020;3230,04;Cuiabá
+7;Gabriela Barbosa;M;TI;Analista de dados;15/06/2024;19/01/2026;5393,03;Belo Horizonte
+8;Caio Oliveira;F;Administrativo;Coordenador administrativo;24/12/2023;;5997,84;Belo Horizonte
+9;Caio Ribeiro;M;Logística;Conferente;09/04/2020;16/01/2022;2179,97;Florianópolis
+10;Natália Rocha;M;Logística;Motorista;29/03/2020;05/07/2021;3275,21;Florianópolis
+11;Bruno Mendes;F;Comercial;Vendedor;07/09/2020;;2136,29;Recife
+12;Felipe Mendes;M;TI;Analista de dados;25/11/2025;;5525,73;Salvador
+13;Rafael Souza;M;Logística;Motorista;14/02/2023;;3508,79;Recife
+14;Rodrigo Nunes;M;Comercial;Supervisor de vendas;06/09/2022;15/08/2023;4984,09;Recife
+15;Gabriela Almeida;M;Financeiro;Analista financeiro;14/06/2019;;4746,37;Belém
+16;Yasmin Oliveira;M;Financeiro;Auxiliar financeiro;10/06/2024;14/12/2024;1752,61;Porto Velho
+17;Ana Carvalho;F;Comercial;Vendedor;03/09/2021;21/04/2025;2432,37;Goiânia
+18;Marcelo Costa;F;Comercial;Vendedor;21/02/2023;;2169,99;Belo Horizonte
+19;Renato Costa;M;TI;Técnico de suporte;29/05/2019;;3163,52;Goiânia
+20;Ana Rodrigues;M;Financeiro;Auxiliar financeiro;26/12/2024;;2136,13;Recife
+21;Vanessa Nunes;F;TI;Analista de dados;03/12/2023;;5919,55;Florianópolis
+22;Bruno Dias;F;Financeiro;Auxiliar financeiro;24/02/2020;;2301,10;Goiânia
+23;Fernanda Gomes;M;Administrativo;Coordenador administrativo;26/04/2024;22/01/2026;6419,96;Goiânia
+24;Letícia Pereira;M;Financeiro;Auxiliar financeiro;05/09/2022;;1802,06;São Paulo
+25;Felipe Freitas;F;Logística;Conferente;28/10/2025;07/09/2026;2365,32;Porto Velho
+26;Fernanda Almeida;F;Administrativo;Assistente administrativo;12/05/2021;25/08/2024;2946,69;Porto Velho
+27;Mateus Lima;M;Logística;Motorista;25/11/2024;;3563,30;Recife
+28;Larissa Lima;M;TI;Técnico de suporte;05/08/2025;;3738,61;Belém
+29;Rodrigo Oliveira;M;Financeiro;Auxiliar financeiro;07/04/2021;;1931,53;Goiânia
+30;André Barbosa;F;TI;Analista de dados;07/11/2025;;5992,93;Recife
+31;Vinícius Barbosa;M;Administrativo;Auxiliar administrativo;01/05/2022;;2083,80;Cuiabá
+32;Rodrigo Teixeira;M;Administrativo;Assistente administrativo;01/05/2024;;2661,10;Goiânia
+33;Camila Almeida;M;Administrativo;Assistente administrativo;14/09/2023;;2781,43;Cuiabá
+34;Vanessa Oliveira;F;Administrativo;Assistente administrativo;13/03/2024;;2521,90;Recife
+35;Rafael Martins;M;Comercial;Supervisor de vendas;10/08/2023;;5266,70;Porto Velho
+36;Isabela Almeida;M;Comercial;Supervisor de vendas;28/10/2025;;4658,71;Porto Velho
+37;Gabriela Oliveira;M;Financeiro;Auxiliar financeiro;04/10/2022;;2235,87;Florianópolis
+38;Camila Costa;F;Logística;Motorista;09/03/2026;;2786,16;Recife
+39;Lucas Martins;M;Administrativo;Auxiliar administrativo;06/02/2025;;2309,09;Salvador
+40;Aline Lima;F;TI;Analista de dados;01/10/2024;;5237,62;Florianópolis
+41;Fábio Silva;F;TI;Analista de dados;30/09/2025;;4835,03;Florianópolis
+42;Ana Mendes;M;Logística;Motorista;15/01/2023;;2938,19;Belo Horizonte
+43;Fernanda Almeida;M;Financeiro;Auxiliar financeiro;07/06/2024;;1993,06;Florianópolis
+44;Renato Santos;M;Comercial;Supervisor de vendas;15/10/2019;;5278,84;Porto Velho
+45;Fábio Silva;F;Administrativo;Auxiliar administrativo;06/09/2020;;2315,60;São Paulo
+46;Leonardo Rodrigues;F;TI;Técnico de suporte;13/09/2024;;3184,15;Belo Horizonte
+47;Diego Oliveira;M;TI;Analista de dados;23/10/2024;;5254,22;Goiânia
+48;Natália Dias;F;Comercial;Supervisor de vendas;02/07/2024;;5316,83;Recife
+49;Felipe Moreira;F;TI;Analista de dados;16/12/2023;;5727,20;São Paulo
+50;Mateus Ferreira;F;TI;Analista de dados;11/09/2020;25/08/2024;5687,21;Cuiabá
+51;Isabela Costa;M;TI;Analista de dados;19/08/2025;;4633,99;Curitiba
+52;Eduarda Souza;M;Administrativo;Assistente administrativo;02/07/2020;08/06/2023;2733,27;Cuiabá
+53;Caio Lima;M;Administrativo;Auxiliar administrativo;03/03/2025;;1886,38;Recife
+54;Larissa Souza;M;Logística;Auxiliar de estoque;22/12/2022;;1909,34;Belém
+55;Lucas Barbosa;M;Administrativo;Coordenador administrativo;19/03/2023;;6378,73;Belém
+56;Paula Carvalho;F;Administrativo;Coordenador administrativo;19/05/2026;;6467,27;Salvador
+57;Thiago Martins;F;Financeiro;Analista financeiro;02/07/2025;;4692,81;Goiânia
+58;Rafael Pereira;F;Financeiro;Analista financeiro;28/07/2021;;5441,01;Florianópolis
+59;Larissa Cardoso;M;Administrativo;Assistente administrativo;16/02/2024;;2896,09;Goiânia
+60;João Ribeiro;M;Administrativo;Auxiliar administrativo;30/03/2026;;1962,83;Belo Horizonte
+61;Marcelo Gomes;F;Financeiro;Analista financeiro;08/10/2025;;4743,31;São Paulo
+62;Gabriela Cardoso;F;Financeiro;Analista financeiro;10/06/2020;20/07/2023;5902,89;Florianópolis
+63;Eduarda Lima;F;Logística;Conferente;12/05/2019;;2616,05;Cuiabá
+64;Carla Martins;M;TI;Técnico de suporte;27/07/2022;;3703,58;Goiânia
+65;Carla Pereira;F;TI;Técnico de suporte;28/05/2023;;3412,15;Porto Velho
+66;Felipe Martins;M;Logística;Conferente;28/04/2019;20/07/2022;2678,67;Curitiba
+67;Diego Almeida;M;TI;Técnico de suporte;31/08/2022;;3537,45;Belo Horizonte
+68;Marcelo Almeida;M;TI;Técnico de suporte;06/08/2020;;3316,64;Recife
+69;Caio Carvalho;F;Financeiro;Auxiliar financeiro;28/06/2021;;2309,45;Recife
+70;Camila Oliveira;M;Administrativo;Coordenador administrativo;19/11/2024;25/08/2026;6271,33;Belo Horizonte
+71;Eduarda Souza;M;Logística;Motorista;30/04/2023;;3473,74;Cuiabá
+72;Isabela Ferreira;F;Financeiro;Analista financeiro;24/06/2021;;5909,77;Belo Horizonte
+73;Gabriela Nunes;M;Financeiro;Auxiliar financeiro;25/04/2022;;1865,31;São Paulo
+74;Yasmin Gomes;M;Administrativo;Assistente administrativo;09/10/2019;12/06/2020;2380,54;Curitiba
+75;Bruno Silva;M;Financeiro;Analista financeiro;01/09/2020;;5519,29;Florianópolis
+76;Letícia Teixeira;F;Logística;Conferente;21/05/2022;;2217,69;Florianópolis
+77;André Teixeira;F;Logística;Auxiliar de estoque;17/08/2022;;2089,44;Belo Horizonte
+78;Thiago Mendes;F;TI;Técnico de suporte;13/09/2025;;2880,03;Salvador
+79;Gustavo Oliveira;F;Financeiro;Auxiliar financeiro;06/12/2025;;2132,40;São Paulo
+80;Fernanda Lima;F;Administrativo;Auxiliar administrativo;07/07/2020;;2248,07;Goiânia
+81;Leonardo Mendes;F;Logística;Motorista;30/04/2025;;3032,22;Belém
+82;Camila Santos;F;TI;Técnico de suporte;10/09/2024;;3320,38;Cuiabá
+83;Vanessa Lima;M;Administrativo;Auxiliar administrativo;26/04/2021;;2140,71;Cuiabá
+84;Lucas Lima;M;Financeiro;Auxiliar financeiro;10/05/2019;;1785,62;São Paulo
+85;João Silva;F;Administrativo;Coordenador administrativo;08/05/2022;;6031,77;Recife
+86;Otávio Souza;F;Administrativo;Assistente administrativo;03/12/2023;;2880,84;Florianópolis
+87;Beatriz Ferreira;F;Administrativo;Coordenador administrativo;20/04/2024;;5532,37;Cuiabá
+88;Fernanda Gomes;F;TI;Analista de dados;17/07/2025;;5440,95;Florianópolis
+89;Débora Cardoso;F;Logística;Motorista;30/09/2021;21/09/2023;3046,29;Belo Horizonte
+90;Felipe Carvalho;M;Administrativo;Auxiliar administrativo;14/10/2020;06/04/2023;2365,75;Belo Horizonte
+91;Paula Dias;M;TI;Analista de dados;21/10/2023;;5500,47;Belo Horizonte
+92;Mariana Souza;F;TI;Técnico de suporte;07/05/2022;;3320,91;Cuiabá
+93;Yasmin Souza;F;Administrativo;Auxiliar administrativo;24/03/2023;22/05/2025;1947,19;Curitiba
+94;Eduarda Araújo;M;Administrativo;Assistente administrativo;03/09/2021;;2881,24;Goiânia
+95;Isabela Araújo;M;Administrativo;Auxiliar administrativo;14/12/2021;;1978,36;Cuiabá
+96;Larissa Rocha;F;Logística;Auxiliar de estoque;18/04/2019;;2368,21;Belo Horizonte
+97;Letícia Araújo;M;TI;Técnico de suporte;03/06/2019;;3854,10;Florianópolis
+98;Letícia Santos;M;TI;Analista de dados;28/02/2023;;5802,09;Curitiba
+99;Fernanda Teixeira;F;Logística;Motorista;21/05/2025;;3425,30;Cuiabá
+100;Rodrigo Ribeiro;M;TI;Técnico de suporte;05/11/2022;21/04/2026;2919,59;Belém
+101;Gabriela Souza;F;Logística;Conferente;02/01/2026;;2319,74;Goiânia
+102;Renato Ribeiro;M;Administrativo;Auxiliar administrativo;12/12/2019;;2211,83;Florianópolis
+103;Renato Teixeira;M;TI;Analista de dados;27/10/2024;;5868,17;São Paulo
+104;Juliana Dias;M;TI;Analista de dados;04/10/2019;10/09/2023;4489,87;São Paulo
+105;Patrícia Cardoso;M;TI;Técnico de suporte;29/08/2020;06/07/2023;3655,10;Belém
+106;Beatriz Rocha;F;Administrativo;Coordenador administrativo;27/09/2023;;5379,89;Recife
+107;Diego Teixeira;M;Comercial;Vendedor;18/09/2023;;2551,54;Florianópolis
+108;Patrícia Souza;M;Logística;Auxiliar de estoque;17/10/2022;;1972,27;Porto Velho
+109;Mateus Martins;F;Administrativo;Assistente administrativo;07/09/2021;;2488,62;Florianópolis
+110;Daniel Lima;M;Logística;Motorista;26/02/2020;07/05/2022;2866,97;Belém
+111;Isabela Pereira;M;Logística;Auxiliar de estoque;21/09/2025;;1789,81;Salvador
+112;Patrícia Rocha;M;Financeiro;Analista financeiro;05/03/2020;;4420,32;Florianópolis
+113;Larissa Santos;F;Logística;Motorista;11/12/2019;12/08/2023;3366,53;São Paulo
+114;Marcelo Costa;M;Comercial;Vendedor;29/05/2025;;2559,56;Florianópolis
+115;João Pereira;M;Logística;Conferente;09/11/2019;;2409,84;Goiânia
+116;Otávio Ferreira;M;TI;Analista de dados;01/01/2019;;5634,92;Florianópolis
+117;Renato Oliveira;M;Logística;Conferente;18/03/2024;;2245,87;Belém
+118;Caio Rocha;M;Logística;Conferente;04/08/2019;;2408,16;Salvador
+119;Fernanda Rocha;F;Financeiro;Auxiliar financeiro;24/05/2021;;1908,77;Goiânia
+120;Sabrina Souza;M;Comercial;Supervisor de vendas;30/06/2019;;4812,74;Porto Velho
+121;Thiago Martins;M;Comercial;Supervisor de vendas;10/07/2019;;4734,03;Recife
+122;Henrique Nunes;M;Administrativo;Assistente administrativo;22/01/2025;;2802,41;Goiânia
+123;André Moreira;F;Financeiro;Analista financeiro;08/02/2020;;4547,77;Belém
+124;Marcelo Mendes;F;Administrativo;Coordenador administrativo;24/01/2020;16/03/2022;4803,58;Recife
+125;Débora Pereira;M;Administrativo;Coordenador administrativo;09/02/2021;;5482,03;Florianópolis
+126;Lucas Carvalho;F;TI;Técnico de suporte;11/07/2020;;3539,23;Goiânia
+127;Felipe Gomes;M;TI;Analista de dados;23/04/2025;;5686,35;Belém
+128;Sabrina Mendes;F;Logística;Auxiliar de estoque;06/11/2023;;1779,22;Goiânia
+129;Natália Ribeiro;F;TI;Analista de dados;14/04/2020;;4417,93;Florianópolis
+130;Diego Nunes;M;Comercial;Supervisor de vendas;18/01/2023;;4489,58;Florianópolis
+131;Fernanda Freitas;F;Comercial;Supervisor de vendas;11/08/2019;;4066,83;Curitiba
+132;João Gomes;M;Comercial;Supervisor de vendas;22/09/2025;;4923,29;Cuiabá
+133;Rodrigo Souza;M;TI;Técnico de suporte;03/06/2019;;3772,83;Florianópolis
+134;Natália Almeida;M;Logística;Motorista;15/03/2021;;2788,89;Recife
+135;Felipe Barbosa;M;TI;Analista de dados;03/04/2026;;5015,92;Cuiabá
+136;Bruno Costa;F;Administrativo;Assistente administrativo;25/05/2024;;2797,17;Belém
+137;Felipe Silva;F;Financeiro;Auxiliar financeiro;10/09/2019;;2041,68;Curitiba
+138;Letícia Pereira;M;Logística;Motorista;10/01/2020;;3302,79;Curitiba
+139;Yasmin Araújo;F;Comercial;Supervisor de vendas;31/08/2021;05/09/2025;4878,27;Goiânia
+140;Mariana Carvalho;F;Logística;Conferente;21/11/2024;;2449,61;Cuiabá
+141;Débora Freitas;F;Administrativo;Coordenador administrativo;28/03/2020;;5450,69;Cuiabá
+142;João Ribeiro;F;TI;Analista de dados;21/10/2023;;4546,70;Porto Velho
+143;Natália Ribeiro;F;Comercial;Supervisor de vendas;09/12/2024;;4569,10;Goiânia
+144;Leonardo Freitas;F;Administrativo;Assistente administrativo;24/06/2020;;2575,21;Salvador
+145;Vinícius Barbosa;F;TI;Técnico de suporte;04/06/2019;;3826,73;Belém
+146;Diego Nunes;F;TI;Técnico de suporte;14/11/2021;15/12/2022;3084,62;Belo Horizonte
+147;Sabrina Nunes;F;Comercial;Vendedor;19/06/2025;;2344,98;Recife
+148;Daniel Ribeiro;M;Financeiro;Auxiliar financeiro;16/05/2022;;1907,19;Goiânia
+149;Bruno Teixeira;F;Administrativo;Assistente administrativo;02/06/2024;;2457,80;Salvador
+150;Otávio Santos;F;TI;Analista de dados;23/08/2021;;5513,91;Belo Horizonte
+151;Sabrina Costa;M;Financeiro;Analista financeiro;13/07/2021;14/02/2025;4564,37;Goiânia
+152;Juliana Santos;F;TI;Analista de dados;21/09/2021;;5614,82;Salvador
+153;Gabriela Gomes;F;TI;Analista de dados;07/12/2022;;5564,70;Goiânia
+154;Fernanda Ribeiro;M;Administrativo;Assistente administrativo;11/03/2025;;2282,45;Curitiba
+155;Thiago Silva;M;Logística;Motorista;25/10/2023;;2811,73;Belo Horizonte
+156;Daniel Costa;M;Logística;Motorista;24/10/2023;;3316,40;São Paulo
+157;Fernanda Teixeira;M;Comercial;Supervisor de vendas;26/09/2023;;4783,54;Belo Horizonte
+158;Vinícius Ribeiro;F;TI;Técnico de suporte;09/04/2024;21/08/2026;3687,63;Salvador
+159;Juliana Oliveira;F;TI;Analista de dados;30/09/2020;;5545,55;Belém
+160;Carla Freitas;F;Logística;Conferente;12/02/2022;12/04/2023;2715,86;Florianópolis
+161;Camila Nunes;M;Logística;Conferente;14/11/2019;;2562,47;Florianópolis
+162;Mateus Mendes;F;Logística;Motorista;29/12/2019;;3228,05;São Paulo
+163;Mateus Araújo;F;Administrativo;Auxiliar administrativo;29/09/2021;;1777,56;Cuiabá
+164;Felipe Moreira;M;Logística;Conferente;08/03/2020;;2711,99;Goiânia
+165;Caio Rocha;M;TI;Técnico de suporte;13/09/2021;;3303,89;Recife
+166;Larissa Ferreira;F;TI;Técnico de suporte;22/03/2021;04/04/2022;3779,22;Florianópolis
+167;Marcelo Moreira;M;TI;Técnico de suporte;19/01/2023;23/01/2024;3626,31;Goiânia
+168;Bruno Dias;M;Administrativo;Assistente administrativo;19/02/2025;;2763,32;Porto Velho
+169;Fábio Rodrigues;M;TI;Técnico de suporte;01/04/2023;13/08/2024;3586,97;Curitiba
+170;Yasmin Gomes;F;Administrativo;Coordenador administrativo;10/02/2025;;5718,78;Curitiba
+171;Juliana Silva;F;TI;Técnico de suporte;25/05/2019;14/05/2022;2860,08;Porto Velho
+172;Leonardo Nunes;M;Financeiro;Analista financeiro;03/06/2024;;5449,41;Florianópolis
+173;Letícia Teixeira;M;Comercial;Vendedor;28/03/2022;;2254,96;Recife
+174;Vinícius Martins;F;TI;Analista de dados;30/06/2020;;4983,82;Belém
+175;Lucas Costa;F;Comercial;Vendedor;08/06/2024;;2663,59;Curitiba
+176;Isabela Silva;M;Logística;Conferente;11/10/2021;04/05/2025;2150,64;Florianópolis
+177;André Moreira;M;TI;Técnico de suporte;03/01/2025;;3314,11;Cuiabá
+178;Leonardo Barbosa;F;TI;Técnico de suporte;17/02/2025;;3428,82;Porto Velho
+179;Ana Souza;M;Financeiro;Analista financeiro;24/05/2021;;4515,53;Belém
+180;Aline Mendes;F;TI;Técnico de suporte;29/07/2022;;3532,39;São Paulo
