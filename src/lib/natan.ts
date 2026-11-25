@@ -62,8 +62,8 @@ const ORDEM: Record<string, { entrada: string[]; avanco: string[] }> = {
     avanco: ["automacao-residencial-inteligente", "nr-10-basico", "seguranca-trabalho-em-altura"],
   },
   Tecnologia: {
-    entrada: ["informatica-basica-ia", "conserto-e-manutencao-de-celulares"],
-    avanco: ["conserto-e-manutencao-de-celulares", "informatica-basica-ia"],
+    entrada: ["informatica-basica-ia", "conserto-e-manutencao-de-celulares", "seguranca-digital-na-pratica"],
+    avanco: ["conserto-e-manutencao-de-celulares", "informatica-basica-ia", "seguranca-digital-na-pratica"],
   },
   "Indústria e logística": {
     entrada: ["tbo-treinamento-basico-operacional", "estoque-logistica-controle-de-mercadorias"],
