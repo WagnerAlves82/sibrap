@@ -1,3 +1,5 @@
+import { areaSuporte, suporteDoCurso } from "@/lib/suporte-cursos";
+import { formatarReais } from "@/lib/curso-pago";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { IconeEmoji } from "@/components/icone-emoji";
@@ -181,6 +183,21 @@ export default async function AulaPage({
                   )}
                 </div>
               </Secao>
+            )}
+
+            {/* Suporte Especializado: serviço extra, pago à parte (src/lib/suporte-cursos.ts). Botão leva ao pagamento. */}
+            {suporteDoCurso(slug) && (
+              <div className="mt-8 flex flex-col gap-3 border-l-4 border-accent bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-display text-[1.05rem] font-extrabold text-[#14213A]">{suporteDoCurso(slug)!.pergunta}</p>
+                  <p className="mt-1 text-[14px] leading-relaxed text-[#516278]">
+                    Fazemos com você por acesso remoto. Serviço extra, pago à parte ({formatarReais(suporteDoCurso(slug)!.precoPadraoCentavos)}), não incluso no curso.
+                  </p>
+                </div>
+                <Link prefetch={false} href={areaSuporte(slug)} className="shrink-0 bg-accent px-5 py-3 text-center font-extrabold text-accent-ink transition-all hover:brightness-110">
+                  Contratar o suporte →
+                </Link>
+              </div>
             )}
 
             {questoes.length > 0 && (

@@ -358,10 +358,10 @@ export async function enviarAvisoVenda({
   const valor = (valorCentavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   const quando = new Date().toLocaleString("pt-BR", { timeZone: "America/Cuiaba" });
   const apostila = !tipo || tipo === "apostila";
-  const rotulo = apostila ? "" : `[${tipo === "curso" ? "Curso" : tipo === "combo" ? "Combo" : tipo === "premium" ? "Premium" : esc(tipo)}] `;
+  const rotulo = apostila ? "" : `[${tipo === "curso" ? "Curso" : tipo === "combo" ? "Combo" : tipo === "premium" ? "Premium" : tipo === "servico" ? "Suporte" : esc(tipo)}] `;
   return enviarEmail({
     para: emailDoAdmin(),
-    assunto: `Nova venda: ${valor} — ${rotulo}${titulo}`,
+    assunto: tipo === "servico" ? `Suporte contratado: ${comprador ?? email ?? "cliente"} — ${valor} — ${titulo}` : `Nova venda: ${valor} — ${rotulo}${titulo}`,
     html: moldura({
       saudacao: "Venda confirmada",
       titulo: `Você vendeu ${valor}`,
@@ -370,7 +370,7 @@ export async function enviarAvisoVenda({
 <p style="margin:0 0 6px 0;"><strong>Origem:</strong> ${esc(origem ?? "não registrada")}</p>
 <p style="margin:0 0 6px 0;"><strong>Quando:</strong> ${esc(quando)} (horário de Cuiabá)</p>
 <p style="margin:0 0 12px 0;"><strong>Pedido:</strong> ${esc(pedidoId.slice(0, 8))}</p>
-<p style="margin:0;font-size:12.5px;color:#516278;">${!apostila ? "O acesso foi liberado na área do aluno." : entregaOk ? "O acesso foi liberado e o e-mail de entrega foi enviado ao cliente." : "O acesso foi liberado, mas o e-mail de entrega ao cliente FALHOU (ele baixa pela área do aluno)."}</p>`,
+<p style="margin:0;font-size:12.5px;color:#516278;">${tipo === "servico" ? "<strong>Suporte contratado:</strong> entre em contato com o cliente pelo e-mail acima para combinar o atendimento remoto." : !apostila ? "O acesso foi liberado na área do aluno." : entregaOk ? "O acesso foi liberado e o e-mail de entrega foi enviado ao cliente." : "O acesso foi liberado, mas o e-mail de entrega ao cliente FALHOU (ele baixa pela área do aluno)."}</p>`,
     }),
   });
 }
