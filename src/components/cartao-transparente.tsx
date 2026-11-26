@@ -74,7 +74,10 @@ export function CartaoTransparente({
   abertoInicial = false,
   embutido = false,
   cupom,
+  aoTrocarParaPix,
 }: {
+  /** recusa no cartão: mostra o botão para pagar no PIX na hora (dentro do modal de pagamento) */
+  aoTrocarParaPix?: () => void;
   produtoSlug: string;
   valorCentavos: number;
   chavePublica: string;
@@ -250,6 +253,16 @@ export function CartaoTransparente({
         <Alert variant="erro" claro>
           {erro}
         </Alert>
+      )}
+      {/* 26/11/2026: 13 recusas seguidas no cartão; quem não achava a troca para o PIX desistia da compra */}
+      {erro && aoTrocarParaPix && fase === "form" && (
+        <button
+          type="button"
+          onClick={aoTrocarParaPix}
+          className="w-full bg-[#0B2A4A] px-5 py-3.5 text-[15.5px] font-bold text-white transition-colors hover:brightness-110"
+        >
+          Pagar no PIX agora (aprovação na hora) →
+        </button>
       )}
       {fase === "aguardando" && (
         <Alert variant="info" claro>

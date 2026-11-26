@@ -152,6 +152,7 @@ export function EscolherPagamento({
                 nomeInicial={cartao.nome}
                 abertoInicial
                 embutido
+                aoTrocarParaPix={() => setForma("pix")}
                 aoAprovar={(id, valor) => {
                   setAberto(false);
                   if (conversaoAds) gadsCompra({ valor: valor / 100, pedidoId: id });
