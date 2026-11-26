@@ -219,3 +219,20 @@ export async function criarPagamentoExtraAction(): Promise<EstadoPix> {
     nome: (user.user_metadata as { nome?: string } | undefined)?.nome,
   });
 }
+
+/** Feedback do aluno no fim da correção (nota 1 a 5 + comentário); uma linha por redação. */
+export async function enviarFeedbackRedacaoAction(id: string, nota: number, comentario: string): Promise<{ ok: true } | { erro: string }> {
+  if (!/^[0-9a-f-]{36}$/i.test(id) || !Number.isInteger(nota) || nota < 1 || nota > 5) return { erro: "Escolha uma nota de 1 a 5." };
+  const supabase = await criarClienteSupabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { erro: "Entre na sua conta para enviar." };
+  const { error } = await (supabase as unknown as import("@supabase/supabase-js").SupabaseClient)
+    .from("redacao_feedbacks")
+    .upsert(
+      { redacao_id: id, user_id: user.id, nota, comentario: comentario.trim().slice(0, 2000) || null },
+      { onConflict: "redacao_id,user_id" }
+    );
+  return error ? { erro: "Não deu pra enviar agora. Tente de novo." } : { ok: true };
+}

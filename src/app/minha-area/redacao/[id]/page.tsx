@@ -8,6 +8,7 @@ import { bancaDa } from "@/lib/redacao-bancas";
 import type { Avaliacao } from "@/lib/redacao";
 import { EditorRedacao } from "./EditorRedacao";
 import { ResultadoRedacao } from "./ResultadoRedacao";
+import { FeedbackRedacao } from "./FeedbackRedacao";
 
 export const metadata: Metadata = { title: "Redação", robots: { index: false } };
 // a correção com IA leva de 10 a 40 segundos
@@ -29,6 +30,14 @@ export default async function RedacaoEditorPage({ params }: { params: Promise<{ 
 
   const banca = bancaDa(r.apostilas?.slug);
   const saldo = r.status === "rascunho" ? await saldoRedacao(user!.id) : null;
+  const { data: fb } =
+    r.status === "corrigida"
+      ? await (supabase as unknown as import("@supabase/supabase-js").SupabaseClient)
+          .from("redacao_feedbacks")
+          .select("nota, comentario")
+          .eq("redacao_id", r.id)
+          .maybeSingle<{ nota: number; comentario: string | null }>()
+      : { data: null };
 
   return (
     <div className="flex min-h-screen flex-col bg-surface-2 font-body">
@@ -36,13 +45,16 @@ export default async function RedacaoEditorPage({ params }: { params: Promise<{ 
       <main className="mx-auto w-full max-w-[1280px] flex-1 px-3 py-6 sm:px-6">
         <Link prefetch={false} href="/minha-area/redacao" className="text-[13.5px] font-bold text-brand">← Minhas redações</Link>
         {r.status === "corrigida" && r.avaliacao ? (
-          <ResultadoRedacao
-            id={r.id}
-            tema={r.tema}
-            texto={r.texto}
-            banca={banca.nome}
-            avaliacao={r.avaliacao as unknown as Avaliacao}
-          />
+          <>
+            <ResultadoRedacao
+              id={r.id}
+              tema={r.tema}
+              texto={r.texto}
+              banca={banca.nome}
+              avaliacao={r.avaliacao as unknown as Avaliacao}
+            />
+            <FeedbackRedacao id={r.id} notaInicial={fb?.nota} comentarioInicial={fb?.comentario ?? ""} />
+          </>
         ) : saldo === null ? (
           <section className="mt-6 max-w-[640px] border border-l-[4px] border-[#D7DEE6] border-l-accent bg-white p-6">
             <p className="font-display text-lg font-extrabold text-[#14213A]">Módulo indisponível</p>
