@@ -131,7 +131,7 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
     ],
     ganhos: [
       { titulo: "Segurança para agir", texto: "Você aprende o procedimento certo para visitantes, encomendas, prestadores, golpes e emergências, sem improvisar." },
-      { titulo: "Currículo mais forte", texto: "Certificado de 20, 40 ou 60 horas com QR Code, que o recrutador confere em segundos." },
+      { titulo: "Currículo mais forte", texto: "Certificado de 60 horas com QR Code, que o recrutador confere em segundos." },
       { titulo: "Lei a seu favor", texto: "Escala 12x36, desvio de função, LGPD e o que o Código Penal diz sobre a rotina da portaria." },
       { titulo: "Pronto para a tecnologia", texto: "CFTV, biometria, QR Code, tags e portaria remota: o que os condomínios já usam." },
     ],
@@ -144,7 +144,7 @@ export const PAGINA_CURSO: Record<string, PaginaCurso> = {
       "Caça ao erro no livro de ocorrências",
     ],
     faq: [
-      ["Posso escolher a carga horária do certificado?", "Sim. Você estuda o curso completo e, na hora de emitir, escolhe o certificado de 20, 40 ou 60 horas. Dá para aumentar depois, pagando só a diferença."],
+      ["Qual a carga horária do certificado?", "60 horas, a carga completa do curso, com QR Code de validação. Quem já emitiu o de 20 horas pode atualizar para 60 pagando só a diferença."],
       ["Este curso me forma vigilante?", "Não. Vigilante é outra profissão, com curso de formação em escola autorizada e registro na Polícia Federal. Este curso prepara para portaria e controle de acesso."],
     ],
   },
