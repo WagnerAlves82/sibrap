@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CabecalhoSite, RodapeSite } from "@/components/site-chrome";
-import { emailDoLink, estaDescadastrado } from "@/lib/descadastro";
+import { emailDoToken, estaDescadastrado } from "@/lib/descadastro";
 import { confirmarDescadastroAction, desfazerDescadastroAction } from "./actions";
 
 export const metadata: Metadata = { title: "Parar de receber e-mails", robots: { index: false, follow: false } };
@@ -11,9 +11,9 @@ const ocultar = (email: string) => email.replace(/^(.{2}).*(@.*)$/, "$1***$2");
 
 // Página do link "parar de receber" dos e-mails (LGPD, art. 18). Pede um clique de confirmação para que
 // verificadores de link dos provedores de e-mail não descadastrem ninguém sozinhos.
-export default async function DescadastrarPage({ searchParams }: { searchParams: Promise<{ e?: string; t?: string; ok?: string; volta?: string }> }) {
-  const { e, t, ok, volta } = await searchParams;
-  const email = emailDoLink(e, t);
+export default async function DescadastrarPage({ searchParams }: { searchParams: Promise<{ t?: string; ok?: string; volta?: string }> }) {
+  const { t, ok, volta } = await searchParams;
+  const email = await emailDoToken(t);
   const jaSaiu = email ? await estaDescadastrado(email) : false;
   const botao = "px-6 py-3 text-[15px] font-bold transition-colors";
 
@@ -42,7 +42,6 @@ export default async function DescadastrarPage({ searchParams }: { searchParams:
               (pagamento, entrega e certificado) continuam chegando.
             </p>
             <form action={desfazerDescadastroAction} className="mt-6">
-              <input type="hidden" name="e" value={e} />
               <input type="hidden" name="t" value={t} />
               <button type="submit" className={`${botao} border-[1.5px] border-brand text-brand hover:bg-brand/5`}>
                 Foi engano, quero continuar recebendo
@@ -57,7 +56,6 @@ export default async function DescadastrarPage({ searchParams }: { searchParams:
               chegando.
             </p>
             <form action={confirmarDescadastroAction} className="mt-6">
-              <input type="hidden" name="e" value={e} />
               <input type="hidden" name="t" value={t} />
               <button type="submit" className={`${botao} bg-[#0B2A4A] text-white hover:brightness-110`}>
                 Confirmar descadastro

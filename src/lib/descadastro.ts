@@ -1,55 +1,31 @@
-import { createHmac, timingSafeEqual } from "node:crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { criarClienteSupabaseAdmin } from "@/lib/supabase-admin";
 
-// Descadastro de e-mails de comunicação (LGPD, art. 18). O link leva o e-mail em base64url e uma
-// assinatura HMAC; a chave é derivada da service role (a mesma regra está em
-// producao-apostilas/_lib/descadastro.mjs, usada pelos scripts de envio).
-const SITE = "https://www.sibrap.tec.br";
+// Descadastro de e-mails de comunicação (LGPD, art. 18). O link do rodapé leva um token aleatório, um por
+// e-mail, gravado em email_descadastro_tokens pelos scripts de envio (producao-apostilas/_lib/descadastro.mjs).
+// Só grava o e-mail na lista email_descadastros: a conta, os cursos e as compras do aluno não mudam.
+const admin = () => criarClienteSupabaseAdmin() as unknown as SupabaseClient;
 
-function chave(): string {
-  const base = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!base) throw new Error("SUPABASE_SERVICE_ROLE_KEY ausente");
-  return createHmac("sha256", base).update("sibrap-descadastro-v1").digest("hex");
+/** Devolve o e-mail dono do token do link, ou null. */
+export async function emailDoToken(t: string | undefined): Promise<string | null> {
+  if (!t || !/^[A-Za-z0-9_-]{20,64}$/.test(t)) return null;
+  const { data } = await admin().from("email_descadastro_tokens").select("email").eq("token", t).maybeSingle<{ email: string }>();
+  return data?.email ?? null;
 }
-
-export function assinaturaDescadastro(email: string): string {
-  return createHmac("sha256", chave()).update(email.trim().toLowerCase()).digest("base64url").slice(0, 32);
-}
-
-export function linkDescadastro(email: string): string {
-  const e = Buffer.from(email.trim().toLowerCase()).toString("base64url");
-  return `${SITE}/descadastrar?e=${e}&t=${assinaturaDescadastro(email)}`;
-}
-
-/** Confere o link; devolve o e-mail se a assinatura bater. */
-export function emailDoLink(e: string | undefined, t: string | undefined): string | null {
-  if (!e || !t || e.length > 400 || t.length > 64) return null;
-  let email: string;
-  try {
-    email = Buffer.from(e, "base64url").toString("utf8").trim().toLowerCase();
-  } catch {
-    return null;
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return null;
-  const certa = Buffer.from(assinaturaDescadastro(email));
-  const veio = Buffer.from(t);
-  return certa.length === veio.length && timingSafeEqual(certa, veio) ? email : null;
-}
-
-const tabela = () => (criarClienteSupabaseAdmin() as unknown as SupabaseClient).from("email_descadastros");
 
 export async function descadastrar(email: string, origem: string): Promise<boolean> {
-  const { error } = await tabela().upsert({ email: email.toLowerCase(), origem }, { onConflict: "email", ignoreDuplicates: true });
+  const { error } = await admin()
+    .from("email_descadastros")
+    .upsert({ email: email.toLowerCase(), origem }, { onConflict: "email", ignoreDuplicates: true });
   return !error;
 }
 
 export async function recadastrar(email: string): Promise<boolean> {
-  const { error } = await tabela().delete().eq("email", email.toLowerCase());
+  const { error } = await admin().from("email_descadastros").delete().eq("email", email.toLowerCase());
   return !error;
 }
 
 export async function estaDescadastrado(email: string): Promise<boolean> {
-  const { data } = await tabela().select("email").eq("email", email.toLowerCase()).maybeSingle();
+  const { data } = await admin().from("email_descadastros").select("email").eq("email", email.toLowerCase()).maybeSingle();
   return !!data;
 }
